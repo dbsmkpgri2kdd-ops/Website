@@ -1,0 +1,23 @@
+# Local environment variables (Rahasia API/Database)
+.env
+*.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor settings (Opsional, agar setting pribadi tidak ikut)
+.vscode/
+.idea/
+
+# Next.js Cache (Lebih spesifik)
+.next/cache/
+
+# Folder temporary Firebase lainnya
+.firebase/
+firebase-debug.log*
+.firebaserc

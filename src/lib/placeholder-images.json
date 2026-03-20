@@ -1,0 +1,52 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "Students in a classroom, representing a learning environment.",
+      "imageUrl": "https://images.unsplash.com/photo-1758270704384-9df36d94a29d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjbGFzc3Jvb20lMjBzdHVkZW50c3xlbnwwfHx8fDE3Njk3MTUxMjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "classroom students"
+    },
+    {
+      "id": "principal-image",
+      "description": "Portrait of the school principal.",
+      "imageUrl": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3Njk3NTQzOTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "news-1",
+      "description": "News article image 1",
+      "imageUrl": "https://images.unsplash.com/photo-1769720205199-ac0d647e7fca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzY2hvb2wlMjBhY3Rpdml0eXxlbnwwfHx8fDE3Njk3NzQ5MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "school activity"
+    },
+    {
+      "id": "news-2",
+      "description": "News article image 2",
+      "imageUrl": "https://images.unsplash.com/photo-1610500796385-3ffc1ae2f046?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzdHVkZW50cyUyMGxlYXJuaW5nfGVufDB8fHx8MTc2OTY3NzUwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "students learning"
+    },
+    {
+      "id": "news-3",
+      "description": "News article image 3",
+      "imageUrl": "https://images.unsplash.com/photo-1613896527026-f195d5c818ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzY2hvb2wlMjBidWlsZGluZ3xlbnwwfHx8fDE3Njk2OTE2NDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "school building"
+    },
+    {
+      "id": "news-4",
+      "description": "News article image 4",
+      "imageUrl": "https://images.unsplash.com/photo-1690541261286-9f1cf46327fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z3JhZHVhdGlvbiUyMGNlcmVtb255fGVufDB8fHx8MTc2OTcwMjY3M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graduation ceremony"
+    },
+    {
+      "id": "news-5",
+      "description": "News article image 5",
+      "imageUrl": "https://images.unsplash.com/photo-1625621013153-ebf8fcfe4284?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c3BvcnRzJTIwZGF5fGVufDB8fHx8MTc2OTc3NDkwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sports day"
+    },
+    {
+      "id": "news-6",
+      "description": "News article image 6",
+      "imageUrl": "https://images.unsplash.com/photo-1661260100649-7e994335cdb9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzY2llbmNlJTIwZmFpcnxlbnwwfHx8fDE3Njk2OTY2MjN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "science fair"
+    }
+  ]
+}

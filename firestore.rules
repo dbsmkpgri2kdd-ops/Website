@@ -1,0 +1,245 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =====================================================================
+    //                            HELPER FUNCTIONS
+    // =====================================================================
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isPublic() {
+      return true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      // Check if the signed-in user has the 'admin' role in their user profile document.
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isGuru() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    // =====================================================================
+    //                            USER PROFILES
+    // =====================================================================
+    
+    match /users/{userId} {
+      // PERINGATAN: Aturan ini longgar untuk mendukung "Mode Tester".
+      // Sebelum produksi, batasi pembuatan peran admin/guru hanya dari backend atau oleh admin yang ada.
+      allow create: if isOwner(userId);
+      
+      // A user can get their own profile. An admin can get any profile.
+      allow get: if isOwner(userId) || isAdmin();
+      // Only admins can list all user profiles.
+      allow list: if isAdmin();
+      // A user can update their own profile. An admin can update any profile (e.g., to change a role).
+      allow update: if isOwner(userId) || isAdmin();
+      // Only admins can delete user profiles.
+      allow delete: if isAdmin();
+
+      // Students can manage their own portfolio.
+      match /portfolio/{portfolioItemId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // =====================================================================
+    //                        SCHOOL-SPECIFIC DATA
+    // =====================================================================
+
+    match /schools/{schoolId} {
+      // Anyone can view the main school profile document.
+      allow get, list: if isPublic();
+      // Only admins can modify the main school profile document.
+      allow create, update: if isAdmin();
+      // Deleting the main school document is disallowed from the client.
+      allow delete: if false;
+
+      // All subcollections below inherit the public read / admin write model.
+
+      match /newsArticles/{newsArticleId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+
+        match /comments/{commentId} {
+          allow get, list: if isPublic();
+          // Anyone can create a comment, as long as it's for the correct article.
+          allow create: if request.resource.data.articleId == newsArticleId;
+          // Admins can delete comments. Nobody can update.
+          allow update: if false;
+          allow delete: if isAdmin();
+        }
+      }
+      
+      match /literacyArticles/{literacyArticleId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /osisPosts/{osisPostId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+      
+      match /achievements/{achievementId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin() || isGuru();
+      }
+
+      match /testimonials/{testimonialId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /majors/{majorId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+      
+      match /extracurriculars/{extracurricularId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+      
+      match /extracurricularApplications/{applicationId} {
+        allow list, get, delete: if isAdmin();
+        // Public can create an application.
+        allow create: if request.resource.data.studentName is string
+                      && request.resource.data.studentClass is string
+                      && request.resource.data.extracurricularName is string;
+        allow update: if false;
+      }
+
+      match /facilities/{facilityId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /gallery/{galleryImageId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+      
+      match /industryPartners/{partnerId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /studentApplications/{studentApplicationId} {
+        allow list, get, delete: if isAdmin();
+        allow update: if false;
+        // Public can create an application, with basic validation.
+        allow create: if request.resource.data.schoolId == schoolId
+                      && request.resource.data.studentName is string
+                      && request.resource.data.chosenMajor is string
+                      && request.resource.data.parentPhone is string;
+      }
+
+      match /guestbookEntries/{guestbookEntryId} {
+        allow list, get: if isPublic();
+        // Public can create a guestbook entry.
+        allow create: if request.resource.data.name is string 
+                      && request.resource.data.origin is string 
+                      && request.resource.data.message is string;
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+
+      match /events/{eventId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /downloadableFiles/{fileId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /schedules/{scheduleId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /books/{bookId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /teachers/{teacherId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /alumni/{alumnusId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /jobVacancies/{jobVacancyId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /teachingFactoryProducts/{productId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+      
+      match /lspCertifications/{certificationId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+      
+      match /tracerStudyResponses/{responseId} {
+        allow get, list, delete: if isAdmin();
+        // Public can submit a response
+        allow create: if request.resource.data.name is string
+                      && request.resource.data.graduationYear is string
+                      && request.resource.data.status is string;
+        allow update: if false;
+      }
+
+      match /graduationStatuses/{statusId} {
+        // Public can query by identifier, which requires list permission.
+        // The page logic should prevent displaying all results at once.
+        allow list, get: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+      
+      match /prakerin/{prakerinId} {
+        allow read, write: if isAdmin() || isGuru();
+      }
+
+      match /attendance/{recordId} {
+        // Admins/Gurus have full write access
+        allow write: if isAdmin() || isGuru();
+        
+        // Admins/Gurus can read everything. Students can only read their own records.
+        allow read: if isAdmin() || isGuru() || 
+                     (isSignedIn() && resource.data.studentId == request.auth.uid);
+      }
+
+      match /eRapors/{eRaporId} {
+        // Admins and teachers can manage all reports.
+        // Students can only read reports where their UID is listed as the studentId.
+        allow read: if isAdmin() || isGuru() || (isSignedIn() && get(/databases/$(database)/documents/schools/$(schoolId)/eRapors/$(eRaporId)).data.studentId == request.auth.uid);
+        allow write: if isAdmin() || isGuru();
+
+        match /grades/{gradeId} {
+          // Inherits read access from parent, write access restricted to admins/teachers.
+          allow read: if isAdmin() || isGuru() || (isSignedIn() && get(/databases/$(database)/documents/schools/$(schoolId)/eRapors/$(eRaporId)).data.studentId == request.auth.uid);
+          allow write: if isAdmin() || isGuru();
+        }
+      }
+    }
+  }
+}

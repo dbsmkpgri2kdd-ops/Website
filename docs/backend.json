@@ -1,0 +1,523 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile with their role in the system.",
+      "properties": {
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." },
+        "role": {
+          "type": "string",
+          "description": "The user's role.",
+          "enum": ["admin", "guru", "siswa", "alumni"]
+        }
+      },
+      "required": ["email", "role"]
+    },
+    "School": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "School",
+      "type": "object",
+      "description": "Represents the school entity with core information.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the School entity." },
+        "name": { "type": "string", "description": "The full name of the school." },
+        "shortName": { "type": "string", "description": "The short name or abbreviation of the school's name." },
+        "address": { "type": "string", "description": "The physical address of the school." },
+        "phone": { "type": "string", "description": "The school's phone number." },
+        "email": { "type": "string", "description": "The school's email address.", "format": "email" },
+        "vision": { "type": "string", "description": "The school's vision statement." },
+        "mission": { "type": "array", "description": "The school's mission statement, broken down into points.", "items": { "type": "string" } },
+        "principalName": { "type": "string", "description": "The name of the principal." },
+        "principalMessage": { "type": "string", "description": "A welcome message from the principal." },
+        "history": { "type": "string", "description": "The history of the school." },
+        "logoUrl": { "type": "string", "description": "URL for the school's logo.", "format": "uri" },
+        "instagramUrl": { "type": "string", "description": "URL for the school's Instagram profile.", "format": "uri" },
+        "tiktokUrl": { "type": "string", "description": "URL for the school's TikTok profile.", "format": "uri" },
+        "facebookUrl": { "type": "string", "description": "URL for the school's Facebook page.", "format": "uri" },
+        "whatsappUrl": { "type": "string", "description": "URL for the school's WhatsApp channel or contact.", "format": "uri" },
+        "youtubeUrl": { "type": "string", "description": "URL for the school's YouTube channel.", "format": "uri" },
+        "studentCount": { "type": "number", "description": "Total number of students." },
+        "teacherCount": { "type": "number", "description": "Total number of teachers." },
+        "industryPartnerCount": { "type": "number", "description": "Total number of industry partners." }
+      },
+      "required": ["id", "name", "address", "phone", "email", "vision", "mission", "principalName", "principalMessage"]
+    },
+    "NewsArticle": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "NewsArticle",
+      "type": "object",
+      "description": "Represents a news article or announcement.",
+      "properties": {
+        "schoolId": { "type": "string", "description": "Reference to School." },
+        "title": { "type": "string", "description": "The title of the news article." },
+        "content": { "type": "string", "description": "The main content of the news article." },
+        "imageUrl": { "type": "string", "description": "URL of the image associated with the news article.", "format": "uri" },
+        "category": { "type": "string", "description": "The category of the news article (e.g., 'Prestasi', 'Acara')." },
+        "datePublished": { "type": "string", "description": "The date and time the news article was published.", "format": "date-time" }
+      },
+      "required": ["schoolId", "title", "content", "datePublished", "category", "imageUrl"]
+    },
+    "LiteracyArticle": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "LiteracyArticle",
+      "type": "object",
+      "description": "Represents a student's written work for the literacy corner.",
+      "properties": {
+        "schoolId": { "type": "string", "description": "Reference to School." },
+        "title": { "type": "string", "description": "The title of the work." },
+        "content": { "type": "string", "description": "The main content of the work." },
+        "studentName": { "type": "string", "description": "The name of the student author." },
+        "studentClass": { "type": "string", "description": "The class of the student author (e.g., 'XII TKJ 1')." },
+        "imageUrl": { "type": "string", "description": "URL of an optional image associated with the work.", "format": "uri" },
+        "category": { "type": "string", "description": "The category of the work (e.g., 'Puisi', 'Cerpen')." },
+        "datePublished": { "type": "string", "description": "The date the work was published.", "format": "date-time" }
+      },
+      "required": ["schoolId", "title", "content", "studentName", "studentClass", "datePublished", "category"]
+    },
+    "Major": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Major",
+      "type": "object",
+      "description": "Represents a major or field of study at the school.",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the major." },
+        "description": { "type": "string", "description": "A short description of the major." },
+        "icon": { "type": "string", "description": "The name of the lucide-react icon to use for the major." }
+      },
+      "required": ["name", "description", "icon"]
+    },
+    "Facility": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Facility",
+      "type": "object",
+      "description": "Represents a facility available at the school.",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the facility." },
+        "description": { "type": "string", "description": "A short description of the facility." },
+        "imageUrl": { "type": "string", "format": "uri", "description": "URL of an image for the facility." }
+      },
+      "required": ["name", "description", "imageUrl"]
+    },
+    "GalleryImage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "GalleryImage",
+      "type": "object",
+      "description": "Represents an image or video in the school's gallery.",
+      "properties": {
+        "mediaType": { "type": "string", "description": "The type of media (e.g., 'image', 'video')." },
+        "imageUrl": { "type": "string", "format": "uri", "description": "URL of the gallery image or video." },
+        "description": { "type": "string", "description": "A short description or title for the media." },
+        "imageHint": { "type": "string", "description": "AI hint for the media content." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the media was added." }
+      },
+      "required": ["imageUrl", "description", "createdAt", "mediaType"]
+    },
+    "Comment": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Comment",
+      "type": "object",
+      "properties": {
+        "articleId": { "type": "string", "description": "Reference to the NewsArticle." },
+        "name": { "type": "string", "description": "The name of the person who commented." },
+        "comment": { "type": "string", "description": "The content of the comment." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the comment was submitted." }
+      },
+      "required": ["articleId", "name", "comment", "createdAt"]
+    },
+    "StudentApplication": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "StudentApplication",
+      "type": "object",
+      "properties": {
+        "schoolId": { "type": "string", "description": "Reference to School." },
+        "studentName": { "type": "string", "description": "The full name of the student applying." },
+        "chosenMajor": { "type": "string", "description": "The major the student is applying for." },
+        "parentPhone": { "type": "string", "description": "Phone number of the student's parent (WhatsApp)." },
+        "submissionDate": { "type": "string", "format": "date-time", "description": "Timestamp of application submission." }
+      },
+      "required": ["schoolId", "studentName", "chosenMajor", "parentPhone", "submissionDate"]
+    },
+    "ExtracurricularApplication": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "ExtracurricularApplication",
+        "type": "object",
+        "description": "Represents a student's application for an extracurricular activity.",
+        "properties": {
+          "studentName": { "type": "string", "description": "The full name of the student applying." },
+          "studentClass": { "type": "string", "description": "The class of the student applying (e.g., 'X TKJ 1')." },
+          "extracurricularName": { "type": "string", "description": "The name of the extracurricular activity." },
+          "submissionDate": { "type": "string", "format": "date-time", "description": "Timestamp of application submission." }
+        },
+        "required": ["studentName", "studentClass", "extracurricularName", "submissionDate"]
+    },
+    "Achievement": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Achievement",
+      "type": "object",
+      "description": "Represents a student achievement or award.",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the achievement (e.g., 'Juara 1 LKS')." },
+        "studentName": { "type": "string", "description": "The name of the student(s) who achieved it." },
+        "competitionName": { "type": "string", "description": "The name of the competition or event." },
+        "level": { "type": "string", "description": "The level of the achievement (e.g., 'Kabupaten', 'Provinsi', 'Nasional')." },
+        "dateAchieved": { "type": "string", "format": "date-time", "description": "The date the achievement was accomplished." },
+        "imageUrl": { "type": "string", "format": "uri", "description": "URL of an image for the achievement (trophy, student, etc.)." },
+        "description": { "type": "string", "description": "A short story or description about the achievement." }
+      },
+      "required": ["title", "studentName", "competitionName", "level", "dateAchieved", "imageUrl"]
+    },
+    "Testimonial": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Testimonial",
+      "type": "object",
+      "description": "Represents a testimonial from a school alumnus.",
+      "properties": {
+        "studentName": { "type": "string", "description": "The name of the alumnus." },
+        "graduationYear": { "type": "string", "description": "The year the alumnus graduated." },
+        "occupation": { "type": "string", "description": "The current occupation or activity of the alumnus (e.g., 'Software Engineer at Google', 'Kuliah di UGM')." },
+        "content": { "type": "string", "description": "The text of the testimonial." },
+        "studentPhotoUrl": { "type": "string", "format": "uri", "description": "URL of the alumnus's photo." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the testimonial was added." }
+      },
+      "required": ["studentName", "graduationYear", "occupation", "content", "studentPhotoUrl", "createdAt"]
+    },
+    "Extracurricular": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Extracurricular",
+      "type": "object",
+      "description": "Represents an extracurricular activity at the school.",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the extracurricular activity." },
+        "description": { "type": "string", "description": "A short description of the activity." },
+        "icon": { "type": "string", "description": "The name of the lucide-react icon to use." },
+        "schedule": { "type": "string", "description": "The schedule for the activity (e.g., 'Setiap hari Sabtu, 10:00-12:00')." }
+      },
+      "required": ["name", "description", "icon", "schedule"]
+    },
+    "GuestbookEntry": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "GuestbookEntry",
+      "type": "object",
+      "description": "Represents an entry in the school's digital guestbook.",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the visitor." },
+        "origin": { "type": "string", "description": "The origin of the visitor (e.g., city, institution)." },
+        "message": { "type": "string", "description": "The message left by the visitor." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the entry was submitted." }
+      },
+      "required": ["name", "origin", "message", "createdAt"]
+    },
+     "Event": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Event",
+      "type": "object",
+      "description": "Represents a school event or agenda item.",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the event." },
+        "description": { "type": "string", "description": "A short description of the event." },
+        "date": { "type": "string", "format": "date-time", "description": "The date of the event." },
+        "category": { "type": "string", "description": "Category of the event (e.g., 'Akademik', 'Libur')." }
+      },
+      "required": ["title", "date", "category"]
+    },
+    "DownloadableFile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DownloadableFile",
+      "type": "object",
+      "description": "Represents a file available for download.",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the file." },
+        "description": { "type": "string", "description": "A short description of the file." },
+        "fileUrl": { "type": "string", "format": "uri", "description": "URL for the downloadable file." },
+        "category": { "type": "string", "description": "Category for the file (e.g., 'Formulir', 'Modul Belajar')." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the file was added." }
+      },
+      "required": ["title", "fileUrl", "category", "createdAt"]
+    },
+    "Schedule": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Schedule",
+      "type": "object",
+      "description": "Represents a class schedule entry.",
+      "properties": {
+        "className": { "type": "string", "description": "The name of the class (e.g., 'X TKJ 1')." },
+        "dayOfWeek": { "type": "string", "description": "The day of the week (e.g., 'Senin')." },
+        "timeSlot": { "type": "string", "description": "The time slot for the class (e.g., '07:00 - 07:45')." },
+        "subjectName": { "type": "string", "description": "The name of the subject." },
+        "teacherName": { "type": "string", "description": "The name of the teacher." }
+      },
+      "required": ["className", "dayOfWeek", "timeSlot", "subjectName", "teacherName"]
+    },
+    "Book": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Book",
+      "type": "object",
+      "description": "Represents a book in the school's digital library catalog.",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the book." },
+        "author": { "type": "string", "description": "The author of the book." },
+        "publisher": { "type": "string", "description": "The publisher of the book." },
+        "yearPublished": { "type": "string", "description": "The year the book was published." },
+        "isbn": { "type": "string", "description": "The ISBN of the book." },
+        "coverImageUrl": { "type": "string", "format": "uri", "description": "URL of the book's cover image." },
+        "description": { "type": "string", "description": "A short description or synopsis of the book." },
+        "isAvailable": { "type": "boolean", "description": "Indicates if the book is currently available for borrowing." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the book was added to the catalog." }
+      },
+      "required": ["title", "author", "coverImageUrl", "isAvailable", "createdAt"]
+    },
+    "OsisPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OsisPost",
+      "type": "object",
+      "description": "Represents an OSIS corner post or announcement.",
+      "properties": {
+        "schoolId": { "type": "string", "description": "Reference to School." },
+        "title": { "type": "string", "description": "The title of the OSIS post." },
+        "content": { "type": "string", "description": "The main content of the OSIS post." },
+        "imageUrl": { "type": "string", "description": "URL of the image associated with the post.", "format": "uri" },
+        "category": { "type": "string", "description": "The category of the OSIS post (e.g., 'Pengumuman', 'Acara')." },
+        "datePublished": { "type": "string", "description": "The date and time the post was published.", "format": "date-time" }
+      },
+      "required": ["schoolId", "title", "content", "datePublished", "imageUrl", "category"]
+    },
+    "IndustryPartner": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "IndustryPartner",
+      "type": "object",
+      "description": "Represents an industry partner of the school.",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the company or institution." },
+        "logoUrl": { "type": "string", "format": "uri", "description": "URL of the partner's logo." },
+        "description": { "type": "string", "description": "A short description of the partnership." },
+        "websiteUrl": { "type": "string", "format": "uri", "description": "URL of the partner's website." }
+      },
+      "required": ["name", "logoUrl", "description"]
+    },
+    "Teacher": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Teacher",
+      "type": "object",
+      "description": "Represents a teacher or staff member.",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the teacher." },
+        "title": { "type": "string", "description": "The teacher's title or subject taught (e.g., 'Guru Matematika', 'Kepala Tata Usaha')." },
+        "photoUrl": { "type": "string", "format": "uri", "description": "URL of the teacher's photo." },
+        "bio": { "type": "string", "description": "A short biography or description (optional)." },
+        "email": { "type": "string", "format": "email", "description": "The teacher's email address (optional)." }
+      },
+      "required": ["name", "title", "photoUrl"]
+    },
+    "Alumnus": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Alumnus",
+      "type": "object",
+      "description": "Represents a single alumnus in the database.",
+      "properties": {
+        "name": { "type": "string", "description": "The full name of the alumnus." },
+        "graduationYear": { "type": "string", "description": "The year the alumnus graduated." },
+        "occupation": { "type": "string", "description": "Current occupation or activity (e.g., 'Software Engineer at Google', 'Kuliah di UGM')." },
+        "photoUrl": { "type": "string", "format": "uri", "description": "URL of the alumnus's photo." },
+        "notes": { "type": "string", "description": "Admin notes about the alumnus (optional)." }
+      },
+      "required": ["name", "graduationYear", "occupation", "photoUrl"]
+    },
+    "JobVacancy": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "JobVacancy",
+      "type": "object",
+      "description": "Represents a job vacancy posted in the BKK.",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the job position." },
+        "companyName": { "type": "string", "description": "The name of the hiring company." },
+        "location": { "type": "string", "description": "The location of the job (e.g., 'Jakarta', 'Remote')." },
+        "description": { "type": "string", "description": "A detailed description of the job." },
+        "requirements": { "type": "array", "description": "List of requirements for the job.", "items": { "type": "string" } },
+        "applyUrl": { "type": "string", "format": "uri", "description": "The URL to apply for the job." },
+        "postedDate": { "type": "string", "format": "date-time", "description": "The date the vacancy was posted." },
+        "closingDate": { "type": "string", "format": "date-time", "description": "The closing date for applications (optional)." }
+      },
+      "required": ["title", "companyName", "location", "description", "requirements", "applyUrl", "postedDate"]
+    },
+    "TeachingFactoryProduct": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "TeachingFactoryProduct",
+      "type": "object",
+      "description": "Represents a product or project from the Teaching Factory.",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the product." },
+        "description": { "type": "string", "description": "A detailed description of the product." },
+        "imageUrl": { "type": "string", "format": "uri", "description": "URL of an image for the product." },
+        "price": { "type": "string", "description": "The price of the product (e.g., 'Rp 50.000')." },
+        "studentCreator": { "type": "string", "description": "The student or class that created the product (e.g., 'XII TKJ 1')." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the product was added." }
+      },
+      "required": ["name", "description", "imageUrl", "createdAt"]
+    },
+    "LspCertification": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "LspCertification",
+      "type": "object",
+      "description": "Represents a certification schema from the LSP.",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the certification schema." },
+        "schemaNumber": { "type": "string", "description": "The official schema number." },
+        "description": { "type": "string", "description": "A short description of the certification." }
+      },
+      "required": ["name", "schemaNumber", "description"]
+    },
+    "TracerStudyResponse": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "TracerStudyResponse",
+      "type": "object",
+      "description": "Represents a response from an alumnus for the tracer study.",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the alumnus." },
+        "graduationYear": { "type": "string", "description": "The year the alumnus graduated." },
+        "status": {
+          "type": "string",
+          "description": "Current status of the alumnus.",
+          "enum": ["Bekerja", "Kuliah", "Wirausaha", "Lainnya"]
+        },
+        "currentActivityDetail": { "type": "string", "description": "Details about the current activity (company name, university, business name, etc.)." },
+        "suggestions": { "type": "string", "description": "Suggestions or feedback for the school (optional)." },
+        "submissionDate": { "type": "string", "format": "date-time", "description": "Timestamp of the submission." }
+      },
+      "required": ["name", "graduationYear", "status", "currentActivityDetail", "submissionDate"]
+    },
+    "GraduationStatus": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "GraduationStatus",
+      "type": "object",
+      "description": "Represents the graduation status of a student for a specific period.",
+      "properties": {
+        "studentIdentifier": { "type": "string", "description": "The unique identifier for the student (e.g., NISN or registration number)." },
+        "studentName": { "type": "string", "description": "The full name of the student." },
+        "status": {
+          "type": "string",
+          "description": "The graduation status.",
+          "enum": ["LULUS", "TIDAK LULUS", "DIPROSES"]
+        },
+        "notes": { "type": "string", "description": "Optional notes or remarks (e.g., 'Lulus dengan pujian')." }
+      },
+      "required": ["studentIdentifier", "studentName", "status"]
+    },
+    "Prakerin": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Prakerin",
+      "type": "object",
+      "description": "Represents a student's on-the-job training (Prakerin/PKL) placement.",
+      "properties": {
+        "studentName": { "type": "string", "description": "The full name of the student." },
+        "studentClass": { "type": "string", "description": "The class of the student." },
+        "companyName": { "type": "string", "description": "The name of the company where the student is placed." },
+        "startDate": { "type": "string", "format": "date-time", "description": "The start date of the internship." },
+        "endDate": { "type": "string", "format": "date-time", "description": "The end date of the internship." },
+        "status": {
+          "type": "string",
+          "description": "The current status of the internship.",
+          "enum": ["Aktif", "Selesai", "Dibatalkan"]
+        }
+      },
+      "required": ["studentName", "studentClass", "companyName", "startDate", "status"]
+    },
+    "PortfolioItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PortfolioItem",
+      "type": "object",
+      "description": "Represents a single item in a student's digital portfolio.",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the portfolio project." },
+        "description": { "type": "string", "description": "A detailed description of the project." },
+        "imageUrl": { "type": "string", "format": "uri", "description": "URL of an image or screenshot of the project." },
+        "projectUrl": { "type": "string", "format": "uri", "description": "URL to the live project, repository, or video (optional)." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the portfolio item was added." }
+      },
+      "required": ["title", "description", "imageUrl", "createdAt"]
+    },
+    "ERapor": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ERapor",
+      "type": "object",
+      "description": "Represents a student's digital report card for a specific semester.",
+      "properties": {
+        "studentId": { "type": "string", "description": "Reference to the User ID of the student." },
+        "studentName": { "type": "string", "description": "The name of the student." },
+        "className": { "type": "string", "description": "The class of the student for this report (e.g., 'X TKJ 1')." },
+        "schoolYear": { "type": "string", "description": "The academic year (e.g., '2023/2024')." },
+        "semester": { "type": "string", "description": "The semester (e.g., 'Ganjil', 'Genap')." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the report was created." }
+      },
+      "required": ["studentId", "studentName", "className", "schoolYear", "semester", "createdAt"]
+    },
+    "Grade": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Grade",
+      "type": "object",
+      "description": "Represents a single subject's grade within an E-Rapor.",
+      "properties": {
+        "subjectName": { "type": "string", "description": "The name of the subject." },
+        "score": { "type": "number", "description": "The final numerical score for the subject." },
+        "description": { "type": "string", "description": "A qualitative description of the student's competency." }
+      },
+      "required": ["subjectName", "score", "description"]
+    },
+    "AttendanceRecord": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AttendanceRecord",
+      "type": "object",
+      "description": "Represents a single attendance record for a student on a specific date.",
+      "properties": {
+        "studentId": { "type": "string", "description": "The UID of the student." },
+        "studentName": { "type": "string", "description": "The name of the student (for easier display)." },
+        "date": { "type": "string", "format": "date-time", "description": "The date of the attendance record." },
+        "status": {
+          "type": "string",
+          "description": "The attendance status.",
+          "enum": ["Hadir", "Sakit", "Izin", "Alpa"]
+        },
+        "notes": { "type": "string", "description": "Optional notes from the teacher." }
+      },
+      "required": ["studentId", "studentName", "date", "status"]
+    }
+  },
+  "auth": { "providers": ["password"] },
+  "firestore": {
+    "structure": [
+      { "path": "/users/{userId}", "definition": { "entityName": "UserProfile", "schema": { "$ref": "#/backend/entities/UserProfile" }, "description": "Stores user profile information, including their role." } },
+      { "path": "/users/{userId}/portfolio/{portfolioItemId}", "definition": { "entityName": "PortfolioItem", "schema": { "$ref": "#/backend/entities/PortfolioItem" }, "description": "Stores a student's individual portfolio items." } },
+      { "path": "/schools/{schoolId}", "definition": { "entityName": "School", "schema": { "$ref": "#/backend/entities/School" }, "description": "Stores core school information as a single document." } },
+      { "path": "/schools/{schoolId}/newsArticles/{newsArticleId}", "definition": { "entityName": "NewsArticle", "schema": { "$ref": "#/backend/entities/NewsArticle" }, "description": "Stores news articles for the school." } },
+      { "path": "/schools/{schoolId}/newsArticles/{newsArticleId}/comments/{commentId}", "definition": { "entityName": "Comment", "schema": { "$ref": "#/backend/entities/Comment" }, "description": "Stores comments for a specific news article." } },
+      { "path": "/schools/{schoolId}/literacyArticles/{literacyArticleId}", "definition": { "entityName": "LiteracyArticle", "schema": { "$ref": "#/backend/entities/LiteracyArticle" }, "description": "Stores student written works for the literacy corner." } },
+      { "path": "/schools/{schoolId}/studentApplications/{studentApplicationId}", "definition": { "entityName": "StudentApplication", "schema": { "$ref": "#/backend/entities/StudentApplication" }, "description": "Stores student applications for the school." } },
+      { "path": "/schools/{schoolId}/extracurricularApplications/{applicationId}", "definition": { "entityName": "ExtracurricularApplication", "schema": { "$ref": "#/backend/entities/ExtracurricularApplication" }, "description": "Stores student applications for extracurricular activities." } },
+      { "path": "/schools/{schoolId}/majors/{majorId}", "definition": { "entityName": "Major", "schema": { "$ref": "#/backend/entities/Major" }, "description": "Stores information about the school's majors." } },
+      { "path": "/schools/{schoolId}/facilities/{facilityId}", "definition": { "entityName": "Facility", "schema": { "$ref": "#/backend/entities/Facility" }, "description": "Stores information about the school's facilities." } },
+      { "path": "/schools/{schoolId}/gallery/{galleryImageId}", "definition": { "entityName": "GalleryImage", "schema": { "$ref": "#/backend/entities/GalleryImage" }, "description": "Stores images and videos for the school's public gallery." } },
+      { "path": "/schools/{schoolId}/achievements/{achievementId}", "definition": { "entityName": "Achievement", "schema": { "$ref": "#/backend/entities/Achievement" }, "description": "Stores student achievements." } },
+      { "path": "/schools/{schoolId}/testimonials/{testimonialId}", "definition": { "entityName": "Testimonial", "schema": { "$ref": "#/backend/entities/Testimonial" }, "description": "Stores alumni testimonials." } },
+      { "path": "/schools/{schoolId}/extracurriculars/{extracurricularId}", "definition": { "entityName": "Extracurricular", "schema": { "$ref": "#/backend/entities/Extracurricular" }, "description": "Stores extracurricular activities." } },
+      { "path": "/schools/{schoolId}/guestbookEntries/{guestbookEntryId}", "definition": { "entityName": "GuestbookEntry", "schema": { "$ref": "#/backend/entities/GuestbookEntry" }, "description": "Stores entries from the public digital guestbook." } },
+      { "path": "/schools/{schoolId}/events/{eventId}", "definition": { "entityName": "Event", "schema": { "$ref": "#/backend/entities/Event" }, "description": "Stores school agenda and events." } },
+      { "path": "/schools/{schoolId}/downloadableFiles/{fileId}", "definition": { "entityName": "DownloadableFile", "schema": { "$ref": "#/backend/entities/DownloadableFile" }, "description": "Stores files available for download." } },
+      { "path": "/schools/{schoolId}/schedules/{scheduleId}", "definition": { "entityName": "Schedule", "schema": { "$ref": "#/backend/entities/Schedule" }, "description": "Stores class schedule information." } },
+      { "path": "/schools/{schoolId}/books/{bookId}", "definition": { "entityName": "Book", "schema": { "$ref": "#/backend/entities/Book" }, "description": "Stores the school's digital library catalog." } },
+      { "path": "/schools/{schoolId}/osisPosts/{osisPostId}", "definition": { "entityName": "OsisPost", "schema": { "$ref": "#/backend/entities/OsisPost" }, "description": "Stores OSIS corner posts." } },
+      { "path": "/schools/{schoolId}/industryPartners/{partnerId}", "definition": { "entityName": "IndustryPartner", "schema": { "$ref": "#/backend/entities/IndustryPartner" }, "description": "Stores information about the school's industry partners." } },
+      { "path": "/schools/{schoolId}/teachers/{teacherId}", "definition": { "entityName": "Teacher", "schema": { "$ref": "#/backend/entities/Teacher" }, "description": "Stores information about teachers and staff." } },
+      { "path": "/schools/{schoolId}/alumni/{alumnusId}", "definition": { "entityName": "Alumnus", "schema": { "$ref": "#/backend/entities/Alumnus" }, "description": "Stores the school's alumni database." } },
+      { "path": "/schools/{schoolId}/jobVacancies/{jobVacancyId}", "definition": { "entityName": "JobVacancy", "schema": { "$ref": "#/backend/entities/JobVacancy" }, "description": "Stores job vacancies for the BKK (Bursa Kerja Khusus)." } },
+      { "path": "/schools/{schoolId}/teachingFactoryProducts/{productId}", "definition": { "entityName": "TeachingFactoryProduct", "schema": { "$ref": "#/backend/entities/TeachingFactoryProduct" }, "description": "Stores products for the Teaching Factory showcase." } },
+      { "path": "/schools/{schoolId}/lspCertifications/{certificationId}", "definition": { "entityName": "LspCertification", "schema": { "$ref": "#/backend/entities/LspCertification" }, "description": "Stores LSP certification schemas." } },
+      { "path": "/schools/{schoolId}/tracerStudyResponses/{responseId}", "definition": { "entityName": "TracerStudyResponse", "schema": { "$ref": "#/backend/entities/TracerStudyResponse" }, "description": "Stores responses from the alumni tracer study." } },
+      { "path": "/schools/{schoolId}/graduationStatuses/{statusId}", "definition": { "entityName": "GraduationStatus", "schema": { "$ref": "#/backend/entities/GraduationStatus" }, "description": "Stores student graduation statuses." } },
+      { "path": "/schools/{schoolId}/prakerin/{prakerinId}", "definition": { "entityName": "Prakerin", "schema": { "$ref": "#/backend/entities/Prakerin" }, "description": "Stores student on-the-job training (Prakerin/PKL) placements." } },
+      { "path": "/schools/{schoolId}/eRapors/{eRaporId}", "definition": { "entityName": "ERapor", "schema": { "$ref": "#/backend/entities/ERapor" }, "description": "Stores student digital report cards." } },
+      { "path": "/schools/{schoolId}/eRapors/{eRaporId}/grades/{gradeId}", "definition": { "entityName": "Grade", "schema": { "$ref": "#/backend/entities/Grade" }, "description": "Stores individual subject grades for a report card." } },
+      { "path": "/schools/{schoolId}/attendance/{recordId}", "definition": { "entityName": "AttendanceRecord", "schema": { "$ref": "#/backend/entities/AttendanceRecord" }, "description": "Stores student attendance records." } }
+    ]
+  }
+}
