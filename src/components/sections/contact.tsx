@@ -51,7 +51,7 @@ const ContactSection = ({ schoolData, isSchoolDataLoading }: ContactSectionProps
               <h4 className="font-bold mb-2 text-xl font-headline">{info.label}</h4>
               <div className="text-sm text-muted-foreground leading-relaxed">
                 {info.isLoading ? (
-                  <div className="h-4 w-4/5 mx-auto"><Skeleton className='h-4 w-full' /></div>
+                  <Skeleton className='h-4 w-4/5 mx-auto' />
                 ) : (
                   <div className="whitespace-pre-wrap">{info.value}</div>
                 )}

@@ -24,28 +24,6 @@ const iconMap: { [key: string]: React.ElementType } = {
   Computer, BarChart4, Film, Wrench, Bike, BookOpen,
 };
 
-const FeaturedProgramCard = ({ icon: Icon, title, description, tab, setActiveTab }: { icon: React.ElementType, title: string, description: string, tab: NavLink, setActiveTab: (tab: NavLink) => void }) => {
-  return (
-    <Card className="p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-primary/5 bg-card flex flex-col group h-full overflow-hidden relative">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors duration-500"></div>
-      <div className="w-14 h-14 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-500 relative z-10">
-        <Icon size={28} />
-      </div>
-      <CardHeader className="p-0 mb-4 relative z-10">
-        <CardTitle className="text-2xl font-black font-headline leading-tight tracking-tight">{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="p-0 flex-grow relative z-10">
-        <p className="text-muted-foreground leading-relaxed font-medium">{description}</p>
-      </CardContent>
-      <div className="mt-8 pt-6 border-t border-primary/5 relative z-10">
-        <Button variant="link" onClick={() => setActiveTab(tab)} className="p-0 text-primary font-black group-hover:gap-2 transition-all text-sm uppercase tracking-wider">
-          Pelajari Program <ArrowRight size={16} className='ml-1' />
-        </Button>
-      </div>
-    </Card>
-  );
-};
-
 const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
   const firestore = useFirestore();
 
@@ -190,7 +168,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                 </div>
                 <div className="grid md:grid-cols-3 gap-10">
                     {areMajorsLoading ? (
-                      Array.from({ length: 3 }).map((_, i) => (
+                      [1, 2, 3].map((i) => (
                         <Skeleton key={i} className="h-[400px] rounded-[3rem]" />
                       ))
                     ) : (
@@ -226,7 +204,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                 </div>
                 <div className="grid md:grid-cols-3 gap-12">
                   {areNewsLoading ? (
-                    Array.from({ length: 3 }).map((_, i) => (
+                    [1, 2, 3].map((i) => (
                       <Skeleton key={i} className="h-[500px] rounded-[3rem] bg-white/5" />
                     ))
                   ) : (

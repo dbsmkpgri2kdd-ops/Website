@@ -91,7 +91,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                     <MapPin size={20} className="text-primary mt-1 shrink-0" />
                     <div className="text-sm leading-relaxed flex-1">
                       {isSchoolDataLoading ? (
-                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-4 w-full" />
                       ) : (
                         <div className="whitespace-pre-wrap">{schoolData?.address}</div>
                       )}
