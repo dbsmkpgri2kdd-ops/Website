@@ -53,7 +53,7 @@ const ContactSection = ({ schoolData, isSchoolDataLoading }: ContactSectionProps
                 {info.isLoading ? (
                   <Skeleton className='h-4 w-4/5 mx-auto' />
                 ) : (
-                  <div className="whitespace-pre-wrap">{info.value}</div>
+                  <div className="whitespace-pre-wrap">{info.value || '-'}</div>
                 )}
               </div>
             </CardContent>

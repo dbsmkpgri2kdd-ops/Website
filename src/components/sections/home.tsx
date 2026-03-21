@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { type NewsArticle, type Major, type School, type NavLink, type IndustryPartner, SCHOOL_DATA_ID } from '@/lib/data';
-import { ArrowRight, BookOpen, Briefcase, Award, ShieldCheck, Factory, Computer, BarChart4, Film, Wrench, Bike, CheckCircle2, Calendar, TrendingUp } from 'lucide-react';
+import { ArrowRight, BookOpen, Calendar, Computer, BarChart4, Film, Wrench, Bike } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -131,7 +131,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     </div>
                ) : (
                 <div className="text-muted-foreground text-xl leading-relaxed font-medium">
-                    {schoolData?.history ? schoolData.history.substring(0, 300) + '...' : 'Selamat datang di situs resmi sekolah kami.'}
+                    {schoolData?.history ? (schoolData.history.length > 300 ? schoolData.history.substring(0, 300) + '...' : schoolData.history) : 'Selamat datang di situs resmi sekolah kami.'}
                 </div>
                )}
               <div className="grid grid-cols-2 gap-8 pt-4">
@@ -167,12 +167,12 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     <h2 className="text-5xl font-black font-headline tracking-tighter">Kompetensi <span className='text-primary'>Keahlian</span></h2>
                 </div>
                 <div className="grid md:grid-cols-3 gap-10">
-                    {areMajorsLoading ? (
-                      [1, 2, 3].map((i) => (
+                    {areMajorsLoading && (
+                      Array.from({ length: 3 }).map((_, i) => (
                         <Skeleton key={i} className="h-[400px] rounded-[3rem]" />
                       ))
-                    ) : (
-                      majors?.slice(0, 3).map((major) => {
+                    )}
+                    {!areMajorsLoading && majors && majors.slice(0, 3).map((major) => {
                         const Icon = iconMap[major.icon] || BookOpen;
                         return (
                              <Card key={major.id} className="p-10 rounded-[3rem] shadow-sm hover:shadow-2xl bg-card border-none flex flex-col group overflow-hidden relative">
@@ -186,8 +186,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                                   </Button>
                              </Card>
                         )
-                      })
-                    )}
+                    })}
                 </div>
             </div>
         </section>
@@ -203,12 +202,12 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     <Button size="lg" variant="outline" onClick={() => setActiveTab('berita-pengumuman')} className='rounded-full text-white border-white/20 hover:bg-white/10'>Lihat Semua</Button>
                 </div>
                 <div className="grid md:grid-cols-3 gap-12">
-                  {areNewsLoading ? (
-                    [1, 2, 3].map((i) => (
+                  {areNewsLoading && (
+                    Array.from({ length: 3 }).map((_, i) => (
                       <Skeleton key={i} className="h-[500px] rounded-[3rem] bg-white/5" />
                     ))
-                  ) : (
-                    newsArticles?.map((news) => (
+                  )}
+                  {!areNewsLoading && newsArticles && newsArticles.map((news) => (
                       <Card key={news.id} className="rounded-[3rem] overflow-hidden shadow-2xl group cursor-pointer border-none bg-white/[0.03] backdrop-blur-sm" onClick={() => onSelectArticle(news.id)}>
                         <div className="p-0 h-72 overflow-hidden relative">
                           <Image 
@@ -226,8 +225,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                           <h3 className="text-2xl font-black font-headline leading-tight group-hover:text-primary transition-colors line-clamp-2 tracking-tight">{news.title}</h3>
                         </CardContent>
                       </Card>
-                    ))
-                  )}
+                  ))}
               </div>
             </div>
         </section>
