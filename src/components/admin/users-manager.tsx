@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -110,6 +109,7 @@ export function UsersManager() {
   
   return (
     <div className="space-y-6 animate-fade-in">
+        {/* Setup Mode: Tombol promosi diri jika belum Admin */}
         {!isAdmin && (
             <Card className="border-primary/20 bg-primary/5 shadow-xl">
                 <CardHeader>
@@ -138,11 +138,12 @@ export function UsersManager() {
             </Card>
         )}
 
+        {/* Daftar User: Hanya terlihat jika sudah Admin */}
         {isAdmin && (
             <Card className="shadow-lg rounded-2xl">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><Users /> Manajemen Pengguna</CardTitle>
-                    <CardDescription>Kelola peran seluruh pengguna yang telah login.</CardDescription>
+                    <CardDescription>Kelola peran seluruh pengguna yang telah login ke sistem.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="rounded-xl border overflow-hidden">
@@ -180,8 +181,8 @@ export function UsersManager() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Ubah Peran</DialogTitle>
-                    <DialogDescription>Pilih peran baru untuk pengguna ini.</DialogDescription>
+                    <DialogTitle>Ubah Peran Pengguna</DialogTitle>
+                    <DialogDescription>Pilih peran baru untuk mengatur tingkat akses pengguna ini.</DialogDescription>
                 </DialogHeader>
                 {editingUser && (
                     <Form {...form}>

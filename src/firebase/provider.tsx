@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
@@ -82,8 +81,8 @@ const useBasicAuthUser = (): BasicUserAuthState => {
           try {
             const docSnap = await getDoc(userDocRef);
             if (!docSnap.exists()) {
-              // Create default profile for any new signups
-              // By default role is 'siswa', but rules allow owner to change it to 'admin'
+              // Otomatis buat profil untuk setiap pengguna baru yang login
+              // Default role: 'siswa'. Admin dapat mengubahnya nanti.
               await setDoc(userDocRef, {
                 email: firebaseUser.email,
                 displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',

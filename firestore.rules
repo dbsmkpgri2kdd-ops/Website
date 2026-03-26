@@ -1,4 +1,3 @@
-
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -33,20 +32,21 @@ service cloud.firestore {
     // =====================================================================
     
     match /users/{userId} {
-      // PERINGATAN: Aturan ini longgar untuk mendukung "Mode Tester".
-      // Sebelum produksi, batasi pembuatan peran admin/guru hanya dari backend atau oleh admin yang ada.
+      // PERINGATAN: Aturan ini longgar untuk mendukung "Mode Setup" pada database baru.
+      // Izinkan user baru membuat profilnya sendiri dan mengubah role-nya sendiri 
+      // (ini diperlukan agar akun pertama bisa mempromosikan diri menjadi admin).
       allow create: if isOwner(userId);
       
-      // A user can get their own profile. An admin can get any profile.
+      // Seorang user bisa mendapatkan profilnya sendiri. Admin bisa melihat semua.
       allow get: if isOwner(userId) || isAdmin();
-      // Only admins can list all user profiles.
+      // Hanya admin yang bisa me-list semua user.
       allow list: if isAdmin();
-      // A user can update their own profile. An admin can update any profile (e.g., to change a role).
+      // Izinkan user mengupdate profilnya sendiri (termasuk role untuk setup pertama) atau oleh admin.
       allow update: if isOwner(userId) || isAdmin();
-      // Only admins can delete user profiles.
+      // Hanya admin yang bisa menghapus profil user.
       allow delete: if isAdmin();
 
-      // Students can manage their own portfolio.
+      // Siswa bisa mengelola portofolio mereka sendiri.
       match /portfolio/{portfolioItemId} {
         allow read, write: if isOwner(userId);
       }
@@ -57,14 +57,13 @@ service cloud.firestore {
     // =====================================================================
 
     match /schools/{schoolId} {
-      // Anyone can view the main school profile document.
+      // Siapapun bisa melihat profil sekolah.
       allow get, list: if isPublic();
-      // Only admins can modify the main school profile document.
+      // Hanya admin yang bisa memodifikasi profil sekolah.
       allow create, update: if isAdmin();
-      // Deleting the main school document is disallowed from the client.
       allow delete: if false;
 
-      // All subcollections below inherit the public read / admin write model.
+      // Subkoleksi di bawah ini mengikuti model: Baca publik / Tulis Admin.
 
       match /newsArticles/{newsArticleId} {
         allow get, list: if isPublic();
@@ -72,9 +71,7 @@ service cloud.firestore {
 
         match /comments/{commentId} {
           allow get, list: if isPublic();
-          // Anyone can create a comment, as long as it's for the correct article.
           allow create: if request.resource.data.articleId == newsArticleId;
-          // Admins can delete comments. Nobody can update.
           allow update: if false;
           allow delete: if isAdmin();
         }
@@ -110,9 +107,13 @@ service cloud.firestore {
         allow create, update, delete: if isAdmin();
       }
       
+      match /quickLinks/{linkId} {
+        allow get, list: if isPublic();
+        allow create, update, delete: if isAdmin();
+      }
+      
       match /extracurricularApplications/{applicationId} {
         allow list, get, delete: if isAdmin();
-        // Public can create an application.
         allow create: if request.resource.data.studentName is string
                       && request.resource.data.studentClass is string
                       && request.resource.data.extracurricularName is string;
@@ -137,7 +138,6 @@ service cloud.firestore {
       match /studentApplications/{studentApplicationId} {
         allow list, get, delete: if isAdmin();
         allow update: if false;
-        // Public can create an application, with basic validation.
         allow create: if request.resource.data.schoolId == schoolId
                       && request.resource.data.studentName is string
                       && request.resource.data.chosenMajor is string
@@ -146,7 +146,6 @@ service cloud.firestore {
 
       match /guestbookEntries/{guestbookEntryId} {
         allow list, get: if isPublic();
-        // Public can create a guestbook entry.
         allow create: if request.resource.data.name is string 
                       && request.resource.data.origin is string 
                       && request.resource.data.message is string;
@@ -201,7 +200,6 @@ service cloud.firestore {
       
       match /tracerStudyResponses/{responseId} {
         allow get, list, delete: if isAdmin();
-        // Public can submit a response
         allow create: if request.resource.data.name is string
                       && request.resource.data.graduationYear is string
                       && request.resource.data.status is string;
@@ -209,8 +207,6 @@ service cloud.firestore {
       }
 
       match /graduationStatuses/{statusId} {
-        // Public can query by identifier, which requires list permission.
-        // The page logic should prevent displaying all results at once.
         allow list, get: if isPublic();
         allow create, update, delete: if isAdmin();
       }
@@ -220,22 +216,16 @@ service cloud.firestore {
       }
 
       match /attendance/{recordId} {
-        // Admins/Gurus have full write access
         allow write: if isAdmin() || isGuru();
-        
-        // Admins/Gurus can read everything. Students can only read their own records.
         allow read: if isAdmin() || isGuru() || 
                      (isSignedIn() && resource.data.studentId == request.auth.uid);
       }
 
       match /eRapors/{eRaporId} {
-        // Admins and teachers can manage all reports.
-        // Students can only read reports where their UID is listed as the studentId.
         allow read: if isAdmin() || isGuru() || (isSignedIn() && get(/databases/$(database)/documents/schools/$(schoolId)/eRapors/$(eRaporId)).data.studentId == request.auth.uid);
         allow write: if isAdmin() || isGuru();
 
         match /grades/{gradeId} {
-          // Inherits read access from parent, write access restricted to admins/teachers.
           allow read: if isAdmin() || isGuru() || (isSignedIn() && get(/databases/$(database)/documents/schools/$(schoolId)/eRapors/$(eRaporId)).data.studentId == request.auth.uid);
           allow write: if isAdmin() || isGuru();
         }
