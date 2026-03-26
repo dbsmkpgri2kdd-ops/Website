@@ -8,7 +8,7 @@ import {
   GraduationCap, Building2, Briefcase, Database, Bell, Menu, X, 
   ChevronRight, Laptop, Newspaper, Calendar, Link as LinkIcon,
   PenSquare, CalendarClock, UserCog, UserPlus, ShieldAlert, ArrowRightLeft, DatabaseZap,
-  ShieldCheck
+  ShieldCheck, LoaderCircle
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -51,7 +51,7 @@ type AdminTab =
   | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings' | 'quick-links';
 
 function AdminDashboard() {
-  const { user } = useUser();
+  const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -92,6 +92,14 @@ function AdminDashboard() {
     { label: 'User Role', value: 'users', icon: ShieldAlert, group: 'Sistem' },
     { label: 'Konfigurasi Web', value: 'settings', icon: Settings, group: 'Sistem' },
   ];
+
+  if (isUserLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <LoaderCircle className="animate-spin text-primary h-12 w-12" />
+      </div>
+    );
+  }
 
   const filteredNavItems = isAdmin 
     ? navItems 
@@ -195,7 +203,7 @@ function AdminDashboard() {
               <AvatarFallback className="bg-primary/5 text-primary"><UserIcon size={20} /></AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-xs font-bold truncate">{user?.profile?.displayName || user?.email}</p>
+              <p className="text-xs font-bold truncate">{user?.displayName || user?.email}</p>
               <Badge variant="secondary" className="text-[9px] h-4 py-0 font-bold uppercase">{user?.profile?.role || 'Siswa'}</Badge>
             </div>
           </div>

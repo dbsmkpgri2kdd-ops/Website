@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
@@ -22,15 +21,6 @@ interface UserAuthState {
 
 export interface FirebaseContextState {
   areServicesAvailable: boolean;
-  firebaseApp: FirebaseApp | null;
-  firestore: Firestore | null;
-  auth: Auth | null;
-  user: User | null;
-  isUserLoading: boolean;
-  userError: Error | null;
-}
-
-export interface FirebaseServicesAndUser {
   firebaseApp: FirebaseApp | null;
   firestore: Firestore | null;
   auth: Auth | null;
@@ -65,17 +55,18 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         try {
           const userSnap = await getDoc(userRef);
           if (!userSnap.exists()) {
+            // Auto-create profile for new users with default role 'siswa'
             await setDoc(userRef, {
               uid: firebaseUser.uid,
               email: firebaseUser.email,
-              displayName: firebaseUser.displayName || 'User Baru',
+              displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User Baru',
               role: 'siswa',
               createdAt: serverTimestamp(),
-            });
+            }, { merge: true });
           }
           setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         } catch (error) {
-          // Silent catch for initial setup/permission issues
+          // If rules block reading (initial bootstrap phase), we still provide the auth object
           setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         }
       } else {
@@ -106,23 +97,15 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   );
 };
 
-export const useFirebase = (): FirebaseServicesAndUser => {
+export const useFirebase = () => {
   const context = useContext(FirebaseContext);
   if (context === undefined) throw new Error('useFirebase must be used within a FirebaseProvider.');
-  // Return context directly, allowing the caller to handle null services if not configured
-  return {
-    firebaseApp: context.firebaseApp,
-    firestore: context.firestore,
-    auth: context.auth,
-    user: context.user,
-    isUserLoading: context.isUserLoading,
-    userError: context.userError,
-  };
+  return context;
 };
 
-export const useAuth = (): Auth | null => useContext(FirebaseContext)?.auth || null;
-export const useFirestore = (): Firestore | null => useContext(FirebaseContext)?.firestore || null;
-export const useFirebaseApp = (): FirebaseApp | null => useContext(FirebaseContext)?.firebaseApp || null;
+export const useAuth = () => useContext(FirebaseContext)?.auth || null;
+export const useFirestore = () => useContext(FirebaseContext)?.firestore || null;
+export const useFirebaseApp = () => useContext(FirebaseContext)?.firebaseApp || null;
 
 export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T {
   const memoized = useMemo(factory, deps);

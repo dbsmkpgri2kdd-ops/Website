@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { collection, query, doc, orderBy, deleteDoc } from 'firebase/firestore';
-import { useCollection, useFirestore, updateDocumentNonBlocking, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, updateDocumentNonBlocking, useMemoFirebase, useUser, setDocumentNonBlocking } from '@/firebase';
 import { type UserProfile } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,10 +19,9 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, LoaderCircle, Users, ShieldCheck, UserCog, GraduationCap, Briefcase, Trash2, ShieldAlert, Sparkles } from 'lucide-react';
+import { Edit, LoaderCircle, Users, ShieldCheck, UserCog, GraduationCap, Briefcase, Trash2, ShieldAlert, Sparkles, Key } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useUser } from '@/firebase';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -40,9 +39,10 @@ const USER_ROLES: { value: UserProfile['role']; label: string; icon: any }[] = [
 export function UsersManager() {
   const { toast } = useToast();
   const firestore = useFirestore();
+  const { user: currentUser } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserProfile & { id: string } | null>(null);
-  const { user: currentUser } = useUser();
+  
   const isAdmin = currentUser?.profile?.role === 'admin';
 
   const usersQuery = useMemoFirebase(() => {
@@ -67,11 +67,27 @@ export function UsersManager() {
     setIsDialogOpen(true);
   };
 
-  const handleSelfPromote = () => {
+  const handleSelfPromote = async () => {
     if (!firestore || !currentUser?.uid) return;
-    const docRef = doc(firestore, 'users', currentUser.uid);
-    updateDocumentNonBlocking(docRef, { role: 'admin' });
-    toast({ title: 'Akses Diberikan!', description: 'Anda sekarang adalah Administrator sistem ini.' });
+    
+    const userRef = doc(firestore, 'users', currentUser.uid);
+    const initRef = doc(firestore, 'app_roles/initialized/init', 'system');
+
+    try {
+      // 1. Promote user to admin
+      updateDocumentNonBlocking(userRef, { role: 'admin' });
+      
+      // 2. Lock the system by creating the initialization flag
+      setDocumentNonBlocking(initRef, { 
+        initialized: true, 
+        initializedBy: currentUser.email,
+        at: new Date()
+      });
+
+      toast({ title: 'Akses Diberikan!', description: 'Anda sekarang adalah Administrator sistem ini.' });
+    } catch (e) {
+      toast({ variant: 'destructive', title: 'Gagal', description: 'Pastikan koneksi internet stabil.' });
+    }
   };
 
   const handleDelete = async (user: UserProfile & { id: string }) => {
@@ -109,11 +125,14 @@ export function UsersManager() {
   
   return (
     <div className="space-y-6 animate-fade-in">
-        {/* Setup Mode: Tombol promosi diri jika belum Admin */}
+        {/* Setup Mode: Terlihat jika user belum Admin */}
         {!isAdmin && (
-            <Card className="border-primary/20 bg-primary/5 shadow-xl">
+            <Card className="border-primary/20 bg-primary/5 shadow-xl overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12">
+                    <Key size={120} />
+                </div>
                 <CardHeader>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 relative z-10">
                         <div className="p-3 bg-primary text-white rounded-2xl shadow-lg">
                             <ShieldCheck size={24} />
                         </div>
@@ -123,12 +142,12 @@ export function UsersManager() {
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 relative z-10">
                     <Alert className="bg-white/50 dark:bg-black/20 border-none">
                         <Sparkles className="h-4 w-4 text-primary" />
-                        <AlertTitle className='font-bold'>Inisialisasi Proyek Baru</AlertTitle>
+                        <AlertTitle className='font-bold text-sm'>Sistem Terdeteksi Baru</AlertTitle>
                         <AlertDescription className='text-xs'>
-                            Sebagai pemilik proyek, Anda dapat mempromosikan akun Anda sendiri menjadi Administrator tanpa perlu membuka Firebase Console.
+                            Sebagai pengguna pertama, Anda berhak mempromosikan akun Anda sendiri menjadi Administrator tunggal tanpa perlu membuka Firebase Console.
                         </AlertDescription>
                     </Alert>
                     <Button onClick={handleSelfPromote} size="lg" className="w-full h-14 rounded-2xl font-black text-lg shadow-xl shadow-primary/20 transition-all hover:scale-[1.02]">
@@ -138,12 +157,12 @@ export function UsersManager() {
             </Card>
         )}
 
-        {/* Daftar User: Hanya terlihat jika sudah Admin */}
+        {/* Daftar User: Hanya dikelola jika sudah Admin */}
         {isAdmin && (
             <Card className="shadow-lg rounded-2xl">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><Users /> Manajemen Pengguna</CardTitle>
-                    <CardDescription>Kelola peran seluruh pengguna yang telah login ke sistem.</CardDescription>
+                    <CardDescription>Kelola peran dan hak akses seluruh pengguna sistem.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="rounded-xl border overflow-hidden">
@@ -160,7 +179,7 @@ export function UsersManager() {
                             {isLoading && <TableRow><TableCell colSpan={4} className="text-center py-10"><LoaderCircle className="animate-spin mx-auto text-primary" /></TableCell></TableRow>}
                             {users?.map((u) => (
                                 <TableRow key={u.id}>
-                                    <TableCell className="font-semibold">{u.displayName || '-'}</TableCell>
+                                    <TableCell className="font-semibold">{u.displayName || u.email?.split('@')[0] || '-'}</TableCell>
                                     <TableCell>{u.email}</TableCell>
                                     <TableCell>{getRoleBadge(u.role)}</TableCell>
                                     <TableCell className="text-right">
@@ -171,6 +190,7 @@ export function UsersManager() {
                                     </TableCell>
                                 </TableRow>
                             ))}
+                            {!isLoading && users?.length === 0 && <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground">Belum ada pengguna terdaftar.</TableCell></TableRow>}
                         </TableBody>
                         </Table>
                     </div>
@@ -182,14 +202,14 @@ export function UsersManager() {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Ubah Peran Pengguna</DialogTitle>
-                    <DialogDescription>Pilih peran baru untuk mengatur tingkat akses pengguna ini.</DialogDescription>
+                    <DialogDescription>Atur tingkat akses untuk akun <strong>{editingUser?.email}</strong>.</DialogDescription>
                 </DialogHeader>
                 {editingUser && (
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
                             <FormField control={form.control} name="role" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Pilih Peran</FormLabel>
+                                    <FormLabel>Pilih Peran Baru</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl><SelectTrigger className="h-12 rounded-xl"><SelectValue /></SelectTrigger></FormControl>
                                         <SelectContent>

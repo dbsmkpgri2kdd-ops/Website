@@ -1,4 +1,3 @@
-
 'use client';
 
 import { firebaseConfig } from '@/firebase/config';
@@ -13,29 +12,25 @@ export type FirebaseServices = {
 };
 
 export function initializeFirebase(): FirebaseServices {
-  // Cegah error inisialisasi di sisi server (SSR)
   if (typeof window === 'undefined') {
     return { firebaseApp: null, auth: null, firestore: null };
   }
 
   try {
-    // Periksa apakah konfigurasi sudah diisi (tidak kosong)
-    const isConfigValid = firebaseConfig && firebaseConfig.projectId && firebaseConfig.projectId !== "";
+    const isConfigValid = !!(firebaseConfig && firebaseConfig.projectId && firebaseConfig.projectId !== "");
     
     if (!isConfigValid) {
+      console.warn("Firebase config is missing or invalid.");
       return { firebaseApp: null, auth: null, firestore: null };
     }
 
+    let app: FirebaseApp;
     if (!getApps().length) {
-      const app = initializeApp(firebaseConfig);
-      return {
-        firebaseApp: app,
-        auth: getAuth(app),
-        firestore: getFirestore(app)
-      };
+      app = initializeApp(firebaseConfig);
+    } else {
+      app = getApp();
     }
-    
-    const app = getApp();
+
     return {
       firebaseApp: app,
       auth: getAuth(app),
@@ -47,7 +42,7 @@ export function initializeFirebase(): FirebaseServices {
   }
 }
 
-// Inisialisasi layanan secara aman
+// Global service instances
 const services = initializeFirebase();
 export const firebaseApp = services.firebaseApp;
 export const auth = services.auth;

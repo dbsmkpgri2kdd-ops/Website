@@ -1,4 +1,3 @@
-
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -9,20 +8,25 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      // Allow if user has admin role OR if the users collection is empty (bootstrap mode)
+      // Allow if user has admin role OR if the system is not yet locked (bootstrap mode)
       return isSignedIn() && 
         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' || 
-         !exists(/databases/$(database)/documents/app_roles/initialized/init));
+         !exists(/databases/$(database)/documents/app_roles/initialized/init/system));
     }
 
     // --- COLLECTION RULES ---
 
     match /users/{userId} {
       allow get: if isSignedIn();
-      allow list: if isSignedIn(); // Simplified for admin management
+      allow list: if isSignedIn();
       allow create: if isSignedIn() && request.auth.uid == userId;
       allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow delete: if isAdmin();
+      
+      match /portfolio/{itemId} {
+        allow read: if true;
+        allow write: if isSignedIn() && request.auth.uid == userId;
+      }
     }
 
     match /schools/{schoolId}/{allPaths=**} {
@@ -30,7 +34,8 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    match /app_roles/initialized/{id} {
+    // Lock system bootstrap flag
+    match /app_roles/initialized/init/{id} {
       allow read: if true;
       allow write: if isSignedIn();
     }

@@ -10,6 +10,7 @@ import { useDoc, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import BottomNav from '@/components/layout/bottom-nav';
 import { LoaderCircle } from 'lucide-react';
+import { AIAssistant } from '@/components/ai/ai-assistant';
 
 const SectionLoader = () => (
   <div className="flex items-center justify-center h-[60vh]">
@@ -221,6 +222,7 @@ export default function Home() {
         setActiveTab={handleSetTab}
         setIsMenuOpen={setIsMenuOpen}
       />
+      <AIAssistant />
     </div>
   );
 }

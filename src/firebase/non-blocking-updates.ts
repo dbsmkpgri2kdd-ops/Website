@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -22,7 +21,7 @@ export function setDocumentNonBlocking(docRef: DocumentReference, data: any, opt
   setDoc(docRef, data, options).catch(error => {
     errorEmitter.emit('permission-error', new FirestorePermissionError({
       path: docRef.path,
-      operation: 'write',
+      operation: options && 'merge' in options ? 'update' : 'create',
       requestResourceData: data,
     }));
   });
