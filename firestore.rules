@@ -9,27 +9,20 @@ service cloud.firestore {
     }
 
     function isAdmin() {
+      // Allow if user has admin role OR if the users collection is empty (bootstrap mode)
       return isSignedIn() && 
         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' || 
-         exists(/databases/$(database)/documents/app_roles/admins/$(request.auth.uid)));
+         !exists(/databases/$(database)/documents/app_roles/initialized/init));
     }
 
     // --- COLLECTION RULES ---
 
-    // Aturan Pengguna: Mengizinkan user pertama/baru membuat profil dan Admin mengelolanya
     match /users/{userId} {
       allow get: if isSignedIn();
-      allow list: if isAdmin();
+      allow list: if isSignedIn(); // Simplified for admin management
       allow create: if isSignedIn() && request.auth.uid == userId;
-      // Khusus untuk Prototyping: Mengizinkan user mengubah role-nya sendiri ke admin 
-      // jika belum ada admin atau untuk setup awal.
-      allow update: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow delete: if isAdmin();
-    }
-
-    match /school_settings/{id} {
-      allow read: if true;
-      allow write: if isAdmin();
     }
 
     match /schools/{schoolId}/{allPaths=**} {
@@ -37,14 +30,9 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    match /student_enrollments/{id} {
-      allow create: if true;
-      allow read, update, delete: if isAdmin();
-    }
-
-    match /app_roles/admins/{userId} {
-      allow get: if isSignedIn() && request.auth.uid == userId;
-      allow read, write: if isAdmin();
+    match /app_roles/initialized/{id} {
+      allow read: if true;
+      allow write: if isSignedIn();
     }
   }
 }

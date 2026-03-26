@@ -1,412 +1,44 @@
+
 {
   "entities": {
     "School": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "School",
       "type": "object",
-      "description": "Represents the core information and configuration details of the school.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the School entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The full official name of the school."
-        },
-        "shortName": {
-          "type": "string",
-          "description": "A shorter, abbreviated name for the school, used for display purposes."
-        },
-        "address": {
-          "type": "string",
-          "description": "The physical street address of the school."
-        },
-        "phone": {
-          "type": "string",
-          "description": "The primary contact phone number for the school."
-        },
-        "email": {
-          "type": "string",
-          "description": "The primary contact email address for the school.",
-          "format": "email"
-        },
-        "principalName": {
-          "type": "string",
-          "description": "The full name of the school's principal."
-        },
-        "principalImage": {
-          "type": "string",
-          "description": "URL to the principal's official photograph.",
-          "format": "uri"
-        },
-        "principalMessage": {
-          "type": "string",
-          "description": "A welcome or introductory message from the principal."
-        },
-        "vision": {
-          "type": "string",
-          "description": "The school's overarching vision statement."
-        },
-        "mission": {
-          "type": "array",
-          "description": "A list of statements outlining the school's mission.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "activeStudents": {
-          "type": "number",
-          "description": "The total count of active students currently enrolled at the school."
-        },
-        "staffCount": {
-          "type": "number",
-          "description": "The total count of teachers and administrative staff at the school."
-        },
-        "awardsCount": {
-          "type": "number",
-          "description": "The total count of awards or achievements garnered by the school."
-        },
-        "facilities": {
-          "type": "array",
-          "description": "A list of prominent facilities offered by the school.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp when the school record was first created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp when the school record was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "shortName",
-        "address",
-        "phone",
-        "email",
-        "principalName",
-        "principalImage",
-        "principalMessage",
-        "vision",
-        "mission",
-        "activeStudents",
-        "staffCount",
-        "awardsCount",
-        "facilities",
-        "createdAt",
-        "updatedAt"
-      ]
+        "name": { "type": "string" },
+        "shortName": { "type": "string" },
+        "address": { "type": "string" },
+        "role": { "type": "string" }
+      }
     },
-    "NewsArticle": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "NewsArticle",
+    "UserProfile": {
+      "title": "UserProfile",
       "type": "object",
-      "description": "Represents a single news article or announcement published by the school.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the NewsArticle entity."
-        },
-        "title": {
-          "type": "string",
-          "description": "The main title of the news article."
-        },
-        "content": {
-          "type": "string",
-          "description": "The full body content of the news article."
-        },
-        "category": {
-          "type": "string",
-          "description": "The category or tag for the news article (e.g., 'Kegiatan', 'Pengumuman')."
-        },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL to the main image associated with the news article.",
-          "format": "uri"
-        },
-        "publishedDate": {
-          "type": "string",
-          "description": "The date and time when the news article was published.",
-          "format": "date-time"
-        },
-        "author": {
-          "type": "string",
-          "description": "The name of the author or publishing department."
-        },
-        "slug": {
-          "type": "string",
-          "description": "A URL-friendly string identifier for the news article."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp when the news article record was first created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp when the news article record was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "content",
-        "publishedDate",
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    "StudentEnrollment": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "StudentEnrollment",
-      "type": "object",
-      "description": "Represents a new student enrollment application submitted through the PPDB form.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the StudentEnrollment entity."
-        },
-        "applicantName": {
-          "type": "string",
-          "description": "The full name of the prospective student applying for enrollment."
-        },
-        "gradeLevel": {
-          "type": "string",
-          "description": "The educational level the student is applying for (e.g., 'TK / PAUD', 'SD / MI', 'SMP / MTs', 'SMA / SMK / MA')."
-        },
-        "parentWhatsAppNumber": {
-          "type": "string",
-          "description": "The WhatsApp contact number of the parent or guardian for communication."
-        },
-        "parentEmail": {
-          "type": "string",
-          "description": "The email address of the parent or guardian.",
-          "format": "email"
-        },
-        "applicationDate": {
-          "type": "string",
-          "description": "The date and time when the enrollment application was submitted.",
-          "format": "date-time"
-        },
-        "status": {
-          "type": "string",
-          "description": "The current status of the application (e.g., 'pending', 'reviewed', 'accepted', 'rejected')."
-        },
-        "notes": {
-          "type": "string",
-          "description": "Internal notes or remarks by the administration regarding the application."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp when the enrollment record was first created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp when the enrollment record was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "applicantName",
-        "gradeLevel",
-        "parentWhatsAppNumber",
-        "parentEmail",
-        "applicationDate",
-        "status",
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    "FAQ": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "FAQ",
-      "type": "object",
-      "description": "Stores Frequently Asked Questions and their answers for the AI assistant and general information.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the FAQ entity."
-        },
-        "question": {
-          "type": "string",
-          "description": "The full text of the frequently asked question."
-        },
-        "answer": {
-          "type": "string",
-          "description": "The detailed answer to the question."
-        },
-        "category": {
-          "type": "string",
-          "description": "A category to group related FAQs (e.g., 'Pendaftaran', 'Fasilitas')."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp when the FAQ record was first created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp when the FAQ record was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "question",
-        "answer",
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    "NewsletterSubscriber": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "NewsletterSubscriber",
-      "type": "object",
-      "description": "Represents a user who has subscribed to the school's newsletter.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the NewsletterSubscriber entity."
-        },
-        "email": {
-          "type": "string",
-          "description": "The email address of the subscriber.",
-          "format": "email"
-        },
-        "subscriptionDate": {
-          "type": "string",
-          "description": "The date and time when the user subscribed.",
-          "format": "date-time"
-        },
-        "isActive": {
-          "type": "boolean",
-          "description": "Indicates whether the newsletter subscription is currently active."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp when the subscriber record was first created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp when the subscriber record was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "email",
-        "subscriptionDate",
-        "isActive",
-        "createdAt",
-        "updatedAt"
-      ]
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "guru", "siswa", "alumni"] }
+      }
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "anonymous"]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/school_settings/current",
-        "definition": {
-          "entityName": "School",
-          "schema": {
-            "$ref": "#/backend/entities/School"
-          },
-          "description": "Stores the single, global configuration and information document for the school. Publicly readable by anyone, but only editable by authenticated administrators."
-        }
-      },
-      {
-        "path": "/news_articles/{newsArticleId}",
-        "definition": {
-          "entityName": "NewsArticle",
-          "schema": {
-            "$ref": "#/backend/entities/NewsArticle"
-          },
-          "description": "Collection for all public news articles and announcements published by the school. Publicly readable by anyone, but only editable by authenticated administrators. The 'id' field within the document should match the '{newsArticleId}' wildcard."
-        }
-      },
-      {
-        "path": "/student_enrollments/{enrollmentId}",
-        "definition": {
-          "entityName": "StudentEnrollment",
-          "schema": {
-            "$ref": "#/backend/entities/StudentEnrollment"
-          },
-          "description": "Collection for student enrollment applications submitted via the PPDB form. Documents can be created publicly by anyone, but are only readable, updatable, and deletable by authenticated administrators. The 'id' field within the document should match the '{enrollmentId}' wildcard.",
-          "params": [
-            {
-              "name": "enrollmentId",
-              "description": "The unique identifier for a student enrollment application document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/faqs/{faqId}",
-        "definition": {
-          "entityName": "FAQ",
-          "schema": {
-            "$ref": "#/backend/entities/FAQ"
-          },
-          "description": "Collection for Frequently Asked Questions. Publicly readable by anyone (e.g., for AI assistant and general display), but only editable by authenticated administrators. The 'id' field within the document should match the '{faqId}' wildcard.",
-          "params": [
-            {
-              "name": "faqId",
-              "description": "The unique identifier for an FAQ document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/newsletter_subscribers/{subscriberId}",
-        "definition": {
-          "entityName": "NewsletterSubscriber",
-          "schema": {
-            "$ref": "#/backend/entities/NewsletterSubscriber"
-          },
-          "description": "Collection for users who have subscribed to the school's newsletter. Documents can be created publicly by anyone, but are only readable, updatable, and deletable by authenticated administrators. The 'id' field within the document should match the '{subscriberId}' wildcard.",
-          "params": [
-            {
-              "name": "subscriberId",
-              "description": "The unique identifier for a newsletter subscriber document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/app_roles/admins/{userId}",
-        "definition": {
-          "entityName": "AdminRole",
-          "schema": {
-            "$ref": "#/backend/entities/AdminRole"
-          },
-          "description": "This collection is part of the Role-Based Access Control (DBAC) system. The existence of a document at this path signifies that the '{userId}' (which corresponds to `request.auth.uid`) has administrative privileges across the application. Used for authorization independence; rules can check `exists(/databases/$(database)/documents/app_roles/admins/$(request.auth.uid))`.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique Firebase Authentication user ID (UID) of an administrator."
-            }
-          ]
-        }
-      }
-    ],
-    "reasoning": "The recommended Firestore structure for the SmartSchool App prioritizes security, scalability, and debuggability by strictly adhering to the mandated design principles. The core strategy revolves around **Structural Segregation** and **Authorization Independence via Denormalization**.\n\n1.  **Structural Segregation**: Data is organized into distinct top-level collections based on its security posture:\n    *   `/school_settings/current`, `/news_articles/{newsArticleId}`, and `/faqs/{faqId}` hold **publicly readable** information. This simplifies security rules, as `allow read: if true;` is sufficient, while writes are restricted to authenticated administrators.\n    *   `/student_enrollments/{enrollmentId}` and `/newsletter_subscribers/{subscriberId}` hold **private data** that requires administrator access for read, update, and delete operations. Creation (form submission for enrollment/subscription) is publicly allowed. This clear separation ensures that data with different access requirements are never mixed in the same collection, making security rules explicit and less prone to errors.\n\n2.  **Authorization Independence**: This design completely avoids hierarchical authorization dependencies that would require `get()` calls in security rules. Instead, authorization is denormalized through a dedicated role-based access control (DBAC) collection: `/app_roles/admins/{userId}`.\n    *   An administrator's status is determined solely by the existence of a document at `/app_roles/admins/$(request.auth.uid)`. Security rules will check `exists(/databases/$(database)/documents/app_roles/admins/$(request.auth.uid))` for any administrative action. This eliminates the need for any document to 'get' its parent or related documents to check permissions, thus enabling atomic operations and simplifying rule logic significantly. All documents requiring admin-only write access (like `School` updates, `NewsArticle` creation/updates, `FAQ` management) and private read/write access (like `StudentEnrollment` and `NewsletterSubscriber` management) will leverage this single, independent check.\n\n3.  **Querying with Atomic Security Postures (QAPs)**:\n    *   For public collections (e.g., `/news_articles`, `/faqs`), any authenticated or unauthenticated user can perform `list` operations securely because all documents within these collections are intended for public consumption. Rules are not used as filters for content, but as gates for access to homogeneous data sets. This ensures `list` operations are efficient and secure.\n    *   For collections with restricted access (e.g., `/student_enrollments`, `/newsletter_subscribers`), `list` operations are implicitly secured by restricting `read` access to only authenticated administrators. A non-admin user attempting to `list` these collections will receive a permission denied error, which is the intended and secure behavior, adhering to the QAP principle by preventing unauthorized data exposure via listing."
+    "/users/{userId}": {
+      "schema": "#/backend/entities/UserProfile",
+      "description": "User profiles and roles."
+    },
+    "/schools/{schoolId}": {
+      "schema": "#/backend/entities/School",
+      "description": "General school configuration."
+    },
+    "/schools/{schoolId}/newsArticles/{id}": {
+      "schema": "NewsArticle",
+      "description": "School news articles."
+    },
+    "/schools/{schoolId}/quickLinks/{id}": {
+      "schema": "QuickLink",
+      "description": "Dashboard shortcut links."
+    }
   }
 }
