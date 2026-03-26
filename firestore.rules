@@ -1,28 +1,130 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isSignedIn() { return request.auth != null; }
-    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+
+    /**
+     * SMART SCHOOL SECURITY ARCHITECTURE
+     *
+     * Core Philosophy:
+     * This ruleset implements a Role-Based Access Control (RBAC) model centered around an 
+     * administrative privilege check. It distinguishes between public informational content 
+     * and private user-submitted data.
+     *
+     * Data Structure:
+     * - Public Collections: /school_settings, /news_articles, and /faqs are readable by anyone.
+     * - Private/Intake Collections: /student_enrollments and /newsletter_subscribers allow public 
+     *   creation (form submission) but restrict reading and management to administrators.
+     * - RBAC Path: Administrative status is determined by the existence of a document 
+     *   at /app_roles/admins/{userId}.
+     *
+     * Key Security Decisions:
+     * 1. Authorization Independence: Admin status is verified via a specialized lookup 
+     *    collection (/app_roles/admins), avoiding deep nesting or complex document joins.
+     * 2. Prototyping Mode: Rules enforce strict authorization (who can access) but allow 
+     *    flexible data schemas (what is stored) to facilitate rapid development.
+     * 3. Identity Verification: All administrative actions require a valid Firebase 
+     *    Authentication state.
+     */
+
+    // --- HELPER FUNCTIONS ---
+
+    /** @description Checks if the user is authenticated with Firebase Auth. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the authenticated user has an entry in the admins collection. */
     function isAdmin() {
-      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isSignedIn() && exists(/databases/$(database)/documents/app_roles/admins/$(request.auth.uid));
     }
 
-    match /users/{userId} {
-      allow create: if isOwner(userId);
-      allow get: if isOwner(userId) || isAdmin();
+    /** @description Combines admin check with existence check for updates/deletes. */
+    function isExistingAdmin() {
+      return isAdmin() && resource != null;
+    }
+
+    // --- COLLECTION RULES ---
+
+    /**
+     * @description Global school configuration. Publicly visible, admin-only management.
+     * @path /school_settings/current
+     * @allow (get) Any user requesting the current school config.
+     * @deny (update) Any user who is not explicitly listed in the /app_roles/admins collection.
+     * @principle Public Read with Admin-Only Writes.
+     */
+    match /school_settings/current {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update, delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Public news and announcements.
+     * @path /news_articles/{newsArticleId}
+     * @allow (list) A guest user browsing the news feed.
+     * @deny (create) An authenticated user attempting to post news without admin privileges.
+     * @principle Relational integrity check (id field) and Role-based writes.
+     */
+    match /news_articles/{newsArticleId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && request.resource.data.id == newsArticleId;
+      allow update: if isExistingAdmin() && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Student enrollment applications (PPDB).
+     * @path /student_enrollments/{enrollmentId}
+     * @allow (create) An unauthenticated parent submitting a new application form.
+     * @deny (get) A parent trying to read their submitted application (only admins can read).
+     * @principle Public creation gate with restricted administrative read/write access.
+     */
+    match /student_enrollments/{enrollmentId} {
+      allow get, list: if isAdmin();
+      allow create: if request.resource.data.id == enrollmentId;
+      allow update: if isExistingAdmin() && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Frequently Asked Questions for the AI assistant and UI.
+     * @path /faqs/{faqId}
+     * @allow (get) The AI assistant fetching FAQ content for a query.
+     * @deny (delete) A non-admin attempting to remove an FAQ.
+     * @principle Public Read with Admin-Only Writes.
+     */
+    match /faqs/{faqId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && request.resource.data.id == faqId;
+      allow update: if isExistingAdmin() && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Newsletter subscription records.
+     * @path /newsletter_subscribers/{subscriberId}
+     * @allow (create) A user entering their email into the footer subscription box.
+     * @deny (list) A malicious actor trying to scrape the email subscriber list.
+     * @principle Public creation gate with restricted administrative read/write access.
+     */
+    match /newsletter_subscribers/{subscriberId} {
+      allow get, list: if isAdmin();
+      allow create: if request.resource.data.id == subscriberId;
+      allow update: if isExistingAdmin() && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Source of truth for administrative roles.
+     * @path /app_roles/admins/{userId}
+     * @allow (get) An admin checking their own status via the UID path.
+     * @deny (create) Any user trying to elevate their own privileges.
+     * @principle Authorization Independence (DBAC). Admin management is handled externally.
+     */
+    match /app_roles/admins/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow list: if isAdmin();
-      allow update: if isOwner(userId) || isAdmin();
-      allow delete: if isAdmin();
-    }
-
-    match /schools/{schoolId} {
-      allow read: if true;
-      allow write: if isAdmin() || (isSignedIn() && !exists(/databases/$(database)/documents/schools/$(schoolId)));
-      
-      match /{allSubcollections=**} {
-        allow read: if true;
-        allow write: if isAdmin();
-      }
+      allow create, update, delete: if false; // Role assignments usually handled via Admin SDK or Console
     }
   }
 }
