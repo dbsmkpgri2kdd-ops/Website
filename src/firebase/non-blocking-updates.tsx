@@ -1,3 +1,5 @@
 'use client';
-// File ini dikosongkan karena logika telah dipindahkan ke .ts untuk konsistensi.
+/**
+ * This file is a proxy to the .ts version to prevent module resolution conflicts.
+ */
 export * from './non-blocking-updates';

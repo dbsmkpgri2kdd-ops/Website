@@ -20,7 +20,6 @@ export function initializeFirebase(): FirebaseServices {
     const isConfigValid = !!(firebaseConfig && firebaseConfig.projectId && firebaseConfig.projectId !== "");
     
     if (!isConfigValid) {
-      console.warn("Firebase config is missing or invalid.");
       return { firebaseApp: null, auth: null, firestore: null };
     }
 
@@ -42,7 +41,7 @@ export function initializeFirebase(): FirebaseServices {
   }
 }
 
-// Global service instances
+// Singleton instances for client-side use
 const services = initializeFirebase();
 export const firebaseApp = services.firebaseApp;
 export const auth = services.auth;
