@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Facebook, Instagram, Youtube, Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Phone, Mail, MapPin } from 'lucide-react';
 import { type School } from '@/lib/data';
 import type { NavLink } from '@/lib/data';
 import { Button } from '@/components/ui/button';
@@ -64,7 +64,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-[120px] -ml-48 -mb-48"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-16 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-20">
         
           <div className="lg:col-span-2 space-y-8">
             <div className="flex items-center gap-4">
@@ -161,18 +161,6 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 </ul>
             </div>
           ))}
-
-          <div className="lg:col-span-1 space-y-6">
-             <h5 className="font-black text-xs uppercase tracking-[0.2em] text-primary">Akses Cepat</h5>
-             <div className="space-y-4">
-                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl border-white/10 bg-white/5 hover:bg-white/10 font-bold" onClick={() => setActiveTab('login')}>
-                    <ExternalLink size={14} className="mr-2" /> Portal Login
-                </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start rounded-xl border-white/10 bg-white/5 hover:bg-white/10 font-bold" onClick={() => setActiveTab('buku-tamu')}>
-                    <ExternalLink size={14} className="mr-2" /> Buku Tamu
-                </Button>
-             </div>
-          </div>
         </div>
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-gray-500 text-xs font-bold uppercase tracking-widest">
