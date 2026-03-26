@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { collection, query, doc, orderBy } from 'firebase/firestore';
+import { collection, query, doc, orderBy, deleteDoc } from 'firebase/firestore';
 import { useCollection, useFirestore, updateDocumentNonBlocking, useMemoFirebase } from '@/firebase';
 import { type UserProfile } from '@/lib/data';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, LoaderCircle, Users, ShieldCheck, UserCog, GraduationCap, Briefcase } from 'lucide-react';
+import { Edit, LoaderCircle, Users, ShieldCheck, UserCog, GraduationCap, Briefcase, Trash2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUser } from '@/firebase';
@@ -72,6 +72,18 @@ export function UsersManager() {
     setIsDialogOpen(true);
   };
 
+  const handleDelete = async (user: UserProfile & { id: string }) => {
+    if (!firestore || !user.id) return;
+    if (confirm(`Hapus akses database untuk ${user.email}? Tindakan ini tidak menghapus akun autentikasi, hanya profil databasenya.`)) {
+      try {
+        await deleteDoc(doc(firestore, 'users', user.id));
+        toast({ title: 'Profil Dihapus', description: 'Profil pengguna telah dihapus dari database.' });
+      } catch (e) {
+        toast({ variant: 'destructive', title: 'Gagal Menghapus', description: 'Anda tidak memiliki izin.' });
+      }
+    }
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!firestore || !editingUser) return;
     
@@ -99,7 +111,7 @@ export function UsersManager() {
     <Card className="shadow-lg rounded-2xl">
         <CardHeader>
             <CardTitle className="flex items-center gap-2"><Users /> Manajemen Pengguna & Hak Akses</CardTitle>
-            <CardDescription>Kelola peran pengguna untuk mengatur hak akses ke fitur-fitur internal sekolah.</CardDescription>
+            <CardDescription>Kelola peran seluruh pengguna yang telah login untuk mengatur hak akses ke fitur internal.</CardDescription>
         </CardHeader>
         <CardContent>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -167,20 +179,31 @@ export function UsersManager() {
                             <TableCell>{user.email}</TableCell>
                             <TableCell>{getRoleBadge(user.role)}</TableCell>
                             <TableCell className="text-right">
-                                <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    onClick={() => handleEdit(user as UserProfile & { id: string })}
-                                    disabled={user.id === currentUser?.uid}
-                                    className="rounded-lg"
-                                >
-                                    <Edit className="h-4 w-4 mr-2" /> Edit
-                                </Button>
+                                <div className="flex justify-end gap-2">
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        onClick={() => handleEdit(user as UserProfile & { id: string })}
+                                        disabled={user.id === currentUser?.uid}
+                                        className="rounded-lg"
+                                    >
+                                        <Edit className="h-4 w-4 mr-2" /> Edit
+                                    </Button>
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        onClick={() => handleDelete(user as UserProfile & { id: string })}
+                                        disabled={user.id === currentUser?.uid}
+                                        className="rounded-lg text-destructive hover:bg-destructive/10"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
                             </TableCell>
                         </TableRow>
                     ))
                     ) : (
-                    !isLoading && <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground">Tidak ada pengguna ditemukan.</TableCell></TableRow>
+                    !isLoading && <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground">Tidak ada pengguna ditemukan. Pastikan sudah ada yang login.</TableCell></TableRow>
                     )}
                 </TableBody>
                 </Table>

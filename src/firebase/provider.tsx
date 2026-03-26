@@ -2,7 +2,7 @@
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
-import { Firestore, doc } from 'firebase/firestore';
+import { Firestore, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 import { useDoc } from './firestore/use-doc';
@@ -71,6 +71,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 
 /**
  * Internal hook to get the basic Firebase Auth user state.
+ * Also handles auto-creation of profile in Firestore if missing.
  */
 const useBasicAuthUser = (): BasicUserAuthState => {
   const [userAuthState, setUserAuthState] = useState<BasicUserAuthState>({
@@ -79,16 +80,35 @@ const useBasicAuthUser = (): BasicUserAuthState => {
     userError: null,
   });
 
-  const { auth } = useContext(FirebaseContext) ?? {};
+  const { auth, firestore } = useContext(FirebaseContext) ?? {};
 
   useEffect(() => {
-    if (!auth) {
-      setUserAuthState({ user: null, isUserLoading: false, userError: new Error("Auth service not provided.") });
+    if (!auth || !firestore) {
+      setUserAuthState({ user: null, isUserLoading: false, userError: new Error("Services not provided.") });
       return;
     }
+
     const unsubscribe = onAuthStateChanged(
       auth,
-      (firebaseUser) => {
+      async (firebaseUser) => {
+        if (firebaseUser) {
+          // Check if profile exists, if not create default
+          const userDocRef = doc(firestore, 'users', firebaseUser.uid);
+          try {
+            const docSnap = await getDoc(userDocRef);
+            if (!docSnap.exists()) {
+              // Create default profile for new user
+              await setDoc(userDocRef, {
+                email: firebaseUser.email,
+                displayName: firebaseUser.displayName || 'Pengguna Baru',
+                role: 'siswa', // Default role for new signups
+                createdAt: serverTimestamp(),
+              });
+            }
+          } catch (err) {
+            console.error("Error creating/checking user profile:", err);
+          }
+        }
         setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
       },
       (error) => {
@@ -97,7 +117,7 @@ const useBasicAuthUser = (): BasicUserAuthState => {
       }
     );
     return () => unsubscribe();
-  }, [auth]);
+  }, [auth, firestore]);
 
   return userAuthState;
 }
