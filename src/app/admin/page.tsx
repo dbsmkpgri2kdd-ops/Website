@@ -137,7 +137,7 @@ function AdminDashboard() {
     <button
       onClick={() => { setActiveTab(item.value as AdminTab); setIsSidebarOpen(false); }}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all group",
+        "w-full flex items-center gap-3 px-4 py-3 md:py-2.5 rounded-xl text-sm font-medium transition-all group",
         activeTab === item.value 
           ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -153,12 +153,12 @@ function AdminDashboard() {
     <div className="min-h-screen bg-background flex">
       {/* Sidebar Overlay for Mobile */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsSidebarOpen(false)} />
       )}
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed lg:sticky top-0 left-0 h-screen w-72 bg-card border-r z-50 transition-transform duration-300 flex flex-col shadow-xl lg:shadow-none",
+        "fixed lg:sticky top-0 left-0 h-screen w-72 bg-card border-r z-[70] transition-transform duration-300 flex flex-col shadow-2xl lg:shadow-none",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <div className="p-6 border-b flex items-center justify-between">
@@ -203,36 +203,36 @@ function AdminDashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <header className="h-16 border-b bg-background/80 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 shrink-0 z-30">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSidebarOpen(true)}>
-              <Menu size={20} />
+              <Menu size={20} className="text-primary" />
             </Button>
             <div>
-              <h1 className="font-bold text-lg hidden sm:block text-foreground/90">
+              <h1 className="font-bold text-base md:text-lg text-foreground/90 truncate max-w-[150px] md:max-w-none">
                 {navItems.find(i => i.value === activeTab)?.label || 'Dasbor'}
               </h1>
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <div className="relative hidden md:block">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input 
                 type="text" 
-                placeholder="Search tools..." 
-                className="pl-9 h-9 w-64 rounded-full bg-muted/50 border border-primary/5 text-xs focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all outline-none"
+                placeholder="Cari fitur..." 
+                className="pl-9 h-9 w-48 lg:w-64 rounded-full bg-muted/50 border border-primary/5 text-xs focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all outline-none"
               />
             </div>
-            <Separator orientation="vertical" className="h-6 mx-2 hidden sm:block" />
+            <Separator orientation="vertical" className="h-6 mx-1 hidden sm:block" />
             <Button variant="ghost" size="icon" className="rounded-full relative">
-              <Bell size={20} />
+              <Bell size={18} md:size={20} />
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-destructive rounded-full border-2 border-background" />
             </Button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-muted/10">
-          <div className="max-w-6xl mx-auto space-y-8 pb-20">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/10">
+          <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-20">
             {renderContent()}
           </div>
         </main>

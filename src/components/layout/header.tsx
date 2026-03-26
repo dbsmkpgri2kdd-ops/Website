@@ -68,7 +68,7 @@ const Header = ({
         ) : (
           <>
             <LogIn className="mr-2 h-4 w-4" />
-            Portal Login
+            Login
           </>
         )}
       </Button>
@@ -122,9 +122,9 @@ const Header = ({
           {/* Brand Logo */}
           <button
             onClick={() => setActiveTab('home')}
-            className="flex items-center gap-3 cursor-pointer group shrink-0"
+            className="flex items-center gap-2.5 cursor-pointer group shrink-0"
           >
-            <div className="relative w-10 h-10 lg:w-11 lg:h-11 overflow-hidden rounded-xl bg-white p-1.5 shadow-xl shadow-primary/5 border border-primary/5 group-hover:scale-110 transition-transform duration-500">
+            <div className="relative w-9 h-9 lg:w-11 lg:h-11 overflow-hidden rounded-xl bg-white p-1.5 shadow-xl shadow-primary/5 border border-primary/5 group-hover:scale-110 transition-transform duration-500">
               {isSchoolDataLoading ? (
                 <Skeleton className="w-full h-full rounded-lg" />
               ) : (
@@ -140,9 +140,9 @@ const Header = ({
             </div>
             <div className="flex flex-col items-start text-left">
               {isSchoolDataLoading ? (
-                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-5 w-24 lg:w-32" />
               ) : (
-                <span className="font-black text-lg lg:text-xl leading-none font-headline group-hover:text-primary transition-colors tracking-tight">
+                <span className="font-black text-base lg:text-xl leading-none font-headline group-hover:text-primary transition-colors tracking-tight">
                   {schoolData?.shortName}
                 </span>
               )}
@@ -162,18 +162,18 @@ const Header = ({
           </div>
 
           {/* Mobile Actions */}
-          <div className="lg:hidden flex items-center gap-3">
+          <div className="lg:hidden flex items-center gap-2">
              <ThemeToggle />
              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-xl bg-primary/5 hover:bg-primary/10 transition-colors">
-                    <Menu className="h-6 w-6 text-primary" />
+                    <Menu className="h-5 w-5 text-primary" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="flex flex-col p-0 w-[85%] max-w-sm border-l-primary/10 bg-card">
-                    <SheetHeader className="p-6 lg:p-8 border-b bg-muted/20">
-                        <div className="flex items-center gap-4">
-                           <div className="w-12 h-12 bg-white p-2 rounded-xl border border-primary/5 shadow-2xl relative">
+                    <SheetHeader className="p-6 border-b bg-muted/20">
+                        <div className="flex items-center gap-3">
+                           <div className="w-10 h-10 bg-white p-1.5 rounded-xl border border-primary/5 shadow-2xl relative">
                               <Image 
                                 src={convertGoogleDriveLink(schoolData?.logoUrl || "https://picsum.photos/seed/logo/40/40")} 
                                 alt="Logo" 
@@ -182,16 +182,16 @@ const Header = ({
                                 unoptimized
                               />
                            </div>
-                           <SheetTitle className='font-black text-2xl font-headline text-primary tracking-tight'>{schoolData?.shortName || "Menu"}</SheetTitle>
+                           <SheetTitle className='font-black text-xl font-headline text-primary tracking-tight'>{schoolData?.shortName || "Menu"}</SheetTitle>
                         </div>
                     </SheetHeader>
                     
-                    <ScrollArea className='flex-grow py-6'>
+                    <ScrollArea className='flex-grow py-4'>
                         {NAV_MENU.map((mainItem) => (
-                          <div key={mainItem.label} className="px-6 mb-6">
+                          <div key={mainItem.label} className="px-4 mb-4">
                             {mainItem.children ? (
-                              <div className="space-y-2">
-                                <h3 className="px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/50">{mainItem.label}</h3>
+                              <div className="space-y-1">
+                                <h3 className="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50">{mainItem.label}</h3>
                                 {mainItem.children.map((child) => (
                                   <Button
                                     key={child.id}
@@ -200,10 +200,10 @@ const Header = ({
                                       setActiveTab(child.id!);
                                       setIsMenuOpen(false);
                                     }}
-                                    className="w-full justify-start py-4 px-4 flex items-center gap-4 rounded-2xl text-base h-auto font-bold hover:bg-primary/5 hover:text-primary transition-all group"
+                                    className="w-full justify-start py-3 px-4 flex items-center gap-3 rounded-xl text-sm h-auto font-bold hover:bg-primary/5 hover:text-primary transition-all group"
                                   >
-                                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                                      <child.icon size={20} />
+                                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                      <child.icon size={16} />
                                     </div>
                                     {child.label}
                                   </Button>
@@ -217,10 +217,10 @@ const Header = ({
                                   setActiveTab(mainItem.id!);
                                   setIsMenuOpen(false);
                                 }}
-                                className="w-full justify-start py-4 px-4 flex items-center gap-4 rounded-2xl text-lg h-auto font-black hover:bg-primary/5 hover:text-primary transition-all group"
+                                className="w-full justify-start py-3 px-4 flex items-center gap-3 rounded-xl text-base h-auto font-black hover:bg-primary/5 hover:text-primary transition-all group"
                               >
-                                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                                  <mainItem.icon size={20} />
+                                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                  <mainItem.icon size={16} />
                                 </div>
                                 {mainItem.label}
                               </Button>
@@ -229,9 +229,9 @@ const Header = ({
                         ))}
                     </ScrollArea>
                     
-                    <div className="p-6 lg:p-8 border-t bg-muted/10 space-y-4">
-                        <AuthButton className="w-full justify-center py-5 rounded-2xl text-base shadow-2xl" />
-                        <p className="text-xs text-center text-muted-foreground uppercase tracking-widest font-bold opacity-50">
+                    <div className="p-6 border-t bg-muted/10 space-y-4">
+                        <AuthButton className="w-full justify-center py-6 rounded-2xl text-base shadow-2xl" />
+                        <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest font-bold opacity-50">
                           © {new Date().getFullYear()} {schoolData?.shortName}
                         </p>
                     </div>
