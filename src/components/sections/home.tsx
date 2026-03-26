@@ -94,11 +94,11 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                   <div className="space-y-3 md:space-y-4">
                     <Badge className="bg-primary/20 text-primary border-primary/30 px-4 md:px-5 py-1.5 md:py-2 rounded-full font-black text-[10px] md:text-xs backdrop-blur-md uppercase tracking-[0.2em]">Institutional Excellence</Badge>
                     <h1 className="text-3xl md:text-7xl font-black text-white font-headline leading-[1.1] tracking-tighter">
-                      Membangun Masa Depan <br/><span className='text-primary'>Generasi Vokasi.</span>
+                      {schoolData?.heroTitle || "Membangun Masa Depan Generasi Vokasi."}
                     </h1>
                   </div>
                   <p className="text-base md:text-xl text-gray-300 max-w-xl leading-relaxed font-medium mx-auto lg:mx-0">
-                    Menyiapkan lulusan yang kompeten, berdaya saing global, dan memiliki integritas tinggi.
+                    {schoolData?.heroSubtitle || "Menyiapkan lulusan yang kompeten, berdaya saing global, dan memiliki integritas tinggi."}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center lg:justify-start">
                     <button onClick={() => setActiveTab('ppdb-online')} className="bg-primary text-white h-14 md:h-16 px-8 md:px-12 rounded-full font-black text-base md:text-xl shadow-xl shadow-primary/20 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
@@ -144,7 +144,9 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
           <div className="grid lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className='space-y-6 md:space-y-8 order-2 lg:order-1'>
               <div className="space-y-3 md:space-y-4">
-                <h2 className='text-3xl md:text-5xl font-black font-headline tracking-tighter leading-tight'>Pendidikan Vokasi <br/><span className='text-primary'>Berstandar Industri.</span></h2>
+                <h2 className='text-3xl md:text-5xl font-black font-headline tracking-tighter leading-tight'>
+                    {schoolData?.welcomeTitle || "Pendidikan Vokasi Berstandar Industri."}
+                </h2>
                 <div className="w-16 md:w-20 h-1.5 md:h-2 bg-primary rounded-full"></div>
               </div>
                {isSchoolDataLoading ? (
@@ -266,7 +268,9 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
         {layout.showCta && (
           <section className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
             <div className="bg-[#0a0c1b] text-white rounded-[2rem] md:rounded-[4rem] p-10 md:p-32 text-center flex flex-col items-center relative overflow-hidden shadow-2xl">
-              <h2 className="text-3xl md:text-7xl font-black font-headline mb-8 md:mb-10 leading-[1.1] tracking-tighter relative z-10">Siap Menjadi <br/> <span className='text-primary'>Ahli di Bidangnya?</span></h2>
+              <h2 className="text-3xl md:text-7xl font-black font-headline mb-8 md:mb-10 leading-[1.1] tracking-tighter relative z-10">
+                {schoolData?.ctaTitle || "Siap Menjadi Ahli di Bidangnya?"}
+              </h2>
               <div className="flex flex-wrap gap-6 justify-center relative z-10 w-full md:w-auto">
                   <button onClick={() => setActiveTab('ppdb-online')} className="w-full md:w-auto bg-primary text-white h-16 md:h-20 px-10 md:px-16 rounded-full font-black text-lg md:text-2xl shadow-2xl hover:scale-105 transition-all">
                       Daftar Sekarang

@@ -103,6 +103,10 @@ export type School = {
     isMaintenanceMode?: boolean;
     primaryColor?: string;
     accentColor?: string;
+    heroTitle?: string;
+    heroSubtitle?: string;
+    welcomeTitle?: string;
+    ctaTitle?: string;
     layoutSettings?: {
       showHero?: boolean;
       showPartners?: boolean;

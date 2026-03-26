@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -8,11 +9,11 @@ import { doc } from 'firebase/firestore';
 import { useDoc, useFirestore, setDocumentNonBlocking, useMemoFirebase } from '@/firebase';
 import { SCHOOL_DATA_ID, type School } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, Info, Globe, BarChart3 } from 'lucide-react';
+import { LoaderCircle, Save, Info, Globe, BarChart3, Type } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '../ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,6 +38,10 @@ const formSchema = z.object({
   studentCount: z.coerce.number().int().min(0).optional(),
   teacherCount: z.coerce.number().int().min(0).optional(),
   industryPartnerCount: z.coerce.number().int().min(0).optional(),
+  heroTitle: z.string().optional(),
+  heroSubtitle: z.string().optional(),
+  welcomeTitle: z.string().optional(),
+  ctaTitle: z.string().optional(),
 });
 
 export function ProfileManager() {
@@ -57,6 +62,7 @@ export function ProfileManager() {
       principalName: '', principalMessage: '', history: '', vision: '', mission: '',
       instagramUrl: '', tiktokUrl: '', facebookUrl: '', whatsappUrl: '', youtubeUrl: '',
       studentCount: 0, teacherCount: 0, industryPartnerCount: 0,
+      heroTitle: '', heroSubtitle: '', welcomeTitle: '', ctaTitle: '',
     },
   });
 
@@ -75,6 +81,10 @@ export function ProfileManager() {
         studentCount: schoolData.studentCount || 0,
         teacherCount: schoolData.teacherCount || 0,
         industryPartnerCount: schoolData.industryPartnerCount || 0,
+        heroTitle: schoolData.heroTitle || '',
+        heroSubtitle: schoolData.heroSubtitle || '',
+        welcomeTitle: schoolData.welcomeTitle || '',
+        ctaTitle: schoolData.ctaTitle || '',
       });
     }
   }, [schoolData, form]);
@@ -84,21 +94,11 @@ export function ProfileManager() {
     
     const dataToUpdate = {
         ...values,
-        logoUrl: values.logoUrl || '',
-        history: values.history || '',
-        instagramUrl: values.instagramUrl || '',
-        tiktokUrl: values.tiktokUrl || '',
-        facebookUrl: values.facebookUrl || '',
-        whatsappUrl: values.whatsappUrl || '',
-        youtubeUrl: values.youtubeUrl || '',
         mission: values.mission.split('\n').filter(m => m.trim() !== ''),
-        studentCount: values.studentCount || 0,
-        teacherCount: values.teacherCount || 0,
-        industryPartnerCount: values.industryPartnerCount || 0,
     };
 
     setDocumentNonBlocking(schoolDocRef, dataToUpdate, { merge: true });
-    toast({ title: 'Profil Diperbarui', description: 'Informasi sekolah telah berhasil disimpan.' });
+    toast({ title: 'Profil & Teks Diperbarui', description: 'Informasi sekolah telah berhasil disimpan.' });
   }
   
   if (isLoading) {
@@ -115,17 +115,18 @@ export function ProfileManager() {
   return (
     <Card className="shadow-lg rounded-2xl overflow-hidden">
         <CardHeader className="bg-primary/5 border-b">
-            <CardTitle>Identitas & Profil Sekolah</CardTitle>
-            <CardDescription>Kelola informasi inti yang tampil di seluruh bagian website sekolah.</CardDescription>
+            <CardTitle>Konten & Identitas Sekolah</CardTitle>
+            <CardDescription>Kelola seluruh isi teks, profil, dan informasi publik website Anda.</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <Tabs defaultValue="umum" className="w-full">
-                <TabsList className="w-full justify-start rounded-none border-b bg-transparent h-auto p-0">
-                  <TabsTrigger value="umum" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-4 px-6"><Info className="mr-2 h-4 w-4" /> Informasi Umum</TabsTrigger>
-                  <TabsTrigger value="akademik" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-4 px-6"><BarChart3 className="mr-2 h-4 w-4" /> Visi, Misi & Statistik</TabsTrigger>
-                  <TabsTrigger value="sosmed" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-4 px-6"><Globe className="mr-2 h-4 w-4" /> Media Sosial</TabsTrigger>
+                <TabsList className="w-full justify-start rounded-none border-b bg-transparent h-auto p-0 overflow-x-auto">
+                  <TabsTrigger value="umum" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-4 px-6 shrink-0"><Info className="mr-2 h-4 w-4" /> Informasi Umum</TabsTrigger>
+                  <TabsTrigger value="headlines" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-4 px-6 shrink-0"><Type className="mr-2 h-4 w-4" /> Judul & Headlines</TabsTrigger>
+                  <TabsTrigger value="akademik" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-4 px-6 shrink-0"><BarChart3 className="mr-2 h-4 w-4" /> Visi & Sejarah</TabsTrigger>
+                  <TabsTrigger value="sosmed" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-4 px-6 shrink-0"><Globe className="mr-2 h-4 w-4" /> Media Sosial</TabsTrigger>
                 </TabsList>
 
                 <div className="p-6 space-y-6">
@@ -139,7 +140,7 @@ export function ProfileManager() {
                       )} />
                     </div>
                     <FormField control={form.control} name="logoUrl" render={({ field }) => (
-                        <FormItem><FormLabel>URL Logo Sekolah (Google Drive didukung)</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>URL Logo Sekolah</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="address" render={({ field }) => (
                         <FormItem><FormLabel>Alamat Lengkap</FormLabel><FormControl><Textarea {...field} rows={2} /></FormControl><FormMessage /></FormItem>
@@ -158,6 +159,32 @@ export function ProfileManager() {
                       )} />
                       <FormField control={form.control} name="principalMessage" render={({ field }) => (
                           <FormItem className="mt-4"><FormLabel>Sambutan Kepala Sekolah</FormLabel><FormControl><Textarea {...field} rows={4} /></FormControl><FormMessage /></FormItem>
+                      )} />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="headlines" className="space-y-6 mt-0">
+                    <div className="bg-muted/30 p-4 rounded-xl border space-y-4">
+                      <h4 className="font-bold text-sm text-primary uppercase tracking-wider">Bagian Hero (Atas)</h4>
+                      <FormField control={form.control} name="heroTitle" render={({ field }) => (
+                          <FormItem><FormLabel>Judul Utama Hero</FormLabel><FormControl><Input {...field} placeholder="Membangun Masa Depan Generasi Vokasi." /></FormControl><FormDescription className="text-[10px]">Teks besar di bagian paling atas beranda.</FormDescription><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={form.control} name="heroSubtitle" render={({ field }) => (
+                          <FormItem><FormLabel>Sub-judul Hero</FormLabel><FormControl><Input {...field} placeholder="Menyiapkan lulusan yang kompeten..." /></FormControl><FormMessage /></FormItem>
+                      )} />
+                    </div>
+
+                    <div className="bg-muted/30 p-4 rounded-xl border space-y-4">
+                      <h4 className="font-bold text-sm text-primary uppercase tracking-wider">Bagian Sambutan</h4>
+                      <FormField control={form.control} name="welcomeTitle" render={({ field }) => (
+                          <FormItem><FormLabel>Judul Sambutan</FormLabel><FormControl><Input {...field} placeholder="Pendidikan Vokasi Berstandar Industri." /></FormControl><FormMessage /></FormItem>
+                      )} />
+                    </div>
+
+                    <div className="bg-muted/30 p-4 rounded-xl border space-y-4">
+                      <h4 className="font-bold text-sm text-primary uppercase tracking-wider">Bagian Ajakan (CTA)</h4>
+                      <FormField control={form.control} name="ctaTitle" render={({ field }) => (
+                          <FormItem><FormLabel>Judul Banner Bawah</FormLabel><FormControl><Input {...field} placeholder="Siap Menjadi Ahli di Bidangnya?" /></FormControl><FormMessage /></FormItem>
                       )} />
                     </div>
                   </TabsContent>
@@ -208,7 +235,7 @@ export function ProfileManager() {
               <div className="p-6 bg-muted/30 border-t flex justify-end">
                 <Button type="submit" size="lg" className="font-bold shadow-lg" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting ? <LoaderCircle className="animate-spin mr-2"/> : <Save className="mr-2 h-5 w-5" />}
-                  Simpan Perubahan
+                  Simpan Seluruh Konten
                 </Button>
               </div>
             </form>
