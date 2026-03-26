@@ -6,20 +6,16 @@ import {
 } from 'lucide-react';
 
 export type NavLink =
-    // A. Informasi Publik & Branding Sekolah
     'home' | 'profil-sejarah' | 'fasilitas' | 'staf-guru' |
     'berita-pengumuman' | 'agenda-akademik' | 'galeri-foto-video' |
     'jurusan-kompetensi' | 'prestasi-siswa' | 'ekstrakurikuler' | 'perpustakaan' |
     'mitra-industri' | 'bkk' | 'teaching-factory' | 'lsp-sertifikasi' | 'tracer-study' |
     'ppdb-online' | 'cek-status-kelulusan' |
     'kontak' | 'jadwal-pelajaran'|
-
-    // B. Fitur-fitur lain yang belum tentu ada di menu utama
     'struktur-organisasi' | 'testimoni-alumni' | 'virtual-tour' | 'database-alumni' | 'e-learning' | 'e-rapor' | 'absensi-online' |
     'pojok-literasi' | 'osis-corner' | 'forum-diskusi' | 'dokumen-download' | 'prakerin-pkl' | 'portofolio-siswa' |
     'konsultasi-karir' | 'simulasi-ujian' | 'job-matching' | 'pembayaran-spp' | 'login' |
     'buku-tamu' | 'feedback-survey';
-;
 
 export type NavItem = {
     id?: NavLink;
@@ -104,8 +100,8 @@ export type School = {
     teacherCount?: number;
     industryPartnerCount?: number;
     isMaintenanceMode?: boolean;
-    primaryColor?: string; // HSL value
-    accentColor?: string;  // HSL value
+    primaryColor?: string;
+    accentColor?: string;
 };
 
 export type StudentReference = {
@@ -307,6 +303,7 @@ export type TeachingFactoryProduct = {
 };
 
 export type UserProfile = {
+    id?: string;
     email: string;
     displayName?: string;
     role: 'admin' | 'guru' | 'siswa' | 'alumni';

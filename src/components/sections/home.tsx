@@ -54,7 +54,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
   }, [firestore]);
   const { data: partners, isLoading: arePartnersLoading } = useCollection<IndustryPartner>(partnersQuery);
   
-  const formatDate = (date: any) => {
+  const formatDateLabel = (date: any) => {
     if (!date) return '';
     try {
       const jsDate = date.toDate ? date.toDate() : new Date(date);
@@ -66,7 +66,6 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
 
   return (
       <div className="animate-fade-in space-y-24 md:space-y-40 pb-20">
-        {/* HERO SECTION */}
         <section className="relative min-h-[90vh] -mt-20 flex items-center overflow-hidden bg-[#0a0c1b]">
           <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#0a0c1b] via-[#0a0c1b]/80 to-transparent"></div>
           <Image
@@ -88,18 +87,17 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                   Menyiapkan lulusan yang kompeten, berdaya saing global, dan memiliki integritas tinggi untuk memenuhi tantangan industri masa depan.
                 </p>
                 <div className="flex flex-wrap gap-6">
-                  <Button size="lg" onClick={() => setActiveTab('ppdb-online')} className="h-16 px-12 rounded-full font-black text-xl shadow-xl shadow-primary/20 hover:scale-105 transition-all duration-300">
-                      Daftar PPDB <ArrowRight className='ml-2 h-6 w-6' />
-                  </Button>
-                  <Button size="lg" variant="outline" onClick={() => setActiveTab('profil-sejarah')} className="h-16 px-12 rounded-full font-bold text-xl text-white border-white/20 hover:bg-white/10 backdrop-blur-sm">
+                  <button onClick={() => setActiveTab('ppdb-online')} className="bg-primary text-white h-16 px-12 rounded-full font-black text-xl shadow-xl shadow-primary/20 hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                      Daftar PPDB <ArrowRight className='h-6 w-6' />
+                  </button>
+                  <button onClick={() => setActiveTab('profil-sejarah')} className="h-16 px-12 rounded-full font-bold text-xl text-white border border-white/20 hover:bg-white/10 backdrop-blur-sm transition-all">
                       Profil Sekolah
-                  </Button>
+                  </button>
                 </div>
               </div>
           </div>
         </section>
 
-        {/* TRUST BAR */}
         {!arePartnersLoading && partners && partners.length > 0 && (
           <section className="-mt-32 relative z-30 max-w-7xl mx-auto px-6">
              <div className="bg-card shadow-2xl rounded-[3rem] p-8 md:p-12 border border-primary/5">
@@ -116,7 +114,6 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
           </section>
         )}
 
-        {/* ABOUT SECTION */}
         <section className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div className='space-y-8'>
@@ -159,7 +156,6 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
           </div>
         </section>
         
-        {/* MAJORS GRID */}
         <section className="py-32 bg-muted/30 relative">
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="text-center mb-24 space-y-4">
@@ -181,9 +177,9 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                                   </div>
                                   <h3 className="text-3xl font-black font-headline mb-6 group-hover:text-primary transition-colors tracking-tight leading-tight">{major.name}</h3>
                                   <p className="text-muted-foreground text-lg leading-relaxed font-medium flex-grow mb-8">{major.description}</p>
-                                  <Button variant="outline" className="rounded-full font-black border-primary/20 hover:bg-primary hover:text-white" onClick={() => setActiveTab('jurusan-kompetensi')}>
+                                  <button onClick={() => setActiveTab('jurusan-kompetensi')} className="w-fit rounded-full font-black border border-primary/20 hover:bg-primary hover:text-white px-6 py-2 transition-all">
                                     Lihat Kurikulum
-                                  </Button>
+                                  </button>
                              </Card>
                         )
                       })
@@ -192,7 +188,6 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
             </div>
         </section>
 
-        {/* LATEST UPDATES */}
         <section className="py-32 bg-[#0a0c1b] text-white overflow-hidden relative">
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
@@ -200,7 +195,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                         <p className="text-xs font-black uppercase tracking-[0.4em] text-primary">News & Press</p>
                         <h2 className="text-5xl font-black font-headline tracking-tighter leading-tight">Berita <span className='text-primary'>Terkini</span></h2>
                     </div>
-                    <Button size="lg" variant="outline" onClick={() => setActiveTab('berita-pengumuman')} className='rounded-full text-white border-white/20 hover:bg-white/10'>Lihat Semua</Button>
+                    <button onClick={() => setActiveTab('berita-pengumuman')} className='rounded-full text-white border border-white/20 hover:bg-white/10 px-8 py-3 font-bold transition-all'>Lihat Semua</button>
                 </div>
                 <div className="grid md:grid-cols-3 gap-12">
                   {areNewsLoading ? (
@@ -221,7 +216,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                         </div>
                         <CardContent className="p-10 space-y-6">
                           <div className="flex items-center gap-3 text-[10px] font-black text-primary uppercase tracking-[0.2em]">
-                             <Calendar size={14}/> {formatDate(news.datePublished)}
+                             <Calendar size={14}/> {formatDateLabel(news.datePublished)}
                           </div>
                           <h3 className="text-2xl font-black font-headline leading-tight group-hover:text-primary transition-colors line-clamp-2 tracking-tight">{news.title}</h3>
                         </CardContent>
@@ -232,14 +227,13 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
             </div>
         </section>
 
-        {/* CTA FOOTER */}
         <section className="max-w-7xl mx-auto px-6 pb-20">
           <div className="bg-[#0a0c1b] text-white rounded-[4rem] p-12 md:p-32 text-center flex flex-col items-center relative overflow-hidden shadow-2xl">
             <h2 className="text-5xl md:text-7xl font-black font-headline mb-10 leading-[1] tracking-tighter relative z-10">Siap Menjadi <br/> <span className='text-primary'>Ahli di Bidangnya?</span></h2>
             <div className="flex flex-wrap gap-8 justify-center relative z-10">
-                <Button size="lg" className="h-20 px-16 rounded-full font-black text-2xl shadow-2xl" onClick={() => setActiveTab('ppdb-online')}>
+                <button onClick={() => setActiveTab('ppdb-online')} className="bg-primary text-white h-20 px-16 rounded-full font-black text-2xl shadow-2xl hover:scale-105 transition-all">
                     Daftar Sekarang
-                </Button>
+                </button>
             </div>
           </div>
         </section>

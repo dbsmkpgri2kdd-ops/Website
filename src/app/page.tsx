@@ -48,7 +48,6 @@ const AlumniSection = dynamic(() => import('@/components/sections/alumni'), { lo
 const GuestbookSection = dynamic(() => import('@/components/sections/guestbook'), { loading: () => <SectionLoader /> });
 const PrakerinSection = dynamic(() => import('@/components/sections/prakerin'), { loading: () => <SectionLoader /> });
 
-
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<NavLink>('home');
@@ -123,7 +122,6 @@ export default function Home() {
   }
 
   const renderSection = () => {
-    // Logic for Maintenance Mode
     if (schoolData?.isMaintenanceMode && !isAdmin) {
         return (
             <PlaceholderSection 
