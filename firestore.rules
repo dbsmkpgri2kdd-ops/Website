@@ -1,234 +1,27 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // =====================================================================
-    //                            HELPER FUNCTIONS
-    // =====================================================================
-
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    function isPublic() {
-      return true;
-    }
-
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
     function isAdmin() {
-      // Check if the signed-in user has the 'admin' role in their user profile document.
       return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    function isGuru() {
-      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
-    }
-
-    // =====================================================================
-    //                            USER PROFILES
-    // =====================================================================
-    
     match /users/{userId} {
-      // PERINGATAN: Aturan ini longgar untuk mendukung "Mode Setup" pada database baru.
-      // Izinkan user baru membuat profilnya sendiri dan mengubah role-nya sendiri 
-      // (ini diperlukan agar akun pertama bisa mempromosikan diri menjadi admin).
       allow create: if isOwner(userId);
-      
-      // Seorang user bisa mendapatkan profilnya sendiri. Admin bisa melihat semua.
       allow get: if isOwner(userId) || isAdmin();
-      // Hanya admin yang bisa me-list semua user.
       allow list: if isAdmin();
-      // Izinkan user mengupdate profilnya sendiri (termasuk role untuk setup pertama) atau oleh admin.
       allow update: if isOwner(userId) || isAdmin();
-      // Hanya admin yang bisa menghapus profil user.
       allow delete: if isAdmin();
-
-      // Siswa bisa mengelola portofolio mereka sendiri.
-      match /portfolio/{portfolioItemId} {
-        allow read, write: if isOwner(userId);
-      }
     }
-
-    // =====================================================================
-    //                        SCHOOL-SPECIFIC DATA
-    // =====================================================================
 
     match /schools/{schoolId} {
-      // Siapapun bisa melihat profil sekolah.
-      allow get, list: if isPublic();
-      // Hanya admin yang bisa memodifikasi profil sekolah.
-      allow create, update: if isAdmin();
-      allow delete: if false;
-
-      // Subkoleksi di bawah ini mengikuti model: Baca publik / Tulis Admin.
-
-      match /newsArticles/{newsArticleId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-
-        match /comments/{commentId} {
-          allow get, list: if isPublic();
-          allow create: if request.resource.data.articleId == newsArticleId;
-          allow update: if false;
-          allow delete: if isAdmin();
-        }
-      }
+      allow read: if true;
+      allow write: if isAdmin() || (isSignedIn() && !exists(/databases/$(database)/documents/schools/$(schoolId)));
       
-      match /literacyArticles/{literacyArticleId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /osisPosts/{osisPostId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-      
-      match /achievements/{achievementId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin() || isGuru();
-      }
-
-      match /testimonials/{testimonialId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /majors/{majorId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-      
-      match /extracurriculars/{extracurricularId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-      
-      match /quickLinks/{linkId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-      
-      match /extracurricularApplications/{applicationId} {
-        allow list, get, delete: if isAdmin();
-        allow create: if request.resource.data.studentName is string
-                      && request.resource.data.studentClass is string
-                      && request.resource.data.extracurricularName is string;
-        allow update: if false;
-      }
-
-      match /facilities/{facilityId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /gallery/{galleryImageId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-      
-      match /industryPartners/{partnerId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /studentApplications/{studentApplicationId} {
-        allow list, get, delete: if isAdmin();
-        allow update: if false;
-        allow create: if request.resource.data.schoolId == schoolId
-                      && request.resource.data.studentName is string
-                      && request.resource.data.chosenMajor is string
-                      && request.resource.data.parentPhone is string;
-      }
-
-      match /guestbookEntries/{guestbookEntryId} {
-        allow list, get: if isPublic();
-        allow create: if request.resource.data.name is string 
-                      && request.resource.data.origin is string 
-                      && request.resource.data.message is string;
-        allow update: if false;
-        allow delete: if isAdmin();
-      }
-
-      match /events/{eventId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /downloadableFiles/{fileId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /schedules/{scheduleId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /books/{bookId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /teachers/{teacherId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /alumni/{alumnusId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /jobVacancies/{jobVacancyId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-
-      match /teachingFactoryProducts/{productId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-      
-      match /lspCertifications/{certificationId} {
-        allow get, list: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-      
-      match /tracerStudyResponses/{responseId} {
-        allow get, list, delete: if isAdmin();
-        allow create: if request.resource.data.name is string
-                      && request.resource.data.graduationYear is string
-                      && request.resource.data.status is string;
-        allow update: if false;
-      }
-
-      match /graduationStatuses/{statusId} {
-        allow list, get: if isPublic();
-        allow create, update, delete: if isAdmin();
-      }
-      
-      match /prakerin/{prakerinId} {
-        allow read, write: if isAdmin() || isGuru();
-      }
-
-      match /attendance/{recordId} {
-        allow write: if isAdmin() || isGuru();
-        allow read: if isAdmin() || isGuru() || 
-                     (isSignedIn() && resource.data.studentId == request.auth.uid);
-      }
-
-      match /eRapors/{eRaporId} {
-        allow read: if isAdmin() || isGuru() || (isSignedIn() && get(/databases/$(database)/documents/schools/$(schoolId)/eRapors/$(eRaporId)).data.studentId == request.auth.uid);
-        allow write: if isAdmin() || isGuru();
-
-        match /grades/{gradeId} {
-          allow read: if isAdmin() || isGuru() || (isSignedIn() && get(/databases/$(database)/documents/schools/$(schoolId)/eRapors/$(eRaporId)).data.studentId == request.auth.uid);
-          allow write: if isAdmin() || isGuru();
-        }
+      match /{allSubcollections=**} {
+        allow read: if true;
+        allow write: if isAdmin();
       }
     }
   }
