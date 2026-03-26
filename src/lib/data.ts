@@ -103,6 +103,14 @@ export type School = {
     isMaintenanceMode?: boolean;
     primaryColor?: string;
     accentColor?: string;
+    layoutSettings?: {
+      showHero?: boolean;
+      showPartners?: boolean;
+      showStats?: boolean;
+      showMajors?: boolean;
+      showNews?: boolean;
+      showCta?: boolean;
+    };
 };
 
 export type QuickLink = {

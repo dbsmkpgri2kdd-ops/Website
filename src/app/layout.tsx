@@ -1,3 +1,4 @@
+
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -5,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
 import { Montserrat, Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeSync } from '@/components/theme-sync';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -56,6 +58,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <FirebaseClientProvider>
+              <ThemeSync />
               {children}
             </FirebaseClientProvider>
             <Toaster />
