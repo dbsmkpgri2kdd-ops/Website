@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
@@ -8,10 +9,8 @@ import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 import { useDoc } from './firestore/use-doc';
 import type { UserProfile } from '@/lib/data';
 
-// The combined user object, including the Firestore profile
 export type AppUser = User & { profile: UserProfile | null };
 
-// Result for the new useUser hook
 export interface UserHookResult {
   user: AppUser | null;
   isLoading: boolean;
@@ -25,14 +24,12 @@ interface FirebaseProviderProps {
   auth: Auth;
 }
 
-// Internal state for basic user authentication
 interface BasicUserAuthState {
   user: User | null;
   isUserLoading: boolean;
   userError: Error | null;
 }
 
-// The core context state, still provides raw services
 export interface FirebaseContextState {
   firebaseApp: FirebaseApp | null;
   firestore: Firestore | null;
@@ -40,8 +37,6 @@ export interface FirebaseContextState {
 }
 
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
-
-// A tracker to ensure Firestore references/queries are properly memoized
 export const firebaseMemoTracker = new WeakSet<object>();
 
 export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
@@ -64,15 +59,6 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   );
 };
 
-
-/**
- * HOOKS
- */
-
-/**
- * Internal hook to get the basic Firebase Auth user state.
- * Also handles auto-creation of profile in Firestore if missing.
- */
 const useBasicAuthUser = (): BasicUserAuthState => {
   const [userAuthState, setUserAuthState] = useState<BasicUserAuthState>({
     user: null,
@@ -92,28 +78,24 @@ const useBasicAuthUser = (): BasicUserAuthState => {
       auth,
       async (firebaseUser) => {
         if (firebaseUser) {
-          // Check if profile exists, if not create default
           const userDocRef = doc(firestore, 'users', firebaseUser.uid);
           try {
             const docSnap = await getDoc(userDocRef);
             if (!docSnap.exists()) {
-              // Create default profile for new user
+              // Create default profile for any new signups
+              // By default role is 'siswa', but rules allow owner to change it to 'admin'
               await setDoc(userDocRef, {
                 email: firebaseUser.email,
-                displayName: firebaseUser.displayName || 'Pengguna Baru',
-                role: 'siswa', // Default role for new signups
+                displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+                role: 'siswa', 
                 createdAt: serverTimestamp(),
               });
             }
           } catch (err) {
-            console.error("Error creating/checking user profile:", err);
+            console.error("Auto-Profile Sync Error:", err);
           }
         }
         setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
-      },
-      (error) => {
-        console.error("useBasicAuthUser: onAuthStateChanged error:", error);
-        setUserAuthState({ user: null, isUserLoading: false, userError: error });
       }
     );
     return () => unsubscribe();
@@ -122,15 +104,10 @@ const useBasicAuthUser = (): BasicUserAuthState => {
   return userAuthState;
 }
 
-
-/**
- * Hook to access core Firebase services.
- * Throws error if core services are not available or used outside provider.
- */
 const useFirebaseServices = () => {
     const context = useContext(FirebaseContext);
     if (context === undefined || !context.firebaseApp || !context.firestore || !context.auth) {
-        throw new Error('useFirebaseServices must be used within a FirebaseProvider with all services available.');
+        throw new Error('useFirebaseServices must be used within a FirebaseProvider.');
     }
     return {
         firebaseApp: context.firebaseApp,
@@ -139,17 +116,10 @@ const useFirebaseServices = () => {
     };
 }
 
-/** Hook to access Firebase Auth instance. */
 export const useAuth = (): Auth => useFirebaseServices().auth;
-/** Hook to access Firestore instance. */
 export const useFirestore = (): Firestore => useFirebaseServices().firestore;
-/** Hook to access Firebase App instance. */
 export const useFirebaseApp = (): FirebaseApp => useFirebaseServices().firebaseApp;
 
-
-/**
- * The main user hook.
- */
 export const useUser = (): UserHookResult => {
   const { user: authUser, isUserLoading: isAuthLoading, userError: authError } = useBasicAuthUser();
   const services = useContext(FirebaseContext);
@@ -168,7 +138,6 @@ export const useUser = (): UserHookResult => {
     error: profileError,
   } = useDoc<UserProfile>(userDocRef);
 
-
   const isLoading = isAuthLoading || (!!authUser && isProfileLoading);
   const error = authError || profileError;
 
@@ -185,16 +154,12 @@ export const useUser = (): UserHookResult => {
   return { user, isLoading, error };
 };
 
-
 export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T {
   const memoized = useMemo(() => factory(), deps); 
-  
   if (memoized && typeof memoized === 'object' && memoized !== null) {
     try {
       firebaseMemoTracker.add(memoized);
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
   }
   return memoized;
 }

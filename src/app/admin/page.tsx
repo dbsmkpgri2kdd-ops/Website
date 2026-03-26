@@ -5,9 +5,10 @@ import { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { 
   LogOut, User as UserIcon, LayoutDashboard, Settings, FileBox, Users2, 
-  GraduationCap, Building2, Briefcase, Database, Bell, Search, Menu, X, 
+  GraduationCap, Building2, Briefcase, Database, Bell, Menu, X, 
   ChevronRight, Laptop, Newspaper, Calendar, Link as LinkIcon,
-  PenSquare, CalendarClock, UserCog, UserPlus, ShieldAlert, ArrowRightLeft, DatabaseZap
+  PenSquare, CalendarClock, UserCog, UserPlus, ShieldAlert, ArrowRightLeft, DatabaseZap,
+  ShieldCheck
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -18,9 +19,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 // Modul Managers
 import { OverviewManager } from '@/components/admin/overview-manager';
@@ -54,7 +55,9 @@ function AdminDashboard() {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState<AdminTab>('overview');
+  
+  const isAdmin = user?.profile?.role === 'admin';
+  const [activeTab, setActiveTab] = useState<AdminTab>(isAdmin ? 'overview' : 'users');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -90,13 +93,19 @@ function AdminDashboard() {
     { label: 'Konfigurasi Web', value: 'settings', icon: Settings, group: 'Sistem' },
   ];
 
-  const groupedNav = navItems.reduce((acc, item) => {
+  const filteredNavItems = isAdmin 
+    ? navItems 
+    : navItems.filter(item => item.value === 'users');
+
+  const groupedNav = filteredNavItems.reduce((acc, item) => {
     if (!acc[item.group]) acc[item.group] = [];
     acc[item.group].push(item);
     return acc;
   }, {} as Record<string, typeof navItems>);
 
   const renderContent = () => {
+    if (!isAdmin && activeTab !== 'users') return <UsersManager />;
+
     switch (activeTab) {
       case 'overview': return <OverviewManager />;
       case 'school-profile': return <ProfileManager />;
@@ -140,12 +149,10 @@ function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background flex overflow-hidden">
-      {/* Sidebar Overlay for Mobile */}
       {isSidebarOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsSidebarOpen(false)} />
       )}
 
-      {/* Sidebar */}
       <aside className={cn(
         "fixed lg:sticky top-0 left-0 h-screen w-72 bg-card border-r z-[70] transition-transform duration-300 flex flex-col shadow-2xl lg:shadow-none",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
@@ -163,6 +170,15 @@ function AdminDashboard() {
         </div>
 
         <ScrollArea className="flex-grow p-4">
+          {!isAdmin && (
+            <div className="mb-6">
+              <Alert variant="destructive" className="bg-destructive/5 border-destructive/20 p-3 rounded-xl">
+                <ShieldAlert className="h-4 w-4" />
+                <AlertTitle className="text-[10px] font-bold uppercase">Setup Mode</AlertTitle>
+                <AlertDescription className="text-[9px] leading-tight">Klik tab 'User Role' untuk mengaktifkan akses Admin Anda.</AlertDescription>
+              </Alert>
+            </div>
+          )}
           <div className="space-y-6">
             {Object.entries(groupedNav).map(([group, items]) => (
               <div key={group} className="space-y-1">
@@ -180,7 +196,7 @@ function AdminDashboard() {
             </Avatar>
             <div className="flex-1 overflow-hidden">
               <p className="text-xs font-bold truncate">{user?.profile?.displayName || user?.email}</p>
-              <Badge variant="secondary" className="text-[9px] h-4 py-0 font-bold uppercase">Administrator</Badge>
+              <Badge variant="secondary" className="text-[9px] h-4 py-0 font-bold uppercase">{user?.profile?.role || 'Siswa'}</Badge>
             </div>
           </div>
           <Button onClick={handleLogout} variant="ghost" className="w-full justify-start rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5">
@@ -189,7 +205,6 @@ function AdminDashboard() {
         </div>
       </aside>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <header className="h-16 border-b bg-background/80 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 shrink-0 z-30">
           <div className="flex items-center gap-2 md:gap-4">
@@ -221,7 +236,7 @@ function AdminDashboard() {
 
 export default function AdminPage() {
     return (
-        <ProtectedRoute allowedRoles={['admin']}>
+        <ProtectedRoute allowedRoles={['admin', 'guru', 'siswa', 'alumni']}>
             <AdminDashboard />
         </ProtectedRoute>
     )
