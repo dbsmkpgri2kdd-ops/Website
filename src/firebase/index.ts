@@ -13,16 +13,20 @@ export type FirebaseServices = {
 };
 
 export function initializeFirebase(): FirebaseServices {
+  // Cegah error inisialisasi di sisi server (SSR)
   if (typeof window === 'undefined') {
     return { firebaseApp: null, auth: null, firestore: null };
   }
 
   try {
+    // Periksa apakah konfigurasi sudah diisi (tidak kosong)
+    const isConfigValid = firebaseConfig && firebaseConfig.projectId && firebaseConfig.projectId !== "";
+    
+    if (!isConfigValid) {
+      return { firebaseApp: null, auth: null, firestore: null };
+    }
+
     if (!getApps().length) {
-      if (!firebaseConfig.projectId) {
-        console.warn('Firebase Project ID is missing. Please use the "Connect to Firebase" button.');
-        return { firebaseApp: null, auth: null, firestore: null };
-      }
       const app = initializeApp(firebaseConfig);
       return {
         firebaseApp: app,
@@ -30,6 +34,7 @@ export function initializeFirebase(): FirebaseServices {
         firestore: getFirestore(app)
       };
     }
+    
     const app = getApp();
     return {
       firebaseApp: app,
@@ -41,6 +46,12 @@ export function initializeFirebase(): FirebaseServices {
     return { firebaseApp: null, auth: null, firestore: null };
   }
 }
+
+// Inisialisasi layanan secara aman
+const services = initializeFirebase();
+export const firebaseApp = services.firebaseApp;
+export const auth = services.auth;
+export const firestore = services.firestore;
 
 export * from './provider';
 export * from './client-provider';

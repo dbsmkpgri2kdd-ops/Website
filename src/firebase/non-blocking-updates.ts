@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -14,6 +15,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 
 /**
  * Operasi tulis Firestore yang tidak memblokir UI (Optimistic).
+ * Menangani error perizinan secara global melalui errorEmitter.
  */
 
 export function setDocumentNonBlocking(docRef: DocumentReference, data: any, options: SetOptions = {}) {

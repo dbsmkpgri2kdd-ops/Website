@@ -31,9 +31,9 @@ export interface FirebaseContextState {
 }
 
 export interface FirebaseServicesAndUser {
-  firebaseApp: FirebaseApp;
-  firestore: Firestore;
-  auth: Auth;
+  firebaseApp: FirebaseApp | null;
+  firestore: Firestore | null;
+  auth: Auth | null;
   user: User | null;
   isUserLoading: boolean;
   userError: Error | null;
@@ -75,7 +75,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           }
           setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         } catch (error) {
-          console.error("Auth sync error:", error);
+          // Silent catch for initial setup/permission issues
           setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         }
       } else {
@@ -109,10 +109,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 export const useFirebase = (): FirebaseServicesAndUser => {
   const context = useContext(FirebaseContext);
   if (context === undefined) throw new Error('useFirebase must be used within a FirebaseProvider.');
-  if (!context.areServicesAvailable || !context.firebaseApp || !context.firestore || !context.auth) {
-    // This will be caught by error boundaries or handled in components
-    throw new Error('Firebase services are not configured yet.');
-  }
+  // Return context directly, allowing the caller to handle null services if not configured
   return {
     firebaseApp: context.firebaseApp,
     firestore: context.firestore,

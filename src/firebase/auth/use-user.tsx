@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -16,16 +17,21 @@ export function useUser() {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    // Jika Firebase belum siap (unconfigured), hentikan loading dengan status null
+    if (!auth || !firestore) {
+      setIsLoading(false);
+      return;
+    }
+
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        // Jika user login, dengarkan perubahan profil di Firestore
         const userDocRef = doc(firestore, 'users', firebaseUser.uid);
         const unsubscribeProfile = onSnapshot(userDocRef, (docSnap) => {
           const profile = docSnap.exists() ? docSnap.data() as UserProfile : null;
           setUser({ ...firebaseUser, profile } as AppUser);
           setIsLoading(false);
         }, (err) => {
-          console.error("Error fetching user profile:", err);
+          console.warn("User profile sync pending or inaccessible:", err.message);
           setUser({ ...firebaseUser, profile: null } as AppUser);
           setIsLoading(false);
         });
