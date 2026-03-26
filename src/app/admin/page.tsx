@@ -5,8 +5,8 @@ import { signOut } from 'firebase/auth';
 import { 
   LogOut, User as UserIcon, LayoutDashboard, Settings, FileBox, Users2, 
   GraduationCap, Building2, Briefcase, Database, Bell, Search, Menu, X, 
-  ChevronRight, Laptop, MonitorDot, DatabaseZap, Newspaper, Calendar, 
-  PenSquare, CalendarClock, UserCog, UserPlus, ShieldAlert, ArrowRightLeft
+  ChevronRight, Laptop, Newspaper, Calendar, 
+  PenSquare, CalendarClock, UserCog, UserPlus, ShieldAlert, ArrowRightLeft, DatabaseZap
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -29,38 +29,23 @@ import { ProfileManager } from '@/components/admin/profile-manager';
 import { GalleryManager } from '@/components/admin/gallery-manager';
 import { FacilitiesManager } from '@/components/admin/facilities-manager';
 import { ApplicationsManager } from '@/components/admin/applications-manager';
-import { AchievementsManager } from '@/components/admin/achievements-manager';
-import { TestimonialsManager } from '@/components/admin/testimonials-manager';
-import { ExtracurricularsManager } from '@/components/admin/extracurriculars-manager';
-import { GuestbookManager } from '@/components/admin/guestbook-manager';
 import { AgendaManager } from '@/components/admin/agenda-manager';
-import { DownloadManager } from '@/components/shared/download-manager';
 import { ScheduleManager } from '@/components/admin/schedule-manager';
-import { LibraryManager } from '@/components/admin/library-manager';
 import { LiteracyManager } from '@/components/admin/literacy-manager';
 import { OsisManager } from '@/components/admin/osis-manager';
-import { ExtracurricularApplicationsManager } from '@/components/admin/extracurricular-applications-manager';
 import { IndustryPartnersManager } from '@/components/admin/industry-partners-manager';
 import { TeachersManager } from '@/components/admin/teachers-manager';
-import { AlumniManager } from '@/components/admin/alumni-manager';
 import { JobVacanciesManager } from '@/components/admin/job-vacancies-manager';
-import { TeachingFactoryManager } from '@/components/admin/teaching-factory-manager';
-import { LspManager } from '@/components/admin/lsp-manager';
-import { TracerStudyManager } from '@/components/admin/tracer-study-manager';
 import { ManajemenPrakerin } from '@/components/shared/manajemen-prakerin';
 import { UsersManager } from '@/components/admin/users-manager';
 import { ERaporManager } from '@/components/shared/e-rapor-manager';
-import { GraduationStatusManager } from '@/components/admin/graduation-status-manager';
 import { ManajemenAbsensi } from '@/components/guru/manajemen-absensi';
 import { SystemSettingsManager } from '@/components/admin/system-settings-manager';
 
 type AdminTab = 
   | 'overview' | 'school-profile' | 'majors' | 'teachers' | 'facilities' | 'gallery'
-  | 'news' | 'agenda' | 'osis' | 'literacy' | 'testimonials' | 'achievements'
-  | 'schedule' | 'rapor' | 'attendance' | 'library' | 'downloads'
-  | 'partners' | 'jobs' | 'prakerin' | 'tefa' | 'lsp'
-  | 'ppdb' | 'eskul-apps' | 'alumni' | 'tracer' | 'graduation'
-  | 'users' | 'guestbook' | 'settings';
+  | 'news' | 'agenda' | 'osis' | 'literacy' | 'schedule' | 'rapor' | 'attendance'
+  | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings';
 
 function AdminDashboard() {
   const { user } = useUser();
@@ -137,7 +122,7 @@ function AdminDashboard() {
     <button
       onClick={() => { setActiveTab(item.value as AdminTab); setIsSidebarOpen(false); }}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-3 md:py-2.5 rounded-xl text-sm font-medium transition-all group",
+        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all group",
         activeTab === item.value 
           ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -150,7 +135,7 @@ function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex overflow-hidden">
       {/* Sidebar Overlay for Mobile */}
       {isSidebarOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsSidebarOpen(false)} />
@@ -161,9 +146,9 @@ function AdminDashboard() {
         "fixed lg:sticky top-0 left-0 h-screen w-72 bg-card border-r z-[70] transition-transform duration-300 flex flex-col shadow-2xl lg:shadow-none",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="p-6 border-b flex items-center justify-between">
+        <div className="p-6 border-b flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <div className="bg-primary text-white p-1.5 rounded-lg shadow-lg shadow-primary/20">
+            <div className="bg-primary text-white p-1.5 rounded-lg shadow-lg">
               <DatabaseZap size={20} />
             </div>
             <span className="font-bold text-xl font-headline tracking-tight text-primary">hPanel <span className='text-foreground font-normal'>v2.0</span></span>
@@ -184,13 +169,13 @@ function AdminDashboard() {
           </div>
         </ScrollArea>
 
-        <div className="p-4 border-t bg-muted/20">
+        <div className="p-4 border-t bg-muted/20 shrink-0">
           <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-primary/5 mb-4">
             <Avatar className="h-10 w-10 border-2 border-primary/10">
               <AvatarFallback className="bg-primary/5 text-primary"><UserIcon size={20} /></AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-xs font-bold truncate">{user?.profile?.displayName}</p>
+              <p className="text-xs font-bold truncate">{user?.profile?.displayName || user?.email}</p>
               <Badge variant="secondary" className="text-[9px] h-4 py-0 font-bold uppercase">Administrator</Badge>
             </div>
           </div>
@@ -207,32 +192,21 @@ function AdminDashboard() {
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSidebarOpen(true)}>
               <Menu size={20} className="text-primary" />
             </Button>
-            <div>
-              <h1 className="font-bold text-base md:text-lg text-foreground/90 truncate max-w-[150px] md:max-w-none">
-                {navItems.find(i => i.value === activeTab)?.label || 'Dasbor'}
-              </h1>
-            </div>
+            <h1 className="font-bold text-base md:text-lg text-foreground/90 truncate">
+              {navItems.find(i => i.value === activeTab)?.label || 'Dasbor'}
+            </h1>
           </div>
           
-          <div className="flex items-center gap-2 md:gap-3">
-            <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input 
-                type="text" 
-                placeholder="Cari fitur..." 
-                className="pl-9 h-9 w-48 lg:w-64 rounded-full bg-muted/50 border border-primary/5 text-xs focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all outline-none"
-              />
-            </div>
-            <Separator orientation="vertical" className="h-6 mx-1 hidden sm:block" />
+          <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="rounded-full relative">
-              <Bell size={18} md:size={20} />
+              <Bell size={18} />
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-destructive rounded-full border-2 border-background" />
             </Button>
           </div>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/10">
-          <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-20">
+          <div className="max-w-6xl mx-auto space-y-6">
             {renderContent()}
           </div>
         </main>

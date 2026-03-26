@@ -1,7 +1,7 @@
 /**
- * Konfigurasi Firebase untuk Proyek Baru.
- * Catatan: Nilai-nilai ini akan otomatis diperbarui oleh Firebase Studio 
- * saat menghubungkan ke proyek yang baru dibuat.
+ * Konfigurasi Firebase untuk Proyek Produksi Baru.
+ * Nilai-nilai ini akan otomatis diperbarui oleh Firebase Studio 
+ * saat Anda menghubungkan ke proyek yang baru dibuat.
  */
 export const firebaseConfig = {
   apiKey: "REPLACED_BY_STUDIO",

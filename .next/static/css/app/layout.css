@@ -1310,6 +1310,12 @@ video {
 .z-\[70\] {
   z-index: 70;
 }
+.order-1 {
+  order: 1;
+}
+.order-2 {
+  order: 2;
+}
 .col-span-2 {
   grid-column: span 2 / span 2;
 }
@@ -1456,6 +1462,12 @@ video {
 }
 .mt-8 {
   margin-top: 2rem;
+}
+.-mt-12 {
+  margin-top: -3rem;
+}
+.mb-16 {
+  margin-bottom: 4rem;
 }
 .line-clamp-2 {
   overflow: hidden;
@@ -1613,6 +1625,12 @@ video {
 .h-\[300px\] {
   height: 300px;
 }
+.h-\[250px\] {
+  height: 250px;
+}
+.h-\[350px\] {
+  height: 350px;
+}
 .max-h-16 {
   max-height: 4rem;
 }
@@ -1645,6 +1663,9 @@ video {
 }
 .min-h-\[85vh\] {
   min-height: 85vh;
+}
+.min-h-\[80vh\] {
+  min-height: 80vh;
 }
 .w-0 {
   width: 0px;
@@ -2737,6 +2758,9 @@ video {
 }
 .pb-24 {
   padding-bottom: 6rem;
+}
+.pt-16 {
+  padding-top: 4rem;
 }
 .text-left {
   text-align: left;
@@ -4203,6 +4227,10 @@ video {
     margin-top: 0px;
   }
 
+  .md\:mt-16 {
+    margin-top: 4rem;
+  }
+
   .md\:block {
     display: block;
   }
@@ -4295,6 +4323,14 @@ video {
     width: fit-content;
   }
 
+  .md\:w-14 {
+    width: 3.5rem;
+  }
+
+  .md\:w-16 {
+    width: 4rem;
+  }
+
   .md\:max-w-\[420px\] {
     max-width: 420px;
   }
@@ -4361,6 +4397,10 @@ video {
 
   .md\:gap-8 {
     gap: 2rem;
+  }
+
+  .md\:gap-16 {
+    gap: 4rem;
   }
 
   .md\:space-y-40 > :not([hidden]) ~ :not([hidden]) {
@@ -4484,6 +4524,10 @@ video {
     padding-top: 0px;
   }
 
+  .md\:pt-24 {
+    padding-top: 6rem;
+  }
+
   .md\:text-left {
     text-align: left;
   }
@@ -4553,6 +4597,14 @@ video {
     position: sticky;
   }
 
+  .lg\:order-1 {
+    order: 1;
+  }
+
+  .lg\:order-2 {
+    order: 2;
+  }
+
   .lg\:col-span-1 {
     grid-column: span 1 / span 1;
   }
@@ -4563,6 +4615,11 @@ video {
 
   .lg\:col-span-3 {
     grid-column: span 3 / span 3;
+  }
+
+  .lg\:mx-0 {
+    margin-left: 0px;
+    margin-right: 0px;
   }
 
   .lg\:flex {
@@ -4622,6 +4679,10 @@ video {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
+  .lg\:justify-start {
+    justify-content: flex-start;
+  }
+
   .lg\:p-8 {
     padding: 2rem;
   }
@@ -4629,6 +4690,10 @@ video {
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;
+  }
+
+  .lg\:text-left {
+    text-align: left;
   }
 
   .lg\:text-xl {

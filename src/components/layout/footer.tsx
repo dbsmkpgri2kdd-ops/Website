@@ -30,12 +30,12 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
   
   const columns = [
     {
-        title: "Tentang Sekolah",
+        title: "Profil",
         links: [
-            { id: 'profil-sejarah', label: 'Profil & Sejarah' },
+            { id: 'profil-sejarah', label: 'Sejarah' },
             { id: 'fasilitas', label: 'Fasilitas' },
-            { id: 'staf-guru', label: 'Staf & Guru' },
-            { id: 'kontak', label: 'Kontak Kami' },
+            { id: 'staf-guru', label: 'Guru & Staf' },
+            { id: 'kontak', label: 'Kontak' },
         ]
     },
     {
@@ -43,32 +43,32 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
         links: [
             { id: 'jurusan-kompetensi', label: 'Jurusan' },
             { id: 'jadwal-pelajaran', label: 'Jadwal' },
-            { id: 'perpustakaan', label: 'Perpustakaan' },
-            { id: 'ekstrakurikuler', label: 'Ekstrakurikuler' },
+            { id: 'perpustakaan', label: 'Library' },
+            { id: 'ekstrakurikuler', label: 'Ekskul' },
         ]
     },
     {
-        title: "Layanan Siswa",
+        title: "Layanan",
         links: [
-            { id: 'ppdb-online', label: 'PPDB Online' },
-            { id: 'bkk', label: 'Bursa Kerja (BKK)' },
-            { id: 'prakerin-pkl', label: 'Prakerin/PKL' },
-            { id: 'cek-status-kelulusan', label: 'Cek Kelulusan' },
+            { id: 'ppdb-online', label: 'PPDB' },
+            { id: 'bkk', label: 'Bursa Kerja' },
+            { id: 'prakerin-pkl', label: 'Prakerin' },
+            { id: 'cek-status-kelulusan', label: 'Kelulusan' },
         ]
     }
   ];
 
   return (
-    <footer className="bg-[#0a0c1b] text-white pt-24 pb-12 overflow-hidden relative">
+    <footer className="bg-[#0a0c1b] text-white pt-16 md:pt-24 pb-12 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -mr-48 -mt-48"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-[120px] -ml-48 -mb-48"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 mb-16">
         
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6 md:space-y-8">
             <div className="flex items-center gap-4">
-               <div className="w-14 h-14 bg-white p-2 rounded-2xl shadow-2xl relative overflow-hidden">
+               <div className="w-12 h-12 md:w-14 md:h-14 bg-white p-2 rounded-2xl shadow-2xl relative overflow-hidden">
                   {isSchoolDataLoading ? (
                       <Skeleton className="w-full h-full rounded-lg" />
                   ) : (
@@ -81,7 +81,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                       />
                   )}
                </div>
-              <div className="font-black text-2xl font-headline tracking-tighter">
+              <div className="font-black text-xl md:text-2xl font-headline tracking-tighter">
                 {isSchoolDataLoading ? <Skeleton className="h-8 w-40" /> : (schoolData?.shortName || "SMKS PGRI 2")}
               </div>
             </div>
@@ -89,7 +89,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
             <div className="space-y-4 text-gray-400">
                 <div className="flex items-start gap-3">
                     <MapPin size={20} className="text-primary mt-1 shrink-0" />
-                    <div className="text-sm leading-relaxed flex-1">
+                    <div className="text-xs md:text-sm leading-relaxed flex-1">
                       {isSchoolDataLoading ? (
                         <Skeleton className="h-4 w-full" />
                       ) : (
@@ -99,7 +99,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 </div>
                 <div className="flex items-center gap-3">
                     <Phone size={18} className="text-primary shrink-0" />
-                    <div className="text-sm flex-1">
+                    <div className="text-xs md:text-sm flex-1">
                       {isSchoolDataLoading ? (
                         <Skeleton className="h-4 w-32" />
                       ) : (
@@ -109,7 +109,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 </div>
                 <div className="flex items-center gap-3">
                     <Mail size={18} className="text-primary shrink-0" />
-                    <div className="text-sm flex-1">
+                    <div className="text-xs md:text-sm flex-1">
                       {isSchoolDataLoading ? (
                         <Skeleton className="h-4 w-40" />
                       ) : (
@@ -144,14 +144,14 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           </div>
           
           {columns.map((col, idx) => (
-            <div key={idx} className="lg:col-span-1 space-y-6">
-                <h5 className="font-black text-xs uppercase tracking-[0.2em] text-primary">{col.title}</h5>
-                <ul className="space-y-4">
+            <div key={idx} className="lg:col-span-1 space-y-4 md:space-y-6">
+                <h5 className="font-black text-[10px] uppercase tracking-[0.2em] text-primary">{col.title}</h5>
+                <ul className="space-y-3 md:space-y-4">
                     {col.links.map(link => (
                         <li key={link.label}>
                             <button 
                                 onClick={() => setActiveTab(link.id as NavLink)} 
-                                className="text-gray-400 hover:text-white text-sm transition-colors duration-300 flex items-center group font-medium"
+                                className="text-gray-400 hover:text-white text-xs md:text-sm transition-colors duration-300 flex items-center group font-medium"
                             >
                                 <span className="w-0 group-hover:w-2 h-[1px] bg-primary mr-0 group-hover:mr-2 transition-all"></span>
                                 {link.label}
@@ -163,15 +163,15 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           ))}
         </div>
 
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-gray-500 text-xs font-bold uppercase tracking-widest">
+        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-gray-500 text-[10px] font-bold uppercase tracking-widest">
           <div className="flex flex-col md:flex-row items-center gap-2 text-center md:text-left">
             <span>© {currentYear || '2024'} {schoolData?.name || "SMKS PGRI 2 KEDONDONG"}.</span>
             <span className="hidden md:inline">|</span>
-            <span>Dibuat dengan dedikasi.</span>
+            <span>Educational Excellence</span>
           </div>
           <div className="flex gap-8">
-            <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Privacy</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Terms</span>
           </div>
         </div>
       </div>

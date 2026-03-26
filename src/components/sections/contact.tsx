@@ -36,20 +36,20 @@ const ContactSection = ({ schoolData, isSchoolDataLoading }: ContactSectionProps
   return (
     <section className="py-16 max-w-7xl mx-auto px-6 animate-fade-in">
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold font-headline text-primary">Hubungi Kami</h2>
-        <p className="text-lg text-muted-foreground mt-2">Kami siap membantu Anda. Jangan ragu untuk menghubungi kami.</p>
+        <h2 className="text-3xl md:text-4xl font-bold font-headline text-primary">Hubungi Kami</h2>
+        <p className="text-base md:text-lg text-muted-foreground mt-2">Kami siap membantu Anda. Jangan ragu untuk menghubungi kami.</p>
       </div>
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-6 md:gap-8">
         {contactInfo.map((info) => (
           <Card key={info.label} className="rounded-2xl text-center shadow-lg p-6 flex flex-col items-center">
             <CardHeader className="p-0 mb-4">
-              <div className={`w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto`}>
-                <info.icon size={28} />
+              <div className={`w-14 h-14 md:w-16 md:h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto`}>
+                <info.icon size={24} />
               </div>
             </CardHeader>
             <CardContent className="p-0 w-full">
-              <h4 className="font-bold mb-2 text-xl font-headline">{info.label}</h4>
-              <div className="text-sm text-muted-foreground leading-relaxed">
+              <h4 className="font-bold mb-2 text-lg md:text-xl font-headline">{info.label}</h4>
+              <div className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                 {info.isLoading ? (
                   <Skeleton className='h-4 w-4/5 mx-auto' />
                 ) : (
@@ -61,9 +61,9 @@ const ContactSection = ({ schoolData, isSchoolDataLoading }: ContactSectionProps
         ))}
       </div>
 
-      <div className="mt-16 h-96 rounded-3xl overflow-hidden shadow-xl border bg-muted flex items-center justify-center relative">
+      <div className="mt-12 md:mt-16 h-[300px] md:h-96 rounded-3xl overflow-hidden shadow-xl border bg-muted flex items-center justify-center relative">
          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.045391515949!2d112.00693247500475!3d-7.78502579223366!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e785d34231b1369%3A0x2655d8d4745c1477!2sSMK%20PGRI%202%20KEDIRI!5e0!3m2!1sen!2sid!4v1700000000000" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15844.414414141414!2d105.1!3d-5.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNcKwMjQnMDAuMCJTIDEwNcKwMDYnMDAuMCJF!5e0!3m2!1sen!2sid!4v1700000000000" 
             width="100%" 
             height="100%" 
             style={{border:0}} 
