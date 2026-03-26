@@ -40,6 +40,25 @@ const formSchema = z.object({
 
 const STATUS_OPTIONS: Prakerin['status'][] = ["Aktif", "Selesai", "Dibatalkan"];
 
+const safeToDate = (date: any): Date | undefined => {
+    if (!date) return undefined;
+    if (typeof date.toDate === 'function') {
+      return date.toDate();
+    }
+    if (date instanceof Date) {
+      return date;
+    }
+    try {
+        const parsedDate = new Date(date);
+        if (!isNaN(parsedDate.getTime())) {
+            return parsedDate;
+        }
+    } catch (e) {
+        return undefined;
+    }
+    return undefined;
+  };
+
 export function ManajemenPrakerin() {
   const { toast } = useToast();
   const firestore = useFirestore();
@@ -76,8 +95,8 @@ export function ManajemenPrakerin() {
     setEditingItem(item);
     form.reset({
         ...item,
-        startDate: item.startDate.toDate(),
-        endDate: item.endDate?.toDate(),
+        startDate: safeToDate(item.startDate),
+        endDate: safeToDate(item.endDate),
     });
     setIsDialogOpen(true);
   };

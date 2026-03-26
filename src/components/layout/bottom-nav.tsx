@@ -22,7 +22,7 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
   };
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 z-50 w-full h-20 bg-background/95 backdrop-blur-lg border-t border-border/50 pb-safe">
+    <div className="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-background/95 backdrop-blur-lg border-t border-border/50 pb-safe">
       <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
@@ -40,9 +40,9 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
                 "p-2 rounded-xl mb-1 transition-all",
                 isActive ? "bg-primary/10" : "group-hover:bg-muted"
               )}>
-                <item.icon className={cn("w-5 h-5", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
+                <item.icon className={cn("w-6 h-6", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
               </div>
-              <span className={cn("text-[10px] font-bold tracking-tight uppercase", isActive ? "opacity-100" : "opacity-70")}>
+              <span className={cn("text-xs font-bold tracking-tight uppercase", isActive ? "opacity-100" : "opacity-70")}>
                 {item.label}
               </span>
               {isActive && (
@@ -57,9 +57,9 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
           className="inline-flex flex-col items-center justify-center px-2 text-muted-foreground hover:text-foreground group transition-all"
         >
           <div className="p-2 rounded-xl mb-1 group-hover:bg-muted transition-all">
-            <LayoutGrid className="w-5 h-5 stroke-[2px]" />
+            <LayoutGrid className="w-6 h-6 stroke-[2px]" />
           </div>
-          <span className="text-[10px] font-bold tracking-tight opacity-70 uppercase">Menu</span>
+          <span className="text-xs font-bold tracking-tight opacity-70 uppercase">Menu</span>
         </button>
       </div>
     </div>

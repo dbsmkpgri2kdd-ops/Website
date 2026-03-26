@@ -63,7 +63,7 @@ const TeachingFactorySection = () => {
                         <CardHeader>
                              {product.studentCreator && (
                                 <CardDescription className="flex items-center gap-2 text-sm !mb-1">
-                                    <User size={14}/> Dibuat oleh {product.studentCreator}
+                                    <User size={14}/> Dibuat oleh {product.studentCreator.name}
                                 </CardDescription>
                             )}
                             <CardTitle className="font-headline text-2xl text-primary">{product.name}</CardTitle>

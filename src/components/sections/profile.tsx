@@ -3,7 +3,6 @@
 import { CheckCircle } from 'lucide-react';
 import { type School } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type ProfileSectionProps = {
@@ -31,7 +30,7 @@ const ProfileSection = ({ schoolData, isSchoolDataLoading }: ProfileSectionProps
                     <Skeleton className='h-4 w-4/5' />
                 </div>
             ) : (
-                <p className="text-base leading-relaxed text-muted-foreground">{schoolData?.history || 'Sejarah sekolah belum ditambahkan oleh admin.'}</p>
+                <div className="text-base leading-relaxed text-muted-foreground">{schoolData?.history || 'Sejarah sekolah belum ditambahkan oleh admin.'}</div>
             )}
           </CardContent>
       </Card>
@@ -49,7 +48,7 @@ const ProfileSection = ({ schoolData, isSchoolDataLoading }: ProfileSectionProps
                     <Skeleton className='h-5 w-2/3' />
                 </div>
             ) : (
-                <p className="text-lg leading-relaxed text-muted-foreground">{schoolData?.vision}</p>
+                <div className="text-lg leading-relaxed text-muted-foreground">{schoolData?.vision}</div>
             )}
           </CardContent>
         </Card>
@@ -59,17 +58,17 @@ const ProfileSection = ({ schoolData, isSchoolDataLoading }: ProfileSectionProps
           </CardHeader>
           <CardContent>
             {isSchoolDataLoading ? (
-                <ul className='space-y-4'>
+                <div className='space-y-4'>
                     {Array.from({length: 3}).map((_, i) => (
-                        <li key={i} className="flex gap-3 items-start">
+                        <div key={i} className="flex gap-3 items-start">
                             <Skeleton className='h-6 w-6 rounded-full' />
                             <div className='space-y-2 flex-grow'>
                                 <Skeleton className='h-4 w-full' />
                                 <Skeleton className='h-4 w-4/5' />
                             </div>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             ) : (
                 <ul className="space-y-4">
                 {schoolData?.mission.map((item, i) => (

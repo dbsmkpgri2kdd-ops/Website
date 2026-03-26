@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
@@ -168,15 +167,14 @@ export const useUser = (): UserHookResult => {
 
 
 export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T {
-  const memoized = factory(); // Execute factory to get the value
-  const memoizedRef = useMemo(() => memoized, deps); // Standard React useMemo for stability
+  const memoized = useMemo(() => factory(), deps); 
   
-  if (memoizedRef && typeof memoizedRef === 'object' && memoizedRef !== null) {
+  if (memoized && typeof memoized === 'object' && memoized !== null) {
     try {
-      firebaseMemoTracker.add(memoizedRef);
+      firebaseMemoTracker.add(memoized);
     } catch (e) {
-      // Ignored if not an object
+      // Ignored
     }
   }
-  return memoizedRef;
+  return memoized;
 }

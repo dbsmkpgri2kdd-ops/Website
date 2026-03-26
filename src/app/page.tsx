@@ -9,7 +9,6 @@ import { type NewsArticle, SCHOOL_DATA_ID, type School, type LiteracyArticle, ty
 import { useDoc, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import BottomNav from '@/components/layout/bottom-nav';
-import AiAssistant from '@/components/ai-assistant';
 import { LoaderCircle } from 'lucide-react';
 
 const SectionLoader = () => (
@@ -224,7 +223,6 @@ export default function Home() {
         setActiveTab={handleSetTab}
         setIsMenuOpen={setIsMenuOpen}
       />
-      <AiAssistant schoolData={schoolData} isSchoolDataLoading={isSchoolDataLoading} />
     </div>
   );
 }

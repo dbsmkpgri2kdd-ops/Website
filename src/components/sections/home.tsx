@@ -167,12 +167,12 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     <h2 className="text-5xl font-black font-headline tracking-tighter">Kompetensi <span className='text-primary'>Keahlian</span></h2>
                 </div>
                 <div className="grid md:grid-cols-3 gap-10">
-                    {areMajorsLoading && (
+                    {areMajorsLoading ? (
                       Array.from({ length: 3 }).map((_, i) => (
                         <Skeleton key={i} className="h-[400px] rounded-[3rem]" />
                       ))
-                    )}
-                    {!areMajorsLoading && majors && majors.slice(0, 3).map((major) => {
+                    ) : (
+                      majors?.slice(0, 3).map((major) => {
                         const Icon = iconMap[major.icon] || BookOpen;
                         return (
                              <Card key={major.id} className="p-10 rounded-[3rem] shadow-sm hover:shadow-2xl bg-card border-none flex flex-col group overflow-hidden relative">
@@ -186,7 +186,8 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                                   </Button>
                              </Card>
                         )
-                    })}
+                      })
+                    )}
                 </div>
             </div>
         </section>
@@ -202,12 +203,12 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     <Button size="lg" variant="outline" onClick={() => setActiveTab('berita-pengumuman')} className='rounded-full text-white border-white/20 hover:bg-white/10'>Lihat Semua</Button>
                 </div>
                 <div className="grid md:grid-cols-3 gap-12">
-                  {areNewsLoading && (
+                  {areNewsLoading ? (
                     Array.from({ length: 3 }).map((_, i) => (
                       <Skeleton key={i} className="h-[500px] rounded-[3rem] bg-white/5" />
                     ))
-                  )}
-                  {!areNewsLoading && newsArticles && newsArticles.map((news) => (
+                  ) : (
+                    newsArticles?.map((news) => (
                       <Card key={news.id} className="rounded-[3rem] overflow-hidden shadow-2xl group cursor-pointer border-none bg-white/[0.03] backdrop-blur-sm" onClick={() => onSelectArticle(news.id)}>
                         <div className="p-0 h-72 overflow-hidden relative">
                           <Image 
@@ -225,7 +226,8 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                           <h3 className="text-2xl font-black font-headline leading-tight group-hover:text-primary transition-colors line-clamp-2 tracking-tight">{news.title}</h3>
                         </CardContent>
                       </Card>
-                  ))}
+                    ))
+                  )}
               </div>
             </div>
         </section>

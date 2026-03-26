@@ -108,6 +108,11 @@ export type School = {
     accentColor?: string;  // HSL value
 };
 
+export type StudentReference = {
+    name: string;
+    class: string;
+};
+
 export type Major = {
   id: string;
   name: string;
@@ -297,7 +302,7 @@ export type TeachingFactoryProduct = {
   description: string;
   imageUrl: string;
   price?: string;
-  studentCreator?: string;
+  studentCreator?: StudentReference;
   createdAt: any;
 };
 

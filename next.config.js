@@ -1,18 +1,27 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', 
-  distDir: 'out',
+  output: "export",
   images: {
-    unoptimized: true, 
+    unoptimized: true,
     remotePatterns: [
-      { protocol: 'https', hostname: 'placehold.co', pathname: '/**' },
-      { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
-      { protocol: 'https', hostname: 'picsum.photos', pathname: '/**' },
-      { protocol: 'https', hostname: 'drive.google.com', pathname: '/**' },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+       {
+        protocol: 'https',
+        hostname: 'drive.google.com',
+      },
     ],
   },
-  eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
 };
 
 export default nextConfig;

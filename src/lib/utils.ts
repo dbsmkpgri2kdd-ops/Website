@@ -51,3 +51,20 @@ export const getDashboardByRole = (role?: string) => {
       return '/'; // Default to homepage for unknown or no role
   }
 };
+
+export const formatDate = (date: any): string => {
+  if (!date) {
+    return 'Tanggal tidak tersedia';
+  }
+
+  // Firestore Timestamps have toDate() method
+  const dateObject = date.toDate ? date.toDate() : new Date(date);
+
+  if (isNaN(dateObject.getTime())) {
+    return 'Tanggal tidak valid';
+  }
+
+  return new Intl.DateTimeFormat('id-ID', {
+    dateStyle: 'long',
+  }).format(dateObject);
+};
