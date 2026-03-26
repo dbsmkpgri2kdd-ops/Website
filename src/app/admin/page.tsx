@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -5,7 +6,7 @@ import { signOut } from 'firebase/auth';
 import { 
   LogOut, User as UserIcon, LayoutDashboard, Settings, FileBox, Users2, 
   GraduationCap, Building2, Briefcase, Database, Bell, Search, Menu, X, 
-  ChevronRight, Laptop, Newspaper, Calendar, 
+  ChevronRight, Laptop, Newspaper, Calendar, Link as LinkIcon,
   PenSquare, CalendarClock, UserCog, UserPlus, ShieldAlert, ArrowRightLeft, DatabaseZap
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -41,11 +42,12 @@ import { UsersManager } from '@/components/admin/users-manager';
 import { ERaporManager } from '@/components/shared/e-rapor-manager';
 import { ManajemenAbsensi } from '@/components/guru/manajemen-absensi';
 import { SystemSettingsManager } from '@/components/admin/system-settings-manager';
+import { QuickLinksManager } from '@/components/admin/quick-links-manager';
 
 type AdminTab = 
   | 'overview' | 'school-profile' | 'majors' | 'teachers' | 'facilities' | 'gallery'
   | 'news' | 'agenda' | 'osis' | 'literacy' | 'schedule' | 'rapor' | 'attendance'
-  | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings';
+  | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings' | 'quick-links';
 
 function AdminDashboard() {
   const { user } = useUser();
@@ -72,6 +74,7 @@ function AdminDashboard() {
     { label: 'Jurusan', value: 'majors', icon: GraduationCap, group: 'Master Data' },
     { label: 'Fasilitas', value: 'facilities', icon: Database, group: 'Master Data' },
     { label: 'Galeri Media', value: 'gallery', icon: FileBox, group: 'Master Data' },
+    { label: 'Tautan Aplikasi', value: 'quick-links', icon: LinkIcon, group: 'Sistem' },
     { label: 'Berita', value: 'news', icon: Newspaper, group: 'Konten' },
     { label: 'Agenda', value: 'agenda', icon: Calendar, group: 'Konten' },
     { label: 'OSIS Corner', value: 'osis', icon: Bell, group: 'Konten' },
@@ -101,6 +104,7 @@ function AdminDashboard() {
       case 'majors': return <MajorsManager />;
       case 'facilities': return <FacilitiesManager />;
       case 'gallery': return <GalleryManager />;
+      case 'quick-links': return <QuickLinksManager />;
       case 'news': return <NewsManager />;
       case 'agenda': return <AgendaManager />;
       case 'osis': return <OsisManager />;

@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "UserProfile": {
@@ -40,9 +41,26 @@
         "youtubeUrl": { "type": "string", "description": "URL for the school's YouTube channel.", "format": "uri" },
         "studentCount": { "type": "number", "description": "Total number of students." },
         "teacherCount": { "type": "number", "description": "Total number of teachers." },
-        "industryPartnerCount": { "type": "number", "description": "Total number of industry partners." }
+        "industryPartnerCount": { "type": "number", "description": "Total number of industry partners." },
+        "isMaintenanceMode": { "type": "boolean" },
+        "primaryColor": { "type": "string" },
+        "accentColor": { "type": "string" }
       },
       "required": ["id", "name", "address", "phone", "email", "vision", "mission", "principalName", "principalMessage"]
+    },
+    "QuickLink": {
+      "title": "QuickLink",
+      "type": "object",
+      "description": "Represents an external application or feature link.",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "icon": { "type": "string" },
+        "audience": { "type": "string", "enum": ["all", "public", "guru", "siswa"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "url", "audience", "icon"]
     },
     "NewsArticle": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -489,6 +507,7 @@
       { "path": "/users/{userId}", "definition": { "entityName": "UserProfile", "schema": { "$ref": "#/backend/entities/UserProfile" }, "description": "Stores user profile information, including their role." } },
       { "path": "/users/{userId}/portfolio/{portfolioItemId}", "definition": { "entityName": "PortfolioItem", "schema": { "$ref": "#/backend/entities/PortfolioItem" }, "description": "Stores a student's individual portfolio items." } },
       { "path": "/schools/{schoolId}", "definition": { "entityName": "School", "schema": { "$ref": "#/backend/entities/School" }, "description": "Stores core school information as a single document." } },
+      { "path": "/schools/{schoolId}/quickLinks/{linkId}", "definition": { "entityName": "QuickLink", "schema": { "$ref": "#/backend/entities/QuickLink" }, "description": "Stores external app and feature links." } },
       { "path": "/schools/{schoolId}/newsArticles/{newsArticleId}", "definition": { "entityName": "NewsArticle", "schema": { "$ref": "#/backend/entities/NewsArticle" }, "description": "Stores news articles for the school." } },
       { "path": "/schools/{schoolId}/newsArticles/{newsArticleId}/comments/{commentId}", "definition": { "entityName": "Comment", "schema": { "$ref": "#/backend/entities/Comment" }, "description": "Stores comments for a specific news article." } },
       { "path": "/schools/{schoolId}/literacyArticles/{literacyArticleId}", "definition": { "entityName": "LiteracyArticle", "schema": { "$ref": "#/backend/entities/LiteracyArticle" }, "description": "Stores student written works for the literacy corner." } },

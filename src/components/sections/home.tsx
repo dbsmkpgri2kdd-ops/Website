@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -14,6 +15,7 @@ import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { useCollection, useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, limit, doc } from 'firebase/firestore';
+import { QuickLinksGrid } from '@/components/shared/quick-links-grid';
 
 type HomeSectionProps = {
   setActiveTab: (tab: NavLink) => void;
@@ -116,6 +118,15 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
              </div>
           </section>
         )}
+
+        {/* Quick Links Section (PUBLIC) */}
+        <section className="max-w-7xl mx-auto px-6">
+          <QuickLinksGrid 
+            audience="public" 
+            title="Layanan & Tautan Cepat"
+            description="Akses mudah ke berbagai platform layanan informasi sekolah kami."
+          />
+        </section>
 
         {/* Welcome Section */}
         <section className="max-w-7xl mx-auto px-6">

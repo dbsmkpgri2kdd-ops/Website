@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -13,6 +14,7 @@ import { JadwalPelajaran } from '@/components/shared/jadwal-pelajaran';
 import { ERaporSiswa } from '@/components/siswa/e-rapor-siswa';
 import { AbsensiSiswa } from '@/components/siswa/absensi-siswa';
 import { PortofolioDigital } from '@/components/siswa/portofolio-digital';
+import { QuickLinksGrid } from '@/components/shared/quick-links-grid';
 
 
 function SiswaDashboard() {
@@ -48,7 +50,7 @@ function SiswaDashboard() {
           Logout
         </Button>
       </header>
-      <main className="max-w-7xl mx-auto space-y-8">
+      <main className="max-w-7xl mx-auto space-y-12">
           <Card className="shadow-lg rounded-2xl">
           <CardHeader>
               <div className="flex items-center gap-4">
@@ -67,6 +69,9 @@ function SiswaDashboard() {
               <p>Ini adalah halaman dasbor Anda. Akses semua fitur akademik dan informasi penting di sini.</p>
           </CardContent>
           </Card>
+
+          {/* New Dynamic Quick Links for Siswa */}
+          <QuickLinksGrid audience="siswa" title="Aplikasi Siswa" description="Akses cepat ke platform belajar dan portal akademik Anda." />
 
           <JadwalPelajaran />
           <ERaporSiswa />

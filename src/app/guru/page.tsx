@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -17,6 +18,7 @@ import { ManajemenPrakerin } from '@/components/shared/manajemen-prakerin';
 import { AchievementsManager } from '@/components/admin/achievements-manager';
 import { ERaporManager } from '@/components/shared/e-rapor-manager';
 import { ManajemenAbsensi } from '@/components/guru/manajemen-absensi';
+import { QuickLinksGrid } from '@/components/shared/quick-links-grid';
 
 
 function GuruDashboard() {
@@ -52,7 +54,7 @@ function GuruDashboard() {
           Logout
         </Button>
       </header>
-      <main className="max-w-7xl mx-auto space-y-8">
+      <main className="max-w-7xl mx-auto space-y-12">
           <Card className="shadow-lg rounded-2xl">
           <CardHeader>
               <div className="flex items-center gap-4">
@@ -71,6 +73,9 @@ function GuruDashboard() {
               <p>Ini adalah halaman dasbor Anda. Dari sini, Anda dapat memantau dan mengelola aktivitas akademik dan kesiswaan.</p>
           </CardContent>
           </Card>
+
+          {/* New Dynamic Quick Links for Guru */}
+          <QuickLinksGrid audience="guru" title="Aplikasi Guru" description="Platform kerja dan pendukung operasional tenaga pendidik." />
 
           <Tabs defaultValue="akademik" className="w-full">
             <TabsList className="grid w-full grid-cols-3">

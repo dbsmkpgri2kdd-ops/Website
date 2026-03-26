@@ -1,8 +1,9 @@
+
 import {
     Home, Info, Newspaper, UserPlus, Phone, Users, GraduationCap, Award, BookOpen, ImageIcon,
     Building, Quote, Activity, MessageSquare, Calendar, Download, CalendarClock, Library, PenSquare,
     Megaphone, Briefcase, Building2, Factory, ShieldCheck, ScanSearch, FileText, BadgeCheck,
-    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorDot, Palmtree
+    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorDot, Palmtree, Link, Globe, Laptop, AppWindow as AppIcon
 } from 'lucide-react';
 
 export type NavLink =
@@ -102,6 +103,16 @@ export type School = {
     isMaintenanceMode?: boolean;
     primaryColor?: string;
     accentColor?: string;
+};
+
+export type QuickLink = {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  icon: string;
+  audience: 'all' | 'public' | 'guru' | 'siswa';
+  createdAt: any;
 };
 
 export type StudentReference = {
