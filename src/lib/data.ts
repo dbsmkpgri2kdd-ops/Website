@@ -144,13 +144,6 @@ export type Major = {
   icon: string;
 };
 
-export type Facility = {
-  id: string;
-  name: string;
-  description: string;
-  imageUrl: string;
-};
-
 export type NewsArticle = {
   id: string;
   title: string;

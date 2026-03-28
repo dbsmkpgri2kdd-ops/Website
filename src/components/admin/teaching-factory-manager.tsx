@@ -56,17 +56,23 @@ export function TeachingFactoryManager() {
 
   const handleAddNew = () => {
     setEditingProduct(null);
-    form.reset();
+    form.reset({ name: '', description: '', imageUrl: '', price: '', studentCreator: '' });
     setIsDialogOpen(true);
   };
   
   const handleEdit = (product: TeachingFactoryProduct) => {
     setEditingProduct(product);
+    // Ensure studentCreator is treated as string for the form
+    const creatorString = typeof product.studentCreator === 'object' && product.studentCreator !== null
+      ? (product.studentCreator as any).name || ''
+      : String(product.studentCreator || '');
+
     form.reset({
-      ...product,
-      studentCreator: typeof product.studentCreator === 'object' 
-        ? (product.studentCreator as any).name 
-        : product.studentCreator
+      name: product.name,
+      description: product.description,
+      imageUrl: product.imageUrl,
+      price: product.price || '',
+      studentCreator: creatorString,
     });
     setIsDialogOpen(true);
   };
@@ -94,7 +100,7 @@ export function TeachingFactoryManager() {
       deleteDocumentNonBlocking(docRef);
       toast({ variant: 'destructive', title: 'Dihapus!', description: 'Produk telah dihapus.' });
     }
-  }
+  };
 
   return (
     <Card className="shadow-lg rounded-2xl">
@@ -121,7 +127,7 @@ export function TeachingFactoryManager() {
                         <FormItem><FormLabel>URL Gambar</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
                     )}/>
                     <FormField control={form.control} name="description" render={({ field }) => (
-                        <FormItem><FormLabel>Deskripsi</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormMessage>
+                        <FormItem><FormLabel>Deskripsi</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>
                     )}/>
                      <FormField control={form.control} name="price" render={({ field }) => (
                         <FormItem><FormLabel>Harga (Opsional)</FormLabel><FormControl><Input {...field} placeholder="e.g. Rp 100.000" /></FormControl><FormMessage /></FormItem>
@@ -155,26 +161,32 @@ export function TeachingFactoryManager() {
                     </TableRow>
                     )}
                     {products && products.length > 0 ? (
-                    products.map((product) => (
-                        <TableRow key={product.id}>
-                            <TableCell>
-                                <div className="relative w-12 h-12 rounded-md overflow-hidden bg-muted">
-                                    <Image src={convertGoogleDriveLink(product.imageUrl || 'https://picsum.photos/seed/product/60/60')} alt={product.name} fill className="object-cover" unoptimized />
-                                </div>
-                            </TableCell>
-                            <TableCell className="font-medium max-w-xs truncate">{product.name}</TableCell>
-                            <TableCell>{product.price || 'N/A'}</TableCell>
-                            <TableCell>{product.studentCreator || 'N/A'}</TableCell>
-                            <TableCell className="text-right">
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(product)}>
-                                <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)}>
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                            </TableCell>
-                        </TableRow>
-                    ))
+                    products.map((product) => {
+                        const creatorDisplay = typeof product.studentCreator === 'object' && product.studentCreator !== null
+                          ? (product.studentCreator as any).name || 'N/A'
+                          : String(product.studentCreator || 'N/A');
+
+                        return (
+                          <TableRow key={product.id}>
+                              <TableCell>
+                                  <div className="relative w-12 h-12 rounded-md overflow-hidden bg-muted">
+                                      <Image src={convertGoogleDriveLink(product.imageUrl || 'https://picsum.photos/seed/product/60/60')} alt={product.name} fill className="object-cover" unoptimized />
+                                  </div>
+                              </TableCell>
+                              <TableCell className="font-medium max-w-xs truncate">{product.name}</TableCell>
+                              <TableCell>{product.price || 'N/A'}</TableCell>
+                              <TableCell>{creatorDisplay}</TableCell>
+                              <TableCell className="text-right">
+                              <Button variant="ghost" size="icon" onClick={() => handleEdit(product)}>
+                                  <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)}>
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                              </TableCell>
+                          </TableRow>
+                        );
+                    })
                     ) : (
                     !isLoading && <TableRow><TableCell colSpan={5} className="text-center">Belum ada produk. Mulai tambahkan!</TableCell></TableRow>
                     )}
