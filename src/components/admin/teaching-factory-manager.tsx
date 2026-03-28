@@ -44,37 +44,19 @@ export function TeachingFactoryManager() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { 
-      name: '', 
-      description: '', 
-      imageUrl: '', 
-      price: '', 
-      studentCreator: '' 
-    },
+    defaultValues: { name: '', description: '', imageUrl: '', price: '', studentCreator: '' },
   });
 
   useEffect(() => {
     if (!isDialogOpen) {
       setEditingProduct(null);
-      form.reset({ 
-        name: '', 
-        description: '', 
-        imageUrl: '', 
-        price: '', 
-        studentCreator: '' 
-      });
+      form.reset({ name: '', description: '', imageUrl: '', price: '', studentCreator: '' });
     }
   }, [isDialogOpen, form]);
 
   const handleAddNew = () => {
     setEditingProduct(null);
-    form.reset({
-      name: '',
-      description: '',
-      imageUrl: '',
-      price: '',
-      studentCreator: ''
-    });
+    form.reset({ name: '', description: '', imageUrl: '', price: '', studentCreator: '' });
     setIsDialogOpen(true);
   };
   
@@ -235,4 +217,3 @@ export function TeachingFactoryManager() {
     </Card>
   );
 }
-

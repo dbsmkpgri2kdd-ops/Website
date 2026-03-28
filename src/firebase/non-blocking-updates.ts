@@ -1,6 +1,6 @@
+
 'use client';
 /**
- * Deprecated: All mutations have been moved to src/firebase/mutations.ts
- * to avoid name collisions with .tsx files.
+ * Deprecated: All logic moved to mutations.ts
  */
-export * from './mutations';
+export {};

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Factory, ShoppingCart, User } from 'lucide-react';
@@ -50,40 +51,46 @@ const TeachingFactorySection = () => {
                         </CardFooter>
                     </Card>
                 ))}
-                {products?.map(product => (
-                    <Card key={product.id} className="rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col overflow-hidden group">
-                        <div className="relative aspect-video bg-muted">
-                            <Image
-                                src={convertGoogleDriveLink(product.imageUrl)}
-                                alt={product.name}
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform"
-                                unoptimized
-                            />
-                        </div>
-                        <CardHeader>
-                             {product.studentCreator && (
-                                <CardDescription className="flex items-center gap-2 text-sm !mb-1">
-                                    <User size={14}/> Dibuat oleh {product.studentCreator}
-                                </CardDescription>
-                            )}
-                            <CardTitle className="font-headline text-2xl text-primary">{product.name}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex-grow">
-                            <p className="text-muted-foreground text-sm">{product.description}</p>
-                        </CardContent>
-                        <CardFooter className="flex justify-between items-center bg-muted/50 p-4">
-                             {product.price ? (
-                                <Badge variant="default" className="text-lg">{product.price}</Badge>
-                             ) : (
-                                <div></div>
-                             )}
-                            <Button variant="secondary">
-                                <ShoppingCart className="mr-2 h-4 w-4" /> Hubungi Kami
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                ))}
+                {products?.map(product => {
+                    const creatorDisplay = typeof product.studentCreator === 'object' && product.studentCreator !== null
+                      ? (product.studentCreator as any).name || 'N/A'
+                      : String(product.studentCreator || 'N/A');
+
+                    return (
+                        <Card key={product.id} className="rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col overflow-hidden group">
+                            <div className="relative aspect-video bg-muted">
+                                <Image
+                                    src={convertGoogleDriveLink(product.imageUrl)}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform"
+                                    unoptimized
+                                />
+                            </div>
+                            <CardHeader>
+                                 {product.studentCreator && (
+                                    <CardDescription className="flex items-center gap-2 text-sm !mb-1">
+                                        <User size={14}/> Dibuat oleh {creatorDisplay}
+                                    </CardDescription>
+                                )}
+                                <CardTitle className="font-headline text-2xl text-primary">{product.name}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-grow">
+                                <p className="text-muted-foreground text-sm">{product.description}</p>
+                            </CardContent>
+                            <CardFooter className="flex justify-between items-center bg-muted/50 p-4">
+                                 {product.price ? (
+                                    <Badge variant="default" className="text-lg">{product.price}</Badge>
+                                 ) : (
+                                    <div></div>
+                                 )}
+                                <Button variant="secondary">
+                                    <ShoppingCart className="mr-2 h-4 w-4" /> Hubungi Kami
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    );
+                })}
                 {!isLoading && products?.length === 0 && (
                     <div className="text-center py-20 text-muted-foreground col-span-full">
                         <Factory size={48} className="mx-auto mb-4" />
