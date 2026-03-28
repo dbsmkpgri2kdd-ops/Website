@@ -1,6 +1,7 @@
 
 
 
+
 'use client';
 
 import { Factory, ShoppingCart, User } from 'lucide-react';
@@ -105,4 +106,5 @@ const TeachingFactorySection = () => {
 };
 
 export default TeachingFactorySection;
+
 
