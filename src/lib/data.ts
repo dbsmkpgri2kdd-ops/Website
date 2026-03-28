@@ -330,7 +330,7 @@ export type TeachingFactoryProduct = {
   description: string;
   imageUrl: string;
   price?: string;
-  studentCreator?: { name: string; class: string };
+  studentCreator?: string;
   createdAt: any;
 };
 

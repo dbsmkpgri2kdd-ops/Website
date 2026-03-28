@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -61,11 +62,10 @@ export function TeachingFactoryManager() {
   
   const handleEdit = (product: TeachingFactoryProduct) => {
     setEditingProduct(product);
-    // Modifikasi baris di bawah ini agar studentCreator dikonversi ke string jika perlu
     form.reset({
       ...product,
       studentCreator: typeof product.studentCreator === 'object' 
-        ? product.studentCreator.name 
+        ? (product.studentCreator as any).name 
         : product.studentCreator
     });
     setIsDialogOpen(true);
@@ -121,7 +121,7 @@ export function TeachingFactoryManager() {
                         <FormItem><FormLabel>URL Gambar</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
                     )}/>
                     <FormField control={form.control} name="description" render={({ field }) => (
-                        <FormItem><FormLabel>Deskripsi</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Deskripsi</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormMessage>
                     )}/>
                      <FormField control={form.control} name="price" render={({ field }) => (
                         <FormItem><FormLabel>Harga (Opsional)</FormLabel><FormControl><Input {...field} placeholder="e.g. Rp 100.000" /></FormControl><FormMessage /></FormItem>
@@ -158,9 +158,11 @@ export function TeachingFactoryManager() {
                     products.map((product) => (
                         <TableRow key={product.id}>
                             <TableCell>
-                                <Image src={convertGoogleDriveLink(product.imageUrl || 'https://picsum.photos/seed/product/60/60')} alt={product.name} width={60} height={60} className="rounded-md object-cover" unoptimized />
+                                <div className="relative w-12 h-12 rounded-md overflow-hidden bg-muted">
+                                    <Image src={convertGoogleDriveLink(product.imageUrl || 'https://picsum.photos/seed/product/60/60')} alt={product.name} fill className="object-cover" unoptimized />
+                                </div>
                             </TableCell>
-                            <TableCell className="font-medium">{product.name}</TableCell>
+                            <TableCell className="font-medium max-w-xs truncate">{product.name}</TableCell>
                             <TableCell>{product.price || 'N/A'}</TableCell>
                             <TableCell>{product.studentCreator || 'N/A'}</TableCell>
                             <TableCell className="text-right">
@@ -183,5 +185,3 @@ export function TeachingFactoryManager() {
     </Card>
   );
 }
-
-    
