@@ -1233,6 +1233,9 @@ video {
 .top-\[50\%\] {
   top: 50%;
 }
+.bottom-24 {
+  bottom: 6rem;
+}
 .z-0 {
   z-index: 0;
 }

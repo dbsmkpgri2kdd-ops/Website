@@ -49,7 +49,7 @@ export function AIAssistant() {
   };
 
   return (
-    <div className="fixed bottom-20 right-6 z-[60] md:bottom-8">
+    <div className="fixed bottom-24 right-6 z-[60] md:bottom-8">
       {isOpen ? (
         <Card className="w-[320px] sm:w-[380px] h-[500px] shadow-2xl flex flex-col animate-in slide-in-from-bottom-10 duration-300 border-primary/20 overflow-hidden rounded-2xl">
           <CardHeader className="bg-primary text-white flex flex-row items-center justify-between py-4 px-5">
@@ -114,10 +114,6 @@ export function AIAssistant() {
           className="h-14 w-14 rounded-full shadow-2xl glow-primary hover:scale-110 transition-transform flex items-center justify-center p-0"
         >
           <Bot size={28} className="animate-pulse" />
-          <span className="absolute -top-1 -right-1 flex h-4 w-4">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-accent"></span>
-          </span>
         </Button>
       )}
     </div>
