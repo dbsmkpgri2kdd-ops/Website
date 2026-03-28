@@ -1,3 +1,12 @@
 {
-  "/page": "app/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/guru/page": "app/guru/page.js",
+  "/login/page": "app/login/page.js",
+  "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
+  "/page": "app/page.js",
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/siswa/page": "app/siswa/page.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js"
 }
