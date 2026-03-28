@@ -1,6 +1,5 @@
 
 
-
 import {
     Home, Info, Newspaper, UserPlus, Phone, Users, GraduationCap, Award, BookOpen, ImageIcon,
     Building, Quote, Activity, MessageSquare, Calendar, Download, CalendarClock, Library, PenSquare,
@@ -325,7 +324,7 @@ export type TeachingFactoryProduct = {
   description: string;
   imageUrl: string;
   price?: string;
-  studentCreator?: string;
+  studentCreator?: string; // Always a string now
   createdAt: any;
 };
 
