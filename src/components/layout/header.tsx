@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
-import { LogIn, ChevronDown, User, Menu, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, Menu, X, LogIn, DatabaseZap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
-import { NAV_MENU, type NavItem, type School } from '@/lib/data';
+import { NAV_MENU_DEFAULT, type NavItem, type School } from '@/lib/data';
 import type { NavLink } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,8 +35,15 @@ const Header = ({
   schoolData,
   isSchoolDataLoading,
 }: HeaderProps) => {
-  const { user, isLoading: isAuthLoading } = useUser();
+  const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleAuthClick = () => {
     if (user) {
@@ -45,55 +52,55 @@ const Header = ({
     } else {
       router.push('/login');
     }
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    }
+    if (isMenuOpen) setIsMenuOpen(false);
   };
 
-  const AuthButton = ({ className }: { className?: string }) => {
-    if (isAuthLoading) {
-      return <Skeleton className={cn('h-10 w-28 rounded-full', className)} />;
-    }
+  const AuthButton = ({ className, showLabel = true }: { className?: string, showLabel?: boolean }) => {
+    if (isUserLoading) return <Skeleton className={cn('h-10 w-10 sm:w-24 rounded-xl', className)} />;
 
     return (
       <Button
         onClick={handleAuthClick}
-        className={cn("font-black shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all rounded-full px-6", className)}
+        variant={user ? "default" : "outline"}
+        className={cn(
+          "px-3 sm:px-6 h-10 rounded-xl font-black text-[9px] tracking-[0.2em] uppercase transition-all hover:scale-105 shadow-xl",
+          !user && "border-white/10 hover:bg-white/5",
+          className
+        )}
       >
         {user ? (
-          <>
-            <User className="mr-2 h-4 w-4" />
-            Dashboard
-          </>
+            <span className='flex items-center gap-2'>
+                <DatabaseZap size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'DASBOR'}</span>
+            </span>
         ) : (
-          <>
-            <LogIn className="mr-2 h-4 w-4" />
-            Login
-          </>
+          <span className='flex items-center gap-2'>
+            <LogIn size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'MASUK'}</span>
+          </span>
         )}
       </Button>
     );
   };
   
+  const currentMenu = schoolData?.customMenu || NAV_MENU_DEFAULT;
+
   const renderNavItems = (items: NavItem[]) => {
-    return items.map((item) => {
+    return items.map((item, idx) => {
       if (item.children && item.children.length > 0) {
         return (
-          <DropdownMenu key={item.label}>
+          <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="font-bold transition-all text-sm px-4 hover:text-primary data-[state=open]:text-primary data-[state=open]:bg-primary/5 rounded-full">
+              <button className="flex items-center gap-1.5 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors focus:outline-none">
                 {item.label}
-                <ChevronDown className="ml-1 h-4 w-4 opacity-50 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-              </Button>
+                <ChevronDown className="h-3 w-3 opacity-40" />
+              </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-64 p-3 rounded-2xl shadow-2xl border-primary/5 bg-card/95 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
-              {item.children.map((child) => (
+            <DropdownMenuContent align="start" className="w-56 p-2 rounded-2xl shadow-2xl border-white/5 bg-card/95 backdrop-blur-3xl">
+              {item.children.map((child, cIdx) => (
                 <DropdownMenuItem
-                  key={child.id}
-                  onClick={() => setActiveTab(child.id!)}
-                  className='font-bold cursor-pointer rounded-xl py-3 px-4 focus:bg-primary/10 focus:text-primary mb-1 last:mb-0 transition-colors'
+                  key={cIdx}
+                  onClick={() => child.id && setActiveTab(child.id)}
+                  className='font-bold text-[9px] uppercase tracking-widest cursor-pointer rounded-xl py-3 px-4 focus:bg-primary/10 focus:text-primary mb-1 transition-all'
                 >
-                  <child.icon className="mr-3 h-5 w-5 text-primary/60" />
                   {child.label}
                 </DropdownMenuItem>
               ))}
@@ -102,138 +109,113 @@ const Header = ({
         );
       } else {
         return (
-          <Button
-            key={item.id}
-            variant="ghost"
-            onClick={() => setActiveTab(item.id!)}
-            className='font-bold transition-all text-sm px-4 hover:text-primary rounded-full'
+          <button
+            key={idx}
+            onClick={() => item.id && setActiveTab(item.id)}
+            className='px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors'
           >
             {item.label}
-          </Button>
+          </button>
         );
       }
     });
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-primary/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 lg:h-20 items-center">
-          {/* Brand Logo */}
+    <header className={cn(
+      "sticky top-0 w-full z-50 bg-background border-b border-white/5 transition-all duration-300",
+      isScrolled ? "h-16 shadow-lg" : "h-20"
+    )}>
+      <div className="max-w-7xl mx-auto px-6 h-full">
+        <div className="flex justify-between items-center h-full">
+          {/* LOGO */}
           <button
             onClick={() => setActiveTab('home')}
-            className="flex items-center gap-2.5 cursor-pointer group shrink-0"
+            className="flex items-center gap-3 group"
           >
-            <div className="relative w-9 h-9 lg:w-11 lg:h-11 overflow-hidden rounded-xl bg-white p-1.5 shadow-xl shadow-primary/5 border border-primary/5 group-hover:scale-110 transition-transform duration-500">
+            <div className="relative w-9 h-9 overflow-hidden rounded-xl bg-white p-1.5 shadow-xl transition-transform group-hover:rotate-12 group-hover:scale-110">
               {isSchoolDataLoading ? (
                 <Skeleton className="w-full h-full rounded-lg" />
               ) : (
                 <Image
                   src={convertGoogleDriveLink(schoolData?.logoUrl || "https://picsum.photos/seed/logo/40/40")}
-                  alt="School Logo"
-                  fill
+                  alt="Logo Sekolah"
+                  width={36}
+                  height={36}
                   className="object-contain"
-                  unoptimized
                   priority
                 />
               )}
             </div>
-            <div className="flex flex-col items-start text-left">
-              {isSchoolDataLoading ? (
-                <Skeleton className="h-5 w-24 lg:w-32" />
-              ) : (
-                <span className="font-black text-base lg:text-xl leading-none font-headline group-hover:text-primary transition-colors tracking-tight">
-                  {schoolData?.shortName}
+            <div className="flex flex-col items-start leading-none hidden sm:flex">
+                <span className="font-black text-sm tracking-tight uppercase">
+                {schoolData?.shortName || "SMKS PGRI 2"}
                 </span>
-              )}
+                <span className='text-[7px] font-bold text-primary uppercase tracking-[0.4em] mt-0.5'>Digital Excellence</span>
             </div>
           </button>
 
-          {/* Main Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1 flex-1 justify-center px-8">
-             {renderNavItems(NAV_MENU)}
+          {/* DESKTOP NAV */}
+          <nav className="hidden lg:flex items-center space-x-1">
+             {renderNavItems(currentMenu)}
           </nav>
 
-          {/* Desktop Right Actions */}
-          <div className="hidden lg:flex items-center gap-4 shrink-0">
+          {/* ACTIONS */}
+          <div className="flex items-center gap-2 sm:gap-3">
+             {/* AKSES LOGIN MOBILE & DESKTOP */}
+             <AuthButton className="flex" showLabel={false} />
+             <div className="hidden sm:block">
+                <AuthButton showLabel={true} className="ml-[-8px]" />
+             </div>
+             
              <ThemeToggle />
-             <div className="h-8 w-[1px] bg-primary/10 mx-2"></div>
-             <AuthButton />
-          </div>
-
-          {/* Mobile Actions */}
-          <div className="lg:hidden flex items-center gap-2">
-             <ThemeToggle />
+             
+             {/* SIDEBAR MOBILE TRIGGER */}
              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-xl bg-primary/5 hover:bg-primary/10 transition-colors">
-                    <Menu className="h-5 w-5 text-primary" />
+                  <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9 sm:h-10 sm:w-10 hover:bg-white/5">
+                    <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="flex flex-col p-0 w-[85%] max-w-sm border-l-primary/10 bg-card">
-                    <SheetHeader className="p-6 border-b bg-muted/20">
-                        <div className="flex items-center gap-3">
-                           <div className="w-10 h-10 bg-white p-1.5 rounded-xl border border-primary/5 shadow-2xl relative">
-                              <Image 
-                                src={convertGoogleDriveLink(schoolData?.logoUrl || "https://picsum.photos/seed/logo/40/40")} 
-                                alt="Logo" 
-                                fill 
-                                className="object-contain"
-                                unoptimized
-                              />
-                           </div>
-                           <SheetTitle className='font-black text-xl font-headline text-primary tracking-tight'>{schoolData?.shortName || "Menu"}</SheetTitle>
+                <SheetContent side="right" className="p-0 w-full sm:w-[400px] border-none shadow-3xl bg-background/95 backdrop-blur-3xl">
+                    <SheetHeader className="p-8 border-b border-white/5">
+                        <div className="flex items-center gap-3 text-primary mb-4">
+                          <DatabaseZap size={18} />
+                          <span className='text-[9px] font-black uppercase tracking-[0.4em]'>Portal Core v7.5</span>
                         </div>
+                        <SheetTitle className='text-left font-black text-3xl uppercase tracking-tighter italic'>MENU PORTAL</SheetTitle>
                     </SheetHeader>
                     
-                    <ScrollArea className='flex-grow py-4'>
-                        {NAV_MENU.map((mainItem) => (
-                          <div key={mainItem.label} className="px-4 mb-4">
+                    <ScrollArea className='h-[calc(100vh-180px)] py-6'>
+                        {currentMenu.map((mainItem, mIdx) => (
+                          <div key={mIdx} className="px-8 mb-8">
+                            <h3 className="px-2 text-[8px] font-black uppercase tracking-[0.5em] text-muted-foreground/40 mb-4">{mainItem.label}</h3>
                             {mainItem.children ? (
-                              <div className="space-y-1">
-                                <h3 className="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50">{mainItem.label}</h3>
-                                {mainItem.children.map((child) => (
-                                  <Button
-                                    key={child.id}
-                                    variant={'ghost'}
-                                    onClick={() => {
-                                      setActiveTab(child.id!);
-                                      setIsMenuOpen(false);
-                                    }}
-                                    className="w-full justify-start py-3 px-4 flex items-center gap-3 rounded-xl text-sm h-auto font-bold hover:bg-primary/5 hover:text-primary transition-all group"
+                              <div className="grid grid-cols-1 gap-1">
+                                {mainItem.children.map((child, cIdx) => (
+                                  <button
+                                    key={cIdx}
+                                    onClick={() => { child.id && setActiveTab(child.id); setIsMenuOpen(false); }}
+                                    className="w-full text-left py-3.5 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 hover:text-primary transition-all"
                                   >
-                                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                                      <child.icon size={16} />
-                                    </div>
                                     {child.label}
-                                  </Button>
+                                  </button>
                                 ))}
                               </div>
                             ) : (
-                              <Button
-                                key={mainItem.id}
-                                variant={'ghost'}
-                                onClick={() => {
-                                  setActiveTab(mainItem.id!);
-                                  setIsMenuOpen(false);
-                                }}
-                                className="w-full justify-start py-3 px-4 flex items-center gap-3 rounded-xl text-base h-auto font-black hover:bg-primary/5 hover:text-primary transition-all group"
+                              <button
+                                onClick={() => { mainItem.id && setActiveTab(mainItem.id); setIsMenuOpen(false); }}
+                                className="w-full text-left py-3.5 px-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:text-primary transition-all"
                               >
-                                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                                  <mainItem.icon size={16} />
-                                </div>
                                 {mainItem.label}
-                              </Button>
+                              </button>
                             )}
                           </div>
                         ))}
                     </ScrollArea>
                     
-                    <div className="p-6 border-t bg-muted/10 space-y-4">
-                        <AuthButton className="w-full justify-center py-6 rounded-2xl text-base shadow-2xl" />
-                        <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest font-bold opacity-50">
-                          © {new Date().getFullYear()} {schoolData?.shortName}
-                        </p>
+                    <div className="p-8 border-t border-white/5 bg-white/5">
+                        <AuthButton className="w-full h-14 text-sm" showLabel={true} />
                     </div>
                 </SheetContent>
               </Sheet>

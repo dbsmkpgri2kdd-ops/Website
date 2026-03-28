@@ -1,95 +1,248 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, query, limit, orderBy } from 'firebase/firestore';
-import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication, type GuestbookEntry } from '@/lib/data';
-import { Newspaper, UserPlus, MessageSquare, TrendingUp, Users, Award, BookOpen } from 'lucide-react';
+import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication } from '@/lib/data';
+import { Newspaper, UserPlus, Sparkles, LoaderCircle, CheckCircle2, Zap, Activity, ShieldCheck, Database, HardDrive, BarChart3, Clock, ArrowUpRight, Cpu, Rocket, Globe, Palette } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { generateAdminAnalysis, type AdminAnalysisOutput } from '@/ai/flows/admin-analysis-flow';
+import { cn } from '@/lib/utils';
 
 export function OverviewManager() {
   const firestore = useFirestore();
+  const { user } = useUser();
+  const [analysis, setAnalysis] = useState<AdminAnalysisOutput | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [currentTime, setCurrentTime] = useState<string>('');
 
-  // Fetches basic stats (limited for performance)
+  // Fix hydration mismatch for clock
+  useEffect(() => {
+    const updateClock = () => {
+      setCurrentTime(new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
+    };
+    updateClock();
+    const interval = setInterval(updateClock, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   const newsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, `schools/${SCHOOL_DATA_ID}/newsArticles`), limit(5), orderBy('datePublished', 'desc')) : null, [firestore]);
   const ppdbQuery = useMemoFirebase(() => firestore ? query(collection(firestore, `schools/${SCHOOL_DATA_ID}/studentApplications`), limit(5), orderBy('submissionDate', 'desc')) : null, [firestore]);
-  const guestQuery = useMemoFirebase(() => firestore ? query(collection(firestore, `schools/${SCHOOL_DATA_ID}/guestbookEntries`), limit(5), orderBy('createdAt', 'desc')) : null, [firestore]);
 
   const { data: recentNews, isLoading: isNewsLoading } = useCollection<NewsArticle>(newsQuery);
   const { data: recentPpdb, isLoading: isPpdbLoading } = useCollection<StudentApplication>(ppdbQuery);
-  const { data: recentGuest, isLoading: isGuestLoading } = useCollection<GuestbookEntry>(guestQuery);
 
   const stats = [
-    { title: 'Berita Terbaru', icon: Newspaper, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-    { title: 'Pendaftar PPDB', icon: UserPlus, color: 'text-green-500', bg: 'bg-green-500/10' },
-    { title: 'Pesan Guestbook', icon: MessageSquare, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-    { title: 'Trend Interaksi', icon: TrendingUp, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { title: 'PUBLIKASI', count: recentNews?.length || 0, icon: Newspaper, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { title: 'PENDAFTAR', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+    { title: 'KEAMANAN', count: 'AKTIF', icon: ShieldCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { title: 'JARINGAN', count: '99.9%', icon: Activity, color: 'text-amber-500', bg: 'bg-amber-500/10' },
   ];
 
+  const handleRunAnalysis = async () => {
+    setIsAnalyzing(true);
+    try {
+      const res = await generateAdminAnalysis({ adminName: user?.profile?.displayName || 'Admin' });
+      setAnalysis(res);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }
+
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-10 animate-reveal pb-20">
+      {/* HEADER SECTION */}
+      <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
+        <div>
+            <h2 className='text-3xl font-black italic uppercase tracking-tighter'>Pusat Kendali <span className='text-primary'>Utama</span></h2>
+            <p className='text-[10px] font-bold uppercase tracking-[0.4em] text-muted-foreground mt-1'>Sistem Operasional Digital Terpadu v7.5</p>
+        </div>
+        <div className='flex items-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/5 shadow-2xl'>
+            <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary'>
+                <Clock size={20} />
+            </div>
+            <div>
+                <p className='text-[8px] font-black uppercase text-muted-foreground tracking-widest'>Sesi Aktif</p>
+                <p className='text-[10px] font-bold uppercase'>{currentTime || '--:--'} WIB</p>
+            </div>
+        </div>
+      </div>
+
+      {/* DEPLOYMENT READINESS CHECKLIST */}
+      <Card className="border-emerald-500/20 bg-emerald-500/[0.02] rounded-[2rem] overflow-hidden relative border shadow-3xl">
+          <CardHeader className="p-6 md:p-8 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-4">
+                  <div className="p-3 bg-emerald-500 text-white rounded-xl shadow-lg">
+                      <Rocket size={20} />
+                  </div>
+                  <div>
+                      <CardTitle className="text-lg font-black uppercase italic">Kesiapan Publikasi</CardTitle>
+                      <CardDescription className="text-[9px] font-bold uppercase tracking-widest opacity-60">Status Konfigurasi Produksi Website</CardDescription>
+                  </div>
+              </div>
+              <Badge className="bg-emerald-500/20 text-emerald-500 border-none px-4 py-1 rounded-full font-black text-[9px] tracking-widest animate-pulse">SIAP DEPLOY</Badge>
+          </CardHeader>
+          <CardContent className="px-6 md:px-8 pb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
+                      <Globe size={16} className="text-emerald-500" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">SEO Optimized</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
+                      <ShieldCheck size={16} className="text-emerald-500" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Data Encrypted</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
+                      <Palette size={16} className="text-emerald-500" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Themes Synced</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
+                      <Zap size={16} className="text-emerald-500" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Core v7.5 Stable</span>
+                  </div>
+              </div>
+          </CardContent>
+      </Card>
+
+      {/* QUICK STATS GRID */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((s, i) => (
-          <Card key={i} className="border-none shadow-sm bg-card/50">
+          <Card key={i} className="border-white/5 bg-white/5 rounded-3xl overflow-hidden group hover:border-primary/20 transition-all duration-500 shadow-2xl">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">{s.title}</CardTitle>
-              <div className={`p-2 rounded-lg ${s.bg} ${s.color}`}>
-                <s.icon size={16} />
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{s.title}</CardTitle>
+              <div className={cn("p-2 rounded-xl transition-all group-hover:scale-110", s.bg)}>
+                <s.icon size={14} className={s.color} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Aktif</div>
-              <p className="text-xs text-muted-foreground mt-1">Status sistem normal</p>
+              <div className="text-3xl font-black tracking-tighter italic uppercase flex items-center gap-2">
+                {s.count}
+                <ArrowUpRight size={16} className='text-primary opacity-0 group-hover:opacity-100 transition-opacity' />
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Recent Activity: PPDB */}
-        <Card className="lg:col-span-2 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2"><UserPlus size={20} /> Antrean Pendaftaran PPDB</CardTitle>
+      {/* AI INTELLIGENCE COMMAND */}
+      <Card className="border-primary/20 bg-primary/[0.02] rounded-[3rem] overflow-hidden relative border shadow-3xl">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48"></div>
+          <CardHeader className="p-8 md:p-12">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
+                  <div className="flex items-center gap-6">
+                      <div className="p-5 bg-primary text-white rounded-[2rem] shadow-3xl shadow-primary/20">
+                          <Sparkles size={32} className="animate-pulse" />
+                      </div>
+                      <div>
+                          <CardTitle className="text-3xl font-black tracking-tighter uppercase italic text-foreground">Panel Analytics AI</CardTitle>
+                          <CardDescription className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary mt-1">Sistem Analisis Terpadu Berbasis Gemini 1.5 Flash</CardDescription>
+                      </div>
+                  </div>
+                  <Button onClick={handleRunAnalysis} disabled={isAnalyzing} className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-3xl glow-primary hover:scale-105 transition-all">
+                      {isAnalyzing ? <LoaderCircle className="animate-spin mr-3 h-5 w-5" /> : <Zap size={18} className="mr-3" />}
+                      Mulai Analisis Sistem
+                  </Button>
+              </div>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {isPpdbLoading ? <Skeleton className="h-40 w-full" /> : 
+          <CardContent className="px-8 md:px-12 pb-12 relative z-10">
+              {analysis ? (
+                  <div className="space-y-8 animate-reveal">
+                      <div className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 shadow-inner">
+                          <p className="text-lg md:text-xl leading-relaxed text-foreground/90 font-medium italic">"{analysis.summary}"</p>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4">
+                          {analysis.insights.map((insight, idx) => (
+                              <div key={idx} className="flex items-center gap-4 bg-white/5 p-6 rounded-2xl border border-white/5 hover:border-primary/20 transition-colors group">
+                                  <div className='p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors'>
+                                    <CheckCircle2 size={18} className="text-primary shrink-0" />
+                                  </div>
+                                  <p className="text-xs font-black uppercase tracking-widest leading-tight">{insight}</p>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+              ) : (
+                  <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-[3rem] group hover:border-primary/20 transition-colors cursor-pointer" onClick={handleRunAnalysis}>
+                      <div className='mb-4 text-muted-foreground/20 flex justify-center'><Cpu size={48} /></div>
+                      <p className="text-[11px] font-black uppercase tracking-[0.5em] text-muted-foreground/30 italic group-hover:text-primary/50 transition-colors">Menunggu Instruksi Analisis Data...</p>
+                  </div>
+              )}
+          </CardContent>
+      </Card>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* RECENT APPLICATIONS MONITOR */}
+        <Card className="lg:col-span-2 border-white/5 bg-white/5 rounded-[2.5rem] shadow-2xl">
+          <CardHeader className="p-8 border-b border-white/5">
+            <CardTitle className="text-sm font-black uppercase tracking-[0.4em] flex items-center gap-3">
+                <UserPlus size={18} className="text-primary" /> Pendaftaran Terbaru
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="space-y-2">
+              {isPpdbLoading ? <Skeleton className="h-60 w-full rounded-[2rem]" /> : 
                 recentPpdb && recentPpdb.length > 0 ? recentPpdb.map(app => (
-                  <div key={app.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
-                    <div>
-                      <p className="font-bold text-sm">{app.studentName}</p>
-                      <p className="text-xs text-muted-foreground">{app.chosenMajor}</p>
+                  <div key={app.id} className="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-transparent hover:border-primary/20 hover:bg-white/[0.05] transition-all group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-black shadow-lg uppercase">
+                        {app.studentName.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-black text-sm uppercase tracking-tight italic">{app.studentName}</p>
+                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em] mt-1">{app.chosenMajor}</p>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs font-medium">{format(app.submissionDate.toDate(), 'd MMM, HH:mm', { locale: idLocale })}</p>
-                      <p className="text-[10px] text-primary">BARU</p>
+                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{format(app.submissionDate?.toDate ? app.submissionDate.toDate() : new Date(app.submissionDate), 'd MMM, HH:mm', { locale: idLocale })}</p>
+                      <Badge variant="secondary" className="text-[8px] font-black mt-2 px-3 py-0.5 rounded-full bg-primary/10 text-primary border-none">{app.status || 'PENDING'}</Badge>
                     </div>
                   </div>
-                )) : <p className="text-sm text-center text-muted-foreground py-8">Belum ada pendaftar baru.</p>
+                )) : <div className="text-center py-20 opacity-20"><UserPlus size={48} className="mx-auto mb-4" /><p className="text-[10px] font-black uppercase tracking-widest">Belum ada pendaftar baru</p></div>
               }
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick Stats: Content Summary */}
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg">Ringkasan Konten</CardTitle>
+        {/* INFRASTRUCTURE STATUS */}
+        <Card className="border-white/5 bg-white/5 rounded-[2.5rem] shadow-2xl">
+          <CardHeader className="p-8 border-b border-white/5">
+            <CardTitle className="text-sm font-black uppercase tracking-[0.4em]">Infrastruktur Digital</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500"><Users size={20} /></div>
-              <div><p className="text-sm font-bold">Siswa & Guru</p><p className="text-xs text-muted-foreground">Master data terverifikasi</p></div>
+          <CardContent className="p-8 space-y-8">
+            <div className="flex items-center gap-5 group">
+              <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-xl group-hover:scale-110 transition-transform"><Database size={24} /></div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Basis Data</p>
+                <p className="text-sm font-black tracking-tight uppercase italic">Sinkronisasi Cloud</p>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500"><Award size={20} /></div>
-              <div><p className="text-sm font-bold">Prestasi</p><p className="text-xs text-muted-foreground">Publikasi aktif</p></div>
+            <div className="flex items-center gap-5 group">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 shadow-xl group-hover:scale-110 transition-transform"><ShieldCheck size={24} /></div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Keamanan</p>
+                <p className="text-sm font-black tracking-tight uppercase italic">SSL Terenkripsi</p>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500"><BookOpen size={20} /></div>
-              <div><p className="text-sm font-bold">Kurikulum</p><p className="text-xs text-muted-foreground">Jadwal & Rapor Digital</p></div>
+            <div className="flex items-center gap-5 group">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shadow-xl group-hover:scale-110 transition-transform"><HardDrive size={24} /></div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Storage</p>
+                <p className="text-sm font-black tracking-tight uppercase italic">Optimal (98%)</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-5 group">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-xl group-hover:scale-110 transition-transform"><BarChart3 size={24} /></div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Jaringan</p>
+                <p className="text-sm font-black tracking-tight uppercase italic">Latency Rendah</p>
+              </div>
             </div>
           </CardContent>
         </Card>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -43,7 +44,8 @@ export function ManajemenAbsensi() {
 
   const studentsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'users'), where('role', '==', 'siswa'), orderBy('displayName'));
+    // Mencari semua user dengan role siswa
+    return query(collection(firestore, 'users'), where('role', '==', 'siswa'), orderBy('email'));
   }, [firestore]);
   const { data: students, isLoading: areStudentsLoading } = useCollection<UserProfile>(studentsQuery);
 

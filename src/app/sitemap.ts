@@ -1,21 +1,21 @@
-
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://smkspgri2kedondong.sch.id'
+  const baseUrl = 'https://studio-128676595-62275.web.app'
+  const currentDate = new Date()
   
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-  ]
+  const routes = [
+    '',
+    '/login',
+    '/admin',
+    '/guru',
+    '/siswa',
+  ].map(route => ({
+    url: `${baseUrl}${route}`,
+    lastModified: currentDate,
+    changeFrequency: 'daily' as const,
+    priority: route === '' ? 1 : 0.8,
+  }))
+
+  return routes
 }

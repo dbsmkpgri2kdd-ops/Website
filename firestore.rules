@@ -1,41 +1,64 @@
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // --- HELPER FUNCTIONS ---
+    // --- FUNGSI PEMBANTU ---
     function isSignedIn() {
       return request.auth != null;
     }
 
     function isAdmin() {
-      // Allow if user has admin role OR if the system is not yet locked (bootstrap mode)
-      return isSignedIn() && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' || 
-         !exists(/databases/$(database)/documents/app_roles/initialized/init/system));
+      return isSignedIn() && (
+        // Mode Setup: Izinkan pendaftar pertama jadi admin jika flag sistem belum ada
+        (!exists(/databases/$(database)/documents/app_roles/initialized/init/system)) || 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
     }
 
-    // --- COLLECTION RULES ---
+    // --- ATURAN KOLEKSI ---
 
+    // 1. Profil Pengguna & Portofolio
     match /users/{userId} {
       allow get: if isSignedIn();
-      allow list: if isSignedIn();
       allow create: if isSignedIn() && request.auth.uid == userId;
       allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
-      allow delete: if isAdmin();
+      allow list: if isAdmin();
       
       match /portfolio/{itemId} {
-        allow read: if true;
+        // Izinkan baca jika ditandai publik, atau pemiliknya sendiri, atau admin
+        allow read: if resource.data.isPublic == true || (isSignedIn() && request.auth.uid == userId) || isAdmin();
         allow write: if isSignedIn() && request.auth.uid == userId;
       }
     }
 
-    match /schools/{schoolId}/{allPaths=**} {
-      allow read: if true;
+    // 2. Data Sekolah (Akses Publik)
+    match /schools/{schoolId} {
+      allow read: if true; // Izinkan siapa pun membaca data sekolah
       allow write: if isAdmin();
+
+      // Izinkan baca semua sub-koleksi publik (berita, jurusan, dll)
+      match /{allPaths=**} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      // Khusus: Formulir yang bisa diisi pengunjung (Public Forms)
+      match /contactMessages/{id} { allow create: if true; }
+      match /studentApplications/{id} { allow create: if true; }
+      match /guestbookEntries/{id} { allow create: if true; }
+      match /tracerStudyResponses/{id} { allow create: if true; }
+      match /extracurricularApplications/{id} { allow create: if true; }
     }
 
-    // Lock system bootstrap flag
-    match /app_roles/initialized/init/{id} {
+    // 3. DUKUNGAN COLLECTION GROUP (Penting untuk Fitur Showcase Karya)
+    // Mengizinkan query lintas folder portfolio untuk item yang ditandai publik
+    match /{path=**}/portfolio/{portfolioId} {
+      allow read: if resource.data.isPublic == true;
+    }
+
+    // 4. Sistem Inisialisasi & Role
+    match /app_roles/{allPaths=**} {
       allow read: if true;
       allow write: if isSignedIn();
     }

@@ -149,6 +149,10 @@
       "static/chunks/_app-pages-browser_src_components_sections_profile_tsx.js"
     ]
   },
+  "app/page.tsx -> @/components/sections/showcase": {
+    "id": "app/page.tsx -> @/components/sections/showcase",
+    "files": []
+  },
   "app/page.tsx -> @/components/sections/teachers": {
     "id": "app/page.tsx -> @/components/sections/teachers",
     "files": [

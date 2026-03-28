@@ -1,5 +1,6 @@
 'use client';
 /**
- * This file is a proxy to the .ts version to prevent module resolution conflicts.
+ * Deprecated: File ini telah dikosongkan untuk menghindari konflik impor.
+ * Gunakan src/firebase/mutations.ts sebagai gantinya.
  */
-export * from './non-blocking-updates';
+export {};

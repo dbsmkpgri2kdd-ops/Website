@@ -1,4 +1,3 @@
-
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
@@ -8,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/guru/', '/siswa/', '/login/'],
     },
-    sitemap: 'https://smkspgri2kedondong.sch.id/sitemap.xml',
+    sitemap: 'https://studio-128676595-62275.web.app/sitemap.xml',
   }
 }

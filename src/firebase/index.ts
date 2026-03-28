@@ -1,6 +1,6 @@
 'use client';
 
-import { firebaseConfig } from '@/firebase/config';
+import { firebaseConfig } from './config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
@@ -11,11 +11,10 @@ export type FirebaseServices = {
   firestore: Firestore | null;
 };
 
+/**
+ * Inisialisasi aman untuk Client Side.
+ */
 export function initializeFirebase(): FirebaseServices {
-  if (typeof window === 'undefined') {
-    return { firebaseApp: null, auth: null, firestore: null };
-  }
-
   try {
     const isConfigValid = !!(firebaseConfig && firebaseConfig.projectId && firebaseConfig.projectId !== "");
     
@@ -30,18 +29,20 @@ export function initializeFirebase(): FirebaseServices {
       app = getApp();
     }
 
+    const auth = getAuth(app);
+    const firestore = getFirestore(app);
+
     return {
       firebaseApp: app,
-      auth: getAuth(app),
-      firestore: getFirestore(app)
+      auth,
+      firestore
     };
   } catch (error) {
-    console.error('Firebase initialization error:', error);
+    console.warn('Firebase initialization error:', error);
     return { firebaseApp: null, auth: null, firestore: null };
   }
 }
 
-// Singleton instances for client-side use
 const services = initializeFirebase();
 export const firebaseApp = services.firebaseApp;
 export const auth = services.auth;
@@ -51,7 +52,6 @@ export * from './provider';
 export * from './client-provider';
 export * from './firestore/use-collection';
 export * from './firestore/use-doc';
-export * from './non-blocking-updates';
-export * from './non-blocking-login';
+export * from './mutations';
 export * from './errors';
 export * from './error-emitter';

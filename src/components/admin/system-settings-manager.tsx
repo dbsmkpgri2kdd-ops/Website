@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -13,10 +12,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, ShieldAlert, MonitorDot, Layout, Palette, Hammer } from 'lucide-react';
+import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Hammer } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Separator } from '../ui/separator';
 
 const formSchema = z.object({
   isMaintenanceMode: z.boolean().default(false),
@@ -29,6 +27,7 @@ const formSchema = z.object({
     showMajors: z.boolean().default(true),
     showNews: z.boolean().default(true),
     showCta: z.boolean().default(true),
+    showShowcase: z.boolean().default(true),
   }),
 });
 
@@ -52,6 +51,7 @@ export function SystemSettingsManager() {
         showMajors: true,
         showNews: true,
         showCta: true,
+        showShowcase: true,
       }
     },
   });
@@ -62,13 +62,9 @@ export function SystemSettingsManager() {
         isMaintenanceMode: schoolData.isMaintenanceMode || false,
         primaryColor: schoolData.primaryColor || '221 83% 53%',
         accentColor: schoolData.accentColor || '262 83% 58%',
-        layoutSettings: schoolData.layoutSettings || {
-          showHero: true,
-          showPartners: true,
-          showStats: true,
-          showMajors: true,
-          showNews: true,
-          showCta: true,
+        layoutSettings: {
+            ...form.getValues('layoutSettings'),
+            ...schoolData.layoutSettings
         }
       });
     }
@@ -84,11 +80,11 @@ export function SystemSettingsManager() {
 
   return (
     <div className="space-y-8 animate-fade-in pb-20">
-      <Alert variant="destructive" className="bg-destructive/5 border-destructive/20">
-        <ShieldAlert className="h-4 w-4" />
-        <AlertTitle className='font-bold'>Mode Pengembang & Kustomisasi</AlertTitle>
-        <AlertDescription className='text-xs'>
-          Pengaturan ini mengubah identitas visual dan struktur halaman utama. Perubahan warna menggunakan standar HSL CSS.
+      <Alert className="bg-primary/5 border-primary/20">
+        <ShieldAlert className="h-4 w-4 text-primary" />
+        <AlertTitle className='font-black uppercase tracking-widest text-[10px]'>Brand Customization</AlertTitle>
+        <AlertDescription className='text-xs font-medium'>
+          Atur identitas visual sekolah Anda. Perubahan warna akan langsung berdampak pada seluruh elemen website.
         </AlertDescription>
       </Alert>
 
@@ -98,23 +94,23 @@ export function SystemSettingsManager() {
             
             <div className="space-y-8">
               {/* Appearance Settings */}
-              <Card className="shadow-sm border-primary/10">
+              <Card className="shadow-2xl border-none rounded-[2rem]">
                 <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <Palette className="text-primary h-5 w-5" />
-                    <CardTitle className='text-lg'>Identitas Visual (Branding)</CardTitle>
+                  <div className="flex items-center gap-3">
+                    <div className='p-2 bg-primary/10 text-primary rounded-xl'><Palette size={20} /></div>
+                    <CardTitle className='text-xl font-headline font-black uppercase italic'>Corporate Branding</CardTitle>
                   </div>
-                  <CardDescription>Ubah warna utama website sekolah.</CardDescription>
+                  <CardDescription>Ubah warna tema utama (format HSL).</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
                   <FormField
                     control={form.control}
                     name="primaryColor"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Warna Utama (HSL)</FormLabel>
-                        <FormControl><Input {...field} placeholder="e.g. 221 83% 53%" /></FormControl>
-                        <FormDescription className="text-[10px]">Contoh: 221 83% 53% (Biru Profesional)</FormDescription>
+                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Primary Color (HSL)</FormLabel>
+                        <FormControl><Input {...field} placeholder="e.g. 221 83% 53%" className='h-12 rounded-xl'/></FormControl>
+                        <FormDescription className="text-[9px]">Default: 221 83% 53% (Royal Blue)</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -124,9 +120,9 @@ export function SystemSettingsManager() {
                     name="accentColor"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Warna Aksen (HSL)</FormLabel>
-                        <FormControl><Input {...field} placeholder="e.g. 262 83% 58%" /></FormControl>
-                        <FormDescription className="text-[10px]">Contoh: 262 83% 58% (Ungu Kerajaan)</FormDescription>
+                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Accent Color (HSL)</FormLabel>
+                        <FormControl><Input {...field} placeholder="e.g. 262 83% 58%" className='h-12 rounded-xl'/></FormControl>
+                        <FormDescription className="text-[9px]">Default: 262 83% 58% (Electric Purple)</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -135,23 +131,22 @@ export function SystemSettingsManager() {
               </Card>
 
               {/* Maintenance Tools */}
-              <Card className="shadow-sm border-destructive/10">
+              <Card className="shadow-2xl border-none rounded-[2rem]">
                 <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <Hammer className="text-destructive h-5 w-5" />
-                    <CardTitle className='text-lg'>Pemeliharaan</CardTitle>
+                  <div className="flex items-center gap-3">
+                    <div className='p-2 bg-destructive/10 text-destructive rounded-xl'><Hammer size={20} /></div>
+                    <CardTitle className='text-xl font-headline font-black uppercase italic'>System Access</CardTitle>
                   </div>
-                  <CardDescription>Kontrol akses publik ke website.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <FormField
                     control={form.control}
                     name="isMaintenanceMode"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-xl border p-4 shadow-sm bg-muted/20">
+                      <FormItem className="flex flex-row items-center justify-between rounded-2xl border p-5 shadow-sm bg-muted/20">
                         <div className="space-y-0.5">
-                          <FormLabel>Mode Perbaikan</FormLabel>
-                          <FormDescription className="text-xs">Aktifkan untuk menampilkan halaman 'Under Construction'.</FormDescription>
+                          <FormLabel className='font-bold uppercase text-xs tracking-tight'>Maintenance Mode</FormLabel>
+                          <FormDescription className="text-[10px]">Aktifkan untuk mengunci akses publik sementara.</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -164,33 +159,34 @@ export function SystemSettingsManager() {
             </div>
 
             {/* Layout Settings */}
-            <Card className="shadow-sm border-primary/10">
+            <Card className="shadow-2xl border-none rounded-[2.5rem]">
               <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Layout className="text-primary h-5 w-5" />
-                  <CardTitle className='text-lg'>Tata Letak Beranda</CardTitle>
+                <div className="flex items-center gap-3">
+                  <div className='p-2 bg-primary/10 text-primary rounded-xl'><Layout size={20} /></div>
+                  <CardTitle className='text-xl font-headline font-black uppercase italic'>Homepage Layout</CardTitle>
                 </div>
-                <CardDescription>Aktifkan atau sembunyikan bagian di halaman depan.</CardDescription>
+                <CardDescription>Kontrol bagian mana saja yang ingin Anda tampilkan.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-4">
+                <div className="grid gap-3">
                   {[
-                    { name: 'showHero', label: 'Banner Utama (Hero)', desc: 'Bagian paling atas website' },
-                    { name: 'showPartners', label: 'Slider Mitra', desc: 'Daftar logo kerjasama industri' },
-                    { name: 'showStats', label: 'Statistik Sekolah', desc: 'Jumlah siswa, guru, dan mitra' },
-                    { name: 'showMajors', label: 'Blok Jurusan', desc: 'Daftar kompetensi keahlian' },
-                    { name: 'showNews', label: 'Berita Terkini', desc: 'Tampilkan artikel terbaru' },
-                    { name: 'showCta', label: 'Banner Ajakan Daftar', desc: 'Tombol besar untuk pendaftaran PPDB' },
+                    { name: 'showHero', label: 'Impact Hero Banner', desc: 'Area utama fullscreen di atas' },
+                    { name: 'showPartners', label: 'Industry Slider', desc: 'Daftar logo mitra industri' },
+                    { name: 'showStats', label: 'School Statistics', desc: 'Angka pencapaian sekolah' },
+                    { name: 'showMajors', label: 'Academic Programs', desc: 'Blok informasi jurusan' },
+                    { name: 'showNews', label: 'Activity Updates', desc: 'Berita dan pengumuman' },
+                    { name: 'showShowcase', label: 'Student Portfolio', desc: 'Karya publik terbaik siswa' },
+                    { name: 'showCta', label: 'Call to Action', desc: 'Banner pendaftaran besar' },
                   ].map((item) => (
                     <FormField
                       key={item.name}
                       control={form.control}
                       name={`layoutSettings.${item.name}` as any}
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 bg-card">
+                        <FormItem className="flex flex-row items-center justify-between rounded-xl border p-4 hover:bg-muted/10 transition-colors">
                           <div className="space-y-0.5">
-                            <FormLabel className="text-sm font-bold">{item.label}</FormLabel>
-                            <FormDescription className="text-[10px]">{item.desc}</FormDescription>
+                            <FormLabel className="text-xs font-black uppercase tracking-tight">{item.label}</FormLabel>
+                            <FormDescription className="text-[9px]">{item.desc}</FormDescription>
                           </div>
                           <FormControl>
                             <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -205,9 +201,9 @@ export function SystemSettingsManager() {
           </div>
 
           <div className="flex justify-end sticky bottom-8 z-50">
-            <Button type="submit" size="lg" className="font-black px-12 h-14 rounded-full shadow-2xl hover:scale-105 transition-all">
+            <Button type="submit" size="lg" className="font-black px-12 h-16 rounded-3xl shadow-3xl glow-primary hover:scale-105 transition-all uppercase tracking-widest">
               {form.formState.isSubmitting ? <LoaderCircle className="animate-spin mr-2" /> : <Save className="mr-2 h-5 w-5" />}
-              Terapkan Perubahan Visual
+              Save All Changes
             </Button>
           </div>
         </form>

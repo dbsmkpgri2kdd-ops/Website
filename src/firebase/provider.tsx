@@ -1,10 +1,12 @@
+
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
-import { Firestore, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { Firestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
+import type { UserProfile } from '@/lib/data';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -13,20 +15,21 @@ interface FirebaseProviderProps {
   auth: Auth | null;
 }
 
+export interface AppUser extends User {
+  profile: UserProfile | null;
+}
+
 interface UserAuthState {
-  user: User | null;
+  user: AppUser | null;
   isUserLoading: boolean;
   userError: Error | null;
 }
 
-export interface FirebaseContextState {
+export interface FirebaseContextState extends UserAuthState {
   areServicesAvailable: boolean;
   firebaseApp: FirebaseApp | null;
   firestore: Firestore | null;
   auth: Auth | null;
-  user: User | null;
-  isUserLoading: boolean;
-  userError: Error | null;
 }
 
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
@@ -37,7 +40,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   firestore,
   auth,
 }) => {
-  const [userAuthState, setUserAuthState] = useState<UserAuthState>({
+  const [userState, setUserState] = useState<UserAuthState>({
     user: null,
     isUserLoading: true,
     userError: null,
@@ -45,36 +48,71 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 
   useEffect(() => {
     if (!auth || !firestore) {
-      setUserAuthState(prev => ({ ...prev, isUserLoading: false }));
+      setUserState(prev => ({ ...prev, isUserLoading: false }));
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        const userRef = doc(firestore, 'users', firebaseUser.uid);
+        const userDocRef = doc(firestore, 'users', firebaseUser.uid);
+        
         try {
-          const userSnap = await getDoc(userRef);
+          const userSnap = await getDoc(userDocRef);
+          
+          // JIKA USER BARU (PROFIL BELUM ADA)
           if (!userSnap.exists()) {
-            // Auto-create profile for new users with default role 'siswa'
-            await setDoc(userRef, {
-              uid: firebaseUser.uid,
-              email: firebaseUser.email,
+            // Cek apakah sistem sudah pernah diinisialisasi
+            const initRef = doc(firestore, 'app_roles/initialized/init', 'system');
+            const initSnap = await getDoc(initRef);
+            
+            // Pengguna pertama otomatis jadi Admin
+            const isFirstUser = !initSnap.exists();
+            const role = isFirstUser ? 'admin' : 'siswa';
+
+            await setDoc(userDocRef, {
+              email: firebaseUser.email || '',
               displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User Baru',
-              role: 'siswa',
+              role: role,
               createdAt: serverTimestamp(),
             }, { merge: true });
+
+            // Jika dia admin pertama, tandai sistem sudah inisialisasi secara permanen
+            if (isFirstUser) {
+              await setDoc(initRef, {
+                initialized: true,
+                initializedBy: firebaseUser.email,
+                at: serverTimestamp()
+              });
+            }
           }
-          setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
-        } catch (error) {
-          // If rules block reading (initial bootstrap phase), we still provide the auth object
-          setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
+        } catch (e) {
+          console.warn("Profile check/creation pending...");
         }
+
+        const unsubscribeProfile = onSnapshot(userDocRef, (docSnap) => {
+          const profileData = docSnap.exists() ? docSnap.data() as UserProfile : null;
+          setUserState({
+            user: { ...firebaseUser, profile: profileData } as AppUser,
+            isUserLoading: false,
+            userError: null
+          });
+        }, (err) => {
+          setUserState({
+            user: { ...firebaseUser, profile: null } as AppUser,
+            isUserLoading: false,
+            userError: null
+          });
+        });
+
+        return () => unsubscribeProfile();
       } else {
-        setUserAuthState({ user: null, isUserLoading: false, userError: null });
+        setUserState({ user: null, isUserLoading: false, userError: null });
       }
+    }, (err) => {
+      setUserState({ user: null, isUserLoading: false, userError: err });
     });
 
-    return () => unsubscribe();
+    return () => unsubscribeAuth();
   }, [auth, firestore]);
 
   const contextValue = useMemo((): FirebaseContextState => {
@@ -83,11 +121,9 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       firebaseApp,
       firestore,
       auth,
-      user: userAuthState.user,
-      isUserLoading: userAuthState.isUserLoading,
-      userError: userAuthState.userError,
+      ...userState
     };
-  }, [firebaseApp, firestore, auth, userAuthState]);
+  }, [firebaseApp, firestore, auth, userState]);
 
   return (
     <FirebaseContext.Provider value={contextValue}>
@@ -120,6 +156,7 @@ export const useUser = () => {
   return { 
     user: context?.user || null, 
     isUserLoading: context?.isUserLoading ?? true, 
-    userError: context?.userError || null 
+    userError: context?.userError || null,
+    profile: context?.user?.profile || null
   };
 };

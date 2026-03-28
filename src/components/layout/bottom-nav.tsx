@@ -9,6 +9,10 @@ type BottomNavProps = {
   setIsMenuOpen: (isOpen: boolean) => void;
 };
 
+/**
+ * Bilah navigasi bawah khusus mobile.
+ * Diperbarui: Desain solid (tidak melayang) yang menempel di bawah bingkai layar.
+ */
 export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: BottomNavProps) {
   const navItems = [
     { id: 'home', label: 'Beranda', icon: Home },
@@ -22,8 +26,8 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
   };
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-background/95 backdrop-blur-lg border-t border-border/50 pb-safe">
-      <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+    <div className="md:hidden fixed bottom-0 left-0 z-50 w-full bg-background/95 backdrop-blur-2xl border-t border-white/10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.3)]">
+      <div className="h-16 flex items-center justify-around px-2">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           return (
@@ -32,34 +36,26 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
               type="button"
               onClick={() => handleNavClick(item.id as NavLink)}
               className={cn(
-                "inline-flex flex-col items-center justify-center px-2 group transition-all relative",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                "flex flex-col items-center justify-center flex-1 transition-all duration-300",
+                isActive ? "text-primary scale-110" : "text-muted-foreground opacity-60"
               )}
             >
-              <div className={cn(
-                "p-2 rounded-xl mb-1 transition-all",
-                isActive ? "bg-primary/10" : "group-hover:bg-muted"
-              )}>
-                <item.icon className={cn("w-6 h-6", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
-              </div>
-              <span className={cn("text-xs font-bold tracking-tight uppercase", isActive ? "opacity-100" : "opacity-70")}>
+              <item.icon className={cn("w-5 h-5 mb-1", isActive ? "stroke-[2.5px]" : "stroke-2")} />
+              <span className="text-[8px] font-black uppercase tracking-widest">
                 {item.label}
               </span>
-              {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-b-full" />
-              )}
             </button>
           );
         })}
+        
+        {/* AKSES MENU (Hamburger) */}
         <button
           type="button"
           onClick={() => setIsMenuOpen(true)}
-          className="inline-flex flex-col items-center justify-center px-2 text-muted-foreground hover:text-foreground group transition-all"
+          className="flex flex-col items-center justify-center flex-1 text-muted-foreground opacity-60 hover:opacity-100 active:scale-95"
         >
-          <div className="p-2 rounded-xl mb-1 group-hover:bg-muted transition-all">
-            <LayoutGrid className="w-6 h-6 stroke-[2px]" />
-          </div>
-          <span className="text-xs font-bold tracking-tight opacity-70 uppercase">Menu</span>
+          <LayoutGrid className="w-5 h-5 mb-1" />
+          <span className="text-[8px] font-black uppercase tracking-widest">Menu</span>
         </button>
       </div>
     </div>

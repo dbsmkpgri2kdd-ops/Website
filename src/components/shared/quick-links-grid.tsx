@@ -1,11 +1,11 @@
 
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type QuickLink } from '@/lib/data';
-import { Globe, Laptop, AppWindow as AppIcon, BookOpen, GraduationCap, Users, ExternalLink } from 'lucide-react';
+import { Globe, Laptop, AppWindow as AppIcon, BookOpen, GraduationCap, Users, ExternalLink, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const iconMap: { [key: string]: any } = {
@@ -18,35 +18,47 @@ type QuickLinksGridProps = {
   description?: string;
 };
 
-export function QuickLinksGrid({ audience, title = "Aplikasi & Tautan", description = "Akses cepat ke berbagai layanan dan fitur sekolah kami." }: QuickLinksGridProps) {
+/**
+ * Komponen Grid untuk menampilkan Tautan Aplikasi berdasarkan audiens.
+ * Mendukung filter cerdas dan desain App-Centric.
+ */
+export function QuickLinksGrid({ audience, title = "Aplikasi & Layanan", description = "Akses cepat ke berbagai platform penunjang akademik dan operasional." }: QuickLinksGridProps) {
   const firestore = useFirestore();
 
   const linksQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    const ref = collection(firestore, `schools/${SCHOOL_DATA_ID}/quickLinks`);
-    // Filter by specific audience or 'all'
-    return query(
-      ref, 
-      where('audience', 'in', ['all', audience]),
-      orderBy('createdAt', 'desc')
-    );
+    try {
+      const ref = collection(firestore, `schools/${SCHOOL_DATA_ID}/quickLinks`);
+      return query(
+        ref, 
+        where('audience', 'in', ['all', audience])
+      );
+    } catch (e) {
+      console.warn("QuickLinks query inactive.");
+      return null;
+    }
   }, [firestore, audience]);
 
-  const { data: links, isLoading } = useCollection<QuickLink>(linksQuery);
+  const { data: links, isLoading, error } = useCollection<QuickLink>(linksQuery);
 
+  if (error) return null;
   if (!isLoading && (!links || links.length === 0)) return null;
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="text-center md:text-left">
-        <h2 className="text-3xl font-bold font-headline text-primary">{title}</h2>
-        <p className="text-muted-foreground mt-2">{description}</p>
+    <div className="space-y-10 animate-fade-in">
+      <div className="text-center md:text-left space-y-2">
+        <div className='flex items-center gap-3 text-primary justify-center md:justify-start'>
+            <Sparkles size={14} className='animate-pulse' />
+            <span className="text-[9px] font-black uppercase tracking-[0.5em]">Digital Hub</span>
+        </div>
+        <h2 className="text-4xl font-black font-headline tracking-tighter uppercase italic">{title}</h2>
+        <p className="text-muted-foreground text-sm font-medium max-w-2xl">{description}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-32 rounded-2xl" />
+            <Skeleton key={i} className="h-40 rounded-3xl" />
           ))
         ) : (
           links?.map((link) => {
@@ -59,20 +71,20 @@ export function QuickLinksGrid({ audience, title = "Aplikasi & Tautan", descript
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <Card className="h-full rounded-2xl shadow-md border-primary/5 hover:border-primary/20 hover:shadow-xl transition-all hover:-translate-y-1 bg-card/50 backdrop-blur-sm">
-                  <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                    <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                      <Icon size={24} />
+                <Card className="h-full rounded-[2rem] shadow-2xl border-white/5 bg-white/5 backdrop-blur-xl hover:border-primary/20 hover:bg-white/[0.08] transition-all duration-500 hover:-translate-y-2 overflow-hidden border">
+                  <CardHeader className="flex flex-row items-center gap-5 p-6 pb-4">
+                    <div className="p-4 rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-lg group-hover:rotate-6">
+                      <Icon size={28} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-lg font-bold truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
-                      <div className="flex items-center text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-0.5">
-                        Buka Aplikasi <ExternalLink size={10} className="ml-1" />
+                      <CardTitle className="text-lg font-black uppercase tracking-tight truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
+                      <div className="flex items-center text-[8px] text-muted-foreground uppercase font-black tracking-widest mt-1 opacity-60">
+                        Launch App <ExternalLink size={10} className="ml-1" />
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{link.description}</p>
+                  <CardContent className="px-6 pb-6">
+                    <p className="text-[11px] text-muted-foreground leading-relaxed font-medium line-clamp-2 uppercase tracking-wide opacity-50">{link.description}</p>
                   </CardContent>
                 </Card>
               </a>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { PlusCircle, Trash2, Edit, LoaderCircle, Link as LinkIcon, Globe, Laptop, AppWindow as AppIcon, BookOpen, GraduationCap, Users } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Judul minimal 3 karakter.'),

@@ -1,7 +1,8 @@
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, UserCheck, BookOpen, Building } from 'lucide-react';
+import { Users, UserCheck, BookOpen, Building, GraduationCap, Factory, ShieldCheck, Zap } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type StatisticsSectionProps = {
@@ -16,55 +17,53 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
     
     const stats = [
         {
-            title: 'Jumlah Siswa',
+            title: 'SISWA AKTIF',
             value: studentCount,
-            icon: Users,
-            color: 'text-blue-500',
-            bg: 'bg-blue-500/10'
+            icon: GraduationCap,
+            color: 'text-primary',
+            bg: 'bg-primary/10'
         },
         {
-            title: 'Jumlah Guru',
+            title: 'TENAGA PENDIDIK',
             value: teacherCount,
             icon: UserCheck,
             color: 'text-amber-500',
             bg: 'bg-amber-500/10'
         },
         {
-            title: 'Jumlah Jurusan',
+            title: 'PROGRAM STUDI',
             value: majorCount,
             icon: BookOpen,
             color: 'text-emerald-500',
             bg: 'bg-emerald-500/10'
         },
         {
-            title: 'Mitra Industri',
+            title: 'JEJAK INDUSTRI',
             value: partnerCount,
-            icon: Building,
-            color: 'text-purple-500',
-            bg: 'bg-purple-500/10'
+            icon: Factory,
+            color: 'text-indigo-500',
+            bg: 'bg-indigo-500/10'
         },
     ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:gap-6">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
         {stats.map((stat, index) => (
-            <Card key={index} className="shadow-lg rounded-3xl border-none bg-background/50 backdrop-blur-sm hover:-translate-y-1 transition-all duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{stat.title}</CardTitle>
-                    <div className={`p-2 rounded-xl ${stat.bg} ${stat.color}`}>
-                      <stat.icon size={18} />
-                    </div>
-                </CardHeader>
-                <CardContent>
+            <div key={index} className="group flex flex-col space-y-6">
+                <div className={`w-16 h-16 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-2xl`}>
+                    <stat.icon size={28} />
+                </div>
+                <div className="space-y-1">
+                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-60">{stat.title}</p>
                     {isLoading ? (
-                        <Skeleton className='h-8 w-1/2' />
+                        <Skeleton className='h-10 w-24' />
                     ) : (
-                        <div className="text-3xl font-black text-foreground">
+                        <div className="text-5xl font-black text-foreground tracking-tighter italic">
                           {stat.value > 0 ? stat.value : '0'}
                         </div>
                     )}
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         ))}
     </div>
   );

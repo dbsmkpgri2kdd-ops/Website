@@ -3,7 +3,7 @@ import {
     Home, Info, Newspaper, UserPlus, Phone, Users, GraduationCap, Award, BookOpen, ImageIcon,
     Building, Quote, Activity, MessageSquare, Calendar, Download, CalendarClock, Library, PenSquare,
     Megaphone, Briefcase, Building2, Factory, ShieldCheck, ScanSearch, FileText, BadgeCheck,
-    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorDot, Palmtree, Link, Globe, Laptop, AppWindow as AppIcon
+    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorDot, Palmtree, Link, Globe, Laptop, AppWindow as AppIcon, Sparkles, Palette, MoveUp, MoveDown, GripVertical
 } from 'lucide-react';
 
 export type NavLink =
@@ -16,65 +16,62 @@ export type NavLink =
     'struktur-organisasi' | 'testimoni-alumni' | 'virtual-tour' | 'database-alumni' | 'e-learning' | 'e-rapor' | 'absensi-online' |
     'pojok-literasi' | 'osis-corner' | 'forum-diskusi' | 'dokumen-download' | 'prakerin-pkl' | 'portofolio-siswa' |
     'konsultasi-karir' | 'simulasi-ujian' | 'job-matching' | 'pembayaran-spp' | 'login' |
-    'buku-tamu' | 'feedback-survey';
+    'buku-tamu' | 'feedback-survey' | 'showcase-karya';
 
 export type NavItem = {
     id?: NavLink;
     label: string;
-    icon: React.ElementType;
+    icon?: string;
     children?: NavItem[];
 };
 
-export const NAV_MENU: NavItem[] = [
-    { id: 'home', label: 'Beranda', icon: Home },
+export const NAV_MENU_DEFAULT: NavItem[] = [
+    { id: 'home', label: 'Beranda' },
     {
         label: 'Profil',
-        icon: Info,
         children: [
-            { id: 'profil-sejarah', label: 'Profil & Sejarah', icon: Info },
-            { id: 'fasilitas', label: 'Fasilitas', icon: Building },
-            { id: 'staf-guru', label: 'Staf & Guru', icon: Users },
+            { id: 'profil-sejarah', label: 'Profil & Sejarah' },
+            { id: 'fasilitas', label: 'Fasilitas' },
+            { id: 'staf-guru', label: 'Staf & Guru' },
         ],
     },
     {
         label: 'Informasi',
-        icon: ScrollText,
         children: [
-            { id: 'berita-pengumuman', label: 'Berita & Pengumuman', icon: Newspaper },
-            { id: 'agenda-akademik', label: 'Agenda Sekolah', icon: Calendar },
-            { id: 'galeri-foto-video', label: 'Galeri', icon: ImageIcon },
+            { id: 'berita-pengumuman', label: 'Berita & Pengumuman' },
+            { id: 'agenda-akademik', label: 'Agenda Sekolah' },
+            { id: 'galeri-foto-video', label: 'Galeri Media' },
         ],
     },
     {
         label: 'Akademik',
-        icon: GraduationCap,
         children: [
-            { id: 'jurusan-kompetensi', label: 'Jurusan', icon: BookOpen },
-            { id: 'prestasi-siswa', label: 'Prestasi Siswa', icon: Award },
-            { id: 'ekstrakurikuler', label: 'Ekstrakurikuler', icon: Activity },
-            { id: 'perpustakaan', label: 'Perpustakaan', icon: Library },
+            { id: 'jurusan-kompetensi', label: 'Jurusan' },
+            { id: 'prestasi-siswa', label: 'Prestasi Siswa' },
+            { id: 'ekstrakurikuler', label: 'Ekstrakurikuler' },
+            { id: 'perpustakaan', label: 'Perpustakaan' },
+            { id: 'showcase-karya', label: 'Pameran Karya' },
         ],
     },
     {
-        label: 'Link & Match',
-        icon: Building2,
+        label: 'Industri',
         children: [
-            { id: 'mitra-industri', label: 'Mitra Industri', icon: Building2 },
-            { id: 'bkk', label: 'Bursa Kerja (BKK)', icon: Briefcase },
-            { id: 'teaching-factory', label: 'Teaching Factory', icon: Factory },
-            { id: 'lsp-sertifikasi', label: 'LSP & Sertifikasi', icon: ShieldCheck },
-            { id: 'tracer-study', label: 'Tracer Study', icon: ScanSearch },
+            { id: 'mitra-industri', label: 'Mitra Industri' },
+            { id: 'bkk', label: 'Bursa Kerja (BKK)' },
+            { id: 'teaching-factory', label: 'Teaching Factory' },
+            { id: 'lsp-sertifikasi', label: 'LSP & Sertifikasi' },
+            { id: 'tracer-study', label: 'Penelusuran Alumni' },
         ],
     },
     {
-        label: 'Pendaftaran',
-        icon: UserPlus,
+        label: 'Layanan',
         children: [
-            { id: 'ppdb-online', label: 'PPDB Online', icon: UserPlus },
-            { id: 'cek-status-kelulusan', label: 'Cek Kelulusan', icon: BadgeCheck },
+            { id: 'ppdb-online', label: 'PPDB Online' },
+            { id: 'cek-status-kelulusan', label: 'Cek Kelulusan' },
+            { id: 'dokumen-download', label: 'Pusat Unduhan' },
         ],
     },
-    { id: 'kontak', label: 'Kontak', icon: Phone },
+    { id: 'kontak', label: 'Kontak' },
 ];
 
 export const SCHOOL_DATA_ID = "smks-pgri-2-kedondong";
@@ -101,6 +98,7 @@ export type School = {
     teacherCount?: number;
     industryPartnerCount?: number;
     isMaintenanceMode?: boolean;
+    selectedTemplate?: string;
     primaryColor?: string;
     accentColor?: string;
     heroTitle?: string;
@@ -114,7 +112,10 @@ export type School = {
       showMajors?: boolean;
       showNews?: boolean;
       showCta?: boolean;
+      showShowcase?: boolean;
+      sectionOrder?: string[];
     };
+    customMenu?: NavItem[];
 };
 
 export type QuickLink = {
@@ -127,9 +128,13 @@ export type QuickLink = {
   createdAt: any;
 };
 
-export type StudentReference = {
-    name: string;
-    class: string;
+export type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: any;
 };
 
 export type Major = {
@@ -182,6 +187,10 @@ export type StudentApplication = {
   chosenMajor: string;
   parentPhone: string;
   submissionDate: any;
+  status: 'PENDING' | 'DITERIMA' | 'CADANGAN' | 'DITOLAK';
+  birthDate?: string;
+  gender?: string;
+  originSchool?: string;
 };
 
 export type ExtracurricularApplication = {
@@ -321,7 +330,7 @@ export type TeachingFactoryProduct = {
   description: string;
   imageUrl: string;
   price?: string;
-  studentCreator?: StudentReference;
+  studentCreator?: { name: string; class: string };
   createdAt: any;
 };
 
@@ -373,6 +382,9 @@ export type PortfolioItem = {
   description: string;
   imageUrl: string;
   projectUrl?: string;
+  isPublic?: boolean;
+  studentName?: string;
+  studentClass?: string;
   createdAt: any;
 };
 

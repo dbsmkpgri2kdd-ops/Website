@@ -1,5 +1,22 @@
 {
-  "node": {},
+  "node": {
+    "d34dd4e7ba1a1f463863afe98caf58e5b90b8210": {
+      "workers": {
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fuser%2Fstudio%2Fsrc%2Fai%2Fflows%2Fschool-assistant-flow.ts%22%2C%5B%22chatWithSchoolAI%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    },
+    "377370ea013720ef09f2830e6b1f4552a373b55f": {
+      "workers": {
+        "app/admin/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fuser%2Fstudio%2Fsrc%2Fai%2Fflows%2Fadmin-analysis-flow.ts%22%2C%5B%22generateAdminAnalysis%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      }
+    }
+  },
   "edge": {},
-  "encryptionKey": "vKXc3XTZVo8Y48i8A3uNe+/+8f2raPY/WKK1HyHjqwg="
+  "encryptionKey": "Bq5SSAYmq9MkxlMSa0aUalRSRqD0jCG+g264llnX60E="
 }

@@ -1,14 +1,15 @@
-
 'use client';
 
 import { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { 
-  LogOut, User as UserIcon, LayoutDashboard, Settings, FileBox, Users2, 
-  GraduationCap, Building2, Briefcase, Database, Bell, Menu, X, 
-  ChevronRight, Laptop, Newspaper, Calendar, Link as LinkIcon,
-  PenSquare, CalendarClock, UserCog, UserPlus, ShieldAlert, ArrowRightLeft, DatabaseZap,
-  ShieldCheck, LoaderCircle
+  LogOut, LayoutDashboard, Settings, FileBox, Users2, 
+  GraduationCap, Building2, Briefcase, Bell, Menu, X, 
+  Newspaper, Calendar, Link as LinkIcon,
+  PenSquare, ShieldAlert, 
+  LoaderCircle, Mail, Award, Library, BadgeCheck, MessageSquare, Quote, 
+  DatabaseZap, Palette, Layout, MousePointer2, BriefcaseIcon, Factory, SearchCode,
+  UserPlus
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -18,10 +19,9 @@ import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 // Modul Managers
 import { OverviewManager } from '@/components/admin/overview-manager';
@@ -32,7 +32,6 @@ import { GalleryManager } from '@/components/admin/gallery-manager';
 import { FacilitiesManager } from '@/components/admin/facilities-manager';
 import { ApplicationsManager } from '@/components/admin/applications-manager';
 import { AgendaManager } from '@/components/admin/agenda-manager';
-import { ScheduleManager } from '@/components/admin/schedule-manager';
 import { LiteracyManager } from '@/components/admin/literacy-manager';
 import { OsisManager } from '@/components/admin/osis-manager';
 import { IndustryPartnersManager } from '@/components/admin/industry-partners-manager';
@@ -40,15 +39,30 @@ import { TeachersManager } from '@/components/admin/teachers-manager';
 import { JobVacanciesManager } from '@/components/admin/job-vacancies-manager';
 import { ManajemenPrakerin } from '@/components/shared/manajemen-prakerin';
 import { UsersManager } from '@/components/admin/users-manager';
-import { ERaporManager } from '@/components/shared/e-rapor-manager';
-import { ManajemenAbsensi } from '@/components/guru/manajemen-absensi';
 import { SystemSettingsManager } from '@/components/admin/system-settings-manager';
 import { QuickLinksManager } from '@/components/admin/quick-links-manager';
+import { ContactMessagesManager } from '@/components/admin/contact-messages-manager';
+import { AchievementsManager } from '@/components/admin/achievements-manager';
+import { ExtracurricularsManager } from '@/components/admin/extracurriculars-manager';
+import { LibraryManager } from '@/components/admin/library-manager';
+import { TeachingFactoryManager } from '@/components/admin/teaching-factory-manager';
+import { LspManager } from '@/components/admin/lsp-manager';
+import { GraduationStatusManager } from '@/components/admin/graduation-status-manager';
+import { TestimonialsManager } from '@/components/admin/testimonials-manager';
+import { AlumniManager } from '@/components/admin/alumni-manager';
+import { GuestbookManager } from '@/components/admin/guestbook-manager';
+import { DownloadManager } from '@/components/shared/download-manager';
+import { TracerStudyManager } from '@/components/admin/tracer-study-manager';
+import { DesignTemplateManager } from '@/components/admin/design-template-manager';
+import { NavigationManager } from '@/components/admin/navigation-manager';
+import { LayoutBuilderManager } from '@/components/admin/layout-builder-manager';
 
 type AdminTab = 
   | 'overview' | 'school-profile' | 'majors' | 'teachers' | 'facilities' | 'gallery'
   | 'news' | 'agenda' | 'osis' | 'literacy' | 'schedule' | 'rapor' | 'attendance'
-  | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings' | 'quick-links';
+  | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings' | 'quick-links' | 'contact-messages'
+  | 'achievements' | 'extracurriculars' | 'library' | 'tefa' | 'lsp' | 'graduation' | 'testimonials' | 'alumni' | 'guestbook' | 'downloads' | 'tracer' | 'appearance'
+  | 'navigation' | 'layout-builder';
 
 function AdminDashboard() {
   const { user, isUserLoading } = useUser();
@@ -64,39 +78,52 @@ function AdminDashboard() {
     if (!auth) return;
     try {
       await signOut(auth);
-      router.push('/login');
+      router.replace('/');
+      toast({ title: 'SESI BERAKHIR', description: 'Kembali ke halaman utama...' });
     } catch (error) {
-      toast({ variant: 'destructive', title: 'Logout Gagal' });
+      toast({ variant: 'destructive', title: 'LOGOUT GAGAL' });
     }
   };
 
   const navItems = [
-    { label: 'Ikhtisar', value: 'overview', icon: LayoutDashboard, group: 'Utama' },
-    { label: 'Profil Sekolah', value: 'school-profile', icon: Building2, group: 'Master Data' },
-    { label: 'Tenaga Pendidik', value: 'teachers', icon: Users2, group: 'Master Data' },
-    { label: 'Jurusan', value: 'majors', icon: GraduationCap, group: 'Master Data' },
-    { label: 'Fasilitas', value: 'facilities', icon: Database, group: 'Master Data' },
-    { label: 'Galeri Media', value: 'gallery', icon: FileBox, group: 'Master Data' },
-    { label: 'Tautan Aplikasi', value: 'quick-links', icon: LinkIcon, group: 'Sistem' },
-    { label: 'Berita', value: 'news', icon: Newspaper, group: 'Konten' },
-    { label: 'Agenda', value: 'agenda', icon: Calendar, group: 'Konten' },
-    { label: 'OSIS Corner', value: 'osis', icon: Bell, group: 'Konten' },
-    { label: 'Literasi', value: 'literacy', icon: PenSquare, group: 'Konten' },
-    { label: 'Jadwal', value: 'schedule', icon: CalendarClock, group: 'Akademik' },
-    { label: 'E-Rapor', value: 'rapor', icon: GraduationCap, group: 'Akademik' },
-    { label: 'Absensi', value: 'attendance', icon: UserCog, group: 'Akademik' },
-    { label: 'Mitra Industri', value: 'partners', icon: Briefcase, group: 'Hubin' },
-    { label: 'BKK Lowongan', value: 'jobs', icon: Laptop, group: 'Hubin' },
-    { label: 'Prakerin/PKL', value: 'prakerin', icon: ArrowRightLeft, group: 'Hubin' },
-    { label: 'Pendaftar PPDB', value: 'ppdb', icon: UserPlus, group: 'Administrasi' },
-    { label: 'User Role', value: 'users', icon: ShieldAlert, group: 'Sistem' },
-    { label: 'Konfigurasi Web', value: 'settings', icon: Settings, group: 'Sistem' },
+    { label: 'RINGKASAN', value: 'overview', icon: LayoutDashboard, group: 'UTAMA' },
+    { label: 'BUILDER BERANDA', value: 'layout-builder', icon: Layout, group: 'EDITOR VISUAL' },
+    { label: 'MANAJER MENU', value: 'navigation', icon: MousePointer2, group: 'EDITOR VISUAL' },
+    { label: 'TAMPILAN', value: 'appearance', icon: Palette, group: 'EDITOR VISUAL' },
+    
+    { label: 'PESAN MASUK', value: 'contact-messages', icon: Mail, group: 'KONTEN' },
+    { label: 'BERITA', value: 'news', icon: Newspaper, group: 'KONTEN' },
+    { label: 'AGENDA', value: 'agenda', icon: Calendar, group: 'KONTEN' },
+    { label: 'OSIS CORNER', value: 'osis', icon: Bell, group: 'KONTEN' },
+    { label: 'LITERASI', value: 'literacy', icon: PenSquare, group: 'KONTEN' },
+    { label: 'GALERI', value: 'gallery', icon: FileBox, group: 'KONTEN' },
+    { label: 'TESTIMONI', value: 'testimonials', icon: Quote, group: 'KONTEN' },
+    { label: 'BUKU TAMU', value: 'guestbook', icon: MessageSquare, group: 'KONTEN' },
+
+    { label: 'STAF & GURU', value: 'teachers', icon: Users2, group: 'AKADEMIK' },
+    { label: 'JURUSAN', value: 'majors', icon: GraduationCap, group: 'AKADEMIK' },
+    { label: 'PRESTASI', value: 'achievements', icon: Award, group: 'AKADEMIK' },
+    { label: 'PERPUSTAKAAN', value: 'library', icon: Library, group: 'AKADEMIK' },
+    
+    { label: 'PPDB ONLINE', value: 'ppdb', icon: UserPlus, group: 'ADMINISTRASI' },
+    { label: 'KERJA SAMA', value: 'partners', icon: BriefcaseIcon, group: 'ADMINISTRASI' },
+    { label: 'BURSA KERJA', value: 'jobs', icon: Briefcase, group: 'ADMINISTRASI' },
+    { label: 'TEACHING FACTORY', value: 'tefa', icon: Factory, group: 'ADMINISTRASI' },
+    { label: 'TRACER STUDY', value: 'tracer', icon: SearchCode, group: 'ADMINISTRASI' },
+
+    { label: 'PENGGUNA', value: 'users', icon: ShieldAlert, group: 'SISTEM' },
+    { label: 'IDENTITAS', value: 'school-profile', icon: Building2, group: 'SISTEM' },
+    { label: 'TAUTAN CEPAT', value: 'quick-links', icon: LinkIcon, group: 'SISTEM' },
+    { label: 'KONFIGURASI', value: 'settings', icon: Settings, group: 'SISTEM' },
   ];
 
   if (isUserLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <LoaderCircle className="animate-spin text-primary h-12 w-12" />
+        <div className='flex flex-col items-center gap-4'>
+            <LoaderCircle className="animate-spin text-primary h-10 w-10" />
+            <p className='text-[9px] font-bold uppercase tracking-[0.4em] text-muted-foreground'>Sinkronisasi Dasbor...</p>
+        </div>
       </div>
     );
   }
@@ -116,6 +143,10 @@ function AdminDashboard() {
 
     switch (activeTab) {
       case 'overview': return <OverviewManager />;
+      case 'layout-builder': return <LayoutBuilderManager />;
+      case 'navigation': return <NavigationManager />;
+      case 'appearance': return <DesignTemplateManager />;
+      case 'contact-messages': return <ContactMessagesManager />;
       case 'school-profile': return <ProfileManager />;
       case 'teachers': return <TeachersManager />;
       case 'majors': return <MajorsManager />;
@@ -126,15 +157,23 @@ function AdminDashboard() {
       case 'agenda': return <AgendaManager />;
       case 'osis': return <OsisManager />;
       case 'literacy': return <LiteracyManager />;
-      case 'schedule': return <ScheduleManager />;
-      case 'rapor': return <ERaporManager />;
-      case 'attendance': return <ManajemenAbsensi />;
       case 'partners': return <IndustryPartnersManager />;
       case 'jobs': return <JobVacanciesManager />;
       case 'prakerin': return <ManajemenPrakerin />;
       case 'ppdb': return <ApplicationsManager />;
       case 'users': return <UsersManager />;
       case 'settings': return <SystemSettingsManager />;
+      case 'achievements': return <AchievementsManager />;
+      case 'extracurriculars': return <ExtracurricularsManager />;
+      case 'library': return <LibraryManager />;
+      case 'tefa': return <TeachingFactoryManager />;
+      case 'lsp': return <LspManager />;
+      case 'graduation': return <GraduationStatusManager />;
+      case 'testimonials': return <TestimonialsManager />;
+      case 'alumni': return <AlumniManager />;
+      case 'guestbook': return <GuestbookManager />;
+      case 'downloads': return <DownloadManager />;
+      case 'tracer': return <TracerStudyManager />;
       default: return <OverviewManager />;
     }
   };
@@ -143,98 +182,91 @@ function AdminDashboard() {
     <button
       onClick={() => { setActiveTab(item.value as AdminTab); setIsSidebarOpen(false); }}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all group",
+        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[10px] font-bold tracking-widest transition-all duration-300 group uppercase",
         activeTab === item.value 
-          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          ? "bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]" 
+          : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
       )}
     >
-      <item.icon size={18} className={cn(activeTab === item.value ? "text-white" : "text-muted-foreground group-hover:text-primary")} />
+      <item.icon size={16} className={cn("transition-all", activeTab === item.value ? "opacity-100" : "opacity-40 group-hover:opacity-100")} />
       {item.label}
-      {activeTab === item.value && <ChevronRight size={14} className="ml-auto" />}
     </button>
   );
 
   return (
     <div className="min-h-screen bg-background flex overflow-hidden">
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsSidebarOpen(false)} />
       )}
 
       <aside className={cn(
-        "fixed lg:sticky top-0 left-0 h-screen w-72 bg-card border-r z-[70] transition-transform duration-300 flex flex-col shadow-2xl lg:shadow-none",
+        "fixed lg:sticky top-0 left-0 h-screen w-64 bg-card border-r border-white/5 z-[70] transition-all duration-500 flex flex-col shadow-2xl",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="p-6 border-b flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary text-white p-1.5 rounded-lg shadow-lg">
+        <div className="p-8 border-b border-white/5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary text-white p-2 rounded-lg">
               <DatabaseZap size={20} />
             </div>
-            <span className="font-bold text-xl font-headline tracking-tight text-primary">hPanel <span className='text-foreground font-normal'>v2.0</span></span>
+            <span className="font-bold text-lg tracking-tighter uppercase italic">hPANEL</span>
           </div>
-          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSidebarOpen(false)}>
-            <X size={20} />
+          <Button variant="ghost" size="icon" className="lg:hidden rounded-lg" onClick={() => setIsSidebarOpen(false)}>
+            <X size={18} />
           </Button>
         </div>
 
         <ScrollArea className="flex-grow p-4">
-          {!isAdmin && (
-            <div className="mb-6">
-              <Alert variant="destructive" className="bg-destructive/5 border-destructive/20 p-3 rounded-xl">
-                <ShieldAlert className="h-4 w-4" />
-                <AlertTitle className="text-[10px] font-bold uppercase">Setup Mode</AlertTitle>
-                <AlertDescription className="text-[9px] leading-tight">Klik tab 'User Role' untuk mengaktifkan akses Admin Anda.</AlertDescription>
-              </Alert>
-            </div>
-          )}
-          <div className="space-y-6">
+          <div className="space-y-8 pb-10">
             {Object.entries(groupedNav).map(([group, items]) => (
               <div key={group} className="space-y-1">
-                <h3 className="px-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2">{group}</h3>
+                <h3 className="px-4 text-[8px] font-bold uppercase tracking-[0.4em] text-muted-foreground/50 mb-2">{group}</h3>
                 {items.map(item => <NavButton key={item.value} item={item} />)}
               </div>
             ))}
           </div>
         </ScrollArea>
 
-        <div className="p-4 border-t bg-muted/20 shrink-0">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-primary/5 mb-4">
-            <Avatar className="h-10 w-10 border-2 border-primary/10">
-              <AvatarFallback className="bg-primary/5 text-primary"><UserIcon size={20} /></AvatarFallback>
+        <div className="p-6 border-t border-white/5 bg-white/[0.02]">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 mb-4">
+            <Avatar className="h-9 w-9 border border-white/10">
+              <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-xs font-bold truncate">{user?.displayName || user?.email}</p>
-              <Badge variant="secondary" className="text-[9px] h-4 py-0 font-bold uppercase">{user?.profile?.role || 'Siswa'}</Badge>
+              <p className="text-[10px] font-bold truncate uppercase tracking-tight">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
+              <p className="text-[8px] font-medium text-muted-foreground uppercase tracking-widest">{user?.profile?.role || 'User'}</p>
             </div>
           </div>
-          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5">
-            <LogOut size={18} className="mr-2" /> Logout
+          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start h-10 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold text-[9px] tracking-widest uppercase">
+            <LogOut size={14} className="mr-3 opacity-40" /> KELUAR SISTEM
           </Button>
         </div>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        <header className="h-16 border-b bg-background/80 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 shrink-0 z-30">
-          <div className="flex items-center gap-2 md:gap-4">
-            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSidebarOpen(true)}>
-              <Menu size={20} className="text-primary" />
+        <header className="h-16 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 shrink-0 z-30">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-9 w-9 bg-white/5" onClick={() => setIsSidebarOpen(true)}>
+              <Menu size={20} />
             </Button>
-            <h1 className="font-bold text-base md:text-lg text-foreground/90 truncate">
-              {navItems.find(i => i.value === activeTab)?.label || 'Dasbor'}
+            <h1 className="font-bold text-[10px] text-muted-foreground uppercase tracking-[0.4em] hidden sm:block">
+              SISTEM / {navItems.find(i => i.value === activeTab)?.label || 'DASBOR'}
             </h1>
           </div>
           
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="rounded-full relative">
-              <Bell size={18} />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-destructive rounded-full border-2 border-background" />
+          <div className='flex items-center gap-4'>
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 relative border border-white/5 bg-white/5">
+                <Bell size={18} />
+                <span className="absolute top-3 right-3 w-1.5 h-1.5 bg-primary rounded-full" />
             </Button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/10">
-          <div className="max-w-6xl mx-auto space-y-6">
-            {renderContent()}
+        <main className="flex-1 overflow-y-auto p-6 md:p-10 bg-slate-50/5 dark:bg-transparent">
+          <div className="max-w-6xl mx-auto">
+            <div className='animate-reveal'>
+                {renderContent()}
+            </div>
           </div>
         </main>
       </div>
@@ -244,7 +276,7 @@ function AdminDashboard() {
 
 export default function AdminPage() {
     return (
-        <ProtectedRoute allowedRoles={['admin', 'guru', 'siswa', 'alumni']}>
+        <ProtectedRoute allowedRoles={['admin']}>
             <AdminDashboard />
         </ProtectedRoute>
     )
