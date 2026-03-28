@@ -12,7 +12,7 @@ Aplikasi ini dioptimalkan untuk berjalan di **Firebase App Hosting**. Ikuti lang
    git remote add origin https://github.com/dbsmkpgri2kdd-ops/Website.git
    git push -u origin main
    ```
-2. **Firebase Console**: Buka [Firebase Console](https://console.firebase.google.com/).
+2. **Firebase Console**: Buka [Firebase Console](https://console.firebase.goole.com/).
 3. **App Hosting**: Pilih menu "App Hosting" di sidebar dan klik "Get Started".
 4. **Setup**: Hubungkan repositori GitHub `dbsmkpgri2kdd-ops/Website`, pilih cabang (`main`), dan biarkan Firebase melakukan proses *Build* otomatis menggunakan Next.js.
 5. **Live**: Website akan aktif secara otomatis setiap kali Anda melakukan *push* ke GitHub.

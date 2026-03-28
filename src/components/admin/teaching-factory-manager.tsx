@@ -61,7 +61,13 @@ export function TeachingFactoryManager() {
   
   const handleEdit = (product: TeachingFactoryProduct) => {
     setEditingProduct(product);
-    form.reset(product);
+    // Modifikasi baris di bawah ini agar studentCreator dikonversi ke string jika perlu
+    form.reset({
+      ...product,
+      studentCreator: typeof product.studentCreator === 'object' 
+        ? product.studentCreator.name 
+        : product.studentCreator
+    });
     setIsDialogOpen(true);
   };
 
