@@ -164,10 +164,7 @@ const Header = ({
           {/* ACTIONS */}
           <div className="flex items-center gap-2 sm:gap-3">
              {/* AKSES LOGIN MOBILE & DESKTOP */}
-             <AuthButton className="flex" showLabel={false} />
-             <div className="hidden sm:block">
-                <AuthButton showLabel={true} className="ml-[-8px]" />
-             </div>
+             <AuthButton className="flex" showLabel={true} />
              
              <ThemeToggle />
              
