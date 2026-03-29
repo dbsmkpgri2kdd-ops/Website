@@ -35,7 +35,7 @@ export default function LoginPage() {
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!auth) {
-            toast({ title: "System Offline", description: "Database connection failed.", variant: "destructive" });
+            toast({ title: "Sistem Luring", description: "Koneksi database gagal.", variant: "destructive" });
             return;
         }
         
@@ -44,18 +44,18 @@ export default function LoginPage() {
         try {
             if (isRegisterMode) {
                 await createUserWithEmailAndPassword(auth, email, password);
-                toast({ title: "Account Created", description: "Setting up your digital workspace..." });
+                toast({ title: "Akun Berhasil Dibuat", description: "Menyiapkan ruang kerja digital Anda..." });
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
-                toast({ title: "Welcome Back", description: "Authentication successful." });
+                toast({ title: "Selamat Datang Kembali", description: "Autentikasi berhasil." });
             }
         } catch (error: any) {
             console.error("Auth error:", error);
-            let message = "Invalid credentials. Please try again.";
-            if (error.code === 'auth/weak-password') message = "Password must be at least 6 characters.";
-            if (error.code === 'auth/email-already-in-use') message = "This email is already registered.";
+            let message = "Kredensial tidak valid. Silakan coba lagi.";
+            if (error.code === 'auth/weak-password') message = "Kata sandi minimal harus 6 karakter.";
+            if (error.code === 'auth/email-already-in-use') message = "Email ini sudah terdaftar.";
             
-            toast({ title: "Access Denied", description: message, variant: "destructive" });
+            toast({ title: "Akses Ditolak", description: message, variant: "destructive" });
             setIsSubmitting(false);
         }
     };
@@ -72,7 +72,7 @@ export default function LoginPage() {
                     onClick={() => router.push('/')}
                     className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors mb-4"
                 >
-                    <ArrowLeft size={14} /> Back to Portal
+                    <ArrowLeft size={14} /> Kembali ke Portal
                 </button>
 
                 <Card className="glass-premium border-white/5 rounded-[2rem] overflow-hidden">
@@ -81,10 +81,10 @@ export default function LoginPage() {
                             <Sparkles size={32} />
                         </div>
                         <CardTitle className="text-3xl font-black tracking-tight uppercase">
-                            {isRegisterMode ? 'Join Us' : 'Identity'}
+                            {isRegisterMode ? 'Daftar Akun' : 'Identitas Digital'}
                         </CardTitle>
                         <CardDescription className="uppercase text-[9px] font-bold tracking-[0.4em] text-muted-foreground pt-2">
-                            Digital Campus Authentication
+                            Autentikasi Kampus Digital
                         </CardDescription>
                     </CardHeader>
                     
@@ -92,18 +92,18 @@ export default function LoginPage() {
                         {!auth && (
                             <Alert variant="destructive" className="mb-6 bg-destructive/10 border-destructive/20 rounded-xl">
                                 <ShieldAlert className="h-4 w-4" />
-                                <AlertTitle className='font-bold uppercase text-[10px] tracking-widest'>Critical Error</AlertTitle>
-                                <AlertDescription className="text-[10px]">Firebase configuration not detected.</AlertDescription>
+                                <AlertTitle className='font-bold uppercase text-[10px] tracking-widest'>Kesalahan Kritis</AlertTitle>
+                                <AlertDescription className="text-[10px]">Konfigurasi Firebase tidak terdeteksi.</AlertDescription>
                             </Alert>
                         )}
 
                         <form onSubmit={handleAuth} className="space-y-5">
                             <div className="space-y-2">
-                                <Label className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground ml-1">Email Reference</Label>
+                                <Label className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground ml-1">Alamat Email</Label>
                                 <div className='relative'>
                                     <Input 
                                         type="email" 
-                                        placeholder="name@campus.id" 
+                                        placeholder="nama@kampus.id" 
                                         required 
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -115,7 +115,7 @@ export default function LoginPage() {
                             </div>
                             
                             <div className="space-y-2">
-                                <Label className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground ml-1">Security Key</Label>
+                                <Label className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground ml-1">Kata Sandi</Label>
                                 <div className="relative">
                                     <Input 
                                         type={showPassword ? "text" : "password"} 
@@ -148,7 +148,7 @@ export default function LoginPage() {
                                 ) : (
                                     isRegisterMode ? <UserPlus className="mr-2 h-4 w-4"/> : <LogIn className="mr-2 h-4 w-4"/>
                                 )}
-                                {isSubmitting ? 'Verifying...' : (isRegisterMode ? 'Create Profile' : 'Authenticate')}
+                                {isSubmitting ? 'Memverifikasi...' : (isRegisterMode ? 'Buat Profil' : 'Masuk Sekarang')}
                             </Button>
 
                             <div className="pt-6 text-center border-t border-white/5 mt-6">
@@ -158,7 +158,7 @@ export default function LoginPage() {
                                     className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors"
                                     disabled={isSubmitting}
                                 >
-                                    {isRegisterMode ? 'Existing Member? Sign In' : 'New Member? Request Access'}
+                                    {isRegisterMode ? 'Sudah Punya Akun? Masuk' : 'Pengguna Baru? Daftar Akses'}
                                 </button>
                             </div>
                         </form>
@@ -166,7 +166,7 @@ export default function LoginPage() {
                 </Card>
                 
                 <p className='text-center text-[8px] font-medium text-muted-foreground/40 uppercase tracking-[0.5em]'>
-                    Secured by SMKS PGRI 2 Kedondong Encryption
+                    Diamankan oleh Enkripsi SMKS PGRI 2 Kedondong
                 </p>
             </div>
         </div>

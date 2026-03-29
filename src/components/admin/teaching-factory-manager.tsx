@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -62,8 +61,7 @@ export function TeachingFactoryManager() {
   
   const handleEdit = (product: TeachingFactoryProduct) => {
     setEditingProduct(product);
-    
-    // Ensure studentCreator is treated as string for the form
+    // Konsistensi data studentCreator
     const creatorDisplay = typeof product.studentCreator === 'object' && product.studentCreator !== null
       ? (product.studentCreator as any).name || ''
       : String(product.studentCreator || '');
@@ -81,18 +79,13 @@ export function TeachingFactoryManager() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!firestore) return;
     
-    const dataToSave = { 
-      ...values,
-      createdAt: editingProduct ? editingProduct.createdAt : serverTimestamp()
-    };
-
     if (editingProduct) {
       const docRef = doc(firestore, `schools/${SCHOOL_DATA_ID}/teachingFactoryProducts`, editingProduct.id);
-      updateDocumentNonBlocking(docRef, dataToSave);
+      updateDocumentNonBlocking(docRef, values);
       toast({ title: 'Berhasil!', description: 'Produk telah diperbarui.' });
     } else {
       const ref = collection(firestore, `schools/${SCHOOL_DATA_ID}/teachingFactoryProducts`);
-      addDocumentNonBlocking(ref, dataToSave);
+      addDocumentNonBlocking(ref, { ...values, createdAt: serverTimestamp() });
       toast({ title: 'Berhasil!', description: 'Produk baru telah ditambahkan.' });
     }
     
@@ -116,18 +109,18 @@ export function TeachingFactoryManager() {
         </CardHeader>
         <CardContent>
             <Button onClick={handleAddNew} className="w-full mb-4">
-                <PlusCircle className="mr-2" /> Tambah Produk/Proyek Baru
+                <PlusCircle className="mr-2" /> Tambah Produk Baru
             </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-[625px]">
                 <DialogHeader>
                     <DialogTitle>{editingProduct ? 'Edit Produk' : 'Tambah Produk Baru'}</DialogTitle>
-                    <DialogDescription>Lengkapi data produk atau proyek. Klik simpan jika sudah selesai.</DialogDescription>
+                    <DialogDescription>Lengkapi data produk atau proyek TeFa.</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField control={form.control} name="name" render={({ field }) => (
-                        <FormItem><FormLabel>Nama Produk/Proyek</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Nama Produk</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )}/>
                     <FormField control={form.control} name="imageUrl" render={({ field }) => (
                         <FormItem><FormLabel>URL Gambar</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
@@ -140,12 +133,12 @@ export function TeachingFactoryManager() {
                             <FormItem><FormLabel>Harga (Opsional)</FormLabel><FormControl><Input {...field} placeholder="e.g. Rp 100.000" /></FormControl><FormMessage /></FormItem>
                         )}/>
                         <FormField control={form.control} name="studentCreator" render={({ field }) => (
-                            <FormItem><FormLabel>Kreator/Kelas</FormLabel><FormControl><Input {...field} placeholder="e.g. XII TKJ 1" /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>Kreator (Kelas)</FormLabel><FormControl><Input {...field} placeholder="e.g. XII TKJ 1" /></FormControl><FormMessage /></FormItem>
                         )}/>
                     </div>
                     <Button type="submit" disabled={form.formState.isSubmitting} className="w-full">
                         {form.formState.isSubmitting && <LoaderCircle className="animate-spin mr-2"/>}
-                        Simpan Produk
+                        Simpan Perubahan
                     </Button>
                     </form>
                 </Form>
@@ -200,7 +193,7 @@ export function TeachingFactoryManager() {
                         );
                     })
                     ) : (
-                    !isLoading && <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Belum ada produk. Mulai tambahkan!</TableCell></TableRow>
+                    !isLoading && <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Belum ada produk TeFa.</TableCell></TableRow>
                     )}
                 </TableBody>
                 </Table>
