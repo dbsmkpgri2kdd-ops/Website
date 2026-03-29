@@ -153,6 +153,13 @@ export type NewsArticle = {
   datePublished: any; 
 };
 
+export type Facility = {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+};
+
 export type OsisPost = {
   id: string;
   title: string;

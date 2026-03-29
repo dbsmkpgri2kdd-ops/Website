@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -79,7 +80,11 @@ export function FacilitiesManager() {
   
   const handleEdit = (facility: Facility) => {
     setEditingFacility(facility);
-    form.reset(facility);
+    form.reset({
+      name: facility.name,
+      description: facility.description,
+      imageUrl: facility.imageUrl,
+    });
     setIsDialogOpen(true);
   };
 
@@ -163,7 +168,9 @@ export function FacilitiesManager() {
                     facilities.map((facility) => (
                         <TableRow key={facility.id}>
                             <TableCell>
-                                <Image src={convertGoogleDriveLink(facility.imageUrl || 'https://picsum.photos/seed/placeholder/80/60')} alt={facility.name} width={80} height={60} className="rounded-md object-cover" unoptimized />
+                                <div className="relative w-20 h-14 rounded-md overflow-hidden">
+                                  <Image src={convertGoogleDriveLink(facility.imageUrl || 'https://picsum.photos/seed/placeholder/80/60')} alt={facility.name} fill className="object-cover" unoptimized />
+                                </div>
                             </TableCell>
                             <TableCell className="font-medium">{facility.name}</TableCell>
                             <TableCell className="max-w-sm truncate">{facility.description}</TableCell>
@@ -187,5 +194,3 @@ export function FacilitiesManager() {
     </Card>
   );
 }
-
-    
