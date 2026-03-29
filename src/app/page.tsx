@@ -219,7 +219,7 @@ export default function Home() {
         schoolData={schoolData}
         isSchoolDataLoading={isSchoolDataLoading}
       />
-      <main className="flex-grow pb-32 md:pb-0">
+      <main className="flex-grow pb-24 md:pb-0">
         <Suspense fallback={<SectionLoader />}>
             {renderSection()}
         </Suspense>

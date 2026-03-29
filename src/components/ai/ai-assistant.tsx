@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -13,6 +12,7 @@ import { chatWithSchoolAI } from '@/ai/flows/school-assistant-flow';
 /**
  * Komponen Floating AI Assistant.
  * Menangani chat interaktif antara pengguna dan AI asisten sekolah.
+ * Dioptimalkan untuk tampilan mobile agar tidak menindih BottomNav.
  */
 export function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,14 +43,14 @@ export function AIAssistant() {
       setMessages(prev => [...prev, { role: 'ai', text: response.answer }]);
     } catch (error) {
       console.error("AI Chat Error:", error);
-      setMessages(prev => [...prev, { role: 'ai', text: 'Maaf, saya sedang mengalami kendala teknis. Silakan tanyakan kembali beberapa saat lagi.' }]);
+      setMessages(prev => [...prev, { role: 'ai', text: 'Maaf, saya sedang mengalami kendala teknis. Silakan coba lagi nanti.' }]);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="fixed bottom-24 right-6 z-[60]">
+    <div className="fixed bottom-28 right-6 z-[60]">
       {isOpen ? (
         <Card className="w-[320px] sm:w-[380px] h-[500px] shadow-2xl flex flex-col animate-in slide-in-from-bottom-10 duration-300 border-primary/20 overflow-hidden rounded-2xl">
           <CardHeader className="bg-primary text-white flex flex-row items-center justify-between py-4 px-5">
@@ -112,7 +112,7 @@ export function AIAssistant() {
       ) : (
         <Button 
           onClick={() => setIsOpen(true)} 
-          className="h-14 w-14 rounded-full shadow-2xl bg-primary hover:bg-primary/90 text-white hover:scale-110 transition-transform flex items-center justify-center p-0"
+          className="h-14 w-14 rounded-full shadow-3xl bg-primary hover:bg-primary/90 text-white hover:scale-110 transition-all flex items-center justify-center p-0 border border-white/10"
         >
           <Bot size={28} />
         </Button>
@@ -120,4 +120,3 @@ export function AIAssistant() {
     </div>
   );
 }
-
