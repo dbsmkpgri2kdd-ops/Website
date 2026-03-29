@@ -62,8 +62,8 @@ export function TeachingFactoryManager() {
   
   const handleEdit = (product: TeachingFactoryProduct) => {
     setEditingProduct(product);
-    // Konsistensi data studentCreator
-    const creatorDisplay = typeof product.studentCreator === 'object' && product.studentCreator !== null
+    // Ensure studentCreator is treated as string for the form
+    const creatorString = typeof product.studentCreator === 'object' && product.studentCreator !== null
       ? (product.studentCreator as any).name || ''
       : String(product.studentCreator || '');
 
@@ -72,7 +72,7 @@ export function TeachingFactoryManager() {
       description: product.description,
       imageUrl: product.imageUrl,
       price: product.price || '',
-      studentCreator: creatorDisplay,
+      studentCreator: creatorString,
     });
     setIsDialogOpen(true);
   };
@@ -114,18 +114,18 @@ export function TeachingFactoryManager() {
         </CardHeader>
         <CardContent>
             <Button onClick={handleAddNew} className="w-full mb-4">
-                <PlusCircle className="mr-2" /> Tambah Produk Baru
+                <PlusCircle className="mr-2" /> Tambah Produk/Proyek Baru
             </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-[625px]">
                 <DialogHeader>
                     <DialogTitle>{editingProduct ? 'Edit Produk' : 'Tambah Produk Baru'}</DialogTitle>
-                    <DialogDescription>Lengkapi data produk atau proyek TeFa.</DialogDescription>
+                    <DialogDescription>Lengkapi data produk atau proyek. Klik simpan jika sudah selesai.</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField control={form.control} name="name" render={({ field }) => (
-                        <FormItem><FormLabel>Nama Produk</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Nama Produk/Proyek</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )}/>
                     <FormField control={form.control} name="imageUrl" render={({ field }) => (
                         <FormItem><FormLabel>URL Gambar</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
@@ -133,25 +133,23 @@ export function TeachingFactoryManager() {
                     <FormField control={form.control} name="description" render={({ field }) => (
                         <FormItem><FormLabel>Deskripsi</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>
                     )}/>
-                     <div className="grid grid-cols-2 gap-4">
-                        <FormField control={form.control} name="price" render={({ field }) => (
-                            <FormItem><FormLabel>Harga (Opsional)</FormLabel><FormControl><Input {...field} placeholder="e.g. Rp 100.000" /></FormControl><FormMessage /></FormItem>
-                        )}/>
-                        <FormField control={form.control} name="studentCreator" render={({ field }) => (
-                            <FormItem><FormLabel>Kreator (Kelas)</FormLabel><FormControl><Input {...field} placeholder="e.g. XII TKJ 1" /></FormControl><FormMessage /></FormItem>
-                        )}/>
-                    </div>
-                    <Button type="submit" disabled={form.formState.isSubmitting} className="w-full">
+                     <FormField control={form.control} name="price" render={({ field }) => (
+                        <FormItem><FormLabel>Harga (Opsional)</FormLabel><FormControl><Input {...field} placeholder="e.g. Rp 100.000" /></FormControl><FormMessage /></FormItem>
+                    )}/>
+                     <FormField control={form.control} name="studentCreator" render={({ field }) => (
+                        <FormItem><FormLabel>Kreator/Kelas (Opsional)</FormLabel><FormControl><Input {...field} placeholder="e.g. XII TKJ 1" /></FormControl><FormMessage /></FormItem>
+                    )}/>
+                    <Button type="submit" disabled={form.formState.isSubmitting}>
                         {form.formState.isSubmitting && <LoaderCircle className="animate-spin mr-2"/>}
-                        Simpan Perubahan
+                        Simpan
                     </Button>
                     </form>
                 </Form>
                 </DialogContent>
             </Dialog>
-            <div className="rounded-lg border overflow-hidden">
+            <div className="rounded-lg border">
                 <Table>
-                <TableHeader className="bg-muted/50">
+                <TableHeader>
                     <TableRow>
                     <TableHead>Gambar</TableHead>
                     <TableHead>Nama Produk</TableHead>
@@ -178,20 +176,18 @@ export function TeachingFactoryManager() {
                               <TableCell>{product.price || 'N/A'}</TableCell>
                               <TableCell>{creatorDisplay}</TableCell>
                               <TableCell className="text-right">
-                                <div className="flex justify-end gap-2">
-                                  <Button variant="ghost" size="icon" onClick={() => handleEdit(product)}>
-                                      <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)}>
-                                      <Trash2 className="h-4 w-4 text-destructive" />
-                                  </Button>
-                                </div>
+                              <Button variant="ghost" size="icon" onClick={() => handleEdit(product)}>
+                                  <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)}>
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
                               </TableCell>
                           </TableRow>
                         );
                     })
                     ) : (
-                    <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Belum ada produk TeFa.</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Belum ada produk.</TableCell></TableRow>
                     )}
                 </TableBody>
                 </Table>
