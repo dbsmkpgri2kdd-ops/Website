@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -101,6 +102,10 @@ export function TeachingFactoryManager() {
     }
   };
 
+  if (isLoading) {
+    return <div className="flex justify-center py-20"><LoaderCircle className="animate-spin text-primary h-8 w-8" /></div>;
+  }
+
   return (
     <Card className="shadow-lg rounded-2xl">
         <CardHeader>
@@ -156,13 +161,6 @@ export function TeachingFactoryManager() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {isLoading && (
-                    <TableRow>
-                        <TableCell colSpan={5} className="text-center py-10">
-                            <LoaderCircle className="animate-spin mx-auto text-primary" />
-                        </TableCell>
-                    </TableRow>
-                    )}
                     {products && products.length > 0 ? (
                     products.map((product) => {
                         const creatorDisplay = typeof product.studentCreator === 'object' && product.studentCreator !== null
@@ -193,7 +191,7 @@ export function TeachingFactoryManager() {
                         );
                     })
                     ) : (
-                    !isLoading && <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Belum ada produk TeFa.</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Belum ada produk TeFa.</TableCell></TableRow>
                     )}
                 </TableBody>
                 </Table>

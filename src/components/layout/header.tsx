@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -162,12 +163,8 @@ const Header = ({
 
           {/* ACTIONS */}
           <div className="flex items-center gap-2 sm:gap-3">
-             {/* AKSES LOGIN MOBILE & DESKTOP */}
              <AuthButton className="flex" showLabel={true} />
-             
              <ThemeToggle />
-             
-             {/* SIDEBAR MOBILE TRIGGER */}
              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9 sm:h-10 sm:w-10 hover:bg-white/5">
