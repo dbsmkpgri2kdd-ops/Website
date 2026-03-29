@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -62,8 +63,9 @@
     @apply border-border selection:bg-primary/20 selection:text-primary;
   }
   body {
-    @apply bg-background text-foreground antialiased tracking-tight transition-colors duration-700;
-    font-feature-settings: "cv11", "ss01", "ss03";
+    @apply bg-background text-foreground antialiased transition-colors duration-700;
+    font-feature-settings: "cv11", "ss01", "ss03", "tnum";
+    letter-spacing: -0.011em;
   }
   
   /* Performance Optimization for off-screen content */

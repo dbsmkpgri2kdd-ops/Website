@@ -1,19 +1,22 @@
+
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
-import { Belleza, Alegreya } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
 
-const belleza = Belleza({
+// Font standar lembaga: Plus Jakarta Sans untuk Headline yang otoritatif
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  weight: ['400'],
+  weight: ['400', '500', '600', '700', '800'],
   variable: '--font-headline',
 });
 
-const alegreya = Alegreya({
+// Font standar lembaga: Inter untuk keterbacaan body text yang maksimal
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-body',
 });
@@ -71,7 +74,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={cn("font-body antialiased", belleza.variable, alegreya.variable)}>
+      <body className={cn("font-body antialiased", plusJakartaSans.variable, inter.variable)}>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
