@@ -15,20 +15,19 @@ type ProtectedRouteProps = {
 };
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, isLoading, error } = useUser();
+  const { user, isUserLoading, userError } = useUser();
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (isLoading) return; 
+    if (isUserLoading) return; 
 
-    if (error || !user) {
+    if (userError || !user) {
       router.replace('/login');
       return;
     }
 
     if (!user.profile || !user.profile.role) {
-      // Profile handles auto-creation in provider.tsx
       return;
     }
 
@@ -44,10 +43,10 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
       return;
     }
 
-  }, [user, isLoading, error, router, toast, allowedRoles]);
+  }, [user, isUserLoading, userError, router, toast, allowedRoles]);
 
 
-  if (isLoading) {
+  if (isUserLoading) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <LoaderCircle className="animate-spin h-12 w-12 text-primary" />
