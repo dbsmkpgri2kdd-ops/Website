@@ -5,33 +5,28 @@ Selamat datang di ekosistem digital terpadu SMKS PGRI 2 Kedondong.
 
 ## 🚀 Panduan Publikasi (Deployment)
 
-Aplikasi ini menggunakan fitur dinamis (Next.js Server Actions & AI Genkit), sehingga publikasi paling optimal dilakukan melalui **Firebase Hosting dengan integrasi Web Frameworks**:
+Aplikasi ini telah dioptimalkan untuk **Static Export** agar dapat berjalan sangat cepat melalui CDN Firebase Hosting.
 
-1. **Persiapan CLI**: Pastikan Anda menggunakan Firebase CLI terbaru.
-2. **Login & Inisialisasi**:
+1. **Build Statis**:
    ```bash
-   firebase login
-   firebase init hosting
+   npm run build
    ```
-   *Pilih "Next.js" saat ditanya framework apa yang digunakan.*
-3. **Deploy Langsung**:
+   *Perintah ini akan menghasilkan folder `out` yang berisi file HTML/JS murni.*
+
+2. **Deploy Langsung**:
    ```bash
    firebase deploy
    ```
-   *Firebase akan otomatis mendeteksi konfigurasi di `firebase.json` dan membangun aplikasi untuk Anda.*
+   *Konfigurasi di `firebase.json` telah diatur untuk mengunggah isi folder `out` ke Hosting.*
 
 ---
 
-## 🛠️ Fitur Unggulan Panel Kendali (hPANEL)
+## 🛠️ Catatan Teknis (Static Export)
 
-*   **Visual Layout Builder**: Atur urutan modul beranda secara *real-time*.
-*   **Branding Engine**: Ganti tema warna dan tipografi seluruh website dalam satu klik.
-*   **AI Strategic Analytics**: Analisis data pendaftaran otomatis menggunakan Gemini 1.5 Flash.
-*   **E-Rapor & Absensi**: Sistem internal terintegrasi untuk Guru dan Siswa.
+Karena menggunakan `output: 'export'`, fitur berikut berjalan di sisi klien:
+*   **Database**: Semua penyimpanan data (PPDB, Kontak) menggunakan Firebase Client SDK.
+*   **AI (Genkit)**: Fitur asisten AI berbasis server dinonaktifkan dalam mode statis untuk menjamin keberhasilan pembangunan (*build*). Untuk mengaktifkan kembali, gunakan **Firebase App Hosting** dan hapus baris `output: 'export'` di `next.config.js`.
 
 ---
-
-## 🔐 Keamanan & Peran
-Sistem menggunakan algoritma **"First-In Admin"**. Pengguna pertama yang mendaftar di halaman `/login` akan otomatis mendapatkan akses Administrator penuh untuk mengunci sistem.
 
 **Digital Hub v7.5 - Membangun Masa Depan Vokasi.**
