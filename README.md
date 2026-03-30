@@ -5,17 +5,20 @@ Selamat datang di ekosistem digital terpadu SMKS PGRI 2 Kedondong.
 
 ## 🚀 Panduan Publikasi (Deployment)
 
-Aplikasi ini menggunakan fitur dinamis (Next.js Server Actions & AI Genkit), sehingga **tidak menghasilkan folder `out`**. Publikasi harus dilakukan melalui **Firebase App Hosting**:
+Aplikasi ini menggunakan fitur dinamis (Next.js Server Actions & AI Genkit), sehingga publikasi paling optimal dilakukan melalui **Firebase Hosting dengan integrasi Web Frameworks**:
 
-1. **Hubungkan GitHub**: Pastikan repositori lokal terhubung ke GitHub.
+1. **Persiapan CLI**: Pastikan Anda menggunakan Firebase CLI terbaru.
+2. **Login & Inisialisasi**:
    ```bash
-   git remote add origin https://github.com/USERNAME/REPO_NAME.git
-   git push -u origin main
+   firebase login
+   firebase init hosting
    ```
-2. **Firebase Console**: Buka [Firebase Console](https://console.firebase.google.com/).
-3. **App Hosting**: Pilih menu "App Hosting" di sidebar.
-4. **Setup**: Hubungkan repositori GitHub Anda, pilih cabang `main`.
-5. **Auto-Deploy**: Firebase akan mendeteksi Next.js secara otomatis, melakukan build, dan merilisnya ke domain Anda.
+   *Pilih "Next.js" saat ditanya framework apa yang digunakan.*
+3. **Deploy Langsung**:
+   ```bash
+   firebase deploy
+   ```
+   *Firebase akan otomatis mendeteksi konfigurasi di `firebase.json` dan membangun aplikasi untuk Anda.*
 
 ---
 
