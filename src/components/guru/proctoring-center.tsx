@@ -1,16 +1,31 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Camera, ShieldCheck, ShieldAlert, Wifi, Zap, User, Clock, AlertTriangle, MonitorPlay } from 'lucide-react';
+import { 
+  ArrowLeft, Camera, ShieldCheck, ShieldAlert, Wifi, Zap, 
+  User, Clock, AlertTriangle, MonitorPlay, MonitorCheck,
+  Smartphone, Globe
+} from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID } from '@/lib/data';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
+
+type ActiveSession = {
+  id: string;
+  studentName: string;
+  lastHeartbeat: any;
+  violationCount: number;
+  isCameraActive: boolean;
+  minutesRemaining: number;
+  isAppMode: boolean;
+  status: 'ACTIVE' | 'COMPLETED';
+};
 
 type ProctoringCenterProps = {
   examId: string;
@@ -20,29 +35,37 @@ type ProctoringCenterProps = {
 
 /**
  * Antarmuka Pengawasan Ujian (Proctoring Center) untuk Guru.
- * Memantau status kehadiran, kamera, dan tingkat kecurangan peserta.
+ * Memantau status kehadiran, kamera, dan tingkat kecurangan peserta secara real-time.
  */
 export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenterProps) {
   const firestore = useFirestore();
 
-  // Simulasi pengambilan data sesi aktif (Kebutuhan skala besar membutuhkan signalling server)
-  // Untuk MVP, kita tampilkan struktur antarmuka pengawasan yang komprehensif.
   const sessionsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(
       collection(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`),
-      where('examId', '==', examId),
+      where('status', '==', 'ACTIVE'),
       orderBy('lastHeartbeat', 'desc')
     );
-  }, [firestore, examId]);
+  }, [firestore]);
 
-  const { data: sessions, isLoading } = useCollection<any>(sessionsQuery);
+  const { data: sessions, isLoading } = useCollection<ActiveSession>(sessionsQuery);
+
+  const stats = useMemo(() => {
+    if (!sessions) return { total: 0, cam: 0, violations: 0, appMode: 0 };
+    return {
+      total: sessions.length,
+      cam: sessions.filter(s => s.isCameraActive).length,
+      violations: sessions.reduce((acc, s) => acc + (s.violationCount || 0), 0),
+      appMode: sessions.filter(s => s.isAppMode).length
+    };
+  }, [sessions]);
 
   return (
     <div className="space-y-8 animate-reveal pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white/5 border border-white/5" onClick={onBack}>
+            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10" onClick={onBack}>
                 <ArrowLeft size={24} />
             </Button>
             <div>
@@ -56,29 +79,29 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="bg-white/5 border-white/5 rounded-3xl p-6 shadow-2xl">
             <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest mb-2">Siswa Aktif</p>
-            <div className="text-3xl font-black italic font-headline">{sessions?.length || 0} <span className="text-primary text-sm not-italic opacity-40">/ TOTAL</span></div>
+            <div className="text-3xl font-black italic font-headline">{stats.total} <span className="text-primary text-sm not-italic opacity-40">/ SISWA</span></div>
         </Card>
         <Card className="bg-white/5 border-white/5 rounded-3xl p-6 shadow-2xl">
-            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest mb-2">Kamera Aktif</p>
-            <div className="text-3xl font-black italic font-headline">{sessions?.filter((s:any) => s.isCameraActive).length || 0} <span className="text-amber-500 text-sm not-italic opacity-40">FEED</span></div>
+            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest mb-2">Aplikasi Terinstal</p>
+            <div className="text-3xl font-black italic font-headline text-emerald-500">{stats.appMode} <span className="text-emerald-500/40 text-sm not-italic">APK</span></div>
         </Card>
         <Card className="bg-white/5 border-white/5 rounded-3xl p-6 shadow-2xl">
             <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest mb-2">Peringatan Keamanan</p>
-            <div className="text-3xl font-black italic font-headline text-red-500">{sessions?.reduce((acc:number, s:any) => acc + (s.violationCount || 0), 0) || 0} <AlertTriangle size={20} className='inline ml-1 animate-pulse' /></div>
+            <div className="text-3xl font-black italic font-headline text-red-500">{stats.violations} <AlertTriangle size={20} className='inline ml-1 animate-pulse' /></div>
         </Card>
         <Card className="bg-white/5 border-white/5 rounded-3xl p-6 shadow-2xl">
-            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest mb-2">System Integrity</p>
-            <div className="text-3xl font-black italic font-headline text-emerald-500">98% <Zap size={20} className='inline ml-1' /></div>
+            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest mb-2">Kamera Pengawas</p>
+            <div className="text-3xl font-black italic font-headline text-amber-500">{stats.cam} <span className="text-amber-500/40 text-sm not-italic">FEED</span></div>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {isLoading && Array.from({length: 4}).map((_, i) => <Skeleton key={i} className="h-64 rounded-[2.5rem]" />)}
         
-        {sessions?.map((session: any) => (
+        {sessions?.map((session) => (
             <Card key={session.id} className={cn(
                 "rounded-[2.5rem] shadow-3xl border-2 transition-all duration-500 overflow-hidden bg-white/5",
                 session.violationCount > 0 ? "border-red-500/40" : "border-white/5"
@@ -98,6 +121,18 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                             <span className="text-[8px] font-black uppercase tracking-widest">CAMERA DISABLED</span>
                         </div>
                     )}
+                    
+                    <div className="absolute top-4 right-4">
+                        {session.isAppMode ? (
+                            <div className="bg-emerald-500 text-white p-1.5 rounded-lg shadow-lg" title="Running in Android App Mode">
+                                <Smartphone size={14} />
+                            </div>
+                        ) : (
+                            <div className="bg-blue-500 text-white p-1.5 rounded-lg shadow-lg" title="Running in Browser Mode">
+                                <Globe size={14} />
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <CardContent className="p-6 space-y-4">
                     <div className="flex items-center gap-3">
@@ -119,9 +154,9 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                     
                     <div className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/5">
                         <div className="space-y-0.5">
-                            <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground opacity-40">Violations</p>
+                            <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground opacity-40">Security Logs</p>
                             <p className={cn("text-xs font-black", session.violationCount > 0 ? "text-red-500" : "text-emerald-500")}>
-                                {session.violationCount || 0} ATTEMPTS
+                                {session.violationCount || 0} VIOLATIONS
                             </p>
                         </div>
                         {session.violationCount > 0 && <AlertTriangle size={16} className="text-red-500 animate-pulse" />}
@@ -137,7 +172,7 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                 </div>
                 <div>
                     <h3 className="text-xl font-black uppercase italic tracking-tighter">No Active Sessions</h3>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] mt-1 max-w-xs">Data akan muncul otomatis saat siswa mulai mengerjakan ujian.</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] mt-1 max-w-xs">Data akan muncul otomatis saat siswa mulai mengerjakan ujian terjadwal.</p>
                 </div>
             </div>
         )}

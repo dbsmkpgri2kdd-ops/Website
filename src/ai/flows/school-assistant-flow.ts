@@ -1,8 +1,6 @@
-
-'use server';
 /**
- * @fileOverview AI Flow untuk asisten pintar sekolah dengan kemampuan tool calling.
- * Mengambil informasi nyata dari database untuk menjawab pertanyaan pengguna.
+ * @fileOverview AI Flow untuk asisten pintar sekolah.
+ * Diadaptasi untuk berjalan di sisi klien guna mendukung Static Export.
  */
 
 import { ai } from '@/ai/genkit';
@@ -37,9 +35,13 @@ const getAvailableMajors = ai.defineTool(
   },
   async () => {
     if (!firestore) return [];
-    const ref = collection(firestore, `schools/${SCHOOL_DATA_ID}/majors`);
-    const snap = await getDocs(query(ref, orderBy('name')));
-    return snap.docs.map(d => ({ name: d.data().name, description: d.data().description }));
+    try {
+      const ref = collection(firestore, `schools/${SCHOOL_DATA_ID}/majors`);
+      const snap = await getDocs(query(ref, orderBy('name')));
+      return snap.docs.map(d => ({ name: d.data().name, description: d.data().description }));
+    } catch (e) {
+      return [];
+    }
   }
 );
 
@@ -52,9 +54,13 @@ const getLatestNews = ai.defineTool(
   },
   async () => {
     if (!firestore) return [];
-    const ref = collection(firestore, `schools/${SCHOOL_DATA_ID}/newsArticles`);
-    const snap = await getDocs(query(ref, orderBy('datePublished', 'desc'), limit(5)));
-    return snap.docs.map(d => ({ title: d.data().title, category: d.data().category }));
+    try {
+      const ref = collection(firestore, `schools/${SCHOOL_DATA_ID}/newsArticles`);
+      const snap = await getDocs(query(ref, orderBy('datePublished', 'desc'), limit(5)));
+      return snap.docs.map(d => ({ title: d.data().title, category: d.data().category }));
+    } catch (e) {
+      return [];
+    }
   }
 );
 
@@ -79,32 +85,19 @@ const prompt = ai.definePrompt({
   
 Tugas utama Anda adalah:
 1. Memberikan informasi yang SANGAT AKURAT mengenai visi, misi, jurusan, dan berita sekolah.
-2. Selalu gunakan tools yang tersedia untuk memastikan jawaban Anda berbasis data nyata (Real-time).
-3. Jika ditanya tentang pendaftaran (PPDB), jelaskan bahwa pendaftaran tahun 2025 sudah dibuka dan dapat diakses melalui menu "PPDB Online".
-4. Kepribadian Anda: Profesional, hangat, informatif, dan sangat bangga dengan prestasi sekolah.
-5. Gunakan Bahasa Indonesia yang sopan dan mudah dipahami.
-6. Alamat Sekolah: Kedondong, Pesawaran, Lampung.
+2. Selalu gunakan tools yang tersedia untuk memastikan jawaban Anda berbasis data nyata.
+3. Kepribadian Anda: Profesional, hangat, dan sangat bangga dengan prestasi sekolah.
+4. Gunakan Bahasa Indonesia yang sopan.
 
 Pertanyaan Pengguna: {{{query}}}`,
 });
 
 export async function chatWithSchoolAI(input: SchoolAssistantInput): Promise<SchoolAssistantOutput> {
-  return schoolAssistantFlow(input);
-}
-
-const schoolAssistantFlow = ai.defineFlow(
-  {
-    name: 'schoolAssistantFlow',
-    inputSchema: SchoolAssistantInputSchema,
-    outputSchema: SchoolAssistantOutputSchema,
-  },
-  async (input) => {
-    try {
-      const { output } = await prompt(input);
-      return output!;
-    } catch (error) {
-      console.error("AI Assistant Flow Error:", error);
-      return { answer: "Mohon maaf, saya sedang melakukan sinkronisasi database. Silakan coba ajukan pertanyaan Anda kembali dalam beberapa saat atau hubungi admin kami." };
-    }
+  try {
+    const { output } = await prompt(input);
+    return output!;
+  } catch (error) {
+    console.error("AI Assistant Flow Error:", error);
+    return { answer: "Mohon maaf, saya sedang melakukan sinkronisasi database. Silakan coba ajukan pertanyaan Anda kembali atau hubungi admin kami via menu Kontak." };
   }
-);
+}

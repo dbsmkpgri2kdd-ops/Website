@@ -18,8 +18,8 @@ type ExamBroSessionProps = {
 };
 
 /**
- * ExamBro Session v5.0 - Super Strict App Mode
- * Dioptimalkan untuk PWA Android dengan penguncian sistem berlapis.
+ * ExamBro Session v5.5 - Super Strict App Mode
+ * Dioptimalkan untuk PWA Android dengan penguncian sistem dan sinkronisasi proctoring.
  */
 export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
@@ -41,7 +41,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   const wakeLockRef = useRef<any>(null);
 
   useEffect(() => {
-    // Inisialisasi timer hanya di client
+    // Inisialisasi timer hanya di client untuk menghindari Hydration Mismatch
     setTimeLeft(durationMinutes * 60);
     
     if (typeof window !== 'undefined') {
@@ -50,7 +50,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     }
   }, [durationMinutes]);
 
-  // Screen Wake Lock Implementation
+  // Screen Wake Lock Implementation - Mencegah layar mati saat ujian
   useEffect(() => {
     const requestWakeLock = async () => {
       try {
@@ -69,11 +69,13 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     };
   }, [isFullScreen]);
 
-  // Sync session state to Firestore
+  // Sync session state to Firestore - Jantung dari Proctoring Center
   useEffect(() => {
     if (!firestore || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
 
     const sessionRef = doc(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`, user.uid);
+    
+    // Heartbeat setiap 5 detik
     const interval = setInterval(() => {
         setDocumentNonBlocking(sessionRef, {
             studentName: user.profile?.displayName || user.email,
@@ -88,6 +90,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
     return () => {
         clearInterval(interval);
+        // Tandai selesai saat komponen di-unmount (siswa keluar normal)
         setDocumentNonBlocking(sessionRef, { status: 'COMPLETED', exitAt: serverTimestamp() }, { merge: true });
     };
   }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone]);
@@ -135,7 +138,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     }
   }, [isCameraRequired, toast]);
 
-  // STRICT INTERACTION BLOCKING
+  // STRICT INTERACTION BLOCKING - Sistem Keamanan Berlapis
   useEffect(() => {
     const handleVisibilityChange = () => { 
       if (document.hidden && !isTimeUp) {
@@ -171,7 +174,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     document.addEventListener('contextmenu', preventContextMenu);
     document.addEventListener('keydown', preventKeys);
 
-    // Block Pull-to-refresh
+    // Block Pull-to-refresh & Text Selection
     if (typeof document !== 'undefined') {
         document.body.style.overscrollBehavior = 'none';
         document.body.style.userSelect = 'none';
@@ -245,7 +248,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
             {isStandalone ? <Smartphone className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">EXAMBRO v5.0 {isStandalone ? 'APP' : 'BROWSER'} MODE</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">EXAMBRO v5.5 {isStandalone ? 'APP' : 'BROWSER'} MODE</span>
             <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">PELANGGARAN: {violationCount}</span>
           </div>
         </div>
