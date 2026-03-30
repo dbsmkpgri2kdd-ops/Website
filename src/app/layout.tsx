@@ -10,20 +10,21 @@ import { ThemeSync } from '@/components/theme-sync';
 import { AIAssistant } from '@/components/ai/ai-assistant';
 import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 
+// Inisialisasi font Google dengan variabel CSS kustom
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-jakarta',
   display: 'swap',
 });
 
-const belleza = Belleza({
+const fontBelleza = Belleza({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-belleza',
   display: 'swap',
 });
 
-const alegreya = Alegreya({
+const fontAlegreya = Alegreya({
   subsets: ['latin'],
   variable: '--font-alegreya',
   display: 'swap',
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
   keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "PPDB 2025"],
   authors: [{ name: "SMKS PGRI 2 Kedondong" }],
   creator: "Digital Excellence Team",
-  manifest: '/manifest.json',
+  manifest: '/manifest.webmanifest',
 };
 
 export default function RootLayout({
@@ -59,8 +60,8 @@ export default function RootLayout({
       <body className={cn(
         "font-sans antialiased selection:bg-primary/30",
         jakarta.variable, 
-        belleza.variable, 
-        alegreya.variable
+        fontBelleza.variable, 
+        fontAlegreya.variable
       )}>
           <ThemeProvider
             attribute="class"

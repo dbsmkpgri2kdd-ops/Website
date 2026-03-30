@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { usePWAInstall } from '@/hooks/use-pwa-install';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Download, Smartphone, X, Sparkles, SmartphoneIcon } from 'lucide-react';
+import { Download, X, SmartphoneIcon, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -18,9 +18,18 @@ export function PWAInstallPrompt() {
   const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
+    // Registrasi Service Worker secara eksplisit untuk memastikan PWA criteria terpenuhi
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(() => {
+          console.log('PRIDA PWA: Service Worker Registered');
+        })
+        .catch(err => console.error('PWA registration failed:', err));
+    }
+
     // Tampilkan prompt setelah beberapa detik jika aplikasi dapat diinstal
     if (isInstallable && !isDismissed) {
-      const timer = setTimeout(() => setIsVisible(true), 3000);
+      const timer = setTimeout(() => setIsVisible(true), 5000);
       return () => clearTimeout(timer);
     }
   }, [isInstallable, isDismissed]);
@@ -30,42 +39,49 @@ export function PWAInstallPrompt() {
     setIsDismissed(true);
   };
 
+  const onInstallClick = async () => {
+    await handleInstall();
+    setIsVisible(false);
+  };
+
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 z-[70] md:left-auto md:right-8 md:w-96 animate-reveal">
-      <Card className="glass-premium border-primary/20 overflow-hidden rounded-[2rem] shadow-3xl">
-        <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-        <CardContent className="p-6">
-          <div className="flex gap-4">
-            <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
-              <SmartphoneIcon size={28} />
+    <div className="fixed bottom-24 left-4 right-4 z-[70] md:left-auto md:right-8 md:w-[400px] animate-reveal">
+      <Card className="glass-premium border-primary/30 overflow-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(16,185,129,0.2)] bg-card/80 backdrop-blur-2xl">
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-emerald-400 to-primary"></div>
+        <CardContent className="p-7">
+          <div className="flex gap-5">
+            <div className="w-16 h-16 bg-primary text-white rounded-2xl flex items-center justify-center shrink-0 shadow-[0_10px_20px_rgba(16,185,129,0.3)] group">
+              <SmartphoneIcon size={32} className="group-hover:scale-110 transition-transform" />
             </div>
-            <div className="flex-1 space-y-1">
+            <div className="flex-1 space-y-1.5">
               <div className="flex items-center justify-between">
-                <h4 className="font-black uppercase italic text-sm tracking-tight">Pasang Aplikasi</h4>
-                <button onClick={onDismiss} className="text-muted-foreground hover:text-white transition-colors">
-                  <X size={16} />
+                <div className='flex items-center gap-2'>
+                    <Zap size={14} className='text-primary fill-primary animate-pulse' />
+                    <h4 className="font-black uppercase italic text-sm tracking-tighter font-headline">Portal App Ready</h4>
+                </div>
+                <button onClick={onDismiss} className="text-muted-foreground hover:text-white transition-colors p-1">
+                  <X size={18} />
                 </button>
               </div>
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide leading-relaxed">
-                Akses portal sekolah lebih cepat langsung dari layar utama Android Anda.
+              <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider leading-relaxed">
+                Pasang aplikasi resmi <span className='text-primary'>SMKS PGRI 2 KEDONDONG</span> untuk akses portal & ujian lebih cepat.
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 mt-6">
-            <Button 
-              variant="outline" 
+          <div className="grid grid-cols-2 gap-4 mt-8">
+            <button 
               onClick={onDismiss}
-              className="rounded-xl h-11 font-black text-[9px] uppercase tracking-widest border-white/10"
+              className="rounded-xl h-12 font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:bg-white/5 transition-colors"
             >
               Nanti Saja
-            </Button>
+            </button>
             <Button 
-              onClick={handleInstall}
-              className="rounded-xl h-11 font-black text-[9px] uppercase tracking-widest shadow-xl glow-primary"
+              onClick={onInstallClick}
+              className="rounded-xl h-12 font-black text-[10px] uppercase tracking-[0.2em] shadow-xl glow-primary bg-primary text-white hover:bg-primary/90"
             >
-              <Download size={14} className="mr-2" /> Instal Sekarang
+              <Download size={16} className="mr-2" /> INSTAL SEKARANG
             </Button>
           </div>
         </CardContent>
