@@ -1,7 +1,7 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Menghapus output: 'export' karena bentrok dengan Server Actions dan dynamic routes di lingkungan ini
+  output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true,
@@ -12,6 +12,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'drive.google.com' },
     ],
   },
+  // Konfigurasi eksperimental untuk kompatibilitas Genkit jika digunakan via API eksternal
   experimental: {
     serverComponentsExternalPackages: [
       'genkit',

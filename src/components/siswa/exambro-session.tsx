@@ -32,20 +32,23 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   const [isCameraLoading, setIsCameraLoading] = useState(isCameraRequired);
   const [isStandalone, setIsStandalone] = useState(false);
   
-  const [timeLeft, setTimeLeft] = useState(durationMinutes * 60);
+  // Mencegah hydration mismatch dengan menginisialisasi timer di useEffect
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isTimeUp, setIsTimeUp] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const wakeLockRef = useRef<any>(null);
 
-  // Detect Standalone Mode (PWA)
   useEffect(() => {
+    // Inisialisasi timer hanya di client
+    setTimeLeft(durationMinutes * 60);
+    
     if (typeof window !== 'undefined') {
       const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
       setIsStandalone(!!isStandaloneMode);
     }
-  }, []);
+  }, [durationMinutes]);
 
   // Screen Wake Lock Implementation
   useEffect(() => {
@@ -68,7 +71,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
   // Sync session state to Firestore
   useEffect(() => {
-    if (!firestore || !user || !isFullScreen || isTimeUp) return;
+    if (!firestore || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
 
     const sessionRef = doc(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`, user.uid);
     const interval = setInterval(() => {
@@ -81,7 +84,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
             isAppMode: isStandalone,
             status: 'ACTIVE'
         }, { merge: true });
-    }, 5000); // Faster heartbeat for super strict mode
+    }, 5000);
 
     return () => {
         clearInterval(interval);
@@ -90,15 +93,17 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone]);
 
   useEffect(() => {
+    if (timeLeft === null) return;
     if (timeLeft <= 0) {
       setIsTimeUp(true);
       return;
     }
-    const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+    const timerId = setInterval(() => setTimeLeft(prev => (prev !== null ? prev - 1 : null)), 1000);
     return () => clearInterval(timerId);
   }, [timeLeft]);
 
-  const formatTime = (seconds: number) => {
+  const formatTime = (seconds: number | null) => {
+    if (seconds === null) return "--:--";
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
@@ -166,10 +171,11 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     document.addEventListener('contextmenu', preventContextMenu);
     document.addEventListener('keydown', preventKeys);
 
-    // Block Pull-to-refresh and selection
-    document.body.style.overscrollBehavior = 'none';
-    document.body.style.userSelect = 'none';
-    document.body.style.webkitUserSelect = 'none';
+    // Block Pull-to-refresh
+    if (typeof document !== 'undefined') {
+        document.body.style.overscrollBehavior = 'none';
+        document.body.style.userSelect = 'none';
+    }
 
     const preventBack = (e: any) => {
       window.history.pushState(null, "", window.location.href);
@@ -185,8 +191,10 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       document.removeEventListener('contextmenu', preventContextMenu);
       document.removeEventListener('keydown', preventKeys);
       window.removeEventListener('popstate', preventBack);
-      document.body.style.overscrollBehavior = 'auto';
-      document.body.style.userSelect = 'auto';
+      if (typeof document !== 'undefined') {
+        document.body.style.overscrollBehavior = 'auto';
+        document.body.style.userSelect = 'auto';
+      }
     };
   }, [isTimeUp, isFullScreen, hasCameraPermission]);
 
@@ -194,7 +202,6 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     setViolationCount(prev => prev + 1);
     setShowAlarm(true);
     
-    // Intense Vibration for Android
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate([500, 200, 500, 200, 500]);
     }
@@ -216,7 +223,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   };
 
   const handleExitRequest = () => { 
-    if (confirm("KONFIRMASI AKHIR: Apakah Anda yakin ingin mengakhiri sesi ujian? Tindakan ini akan dicatat sebagai penyelesaian sesi.")) {
+    if (confirm("KONFIRMASI AKHIR: Apakah Anda yakin ingin mengakhiri sesi ujian?")) {
       onExit(); 
     } 
   }
@@ -225,10 +232,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     return (
         <div className="fixed inset-0 z-[110] bg-background flex flex-col items-center justify-center text-center p-10">
             <LoaderCircle className="h-16 w-16 animate-spin text-primary mb-8" />
-            <div className='space-y-3'>
-                <h3 className="text-2xl font-black uppercase italic tracking-widest text-white font-headline">Security Initialization...</h3>
-                <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.4em]">Menyiapkan Enkripsi & Pengawasan Biometrik</p>
-            </div>
+            <h3 className="text-2xl font-black uppercase italic tracking-widest text-white">Security Initialization...</h3>
         </div>
     );
   }
@@ -237,25 +241,20 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     <div ref={containerRef} className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden select-none touch-none">
       <header className="h-16 bg-black/90 backdrop-blur-xl border-b border-white/5 px-6 flex items-center justify-between shrink-0 z-30">
         <div className="flex items-center gap-4">
-          <div className={cn("p-2 rounded-xl transition-colors", isStandalone ? "bg-emerald-500/20 text-emerald-500" : "bg-primary/20 text-primary")}>
+          <div className={cn("p-2 rounded-xl", isStandalone ? "bg-emerald-500/20 text-emerald-500" : "bg-primary/20 text-primary")}>
             {isStandalone ? <Smartphone className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
           </div>
           <div className="flex flex-col">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">EXAMBRO v5.0 {isStandalone ? 'APP' : 'BROWSER'} MODE</span>
-            <div className="flex items-center gap-3 mt-0.5">
-                <div className='flex items-center gap-1.5'>
-                    <div className={cn("w-1.5 h-1.5 rounded-full", violationCount > 0 ? "bg-red-500 animate-pulse" : "bg-emerald-500")}></div>
-                    <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">PELANGGARAN: {violationCount}</span>
-                </div>
-            </div>
+            <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">PELANGGARAN: {violationCount}</span>
           </div>
         </div>
 
         <div className={cn(
             "absolute left-1/2 -translate-x-1/2 flex items-center gap-4 px-8 py-2 rounded-2xl border transition-all duration-500 bg-white/5",
-            timeLeft < 300 ? "border-red-500 text-red-500 animate-pulse" : "border-white/10 text-white"
+            (timeLeft !== null && timeLeft < 300) ? "border-red-500 text-red-500 animate-pulse" : "border-white/10 text-white"
         )}>
-            <Timer size={20} className={timeLeft < 300 ? "text-red-500" : "text-primary"} />
+            <Timer size={20} className={(timeLeft !== null && timeLeft < 300) ? "text-red-500" : "text-primary"} />
             <div className='flex flex-col items-center leading-none'>
                 <span className="text-xl font-black font-mono tracking-tighter">{formatTime(timeLeft)}</span>
                 <span className="text-[7px] font-bold uppercase opacity-40 tracking-widest">SISA WAKTU</span>
@@ -264,7 +263,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
         <div className="flex items-center gap-4">
           {!isFullScreen && !isTimeUp && (
-            <Button variant="destructive" size="sm" onClick={enterFullScreen} className="h-9 text-[9px] font-black uppercase px-6 rounded-xl shadow-2xl animate-pulse">
+            <Button variant="destructive" size="sm" onClick={enterFullScreen} className="h-9 text-[9px] font-black uppercase px-6 rounded-xl animate-pulse">
               <Maximize size={14} className="mr-2" /> AKTIFKAN SECURE MODE
             </Button>
           )}
@@ -279,37 +278,26 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
             <div className="absolute top-6 right-6 w-32 md:w-56 aspect-video rounded-2xl overflow-hidden border-2 border-primary/40 shadow-3xl z-40 pointer-events-none">
                 <video ref={videoRef} className="w-full h-full object-cover bg-black" autoPlay muted playsInline />
                 <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 px-2.5 py-1 rounded-full">
-                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_red]"></div>
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                     <span className="text-[8px] font-black text-white uppercase tracking-widest font-headline">PROCTORED</span>
                 </div>
             </div>
         )}
 
         {hasCameraPermission && !isTimeUp ? (
-            <iframe src={url} className="w-full h-full border-none" title="Exam Gateway" allow="autoplay; camera; microphone"/>
+            <iframe src={url} className="w-full h-full border-none" title="Exam Gateway" allow="autoplay; camera"/>
         ) : !isTimeUp && (
             <div className="w-full h-full bg-black flex flex-col items-center justify-center text-center p-10">
                 <CameraOff size={100} className="text-red-500 mb-8" />
                 <h3 className="text-4xl font-black text-white uppercase italic mb-4 tracking-tighter font-headline">BIOMETRIC REQUIRED</h3>
-                <p className="text-muted-foreground text-sm uppercase tracking-[0.2em] max-w-lg">Ujian ini mewajibkan kamera aktif sebagai alat verifikasi kehadiran.</p>
                 <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-black text-xs tracking-widest shadow-3xl glow-primary">RELOAD & IZINKAN</Button>
             </div>
-        )}
-
-        {!isFullScreen && !showAlarm && hasCameraPermission && !isTimeUp && (
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center z-40 text-center p-10">
-            <MonitorOff size={100} className="text-primary mb-8 animate-pulse" />
-            <h3 className="text-4xl font-black text-white uppercase italic mb-4 tracking-tighter font-headline">LOCKDOWN MODE</h3>
-            <p className="text-muted-foreground text-sm uppercase tracking-[0.2em] mb-10 max-w-md">Sistem mendeteksi akses tidak aman. Tekan tombol di bawah untuk mengunci layar.</p>
-            <Button size="lg" onClick={enterFullScreen} className="h-20 px-16 rounded-[2.5rem] font-black text-sm uppercase tracking-[0.3em] shadow-3xl glow-primary">AKTIFKAN SUPER SECURE</Button>
-          </div>
         )}
 
         {showAlarm && !isTimeUp && (
           <div className="absolute inset-0 bg-red-700/95 backdrop-blur-2xl flex flex-col items-center justify-center z-50 p-10 text-center">
             <AlertTriangle size={64} className="text-white mb-10 animate-bounce" />
             <h2 className="text-5xl font-black text-white uppercase italic tracking-tighter mb-6 font-headline">SECURITY BREACH!</h2>
-            <p className="text-white/80 text-xl font-bold uppercase tracking-widest mb-12 max-w-2xl">ANDA TERDETEKSI MENINGGALKAN HALAMAN UJIAN. PELANGGARAN TELAH DICATAT!</p>
             <Button size="lg" variant="secondary" onClick={() => { setShowAlarm(false); enterFullScreen(); }} className="h-20 px-16 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest shadow-3xl">SAYA MENGERTI</Button>
           </div>
         )}
@@ -318,7 +306,6 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
             <div className="absolute inset-0 bg-black/98 backdrop-blur-3xl flex flex-col items-center justify-center z-[60] p-10 text-center">
                 <Clock size={120} className="text-primary mb-10 animate-pulse" />
                 <h2 className="text-6xl font-black text-white uppercase italic tracking-tighter mb-6 font-headline">TIME OVER</h2>
-                <p className="text-muted-foreground text-xl font-bold uppercase tracking-[0.2em] mb-12 max-w-2xl">Alokasi waktu pengerjaan telah habis. Sesi ditutup oleh sistem.</p>
                 <Button size="lg" onClick={onExit} className="h-20 px-16 rounded-[2.5rem] font-black text-2xl uppercase tracking-[0.3em] shadow-3xl glow-primary">KELUAR RUANG UJIAN</Button>
             </div>
         )}
@@ -326,11 +313,9 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
       <footer className="h-10 bg-black border-t border-white/5 px-8 flex items-center justify-between shrink-0 opacity-60">
         <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.5em]">SMKS PGRI 2 KEDONDONG • DIGITAL HUB CORE v7.5</p>
-        <div className="flex items-center gap-4">
-            <div className='flex items-center gap-2'>
-                <div className={cn("w-1.5 h-1.5 rounded-full shadow-[0_0_5px]", isStandalone ? "bg-emerald-500 shadow-emerald-500" : "bg-primary shadow-primary")}></div>
-                <span className="text-[8px] font-black text-white uppercase tracking-widest">INTEGRITY: {isStandalone ? 'VERIFIED' : 'WEB_MODE'}</span>
-            </div>
+        <div className='flex items-center gap-2'>
+            <div className={cn("w-1.5 h-1.5 rounded-full shadow-[0_0_5px]", isStandalone ? "bg-emerald-500 shadow-emerald-500" : "bg-primary shadow-primary")}></div>
+            <span className="text-[8px] font-black text-white uppercase tracking-widest">INTEGRITY: {isStandalone ? 'VERIFIED' : 'WEB_MODE'}</span>
         </div>
       </footer>
     </div>

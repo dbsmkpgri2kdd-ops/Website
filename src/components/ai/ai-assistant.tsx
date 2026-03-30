@@ -1,17 +1,16 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Bot, Send, User, X, LoaderCircle } from 'lucide-react';
+import { Bot, Send, User, X, LoaderCircle, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { chatWithSchoolAI } from '@/ai/flows/school-assistant-flow';
 
 /**
  * Komponen Floating AI Assistant.
- * Menangani chat interaktif antara pengguna dan AI asisten sekolah.
- * Dioptimalkan untuk tampilan mobile agar tidak menindih BottomNav.
+ * Dioptimalkan untuk Static Export (fungsi AI sesungguhnya butuh API eksternal).
  */
 export function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +21,6 @@ export function AIAssistant() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll ke pesan terbaru
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -37,15 +35,15 @@ export function AIAssistant() {
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsLoading(true);
 
-    try {
-      const response = await chatWithSchoolAI({ query: userMsg });
-      setMessages(prev => [...prev, { role: 'ai', text: response.answer }]);
-    } catch (error) {
-      console.error("AI Chat Error:", error);
-      setMessages(prev => [...prev, { role: 'ai', text: 'Maaf, saya sedang mengalami kendala teknis. Silakan coba lagi nanti.' }]);
-    } finally {
+    // Simulasi respons AI untuk mode Static Export
+    // Untuk fitur nyata, hubungkan ke Firebase Function via fetch()
+    setTimeout(() => {
+      setMessages(prev => [...prev, { 
+        role: 'ai', 
+        text: 'Maaf, fitur AI interaktif sedang dalam sinkronisasi server. Silakan hubungi admin kami melalui menu Kontak untuk bantuan langsung.' 
+      }]);
       setIsLoading(false);
-    }
+    }, 1500);
   };
 
   return (
