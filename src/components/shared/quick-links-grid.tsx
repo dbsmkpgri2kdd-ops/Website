@@ -1,15 +1,14 @@
-
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type QuickLink } from '@/lib/data';
-import { Globe, Laptop, AppWindow as AppIcon, BookOpen, GraduationCap, Users, ExternalLink, Sparkles } from 'lucide-react';
+import { Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users, ExternalLink, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const iconMap: { [key: string]: any } = {
-  Globe, Laptop, AppIcon, BookOpen, GraduationCap, Users
+  Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users
 };
 
 type QuickLinksGridProps = {

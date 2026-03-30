@@ -14,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, Trash2, Edit, LoaderCircle, Link as LinkIcon, Globe, Laptop, AppWindow as AppIcon, BookOpen, GraduationCap, Users } from 'lucide-react';
+import { PlusCircle, Trash2, Edit, LoaderCircle, Link as LinkIcon, Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
@@ -30,14 +30,14 @@ const formSchema = z.object({
 const ICONS = [
   { name: 'Globe', component: Globe },
   { name: 'Laptop', component: Laptop },
-  { name: 'AppIcon', component: AppIcon },
+  { name: 'AppWindow', component: AppWindow },
   { name: 'BookOpen', component: BookOpen },
   { name: 'GraduationCap', component: GraduationCap },
   { name: 'Users', component: Users },
 ];
 
 const iconMap: { [key: string]: any } = {
-  Globe, Laptop, AppIcon, BookOpen, GraduationCap, Users
+  Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users
 };
 
 export function QuickLinksManager() {
