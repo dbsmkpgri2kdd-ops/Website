@@ -1,6 +1,7 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // HAPUS output: 'export' agar Server Actions/Genkit bisa jalan
+  // output: 'export' DIHAPUS agar Server Actions & AI Genkit bisa berjalan secara dinamis di Firebase Hosting
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },

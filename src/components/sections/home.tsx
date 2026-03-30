@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -100,7 +101,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
             <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-10">
                 <div className="max-w-3xl space-y-6 animate-reveal">
                   <div className='inline-flex items-center gap-3 px-4 py-1.5 rounded-lg bg-white/5 border border-white/5 text-primary shadow-xl backdrop-blur-xl'>
-                    <Sparkles size={12} className='animate-pulse' />
+                    <Sparkles size={12} />
                     <span className='text-[9px] font-black uppercase tracking-[0.3em]'>Pusat Pendidikan Vokasi</span>
                   </div>
                   <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-tight text-foreground uppercase italic">
@@ -126,7 +127,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
         if (settings?.showPartners === false) return null;
         return (
           <section key="partners" className="max-w-7xl mx-auto px-6 py-12 border-y border-white/5 items-center grid lg:grid-cols-4 gap-8">
-            <div className="lg:col-span-1 space-y-1">
+            <div className="lg:col-span-1 space-y-1 text-center md:text-left">
               <h3 className="text-[8px] font-black text-primary uppercase tracking-[0.4em]">Partner Strategis</h3>
               <p className="text-xl font-black tracking-tighter uppercase italic">Jejak Industri</p>
             </div>

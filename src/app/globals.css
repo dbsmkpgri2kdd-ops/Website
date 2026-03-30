@@ -1,10 +1,11 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Premium Obsidian & Emerald Theme - Deep Palette */
+    /* Premium Obsidian & Emerald Theme */
     --background: 230 35% 7%;
     --foreground: 210 40% 98%;
     --card: 230 35% 9%;
@@ -17,14 +18,14 @@
     --secondary-foreground: 210 40% 98%;
     --muted: 230 35% 15%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 160 84% 39%;
+    --accent: 32 95% 44%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 230 35% 15%;
     --input: 230 35% 15%;
     --ring: 160 84% 39%;
-    --radius: 2rem;
+    --radius: 1.5rem;
   }
 }
 
@@ -34,10 +35,10 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    /* Font standar lembaga: Plus Jakarta Sans */
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-feature-settings: "cv11", "ss01", "ss03", "tnum";
-    letter-spacing: -0.01em;
+    font-family: 'Alegreya', serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Belleza', serif;
   }
 }
 
@@ -56,21 +57,21 @@
   }
 
   .animate-reveal {
-    animation: reveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes reveal {
-    from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+    from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
     to { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
 
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
+  .marquee {
+    display: flex;
+    animation: marquee 40s linear infinite;
   }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-white/10 rounded-full hover:bg-primary/40 transition-all;
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 }
