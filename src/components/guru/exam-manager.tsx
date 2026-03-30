@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, Trash2, Edit, LoaderCircle, ShieldCheck, Key, Link as LinkIcon, Calendar } from 'lucide-react';
+import { PlusCircle, Trash2, Edit, LoaderCircle, ShieldCheck, Key, Link as LinkIcon, Calendar, Camera } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
@@ -29,6 +29,7 @@ const formSchema = z.object({
   token: z.string().min(4, 'Token minimal 4 karakter.'),
   url: z.string().url('URL soal ujian tidak valid (Google Form/Lainnya).'),
   isActive: z.boolean().default(true),
+  isCameraRequired: z.boolean().default(false),
 });
 
 export function ExamManager() {
@@ -48,7 +49,7 @@ export function ExamManager() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { 
-        title: '', subject: '', class: '', day: '', startTime: '', endTime: '', token: '', url: '', isActive: true 
+        title: '', subject: '', class: '', day: '', startTime: '', endTime: '', token: '', url: '', isActive: true, isCameraRequired: false 
     },
   });
 
@@ -106,8 +107,8 @@ export function ExamManager() {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-[625px] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-3xl">
                 <DialogHeader className="p-8 bg-primary/5 border-b border-white/5">
-                    <DialogTitle className="font-black uppercase italic tracking-tighter text-2xl">Editor Ujian v1.5</DialogTitle>
-                    <DialogDescription className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">Detail Jadwal & Keamanan</DialogDescription>
+                    <DialogTitle className="font-black uppercase italic tracking-tighter text-2xl">Editor Ujian v2.0</DialogTitle>
+                    <DialogDescription className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">Detail Jadwal & Keamanan Biometrik</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="p-8 space-y-6">
@@ -121,14 +122,22 @@ export function ExamManager() {
                             <FormField control={form.control} name="startTime" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Mulai</FormLabel><FormControl><Input {...field} placeholder="07:30" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="endTime" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Selesai</FormLabel><FormControl><Input {...field} placeholder="09:30" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
                         </div>
-                        <div className="grid grid-cols-2 gap-4 bg-primary/5 p-6 rounded-2xl border border-primary/10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-primary/5 p-6 rounded-2xl border border-primary/10">
                             <FormField control={form.control} name="token" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Token Keamanan</FormLabel><FormControl><Input {...field} placeholder="ABCD" className="h-12 rounded-xl font-black uppercase" /></FormControl><FormMessage /></FormItem>)}/>
-                            <FormField control={form.control} name="isActive" render={({ field }) => (
-                                <FormItem className="flex flex-row items-center justify-between rounded-xl p-3">
-                                    <FormLabel className="text-[9px] font-black uppercase opacity-60">Ujian Aktif</FormLabel>
-                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                </FormItem>
-                            )}/>
+                            <div className="space-y-4">
+                                <FormField control={form.control} name="isActive" render={({ field }) => (
+                                    <FormItem className="flex flex-row items-center justify-between rounded-xl p-1">
+                                        <FormLabel className="text-[9px] font-black uppercase opacity-60">Ujian Aktif</FormLabel>
+                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                    </FormItem>
+                                )}/>
+                                <FormField control={form.control} name="isCameraRequired" render={({ field }) => (
+                                    <FormItem className="flex flex-row items-center justify-between rounded-xl p-1">
+                                        <FormLabel className="text-[9px] font-black uppercase opacity-60 flex items-center gap-2"><Camera size={12}/> Wajib Kamera</FormLabel>
+                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                    </FormItem>
+                                )}/>
+                            </div>
                         </div>
                         <FormField control={form.control} name="url" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">URL Soal (G-Form/Quizizz)</FormLabel><FormControl><Input {...field} placeholder="https://..." className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
                         <Button type="submit" className="w-full h-14 rounded-xl font-black uppercase tracking-[0.2em] shadow-3xl glow-primary" disabled={form.formState.isSubmitting}>
@@ -170,7 +179,10 @@ export function ExamManager() {
                             <TableCell>
                                 <div className="flex flex-col gap-1.5">
                                     <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-primary"><Key size={10}/> {exam.token}</div>
-                                    <Badge variant={exam.isActive ? 'default' : 'secondary'} className="w-fit text-[8px] font-black uppercase">{exam.isActive ? 'AKTIF' : 'NONAKTIF'}</Badge>
+                                    <div className='flex gap-2'>
+                                        <Badge variant={exam.isActive ? 'default' : 'secondary'} className="w-fit text-[8px] font-black uppercase">{exam.isActive ? 'AKTIF' : 'NONAKTIF'}</Badge>
+                                        {exam.isCameraRequired && <Badge variant="secondary" className="bg-amber-500/10 text-amber-500 border-none text-[8px] font-black uppercase"><Camera size={10} className='mr-1' /> PROCTORED</Badge>}
+                                    </div>
                                 </div>
                             </TableCell>
                             <TableCell className="text-right px-8">

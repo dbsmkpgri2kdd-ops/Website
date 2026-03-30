@@ -15,6 +15,7 @@
         "token": { "type": "string" },
         "url": { "type": "string" },
         "isActive": { "type": "boolean" },
+        "isCameraRequired": { "type": "boolean", "description": "Wajibkan kamera selama ujian berlangsung." },
         "teacherName": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" }
       }

@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type Exam } from '@/lib/data';
-import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor } from 'lucide-react';
 import { ExamBroSession } from './exambro-session';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
@@ -20,6 +20,7 @@ export function ExamBroPortal() {
   const [activeTab, setActiveTab] = useState<string>('scheduled');
   const [isExamActive, setIsExamActive] = useState(false);
   const [selectedExamUrl, setSelectedExamUrl] = useState<string>('');
+  const [isCameraRequired, setIsCameraRequired] = useState(false);
   
   // States for form inputs
   const [selectedExamId, setSelectedExamId] = useState<string>('');
@@ -38,7 +39,7 @@ export function ExamBroPortal() {
 
   const { data: exams, isLoading } = useCollection<Exam>(examsQuery);
 
-  const handleStartExam = (url: string, token: string, requiredToken?: string) => {
+  const handleStartExam = (url: string, token: string, requiredToken?: string, camRequired: boolean = false) => {
     setError(null);
     if (requiredToken && token !== requiredToken) {
       setError('Token ujian tidak valid. Silakan hubungi pengawas.');
@@ -49,6 +50,7 @@ export function ExamBroPortal() {
       return;
     }
     setSelectedExamUrl(url);
+    setIsCameraRequired(camRequired);
     setIsExamActive(true);
   };
 
@@ -57,7 +59,7 @@ export function ExamBroPortal() {
       setError('Masukkan URL yang valid (harus diawali http/https).');
       return;
     }
-    handleStartExam(inputUrl, '');
+    handleStartExam(inputUrl, '', undefined, false);
   };
 
   const handleScheduledStart = () => {
@@ -66,11 +68,11 @@ export function ExamBroPortal() {
       setError('Pilih ujian terlebih dahulu.');
       return;
     }
-    handleStartExam(exam.url, inputToken, exam.token);
+    handleStartExam(exam.url, inputToken, exam.token, exam.isCameraRequired);
   };
 
   if (isExamActive) {
-    return <ExamBroSession url={selectedExamUrl} onExit={() => setIsExamActive(false)} />;
+    return <ExamBroSession url={selectedExamUrl} isCameraRequired={isCameraRequired} onExit={() => setIsExamActive(false)} />;
   }
 
   return (
@@ -78,7 +80,7 @@ export function ExamBroPortal() {
       <div className="text-center space-y-2">
         <div className='flex items-center gap-3 text-primary justify-center'>
             <ShieldCheck size={24} className='animate-pulse' />
-            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Secure Browser</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Secure Browser v2.0</span>
         </div>
         <h2 className="text-4xl font-black font-headline tracking-tighter uppercase italic">ExamBro Portal</h2>
         <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi SMKS PGRI 2 Kedondong.</p>
@@ -115,10 +117,10 @@ export function ExamBroPortal() {
                     <SelectTrigger className="h-12 rounded-xl bg-white/5 border-white/10">
                       <SelectValue placeholder={isLoading ? "Memuat jadwal..." : "Pilih Mapel & Kelas"} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className='bg-card/95 backdrop-blur-3xl border-white/10'>
                       {exams?.map(exam => (
-                        <SelectItem key={exam.id} value={exam.id} className="py-3">
-                          {exam.subject} - {exam.class} ({exam.title})
+                        <SelectItem key={exam.id} value={exam.id} className="py-3 font-bold uppercase text-[10px] tracking-widest">
+                          {exam.subject} - {exam.class} {exam.isCameraRequired && '(Proctored)'}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -180,9 +182,9 @@ export function ExamBroPortal() {
 
       <div className="grid md:grid-cols-3 gap-6">
         <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col items-center text-center space-y-3">
-          <ShieldCheck className="text-primary" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Proteksi Tab</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Sistem mendeteksi perpindahan aplikasi otomatis.</p>
+          <Camera className="text-primary" size={32} />
+          <h4 className="font-black text-[10px] uppercase tracking-widest">Biometric AI</h4>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Verifikasi kamera aktif wajib untuk ujian tertentu.</p>
         </div>
         <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10 flex flex-col items-center text-center space-y-3">
           <AlertCircle className="text-amber-500" size={32} />
