@@ -62,7 +62,7 @@ export function TeachingFactoryManager() {
   
   const handleEdit = (product: TeachingFactoryProduct) => {
     setEditingProduct(product);
-    // Safe extraction of studentCreator for compatibility
+    // Ensure studentCreator is treated as string for the form
     const creatorString = typeof product.studentCreator === 'object' && product.studentCreator !== null
       ? (product.studentCreator as any).name || ''
       : String(product.studentCreator || '');
@@ -101,10 +101,6 @@ export function TeachingFactoryManager() {
       toast({ variant: 'destructive', title: 'Dihapus!', description: 'Produk telah dihapus.' });
     }
   };
-
-  if (isLoading) {
-    return <div className="flex justify-center py-20"><LoaderCircle className="animate-spin text-primary h-8 w-8" /></div>;
-  }
 
   return (
     <Card className="shadow-lg rounded-2xl">
@@ -159,6 +155,11 @@ export function TeachingFactoryManager() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
+                    {isLoading && (
+                    <TableRow>
+                        <TableCell colSpan={5} className="text-center">Memuat produk...</TableCell>
+                    </TableRow>
+                    )}
                     {products && products.length > 0 ? (
                     products.map((product) => {
                         const creatorDisplay = typeof product.studentCreator === 'object' && product.studentCreator !== null
@@ -187,7 +188,7 @@ export function TeachingFactoryManager() {
                         );
                     })
                     ) : (
-                    <TableRow><TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Belum ada produk.</TableCell></TableRow>
+                    !isLoading && <TableRow><TableCell colSpan={5} className="text-center">Belum ada produk. Mulai tambahkan!</TableCell></TableRow>
                     )}
                 </TableBody>
                 </Table>
