@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, Trash2, Edit, LoaderCircle, ShieldCheck, Key, Link as LinkIcon, Calendar, Camera, Clock, CalendarIcon } from 'lucide-react';
+import { PlusCircle, Trash2, Edit, LoaderCircle, ShieldCheck, Key, CalendarIcon, Camera, Clock, MonitorCheck } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +23,7 @@ import { Calendar as CalendarPicker } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { ProctoringCenter } from './proctoring-center';
 
 const formSchema = z.object({
   title: z.string().min(5, 'Judul ujian minimal 5 karakter.'),
@@ -43,6 +44,7 @@ export function ExamManager() {
   const firestore = useFirestore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingExam, setEditingExam] = useState<Exam | null>(null);
+  const [monitoringExamId, setMonitoringExamId] = useState<string | null>(null);
 
   const examsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -105,16 +107,27 @@ export function ExamManager() {
     return format(jsDate, "EEEE, d MMM yyyy", { locale: idLocale });
   };
 
+  if (monitoringExamId) {
+    const exam = exams?.find(e => e.id === monitoringExamId);
+    return (
+        <ProctoringCenter 
+            examId={monitoringExamId} 
+            examTitle={exam?.title || 'Ujian'} 
+            onBack={() => setMonitoringExamId(null)} 
+        />
+    );
+  }
+
   return (
     <Card className="shadow-lg border-none rounded-[2rem] bg-white/5 backdrop-blur-md overflow-hidden border">
         <CardHeader className="p-8 border-b border-white/5 flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-xl font-black italic uppercase flex items-center gap-3">
+              <CardTitle className="text-xl font-black italic uppercase flex items-center gap-3 font-headline">
                 <ShieldCheck size={24} className="text-primary"/> Manajemen Ujian (ExamBro)
               </CardTitle>
               <CardDescription className="text-[10px] mt-1 uppercase font-bold tracking-widest opacity-60">Atur jadwal, soal, dan keamanan ujian online.</CardDescription>
             </div>
-            <Button onClick={() => setIsDialogOpen(true)} size="sm" className="rounded-xl font-black uppercase tracking-widest text-[9px] shadow-3xl glow-primary">
+            <Button onClick={() => setIsDialogOpen(true)} size="sm" className="rounded-xl font-black uppercase tracking-widest text-[9px] shadow-3xl glow-primary h-12 px-6">
                 <PlusCircle className="mr-2 h-4 w-4" /> Tambah Ujian Baru
             </Button>
         </CardHeader>
@@ -137,7 +150,7 @@ export function ExamManager() {
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-black uppercase">{exam.subject.charAt(0)}</div>
                                     <div>
-                                        <p className="font-black uppercase italic text-sm tracking-tight">{exam.subject}</p>
+                                        <p className="font-black uppercase italic text-sm tracking-tight font-headline">{exam.subject}</p>
                                         <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">{exam.title}</p>
                                     </div>
                                 </div>
@@ -160,6 +173,9 @@ export function ExamManager() {
                             </TableCell>
                             <TableCell className="text-right px-8">
                                 <div className="flex justify-end gap-2">
+                                    <Button variant="outline" size="sm" className="h-9 rounded-xl font-black uppercase text-[8px] tracking-widest border-primary/20 text-primary hover:bg-primary/5" onClick={() => setMonitoringExamId(exam.id)}>
+                                        <MonitorCheck size={14} className="mr-1.5" /> Monitoring
+                                    </Button>
                                     <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/10 text-primary" onClick={() => handleEdit(exam)}><Edit size={16}/></Button>
                                     <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-destructive/10 text-destructive" onClick={() => handleDelete(exam.id)}><Trash2 size={16}/></Button>
                                 </div>
@@ -174,7 +190,7 @@ export function ExamManager() {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-[625px] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-3xl">
                 <DialogHeader className="p-8 bg-primary/5 border-b border-white/5">
-                    <DialogTitle className="font-black uppercase italic tracking-tighter text-2xl">Editor Ujian v3.5</DialogTitle>
+                    <DialogTitle className="font-black uppercase italic tracking-tighter text-2xl font-headline">Editor Ujian v4.5</DialogTitle>
                     <DialogDescription className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">Konfigurasi Jadwal & Alokasi Waktu</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -232,7 +248,7 @@ export function ExamManager() {
                                 )}/>
                             </div>
                         </div>
-                        <FormField control={form.control} name="url" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">URL Soal (Google Forms/Lainnya)</FormLabel><FormControl><Input {...field} placeholder="https://..." className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="url" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">URL Soal (Google Forms/Quizizz)</FormLabel><FormControl><Input {...field} placeholder="https://..." className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
                         <Button type="submit" className="w-full h-14 rounded-xl font-black uppercase tracking-[0.2em] shadow-3xl glow-primary" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting ? <LoaderCircle className="animate-spin mr-3"/> : <ShieldCheck className="mr-3"/>}
                             SIMPAN JADWAL UJIAN

@@ -4,13 +4,25 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Plus_Jakarta_Sans, Belleza, Alegreya } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
+import { AIAssistant } from '@/components/ai/ai-assistant';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-jakarta',
+});
+
+const belleza = Belleza({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-belleza',
+});
+
+const alegreya = Alegreya({
+  subsets: ['latin'],
+  variable: '--font-alegreya',
 });
 
 export const viewport: Viewport = {
@@ -38,7 +50,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning className="dark">
-      <body className={cn("font-sans antialiased", jakarta.variable)}>
+      <body className={cn("font-sans antialiased", jakarta.variable, belleza.variable, alegreya.variable)}>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
@@ -48,6 +60,7 @@ export default function RootLayout({
             <FirebaseClientProvider>
               <ThemeSync />
               {children}
+              <AIAssistant />
             </FirebaseClientProvider>
             <Toaster />
           </ThemeProvider>
