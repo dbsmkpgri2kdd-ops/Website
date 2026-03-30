@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type Exam } from '@/lib/data';
-import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Clock } from 'lucide-react';
+import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Clock, Smartphone } from 'lucide-react';
 import { ExamBroSession } from './exambro-session';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { format } from 'date-fns';
@@ -97,10 +97,10 @@ export function ExamBroPortal() {
       <div className="text-center space-y-2">
         <div className='flex items-center gap-3 text-primary justify-center'>
             <ShieldCheck size={24} className='animate-pulse' />
-            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Secure Browser v3.5</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Super Strict Mode v5.0</span>
         </div>
         <h2 className="text-4xl font-black font-headline tracking-tighter uppercase italic">ExamBro Portal</h2>
-        <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi dengan Alokasi Waktu & Validasi Kalender.</p>
+        <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi dengan Deteksi Split-Screen & Biometric AI.</p>
       </div>
 
       {error && (
@@ -199,19 +199,19 @@ export function ExamBroPortal() {
 
       <div className="grid md:grid-cols-3 gap-6">
         <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col items-center text-center space-y-3 shadow-xl">
-          <Clock className="text-primary" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Alokasi Waktu</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Sesi ujian akan berakhir otomatis saat waktu habis.</p>
+          <Smartphone className="text-primary" size={32} />
+          <h4 className="font-black text-[10px] uppercase tracking-widest">App Detection</h4>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Keamanan maksimal saat dijalankan melalui aplikasi terinstal.</p>
         </div>
         <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
           <Camera className="text-amber-500" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Biometric AI</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Deteksi wajah aktif untuk memastikan integritas peserta.</p>
+          <h4 className="font-black text-[10px] uppercase tracking-widest">Face Tracking</h4>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Audit integritas real-time menggunakan pengawasan biometrik.</p>
         </div>
         <div className="p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
           <ShieldCheck className="text-blue-500" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Anti-Cheat</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Alarm otomatis jika mencoba keluar dari aplikasi ujian.</p>
+          <h4 className="font-black text-[10px] uppercase tracking-widest">Anti-Cheat v5</h4>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Memblokir navigasi balik, split-screen, dan tombol sistem.</p>
         </div>
       </div>
     </div>
