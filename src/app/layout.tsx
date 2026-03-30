@@ -8,6 +8,7 @@ import { Plus_Jakarta_Sans, Belleza, Alegreya } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
 import { AIAssistant } from '@/components/ai/ai-assistant';
+import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -61,6 +62,7 @@ export default function RootLayout({
               <ThemeSync />
               {children}
               <AIAssistant />
+              <PWAInstallPrompt />
             </FirebaseClientProvider>
             <Toaster />
           </ThemeProvider>
