@@ -12,6 +12,7 @@
         "day": { "type": "string" },
         "startTime": { "type": "string" },
         "endTime": { "type": "string" },
+        "durationMinutes": { "type": "number", "description": "Alokasi waktu dalam menit." },
         "token": { "type": "string" },
         "url": { "type": "string" },
         "isActive": { "type": "boolean" },

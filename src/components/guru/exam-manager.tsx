@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, Trash2, Edit, LoaderCircle, ShieldCheck, Key, Link as LinkIcon, Calendar, Camera } from 'lucide-react';
+import { PlusCircle, Trash2, Edit, LoaderCircle, ShieldCheck, Key, Link as LinkIcon, Calendar, Camera, Clock } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +26,7 @@ const formSchema = z.object({
   day: z.string().min(3, 'Hari pelaksanaan harus diisi.'),
   startTime: z.string().min(5, 'Jam mulai (e.g. 07:30).'),
   endTime: z.string().min(5, 'Jam selesai (e.g. 09:30).'),
+  durationMinutes: z.coerce.number().min(5, 'Durasi minimal 5 menit.').max(300, 'Maksimal 300 menit.'),
   token: z.string().min(4, 'Token minimal 4 karakter.'),
   url: z.string().url('URL soal ujian tidak valid (Google Form/Lainnya).'),
   isActive: z.boolean().default(true),
@@ -49,7 +50,7 @@ export function ExamManager() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { 
-        title: '', subject: '', class: '', day: '', startTime: '', endTime: '', token: '', url: '', isActive: true, isCameraRequired: false 
+        title: '', subject: '', class: '', day: '', startTime: '', endTime: '', durationMinutes: 60, token: '', url: '', isActive: true, isCameraRequired: false 
     },
   });
 
@@ -107,12 +108,12 @@ export function ExamManager() {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-[625px] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-3xl">
                 <DialogHeader className="p-8 bg-primary/5 border-b border-white/5">
-                    <DialogTitle className="font-black uppercase italic tracking-tighter text-2xl">Editor Ujian v2.0</DialogTitle>
-                    <DialogDescription className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">Detail Jadwal & Keamanan Biometrik</DialogDescription>
+                    <DialogTitle className="font-black uppercase italic tracking-tighter text-2xl">Editor Ujian v3.0</DialogTitle>
+                    <DialogDescription className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">Konfigurasi Jadwal & Alokasi Waktu</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="p-8 space-y-6">
-                        <FormField control={form.control} name="title" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Judul Ujian</FormLabel><FormControl><Input {...field} placeholder="e.g. Ujian Tengah Semester Genap" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="title" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Judul Ujian</FormLabel><FormControl><Input {...field} placeholder="e.g. Ujian Akhir Semester" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
                         <div className="grid grid-cols-2 gap-4">
                             <FormField control={form.control} name="subject" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Mata Pelajaran</FormLabel><FormControl><Input {...field} placeholder="Matematika" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="class" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Kelas</FormLabel><FormControl><Input {...field} placeholder="XII TKJ 1" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
@@ -120,7 +121,13 @@ export function ExamManager() {
                         <div className="grid grid-cols-3 gap-4">
                             <FormField control={form.control} name="day" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Hari</FormLabel><FormControl><Input {...field} placeholder="Senin" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
                             <FormField control={form.control} name="startTime" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Mulai</FormLabel><FormControl><Input {...field} placeholder="07:30" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
-                            <FormField control={form.control} name="endTime" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Selesai</FormLabel><FormControl><Input {...field} placeholder="09:30" className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
+                            <FormField control={form.control} name="durationMinutes" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-[9px] font-black uppercase opacity-60 flex items-center gap-1"><Clock size={10}/> Durasi (Menit)</FormLabel>
+                                    <FormControl><Input type="number" {...field} className="h-12 rounded-xl font-black text-primary" /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-primary/5 p-6 rounded-2xl border border-primary/10">
                             <FormField control={form.control} name="token" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">Token Keamanan</FormLabel><FormControl><Input {...field} placeholder="ABCD" className="h-12 rounded-xl font-black uppercase" /></FormControl><FormMessage /></FormItem>)}/>
@@ -139,7 +146,7 @@ export function ExamManager() {
                                 )}/>
                             </div>
                         </div>
-                        <FormField control={form.control} name="url" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">URL Soal (G-Form/Quizizz)</FormLabel><FormControl><Input {...field} placeholder="https://..." className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
+                        <FormField control={form.control} name="url" render={({ field }) => (<FormItem><FormLabel className="text-[9px] font-black uppercase opacity-60">URL Soal (Google Forms/Lainnya)</FormLabel><FormControl><Input {...field} placeholder="https://..." className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)}/>
                         <Button type="submit" className="w-full h-14 rounded-xl font-black uppercase tracking-[0.2em] shadow-3xl glow-primary" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting ? <LoaderCircle className="animate-spin mr-3"/> : <ShieldCheck className="mr-3"/>}
                             SIMPAN JADWAL UJIAN
@@ -153,8 +160,8 @@ export function ExamManager() {
                 <Table>
                 <TableHeader className="bg-white/[0.02]">
                     <TableRow className="border-white/5">
-                        <TableHead className="px-8 font-black uppercase tracking-widest text-[9px] opacity-40">Mata Pelajaran & Judul</TableHead>
-                        <TableHead className="font-black uppercase tracking-widest text-[9px] opacity-40">Waktu & Kelas</TableHead>
+                        <TableHead className="px-8 font-black uppercase tracking-widest text-[9px] opacity-40">Mata Pelajaran</TableHead>
+                        <TableHead className="font-black uppercase tracking-widest text-[9px] opacity-40">Waktu & Durasi</TableHead>
                         <TableHead className="font-black uppercase tracking-widest text-[9px] opacity-40">Keamanan</TableHead>
                         <TableHead className="text-right px-8 font-black uppercase tracking-widest text-[9px] opacity-40">Aksi</TableHead>
                     </TableRow>
@@ -173,8 +180,11 @@ export function ExamManager() {
                                 </div>
                             </TableCell>
                             <TableCell>
-                                <p className="font-bold text-xs uppercase tracking-tight">{exam.day}, {exam.startTime}-{exam.endTime}</p>
-                                <Badge variant="outline" className="text-[8px] font-black mt-1 px-2 border-white/10 uppercase tracking-widest">{exam.class}</Badge>
+                                <p className="font-bold text-xs uppercase tracking-tight">{exam.day}, {exam.startTime}</p>
+                                <div className='flex gap-2 mt-1'>
+                                    <Badge variant="outline" className="text-[8px] font-black px-2 border-white/10 uppercase tracking-widest">{exam.class}</Badge>
+                                    <Badge variant="secondary" className="text-[8px] font-black px-2 bg-primary/10 text-primary border-none">{exam.durationMinutes} Menit</Badge>
+                                </div>
                             </TableCell>
                             <TableCell>
                                 <div className="flex flex-col gap-1.5">

@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type Exam } from '@/lib/data';
-import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor } from 'lucide-react';
+import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Clock } from 'lucide-react';
 import { ExamBroSession } from './exambro-session';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
@@ -21,6 +21,7 @@ export function ExamBroPortal() {
   const [isExamActive, setIsExamActive] = useState(false);
   const [selectedExamUrl, setSelectedExamUrl] = useState<string>('');
   const [isCameraRequired, setIsCameraRequired] = useState(false);
+  const [examDuration, setExamDuration] = useState(60);
   
   // States for form inputs
   const [selectedExamId, setSelectedExamId] = useState<string>('');
@@ -39,7 +40,7 @@ export function ExamBroPortal() {
 
   const { data: exams, isLoading } = useCollection<Exam>(examsQuery);
 
-  const handleStartExam = (url: string, token: string, requiredToken?: string, camRequired: boolean = false) => {
+  const handleStartExam = (url: string, token: string, requiredToken?: string, camRequired: boolean = false, duration: number = 60) => {
     setError(null);
     if (requiredToken && token !== requiredToken) {
       setError('Token ujian tidak valid. Silakan hubungi pengawas.');
@@ -51,6 +52,7 @@ export function ExamBroPortal() {
     }
     setSelectedExamUrl(url);
     setIsCameraRequired(camRequired);
+    setExamDuration(duration);
     setIsExamActive(true);
   };
 
@@ -59,7 +61,7 @@ export function ExamBroPortal() {
       setError('Masukkan URL yang valid (harus diawali http/https).');
       return;
     }
-    handleStartExam(inputUrl, '', undefined, false);
+    handleStartExam(inputUrl, '', undefined, false, 60);
   };
 
   const handleScheduledStart = () => {
@@ -68,11 +70,18 @@ export function ExamBroPortal() {
       setError('Pilih ujian terlebih dahulu.');
       return;
     }
-    handleStartExam(exam.url, inputToken, exam.token, exam.isCameraRequired);
+    handleStartExam(exam.url, inputToken, exam.token, exam.isCameraRequired, exam.durationMinutes || 60);
   };
 
   if (isExamActive) {
-    return <ExamBroSession url={selectedExamUrl} isCameraRequired={isCameraRequired} onExit={() => setIsExamActive(false)} />;
+    return (
+      <ExamBroSession 
+        url={selectedExamUrl} 
+        isCameraRequired={isCameraRequired} 
+        durationMinutes={examDuration}
+        onExit={() => setIsExamActive(false)} 
+      />
+    );
   }
 
   return (
@@ -80,10 +89,10 @@ export function ExamBroPortal() {
       <div className="text-center space-y-2">
         <div className='flex items-center gap-3 text-primary justify-center'>
             <ShieldCheck size={24} className='animate-pulse' />
-            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Secure Browser v2.0</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Secure Browser v3.0</span>
         </div>
         <h2 className="text-4xl font-black font-headline tracking-tighter uppercase italic">ExamBro Portal</h2>
-        <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi SMKS PGRI 2 Kedondong.</p>
+        <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi dengan Alokasi Waktu Terintegrasi.</p>
       </div>
 
       {error && (
@@ -120,7 +129,7 @@ export function ExamBroPortal() {
                     <SelectContent className='bg-card/95 backdrop-blur-3xl border-white/10'>
                       {exams?.map(exam => (
                         <SelectItem key={exam.id} value={exam.id} className="py-3 font-bold uppercase text-[10px] tracking-widest">
-                          {exam.subject} - {exam.class} {exam.isCameraRequired && '(Proctored)'}
+                          {exam.subject} - {exam.class} ({exam.durationMinutes}m)
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -181,20 +190,20 @@ export function ExamBroPortal() {
       </Card>
 
       <div className="grid md:grid-cols-3 gap-6">
-        <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col items-center text-center space-y-3">
-          <Camera className="text-primary" size={32} />
+        <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col items-center text-center space-y-3 shadow-xl">
+          <Clock className="text-primary" size={32} />
+          <h4 className="font-black text-[10px] uppercase tracking-widest">Alokasi Waktu</h4>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Sesi ujian akan berakhir otomatis saat waktu habis.</p>
+        </div>
+        <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
+          <Camera className="text-amber-500" size={32} />
           <h4 className="font-black text-[10px] uppercase tracking-widest">Biometric AI</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Verifikasi kamera aktif wajib untuk ujian tertentu.</p>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Deteksi wajah aktif untuk memastikan integritas peserta.</p>
         </div>
-        <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10 flex flex-col items-center text-center space-y-3">
-          <AlertCircle className="text-amber-500" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Audit Kecurangan</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Setiap pelanggaran tercatat dalam log pengawas.</p>
-        </div>
-        <div className="p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 flex flex-col items-center text-center space-y-3">
-          <Monitor className="text-blue-500" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Enforced UI</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Antarmuka layar penuh wajib digunakan selama ujian.</p>
+        <div className="p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
+          <ShieldCheck className="text-blue-500" size={32} />
+          <h4 className="font-black text-[10px] uppercase tracking-widest">Anti-Cheat</h4>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Alarm otomatis jika mencoba keluar dari aplikasi ujian.</p>
         </div>
       </div>
     </div>

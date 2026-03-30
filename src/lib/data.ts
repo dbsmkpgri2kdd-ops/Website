@@ -83,6 +83,7 @@ export interface Exam {
   day: string;
   startTime: string;
   endTime: string;
+  durationMinutes: number;
   token: string;
   url: string;
   isActive: boolean;

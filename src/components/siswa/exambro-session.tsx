@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ShieldAlert, X, Maximize, AlertTriangle, MonitorOff, Camera, CameraOff, LoaderCircle } from 'lucide-react';
+import { ShieldAlert, X, Maximize, AlertTriangle, MonitorOff, Camera, CameraOff, LoaderCircle, Clock, Timer } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -10,10 +10,11 @@ import { cn } from '@/lib/utils';
 type ExamBroSessionProps = {
   url: string;
   isCameraRequired?: boolean;
+  durationMinutes?: number;
   onExit: () => void;
 };
 
-export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBroSessionProps) {
+export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
   const [violationCount, setViolationCount] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -21,8 +22,32 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
   const [isCameraLoading, setIsCameraLoading] = useState(isCameraRequired);
   
+  // Timer State
+  const [timeLeft, setTimeLeft] = useState(durationMinutes * 60);
+  const [isTimeUp, setIsTimeUp] = useState(false);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Timer Logic
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setIsTimeUp(true);
+      return;
+    }
+
+    const timerId = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Handle Camera Permission
   useEffect(() => {
@@ -56,7 +81,6 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
     getCameraPermission();
 
     return () => {
-        // Stop camera on exit
         if (videoRef.current?.srcObject) {
             const stream = videoRef.current.srcObject as MediaStream;
             stream.getTracks().forEach(track => track.stop());
@@ -67,18 +91,18 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
   // Handle Security Events
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.hidden) {
+      if (document.hidden && !isTimeUp) {
         handleViolation("Anda meninggalkan halaman ujian!");
       }
     };
 
     const handleBlur = () => {
-      handleViolation("Peringatan: Fokus layar terdeteksi berpindah!");
+      if (!isTimeUp) handleViolation("Peringatan: Fokus layar terdeteksi berpindah!");
     };
 
     const handleFullScreenChange = () => {
       setIsFullScreen(!!document.fullscreenElement);
-      if (!document.fullscreenElement) {
+      if (!document.fullscreenElement && !isTimeUp) {
         handleViolation("Ujian wajib dalam mode layar penuh!");
       }
     };
@@ -92,7 +116,7 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
       window.removeEventListener('blur', handleBlur);
       document.removeEventListener('fullscreenchange', handleFullScreenChange);
     };
-  }, []);
+  }, [isTimeUp]);
 
   const handleViolation = (msg: string) => {
     setViolationCount(prev => prev + 1);
@@ -119,7 +143,7 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
     return (
         <div className="fixed inset-0 z-[110] bg-background flex flex-col items-center justify-center text-center p-10">
             <LoaderCircle className="h-12 w-12 animate-spin text-primary mb-6" />
-            <h3 className="text-xl font-black uppercase italic tracking-widest">Memulai Pengawasan Biometrik...</h3>
+            <h3 className="text-xl font-black uppercase italic tracking-widest text-white">Memulai Pengawasan Biometrik...</h3>
             <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Menyiapkan enkripsi kamera aman</p>
         </div>
     );
@@ -128,26 +152,38 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
   return (
     <div ref={containerRef} className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden">
       {/* Header Keamanan */}
-      <header className="h-14 bg-black border-b border-white/5 px-6 flex items-center justify-between shrink-0">
+      <header className="h-16 bg-black border-b border-white/5 px-6 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="bg-primary/20 p-1.5 rounded-lg">
             <ShieldAlert className="text-primary h-4 w-4" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white">EXAMBRO SECURE SESSION v2.0</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-white">EXAMBRO SECURE v3.0</span>
             <div className="flex items-center gap-2">
                 <span className="text-[8px] font-bold text-red-500 uppercase">PELANGGARAN: {violationCount}</span>
                 {isCameraRequired && (
                     <span className={cn("text-[8px] font-bold uppercase flex items-center gap-1", hasCameraPermission ? "text-emerald-500" : "text-red-500")}>
-                        {hasCameraPermission ? <Camera size={10}/> : <CameraOff size={10}/>} {hasCameraPermission ? 'PROCTORED ON' : 'CAMERA DISABLED'}
+                        {hasCameraPermission ? <Camera size={10}/> : <CameraOff size={10}/>} {hasCameraPermission ? 'PROCTORED' : 'CAM ERROR'}
                     </span>
                 )}
             </div>
           </div>
         </div>
 
+        {/* Timer Display */}
+        <div className={cn(
+            "flex items-center gap-3 px-6 py-2 rounded-2xl border transition-all duration-500",
+            timeLeft < 300 ? "bg-red-500/20 border-red-500 text-red-500 animate-pulse" : "bg-white/5 border-white/10 text-white"
+        )}>
+            <Timer size={18} className={timeLeft < 300 ? "text-red-500" : "text-primary"} />
+            <div className='flex flex-col items-center leading-none'>
+                <span className="text-lg font-black font-mono tracking-tighter">{formatTime(timeLeft)}</span>
+                <span className="text-[7px] font-bold uppercase opacity-60">Sisa Waktu</span>
+            </div>
+        </div>
+
         <div className="flex items-center gap-4">
-          {!isFullScreen && (
+          {!isFullScreen && !isTimeUp && (
             <Button variant="destructive" size="sm" onClick={enterFullScreen} className="h-8 text-[9px] font-black uppercase px-4 rounded-lg animate-pulse">
               <Maximize size={12} className="mr-2" /> AKTIFKAN FULLSCREEN
             </Button>
@@ -172,14 +208,14 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
         )}
 
         {/* Exam Iframe */}
-        {hasCameraPermission ? (
+        {hasCameraPermission && !isTimeUp ? (
             <iframe 
                 src={url} 
                 className="w-full h-full border-none" 
                 title="Exam Content"
                 allow="autoplay; camera; microphone"
             />
-        ) : (
+        ) : !isTimeUp && (
             <div className="w-full h-full bg-black flex flex-col items-center justify-center text-center p-10">
                 <CameraOff size={80} className="text-destructive mb-6" />
                 <h3 className="text-3xl font-black text-white uppercase italic mb-2">KAMERA WAJIB</h3>
@@ -188,8 +224,24 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
             </div>
         )}
 
+        {/* Overlay Time Up */}
+        {isTimeUp && (
+            <div className="absolute inset-0 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center z-[60] p-10 text-center animate-in fade-in duration-500">
+                <Clock size={120} className="text-primary mb-8" />
+                <h2 className="text-5xl font-black text-white uppercase italic tracking-tighter mb-4">WAKTU HABIS!</h2>
+                <p className="text-muted-foreground text-xl font-bold uppercase tracking-widest mb-10 max-w-xl">Alokasi waktu ujian Anda telah berakhir. Jawaban Anda telah tersimpan otomatis oleh sistem.</p>
+                <Button 
+                    size="lg" 
+                    onClick={onExit}
+                    className="h-20 px-12 rounded-[2rem] font-black text-2xl uppercase tracking-widest shadow-3xl glow-primary hover:scale-105 transition-all"
+                >
+                    KEMBALI KE PORTAL
+                </Button>
+            </div>
+        )}
+
         {/* Overlay Alarm */}
-        {showAlarm && (
+        {showAlarm && !isTimeUp && (
           <div className="absolute inset-0 bg-red-600/90 backdrop-blur-xl flex flex-col items-center justify-center z-50 p-10 text-center animate-in fade-in duration-300">
             <AlertTriangle size={120} className="text-white mb-8 animate-bounce" />
             <h2 className="text-5xl font-black text-white uppercase italic tracking-tighter mb-4">KEAMANAN TERDETEKSI!</h2>
@@ -206,7 +258,7 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
         )}
 
         {/* Overlay Block (Jika tidak fullscreen) */}
-        {!isFullScreen && !showAlarm && hasCameraPermission && (
+        {!isFullScreen && !showAlarm && hasCameraPermission && !isTimeUp && (
           <div className="absolute inset-0 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center z-40 text-center p-10">
             <MonitorOff size={80} className="text-primary mb-6" />
             <h3 className="text-3xl font-black text-white uppercase italic mb-2">FULLSCREEN WAJIB</h3>
@@ -222,8 +274,12 @@ export function ExamBroSession({ url, isCameraRequired = false, onExit }: ExamBr
         )}
       </main>
 
-      <footer className="h-10 bg-black border-t border-white/5 px-6 flex items-center justify-center shrink-0">
-        <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.5em]">SMKS PGRI 2 KEDONDONG - BIOMETRIC PROCTORING v2.0</p>
+      <footer className="h-10 bg-black border-t border-white/5 px-6 flex items-center justify-between shrink-0">
+        <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.5em]">SMKS PGRI 2 KEDONDONG - INTEGRATED TIMER v3.0</p>
+        <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+            <span className="text-[8px] font-black text-emerald-500 uppercase">System Integrity: OK</span>
+        </div>
       </footer>
     </div>
   );
