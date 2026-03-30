@@ -1,10 +1,9 @@
 
 /**
- * PRIDA Digital Hub - Service Worker v1.0
- * Syarat wajib agar PWA dapat diinstal di Android.
+ * Service Worker Minimalis untuk SMKS PGRI 2 Kedondong PWA.
+ * Diperlukan agar browser Android mengenali website sebagai aplikasi.
  */
-
-const CACHE_NAME = 'prida-cache-v1';
+const CACHE_NAME = 'prida-pwa-cache-v1';
 const urlsToCache = [
   '/',
   '/manifest.webmanifest',

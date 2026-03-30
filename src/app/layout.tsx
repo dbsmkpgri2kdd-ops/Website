@@ -56,6 +56,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning className="dark">
+      <head>
+        <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
+      </head>
       <body className={cn(
         "font-sans antialiased selection:bg-primary/30",
         jakarta.variable, 
