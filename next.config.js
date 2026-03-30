@@ -1,8 +1,9 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: 'export' DIHAPUS agar Server Actions & AI Genkit bisa berjalan secara dinamis di Firebase Hosting
+  output: 'export',
   images: {
+    unoptimized: true,
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
@@ -10,7 +11,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'drive.google.com' },
     ],
   },
-  
+  // Konfigurasi experimental tetap dipertahankan namun flow AI dinonaktifkan di UI untuk mendukung ekspor statis
   experimental: {
     serverComponentsExternalPackages: [
       'genkit',

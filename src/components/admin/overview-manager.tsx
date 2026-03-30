@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -11,14 +12,11 @@ import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { generateAdminAnalysis, type AdminAnalysisOutput } from '@/ai/flows/admin-analysis-flow';
 import { cn } from '@/lib/utils';
 
 export function OverviewManager() {
   const firestore = useFirestore();
   const { user } = useUser();
-  const [analysis, setAnalysis] = useState<AdminAnalysisOutput | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
 
   // Fix hydration mismatch for clock
@@ -43,18 +41,6 @@ export function OverviewManager() {
     { title: 'KEAMANAN', count: 'AKTIF', icon: ShieldCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
     { title: 'JARINGAN', count: '99.9%', icon: Activity, color: 'text-amber-500', bg: 'bg-amber-500/10' },
   ];
-
-  const handleRunAnalysis = async () => {
-    setIsAnalyzing(true);
-    try {
-      const res = await generateAdminAnalysis({ adminName: user?.profile?.displayName || 'Admin' });
-      setAnalysis(res);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsAnalyzing(false);
-    }
-  }
 
   return (
     <div className="space-y-10 animate-reveal pb-20">
@@ -83,29 +69,29 @@ export function OverviewManager() {
                       <Rocket size={20} />
                   </div>
                   <div>
-                      <CardTitle className="text-lg font-black uppercase italic">Kesiapan Publikasi</CardTitle>
+                      <CardTitle className="text-lg font-black uppercase italic">Kesiapan Publikasi Statis</CardTitle>
                       <CardDescription className="text-[9px] font-bold uppercase tracking-widest opacity-60">Status Konfigurasi Produksi Website</CardDescription>
                   </div>
               </div>
-              <Badge className="bg-emerald-500/20 text-emerald-500 border-none px-4 py-1 rounded-full font-black text-[9px] tracking-widest animate-pulse">SIAP DEPLOY</Badge>
+              <Badge className="bg-emerald-500/20 text-emerald-500 border-none px-4 py-1 rounded-full font-black text-[9px] tracking-widest animate-pulse">SIAP EKSPOR STATIS</Badge>
           </CardHeader>
           <CardContent className="px-6 md:px-8 pb-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
                       <Globe size={16} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">SEO Optimized</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Static Export</span>
                   </div>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
                       <ShieldCheck size={16} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Data Encrypted</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">No Server Needed</span>
                   </div>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
                       <Palette size={16} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Themes Synced</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Client Side SDK</span>
                   </div>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
                       <Zap size={16} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Core v7.5 Stable</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Fast Loading</span>
                   </div>
               </div>
           </CardContent>
@@ -130,52 +116,6 @@ export function OverviewManager() {
           </Card>
         ))}
       </div>
-
-      {/* AI INTELLIGENCE COMMAND */}
-      <Card className="border-primary/20 bg-primary/[0.02] rounded-[3rem] overflow-hidden relative border shadow-3xl">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -mr-48 -mt-48"></div>
-          <CardHeader className="p-8 md:p-12">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
-                  <div className="flex items-center gap-6">
-                      <div className="p-5 bg-primary text-white rounded-[2rem] shadow-3xl shadow-primary/20">
-                          <Sparkles size={32} className="animate-pulse" />
-                      </div>
-                      <div>
-                          <CardTitle className="text-3xl font-black tracking-tighter uppercase italic text-foreground">Panel Analytics AI</CardTitle>
-                          <CardDescription className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary mt-1">Sistem Analisis Terpadu Berbasis Gemini 1.5 Flash</CardDescription>
-                      </div>
-                  </div>
-                  <Button onClick={handleRunAnalysis} disabled={isAnalyzing} className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-3xl glow-primary hover:scale-105 transition-all">
-                      {isAnalyzing ? <LoaderCircle className="animate-spin mr-3 h-5 w-5" /> : <Zap size={18} className="mr-3" />}
-                      Mulai Analisis Sistem
-                  </Button>
-              </div>
-          </CardHeader>
-          <CardContent className="px-8 md:px-12 pb-12 relative z-10">
-              {analysis ? (
-                  <div className="space-y-8 animate-reveal">
-                      <div className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 shadow-inner">
-                          <p className="text-lg md:text-xl leading-relaxed text-foreground/90 font-medium italic">"{analysis.summary}"</p>
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                          {analysis.insights.map((insight, idx) => (
-                              <div key={idx} className="flex items-center gap-4 bg-white/5 p-6 rounded-2xl border border-white/5 hover:border-primary/20 transition-colors group">
-                                  <div className='p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors'>
-                                    <CheckCircle2 size={18} className="text-primary shrink-0" />
-                                  </div>
-                                  <p className="text-xs font-black uppercase tracking-widest leading-tight">{insight}</p>
-                              </div>
-                          ))}
-                      </div>
-                  </div>
-              ) : (
-                  <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-[3rem] group hover:border-primary/20 transition-colors cursor-pointer" onClick={handleRunAnalysis}>
-                      <div className='mb-4 text-muted-foreground/20 flex justify-center'><Cpu size={48} /></div>
-                      <p className="text-[11px] font-black uppercase tracking-[0.5em] text-muted-foreground/30 italic group-hover:text-primary/50 transition-colors">Menunggu Instruksi Analisis Data...</p>
-                  </div>
-              )}
-          </CardContent>
-      </Card>
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* RECENT APPLICATIONS MONITOR */}
