@@ -11,12 +11,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type Exam } from '@/lib/data';
-import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Clock, Smartphone } from 'lucide-react';
+import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Clock, Smartphone, Zap, MonitorCheck } from 'lucide-react';
 import { ExamBroSession } from './exambro-session';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
+/**
+ * Portal ExamBro Utama.
+ * Menyediakan berbagai metode akses ujian dan fitur simulasi kesiapan sistem.
+ */
 export function ExamBroPortal() {
   const firestore = useFirestore();
   const [activeTab, setActiveTab] = useState<string>('scheduled');
@@ -93,14 +98,62 @@ export function ExamBroPortal() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20">
       <div className="text-center space-y-2">
         <div className='flex items-center gap-3 text-primary justify-center'>
             <ShieldCheck size={24} className='animate-pulse' />
-            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Super Strict Mode v5.0</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Super Strict Mode v5.5</span>
         </div>
         <h2 className="text-4xl font-black font-headline tracking-tighter uppercase italic">ExamBro Portal</h2>
         <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi dengan Deteksi Split-Screen & Biometric AI.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="glass-premium border-emerald-500/20 bg-emerald-500/5 p-6 rounded-[2rem] shadow-2xl flex flex-col items-center text-center space-y-3 border-2">
+            <MonitorCheck className="text-emerald-500" size={32} />
+            <h4 className="font-black text-[10px] uppercase tracking-widest">Uji Kesiapan</h4>
+            <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Cek kamera & sistem keamanan perangkat Anda.</p>
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-9 rounded-xl font-black uppercase text-[8px] tracking-widest border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10">Mulai Simulasi</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[500px] rounded-[2.5rem] bg-card border-white/5 shadow-3xl p-8">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter">System Health Check</DialogTitle>
+                        <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-primary">Validasi Kompatibilitas Perangkat</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6 pt-6">
+                        {[
+                            { label: 'Biometric Camera', status: 'Checking...', icon: Camera },
+                            { label: 'Fullscreen Mode', status: 'Ready', icon: Monitor },
+                            { label: 'Anti-Gesture Logic', status: 'Active', icon: ShieldCheck },
+                            { label: 'Secure Sandbox', status: 'Stable', icon: Smartphone },
+                        ].map((test, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5">
+                                <div className="flex items-center gap-3">
+                                    <test.icon size={18} className="text-primary opacity-40" />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">{test.label}</span>
+                                </div>
+                                <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest animate-pulse">{test.status}</span>
+                            </div>
+                        ))}
+                        <Button onClick={() => handleStartExam('https://www.google.com', '', undefined, true, 5)} className="w-full h-12 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-xl glow-primary">
+                            TEST SECURE SESSION (5m)
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </Card>
+        <div className="p-6 rounded-[2rem] bg-amber-500/5 border border-amber-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
+          <Camera className="text-amber-500" size={32} />
+          <h4 className="font-black text-[10px] uppercase tracking-widest">Face Tracking</h4>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed opacity-60">Audit integritas real-time menggunakan pengawasan biometrik.</p>
+        </div>
+        <div className="p-6 rounded-[2rem] bg-blue-500/5 border border-blue-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
+          <Smartphone className="text-blue-500" size={32} />
+          <h4 className="font-black text-[10px] uppercase tracking-widest">App Detection</h4>
+          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed opacity-60">Blokir split-screen, navigasi balik, dan tombol sistem.</p>
+        </div>
       </div>
 
       {error && (
@@ -196,24 +249,6 @@ export function ExamBroPortal() {
           </Tabs>
         </CardContent>
       </Card>
-
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex flex-col items-center text-center space-y-3 shadow-xl">
-          <Smartphone className="text-primary" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">App Detection</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Keamanan maksimal saat dijalankan melalui aplikasi terinstal.</p>
-        </div>
-        <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
-          <Camera className="text-amber-500" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Face Tracking</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Audit integritas real-time menggunakan pengawasan biometrik.</p>
-        </div>
-        <div className="p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
-          <ShieldCheck className="text-blue-500" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Anti-Cheat v5</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Memblokir navigasi balik, split-screen, dan tombol sistem.</p>
-        </div>
-      </div>
     </div>
   );
 }

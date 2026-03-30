@@ -3,7 +3,7 @@ import {
     Home, Info, Newspaper, UserPlus, Phone, Users, GraduationCap, Award, BookOpen, ImageIcon,
     Building, Quote, Activity, MessageSquare, Calendar, Download, CalendarClock, Library, PenSquare,
     Megaphone, Briefcase, Building2, Factory, ShieldCheck, ScanSearch, FileText, BadgeCheck,
-    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorDot, Palmtree, Link, Globe, Laptop, Sparkles, Palette, MoveUp, MoveDown, GripVertical, ChevronRight, ChevronDown, Lock, QrCode, Monitor, Camera, CameraOff
+    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorDot, Palmtree, Link, Globe, Laptop, Sparkles, Palette, MoveUp, MoveDown, GripVertical, ChevronRight, ChevronDown, Lock, QrCode, Monitor, Camera, CameraOff, Search
 } from 'lucide-react';
 
 export type NavLink =
@@ -11,7 +11,7 @@ export type NavLink =
     'berita-pengumuman' | 'agenda-akademik' | 'galeri-foto-video' |
     'jurusan-kompetensi' | 'prestasi-siswa' | 'ekstrakurikuler' | 'perpustakaan' |
     'mitra-industri' | 'bkk' | 'teaching-factory' | 'lsp-sertifikasi' | 'tracer-study' |
-    'ppdb-online' | 'cek-status-kelulusan' |
+    'ppdb-online' | 'cek-status-kelulusan' | 'cek-pendaftaran-ppdb' |
     'kontak' | 'jadwal-pelajaran'|
     'testimoni-alumni' | 'database-alumni' | 'pojok-literasi' | 'osis-corner' | 
     'dokumen-download' | 'prakerin-pkl' | 'buku-tamu' | 'showcase-karya' | 'exambro';
@@ -65,6 +65,7 @@ export const NAV_MENU_DEFAULT: NavItem[] = [
         label: 'Layanan',
         children: [
             { id: 'ppdb-online', label: 'PPDB Online' },
+            { id: 'cek-pendaftaran-ppdb', label: 'Cek Status PPDB' },
             { id: 'cek-status-kelulusan', label: 'Cek Kelulusan' },
             { id: 'dokumen-download', label: 'Pusat Unduhan' },
             { id: 'exambro', label: 'Ujian Online (ExamBro)' },

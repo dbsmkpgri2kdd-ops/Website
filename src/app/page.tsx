@@ -47,6 +47,7 @@ const TeachingFactorySection = dynamic(() => import('@/components/sections/teach
 const LspSection = dynamic(() => import('@/components/sections/lsp'), { loading: () => <SectionLoader />, ssr: false });
 const TracerStudySection = dynamic(() => import('@/components/sections/tracer-study'), { loading: () => <SectionLoader />, ssr: false });
 const CheckGraduationSection = dynamic(() => import('@/components/sections/check-graduation'), { loading: () => <SectionLoader />, ssr: false });
+const PpdbStatusCheckSection = dynamic(() => import('@/components/sections/ppdb-status-check'), { loading: () => <SectionLoader />, ssr: false });
 const TeachersSection = dynamic(() => import('@/components/sections/teachers'), { loading: () => <SectionLoader />, ssr: false });
 const PlaceholderSection = dynamic(() => import('@/components/sections/placeholder-section'), { loading: () => <SectionLoader />, ssr: false });
 const AlumniSection = dynamic(() => import('@/components/sections/alumni'), { loading: () => <SectionLoader />, ssr: false });
@@ -182,7 +183,9 @@ export default function Home() {
       case 'tracer-study':
         return <TracerStudySection />;
       case 'ppdb-online':
-        return <PpdbSection />;
+        return <PpdbSection setActiveTab={handleSetTab} />;
+      case 'cek-pendaftaran-ppdb':
+        return <PpdbStatusCheckSection />;
       case 'kontak':
         return <ContactSection schoolData={schoolData} isSchoolDataLoading={isSchoolDataLoading} />;
       case 'pojok-literasi':
