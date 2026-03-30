@@ -32,7 +32,6 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   const [isCameraLoading, setIsCameraLoading] = useState(isCameraRequired);
   const [isStandalone, setIsStandalone] = useState(false);
   
-  // Mencegah hydration mismatch dengan menginisialisasi timer di useEffect
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isTimeUp, setIsTimeUp] = useState(false);
   
@@ -41,7 +40,6 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   const wakeLockRef = useRef<any>(null);
 
   useEffect(() => {
-    // Inisialisasi timer hanya di client untuk menghindari Hydration Mismatch
     setTimeLeft(durationMinutes * 60);
     
     if (typeof window !== 'undefined') {
@@ -50,7 +48,6 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     }
   }, [durationMinutes]);
 
-  // Screen Wake Lock Implementation - Mencegah layar mati saat ujian
   useEffect(() => {
     const requestWakeLock = async () => {
       try {
@@ -69,13 +66,11 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     };
   }, [isFullScreen]);
 
-  // Sync session state to Firestore - Jantung dari Proctoring Center
   useEffect(() => {
     if (!firestore || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
 
     const sessionRef = doc(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`, user.uid);
     
-    // Heartbeat setiap 5 detik
     const interval = setInterval(() => {
         setDocumentNonBlocking(sessionRef, {
             studentName: user.profile?.displayName || user.email,
@@ -90,7 +85,6 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
     return () => {
         clearInterval(interval);
-        // Tandai selesai saat komponen di-unmount (siswa keluar normal)
         setDocumentNonBlocking(sessionRef, { status: 'COMPLETED', exitAt: serverTimestamp() }, { merge: true });
     };
   }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone]);
@@ -138,10 +132,9 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     }
   }, [isCameraRequired, toast]);
 
-  // STRICT INTERACTION BLOCKING - Sistem Keamanan Berlapis
   useEffect(() => {
     const handleVisibilityChange = () => { 
-      if (document.hidden && !isTimeUp) {
+      if (document.hidden && !isTimeUp && isFullScreen) {
         handleViolation("SISTEM: TERDETEKSI PINDAH APLIKASI / MINIMIZE!");
       } 
     };
@@ -168,13 +161,20 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       }
     };
 
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!isTimeUp) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
     window.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleBlur);
     document.addEventListener('fullscreenchange', handleFullScreenChange);
     document.addEventListener('contextmenu', preventContextMenu);
     document.addEventListener('keydown', preventKeys);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
-    // Block Pull-to-refresh & Text Selection
     if (typeof document !== 'undefined') {
         document.body.style.overscrollBehavior = 'none';
         document.body.style.userSelect = 'none';
@@ -194,6 +194,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       document.removeEventListener('contextmenu', preventContextMenu);
       document.removeEventListener('keydown', preventKeys);
       window.removeEventListener('popstate', preventBack);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
       if (typeof document !== 'undefined') {
         document.body.style.overscrollBehavior = 'auto';
         document.body.style.userSelect = 'auto';
@@ -235,7 +236,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     return (
         <div className="fixed inset-0 z-[110] bg-background flex flex-col items-center justify-center text-center p-10">
             <LoaderCircle className="h-16 w-16 animate-spin text-primary mb-8" />
-            <h3 className="text-2xl font-black uppercase italic tracking-widest text-white">Security Initialization...</h3>
+            <h3 className="text-2xl font-black uppercase italic tracking-widest text-white font-headline">Security Initializing...</h3>
         </div>
     );
   }

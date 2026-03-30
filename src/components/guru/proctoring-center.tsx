@@ -16,7 +16,7 @@ import { SCHOOL_DATA_ID } from '@/lib/data';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 
-type ActiveSession = {
+interface ActiveSession {
   id: string;
   studentName: string;
   lastHeartbeat: any;
@@ -25,7 +25,7 @@ type ActiveSession = {
   minutesRemaining: number;
   isAppMode: boolean;
   status: 'ACTIVE' | 'COMPLETED';
-};
+}
 
 type ProctoringCenterProps = {
   examId: string;

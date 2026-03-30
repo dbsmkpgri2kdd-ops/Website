@@ -13,23 +13,28 @@ import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-jakarta',
+  display: 'swap',
 });
 
 const belleza = Belleza({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-belleza',
+  display: 'swap',
 });
 
 const alegreya = Alegreya({
   subsets: ['latin'],
   variable: '--font-alegreya',
+  display: 'swap',
 });
 
 export const viewport: Viewport = {
   themeColor: '#10b981',
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export const metadata: Metadata = {
@@ -41,7 +46,7 @@ export const metadata: Metadata = {
   keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "PPDB 2025"],
   authors: [{ name: "SMKS PGRI 2 Kedondong" }],
   creator: "Digital Excellence Team",
-  metadataBase: new URL('https://studio-128676595-62275.web.app/'),
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -51,7 +56,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning className="dark">
-      <body className={cn("font-sans antialiased", jakarta.variable, belleza.variable, alegreya.variable)}>
+      <body className={cn(
+        "font-sans antialiased selection:bg-primary/30",
+        jakarta.variable, 
+        belleza.variable, 
+        alegreya.variable
+      )}>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
