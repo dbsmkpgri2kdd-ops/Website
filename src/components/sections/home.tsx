@@ -98,7 +98,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
               <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background to-background"></div>
             </div>
             <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-10">
-                <div className="max-w-4xl space-y-12">
+                <div className="max-w-4xl space-y-12 animate-reveal">
                   <div className='inline-flex items-center gap-3 px-5 py-2 rounded-xl bg-white/5 border border-white/5 text-primary shadow-2xl backdrop-blur-xl'>
                     <Sparkles size={14} className='animate-pulse' />
                     <span className='text-[10px] font-black uppercase tracking-[0.4em]'>Pendidikan Berbasis Inovasi</span>
@@ -110,10 +110,10 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     {schoolData?.heroSubtitle || "Membangun kompetensi keahlian berstandar industri melalui ekosistem digital yang canggih."}
                   </p>
                   <div className="flex flex-wrap gap-6 pt-4">
-                    <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-16 px-12 rounded-xl font-black text-xs uppercase tracking-[0.3em] shadow-3xl glow-primary hover:scale-105 transition-all">
+                    <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-3xl glow-primary hover:scale-105 transition-all">
                         Pendaftaran 2025 <ArrowRight className='ml-2 h-5 w-5' />
                     </Button>
-                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="ghost" size="lg" className="h-16 px-12 rounded-xl font-black text-xs uppercase tracking-[0.3em] border border-white/5 hover:bg-white/5">
+                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="ghost" size="lg" className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.3em] border border-white/5 hover:bg-white/5">
                         Lihat Profil
                     </Button>
                   </div>
@@ -176,7 +176,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                   {(areMajorsLoading ? Array(3).fill({}) : (majors || [])).slice(0, 3).map((major: any, i: number) => {
                     const Icon = iconMap[major.icon] || BookOpen;
                     return (
-                         <Card key={major.id || i} className="group p-12 rounded-[2.5rem] border-white/5 bg-white/5 hover:bg-white/[0.08] transition-all duration-700 relative overflow-hidden flex flex-col h-full border shadow-2xl">
+                         <Card key={major.id || i} className="group p-12 rounded-[3rem] border-white/5 bg-white/5 hover:bg-white/[0.08] transition-all duration-700 relative overflow-hidden flex flex-col h-full border shadow-2xl">
                               <div className="w-16 h-16 bg-primary text-white rounded-2xl flex items-center justify-center mb-10 shadow-3xl shadow-primary/20 group-hover:rotate-6 transition-transform">
                                   <Icon size={32} />
                               </div>
@@ -221,7 +221,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
               <div className="grid md:grid-cols-3 gap-12">
                 {(areNewsLoading ? Array(3).fill({}) : (newsArticles || [])).slice(0, 3).map((news: any, i: number) => (
                     <div key={news.id || i} className="group cursor-pointer space-y-8" onClick={() => news.id && onSelectArticle(news.id)}>
-                      <div className="aspect-[16/11] relative rounded-[2rem] overflow-hidden bg-muted border border-white/5 shadow-3xl">
+                      <div className="aspect-[16/11] relative rounded-[2.5rem] overflow-hidden bg-muted border border-white/5 shadow-3xl">
                         {areNewsLoading ? <Skeleton className="w-full h-full" /> : (
                           <Image 
                             src={convertGoogleDriveLink(news.imageUrl || "https://picsum.photos/seed/news/800/500")} 
