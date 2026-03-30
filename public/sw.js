@@ -1,32 +1,20 @@
 
 /**
- * Service Worker Minimalis untuk SMKS PGRI 2 Kedondong PWA.
- * Diperlukan agar browser Android mengenali website sebagai aplikasi.
+ * SMKS PGRI 2 KEDONDONG - PWA Service Worker
+ * Memastikan kriteria instalasi PWA di Android terpenuhi.
  */
-const CACHE_NAME = 'prida-pwa-cache-v1';
-const urlsToCache = [
-  '/',
-  '/manifest.webmanifest',
-  'https://picsum.photos/seed/logo/192/192'
-];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache);
-      })
-  );
+const CACHE_NAME = 'prida-portal-v1';
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-  );
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
+
+self.addEventListener('fetch', (event) => {
+  // Biarkan browser menangani fetch standar
+  // Di masa depan, tambahkan strategi caching di sini untuk offline mode
 });
