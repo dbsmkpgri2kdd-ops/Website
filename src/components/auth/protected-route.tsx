@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -14,7 +15,6 @@ type ProtectedRouteProps = {
 };
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  // Menggunakan isUserLoading dan userError sesuai dengan tipe data dari useUser()
   const { user, isUserLoading, userError } = useUser();
   const router = useRouter();
   const { toast } = useToast();
