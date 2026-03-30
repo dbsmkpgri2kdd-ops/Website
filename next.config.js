@@ -1,7 +1,8 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // Menghapus output: 'export' karena bentrok dengan Server Actions dan dynamic routes di lingkungan ini
+  trailingSlash: true,
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -11,7 +12,6 @@ const nextConfig = {
       { protocol: 'https', hostname: 'drive.google.com' },
     ],
   },
-  // Konfigurasi experimental tetap dipertahankan namun flow AI dinonaktifkan di UI untuk mendukung ekspor statis
   experimental: {
     serverComponentsExternalPackages: [
       'genkit',
