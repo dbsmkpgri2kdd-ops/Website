@@ -14,6 +14,8 @@ import { SCHOOL_DATA_ID, type Exam } from '@/lib/data';
 import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Clock } from 'lucide-react';
 import { ExamBroSession } from './exambro-session';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { format } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale';
 
 export function ExamBroPortal() {
   const firestore = useFirestore();
@@ -73,6 +75,12 @@ export function ExamBroPortal() {
     handleStartExam(exam.url, inputToken, exam.token, exam.isCameraRequired, exam.durationMinutes || 60);
   };
 
+  const formatDate = (date: any) => {
+    if (!date) return '';
+    const jsDate = date.toDate ? date.toDate() : new Date(date);
+    return format(jsDate, "d MMM", { locale: idLocale });
+  };
+
   if (isExamActive) {
     return (
       <ExamBroSession 
@@ -89,10 +97,10 @@ export function ExamBroPortal() {
       <div className="text-center space-y-2">
         <div className='flex items-center gap-3 text-primary justify-center'>
             <ShieldCheck size={24} className='animate-pulse' />
-            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Secure Browser v3.0</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Secure Browser v3.5</span>
         </div>
         <h2 className="text-4xl font-black font-headline tracking-tighter uppercase italic">ExamBro Portal</h2>
-        <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi dengan Alokasi Waktu Terintegrasi.</p>
+        <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi dengan Alokasi Waktu & Validasi Kalender.</p>
       </div>
 
       {error && (
@@ -129,7 +137,7 @@ export function ExamBroPortal() {
                     <SelectContent className='bg-card/95 backdrop-blur-3xl border-white/10'>
                       {exams?.map(exam => (
                         <SelectItem key={exam.id} value={exam.id} className="py-3 font-bold uppercase text-[10px] tracking-widest">
-                          {exam.subject} - {exam.class} ({exam.durationMinutes}m)
+                          [{formatDate(exam.date)}] {exam.subject} - {exam.class}
                         </SelectItem>
                       ))}
                     </SelectContent>

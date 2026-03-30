@@ -80,7 +80,7 @@ export interface Exam {
   title: string;
   subject: string;
   class: string;
-  day: string;
+  date: any;
   startTime: string;
   endTime: string;
   durationMinutes: number;

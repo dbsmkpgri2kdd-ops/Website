@@ -9,7 +9,7 @@
         "title": { "type": "string" },
         "subject": { "type": "string" },
         "class": { "type": "string" },
-        "day": { "type": "string" },
+        "date": { "type": "string", "format": "date-time", "description": "Tanggal pelaksanaan ujian." },
         "startTime": { "type": "string" },
         "endTime": { "type": "string" },
         "durationMinutes": { "type": "number", "description": "Alokasi waktu dalam menit." },
