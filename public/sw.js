@@ -1,20 +1,33 @@
 
 /**
- * Minimal Service Worker untuk SMKS PGRI 2 Kedondong PWA.
- * Diperlukan agar notifikasi 'Add to Home Screen' muncul di Android.
+ * PRIDA Digital Hub - Service Worker v1.0
+ * Syarat wajib agar PWA dapat diinstal di Android.
  */
 
 const CACHE_NAME = 'prida-cache-v1';
+const urlsToCache = [
+  '/',
+  '/manifest.webmanifest',
+  'https://picsum.photos/seed/logo/192/192'
+];
 
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim());
-});
-
-self.addEventListener('fetch', (event) => {
-  // Mode Pass-through untuk kompatibilitas Next.js Static Export
-  event.respondWith(fetch(event.request));
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
 });

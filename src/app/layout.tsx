@@ -10,7 +10,6 @@ import { ThemeSync } from '@/components/theme-sync';
 import { AIAssistant } from '@/components/ai/ai-assistant';
 import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 
-// Inisialisasi font Google dengan variabel CSS kustom
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-jakarta',

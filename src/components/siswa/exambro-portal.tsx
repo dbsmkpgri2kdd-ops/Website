@@ -19,8 +19,8 @@ import { id as idLocale } from 'date-fns/locale';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 /**
- * Portal ExamBro Utama.
- * Menyediakan berbagai metode akses ujian dan fitur simulasi kesiapan sistem.
+ * Portal ExamBro Utama v5.5.
+ * Menyediakan antarmuka pengerjaan ujian dengan standar keamanan militer.
  */
 export function ExamBroPortal() {
   const firestore = useFirestore();
@@ -80,7 +80,7 @@ export function ExamBroPortal() {
     handleStartExam(exam.url, inputToken, exam.token, exam.isCameraRequired, exam.durationMinutes || 60);
   };
 
-  const formatDate = (date: any) => {
+  const formatDateLabel = (date: any) => {
     if (!date) return '';
     const jsDate = date.toDate ? date.toDate() : new Date(date);
     return format(jsDate, "d MMM", { locale: idLocale });
@@ -98,150 +98,158 @@ export function ExamBroPortal() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20">
-      <div className="text-center space-y-2">
+    <div className="max-w-4xl mx-auto space-y-10 animate-fade-in pb-20">
+      <div className="text-center space-y-3">
         <div className='flex items-center gap-3 text-primary justify-center'>
             <ShieldCheck size={24} className='animate-pulse' />
             <span className="text-[10px] font-black uppercase tracking-[0.5em]">Super Strict Mode v5.5</span>
         </div>
-        <h2 className="text-4xl font-black font-headline tracking-tighter uppercase italic">ExamBro Portal</h2>
-        <p className="text-muted-foreground text-sm font-medium">Sistem ujian online terproteksi dengan Deteksi Split-Screen & Biometric AI.</p>
+        <h2 className="text-4xl font-black font-headline tracking-tighter uppercase italic leading-none">ExamBro <span className='text-foreground'>Portal.</span></h2>
+        <p className="text-muted-foreground text-sm font-medium uppercase tracking-widest opacity-60">Sistem Proteksi Ujian Digital Terpadu.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="glass-premium border-emerald-500/20 bg-emerald-500/5 p-6 rounded-[2rem] shadow-2xl flex flex-col items-center text-center space-y-3 border-2">
-            <MonitorCheck className="text-emerald-500" size={32} />
-            <h4 className="font-black text-[10px] uppercase tracking-widest">Uji Kesiapan</h4>
-            <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed">Cek kamera & sistem keamanan perangkat Anda.</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="glass-premium border-emerald-500/20 bg-emerald-500/5 p-8 rounded-[2.5rem] shadow-2xl flex flex-col items-center text-center space-y-4 border-2">
+            <MonitorCheck className="text-emerald-500" size={40} />
+            <div>
+                <h4 className="font-black text-[11px] uppercase tracking-widest">Uji Kesiapan</h4>
+                <p className="text-[9px] text-muted-foreground font-medium uppercase mt-1 leading-relaxed">Validasi sensor & keamanan perangkat.</p>
+            </div>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-9 rounded-xl font-black uppercase text-[8px] tracking-widest border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10">Mulai Simulasi</Button>
+                    <Button variant="outline" size="sm" className="h-10 rounded-xl font-black uppercase text-[9px] tracking-[0.2em] border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 px-6">Mulai Simulasi</Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px] rounded-[2.5rem] bg-card border-white/5 shadow-3xl p-8">
+                <DialogContent className="sm:max-w-[500px] rounded-[3rem] bg-card border-white/5 shadow-3xl p-10">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter">System Health Check</DialogTitle>
                         <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-primary">Validasi Kompatibilitas Perangkat</DialogDescription>
                     </DialogHeader>
-                    <div className="space-y-6 pt-6">
+                    <div className="space-y-6 pt-8">
                         {[
                             { label: 'Biometric Camera', status: 'Checking...', icon: Camera },
                             { label: 'Fullscreen Mode', status: 'Ready', icon: Monitor },
                             { label: 'Anti-Gesture Logic', status: 'Active', icon: ShieldCheck },
                             { label: 'Secure Sandbox', status: 'Stable', icon: Smartphone },
                         ].map((test, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5">
-                                <div className="flex items-center gap-3">
-                                    <test.icon size={18} className="text-primary opacity-40" />
+                            <div key={i} className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5">
+                                <div className="flex items-center gap-4">
+                                    <test.icon size={20} className="text-primary opacity-40" />
                                     <span className="text-[10px] font-bold uppercase tracking-widest">{test.label}</span>
                                 </div>
                                 <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest animate-pulse">{test.status}</span>
                             </div>
                         ))}
-                        <Button onClick={() => handleStartExam('https://www.google.com', '', undefined, true, 5)} className="w-full h-12 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-xl glow-primary">
-                            TEST SECURE SESSION (5m)
+                        <Button onClick={() => handleStartExam('https://www.google.com', '', undefined, true, 5)} className="w-full h-14 rounded-2xl font-black uppercase text-[10px] tracking-[0.3em] shadow-xl glow-primary">
+                            LAUNCH TEST SESSION (5m)
                         </Button>
                     </div>
                 </DialogContent>
             </Dialog>
         </Card>
-        <div className="p-6 rounded-[2rem] bg-amber-500/5 border border-amber-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
-          <Camera className="text-amber-500" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">Face Tracking</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed opacity-60">Audit integritas real-time menggunakan pengawasan biometrik.</p>
+        
+        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5 flex flex-col items-center text-center space-y-4 shadow-xl">
+          <Camera className="text-primary" size={40} />
+          <div>
+            <h4 className="font-black text-[11px] uppercase tracking-widest">Face Tracking</h4>
+            <p className="text-[9px] text-muted-foreground font-medium uppercase mt-1 leading-relaxed opacity-60">Audit integritas real-time via pengawasan biometrik.</p>
+          </div>
         </div>
-        <div className="p-6 rounded-[2rem] bg-blue-500/5 border border-blue-500/10 flex flex-col items-center text-center space-y-3 shadow-xl">
-          <Smartphone className="text-blue-500" size={32} />
-          <h4 className="font-black text-[10px] uppercase tracking-widest">App Detection</h4>
-          <p className="text-[9px] text-muted-foreground font-medium uppercase leading-relaxed opacity-60">Blokir split-screen, navigasi balik, dan tombol sistem.</p>
+
+        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5 flex flex-col items-center text-center space-y-4 shadow-xl">
+          <Smartphone className="text-primary" size={40} />
+          <div>
+            <h4 className="font-black text-[11px] uppercase tracking-widest">App Lockdown</h4>
+            <p className="text-[9px] text-muted-foreground font-medium uppercase mt-1 leading-relaxed opacity-60">Proteksi navigasi sistem dan deteksi split-screen.</p>
+          </div>
         </div>
       </div>
 
       {error && (
-        <Alert variant="destructive" className="glass-premium border-red-500/20 rounded-2xl">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle className='font-bold'>Akses Ditolak</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
+        <Alert variant="destructive" className="glass-premium border-red-500/20 rounded-[2rem] p-6 animate-reveal">
+          <AlertCircle className="h-5 w-5" />
+          <AlertTitle className='font-black uppercase text-xs tracking-widest ml-2'>Akses Ditolak</AlertTitle>
+          <AlertDescription className='text-xs font-bold uppercase ml-2 mt-1'>{error}</AlertDescription>
         </Alert>
       )}
 
-      <Card className="glass-premium border-white/5 rounded-[2.5rem] overflow-hidden shadow-3xl">
-        <CardContent className="p-8">
+      <Card className="glass-premium border-white/5 rounded-[3rem] overflow-hidden shadow-3xl">
+        <CardContent className="p-10">
           <Tabs defaultValue="scheduled" onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 h-14 rounded-2xl bg-white/5 border border-white/5 p-1 mb-10">
-              <TabsTrigger value="scheduled" className="rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all">
+            <TabsList className="grid w-full grid-cols-3 h-16 rounded-[1.5rem] bg-white/5 border border-white/5 p-1.5 mb-12">
+              <TabsTrigger value="scheduled" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all">
                 <Calendar className="mr-2 h-4 w-4" /> Terjadwal
               </TabsTrigger>
-              <TabsTrigger value="scan" className="rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all">
+              <TabsTrigger value="scan" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all">
                 <QrCode className="mr-2 h-4 w-4" /> Scan QR
               </TabsTrigger>
-              <TabsTrigger value="manual" className="rounded-xl font-bold uppercase text-[10px] tracking-widest transition-all">
-                <Link className="mr-2 h-4 w-4" /> Manual Link
+              <TabsTrigger value="manual" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all">
+                <Link className="mr-2 h-4 w-4" /> Manual
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="scheduled" className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+            <TabsContent value="scheduled" className="space-y-8 animate-fade-in">
+              <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <Label className="text-[9px] font-black uppercase tracking-widest opacity-60">Pilih Jadwal Ujian</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-2">Pilih Sesi Ujian</Label>
                   <Select onValueChange={setSelectedExamId} value={selectedExamId}>
-                    <SelectTrigger className="h-12 rounded-xl bg-white/5 border-white/10">
-                      <SelectValue placeholder={isLoading ? "Memuat jadwal..." : "Pilih Mapel & Kelas"} />
+                    <SelectTrigger className="h-14 rounded-2xl bg-white/5 border-white/10 px-6">
+                      <SelectValue placeholder={isLoading ? "Syncing..." : "Pilih Mapel & Kelas"} />
                     </SelectTrigger>
-                    <SelectContent className='bg-card/95 backdrop-blur-3xl border-white/10'>
+                    <SelectContent className='bg-card/95 backdrop-blur-3xl border-white/10 rounded-2xl'>
                       {exams?.map(exam => (
-                        <SelectItem key={exam.id} value={exam.id} className="py-3 font-bold uppercase text-[10px] tracking-widest">
-                          [{formatDate(exam.date)}] {exam.subject} - {exam.class}
+                        <SelectItem key={exam.id} value={exam.id} className="py-4 font-black uppercase text-[10px] tracking-widest">
+                          [{formatDateLabel(exam.date)}] {exam.subject} - {exam.class}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[9px] font-black uppercase tracking-widest opacity-60">Token Ujian</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-2">Security Token</Label>
                   <div className="relative">
                     <Input 
-                      placeholder="Masukkan Token" 
+                      placeholder="ENTER TOKEN" 
                       value={inputToken}
                       onChange={(e) => setInputToken(e.target.value.toUpperCase())}
-                      className="h-12 rounded-xl bg-white/5 border-white/10 pl-10"
+                      className="h-14 rounded-2xl bg-white/5 border-white/10 pl-12 font-black uppercase tracking-[0.3em]"
                     />
-                    <Lock className="absolute left-3.5 top-3.5 text-muted-foreground" size={16} />
+                    <Lock className="absolute left-4 top-4 text-primary" size={20} />
                   </div>
                 </div>
               </div>
               <Button 
                 onClick={handleScheduledStart} 
-                className="w-full h-14 rounded-2xl font-black uppercase tracking-[0.3em] shadow-3xl glow-primary"
+                className="w-full h-16 rounded-[2rem] font-black uppercase tracking-[0.4em] shadow-3xl glow-primary hover:scale-[1.02] transition-all"
                 disabled={isLoading}
               >
-                MASUK RUANG UJIAN
+                AUTENTIKASI & MULAI
               </Button>
             </TabsContent>
 
-            <TabsContent value="scan" className="py-10 text-center space-y-6">
-              <div className="w-48 h-48 mx-auto border-2 border-dashed border-white/10 rounded-3xl flex items-center justify-center bg-white/5">
-                <QrCode size={64} className="text-primary opacity-20" />
+            <TabsContent value="scan" className="py-12 text-center space-y-8 animate-fade-in">
+              <div className="w-56 h-56 mx-auto border-2 border-dashed border-primary/20 rounded-[3rem] flex items-center justify-center bg-primary/5 shadow-inner">
+                <QrCode size={80} className="text-primary opacity-20 animate-pulse" />
               </div>
-              <div className="space-y-2">
-                <p className="font-bold uppercase text-[10px] tracking-widest">Scanner QR Code</p>
-                <p className="text-xs text-muted-foreground">Arahkan kamera ke QR Code yang diberikan oleh pengawas.</p>
+              <div className="space-y-3">
+                <p className="font-black uppercase text-xs tracking-[0.3em]">Scanner QR v2.0</p>
+                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest max-w-xs mx-auto">Arahkan kamera ke kode akses yang diberikan pengawas di papan tulis.</p>
               </div>
-              <Button variant="outline" className="rounded-xl border-white/10 h-12 px-8 uppercase font-black text-[9px] tracking-widest">Buka Kamera</Button>
+              <Button variant="outline" className="rounded-2xl border-white/10 h-14 px-10 uppercase font-black text-[10px] tracking-widest hover:bg-white/5 transition-all">Buka Kamera Scanner</Button>
             </TabsContent>
 
-            <TabsContent value="manual" className="space-y-6">
+            <TabsContent value="manual" className="space-y-8 animate-fade-in">
               <div className="space-y-2">
-                <Label className="text-[9px] font-black uppercase tracking-widest opacity-60">Tautan Ujian Manual</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-2">Tautan Ujian (Direct Access)</Label>
                 <Input 
                   placeholder="https://forms.gle/..." 
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
-                  className="h-12 rounded-xl bg-white/5 border-white/10"
+                  className="h-14 rounded-2xl bg-white/5 border-white/10 px-6 font-medium text-primary"
                 />
               </div>
               <Button 
                 onClick={handleManualStart} 
-                className="w-full h-14 rounded-2xl font-black uppercase tracking-[0.3em] shadow-3xl glow-primary"
+                className="w-full h-16 rounded-[2rem] font-black uppercase tracking-[0.4em] shadow-3xl glow-primary hover:scale-[1.02] transition-all"
               >
                 MULAI SESI SECURE
               </Button>
@@ -249,6 +257,10 @@ export function ExamBroPortal() {
           </Tabs>
         </CardContent>
       </Card>
+      
+      <p className='text-center text-[8px] font-black text-muted-foreground/30 uppercase tracking-[0.6em]'>
+        Secured by Digital Hub Enterprise v7.5 • SMKS PGRI 2 KEDONDONG
+      </p>
     </div>
   );
 }

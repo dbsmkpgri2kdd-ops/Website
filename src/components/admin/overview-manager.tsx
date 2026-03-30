@@ -63,7 +63,7 @@ export function OverviewManager() {
             <h2 className='text-3xl font-black italic uppercase tracking-tighter font-headline'>Pusat Kendali <span className='text-primary'>Utama</span></h2>
             <p className='text-[10px] font-bold uppercase tracking-[0.4em] text-muted-foreground mt-1'>Sistem Operasional Digital Terpadu v7.5</p>
         </div>
-        <div className='flex items-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/5 shadow-2xl'>
+        <div className='flex items-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl'>
             <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary'>
                 <Clock size={20} />
             </div>
@@ -76,10 +76,10 @@ export function OverviewManager() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-            <Card className="border-emerald-500/20 bg-emerald-500/[0.02] rounded-[2rem] overflow-hidden relative border shadow-3xl">
-                <CardHeader className="p-6 md:p-8 flex flex-row items-center justify-between">
+            <Card className="border-emerald-500/20 bg-emerald-500/[0.02] rounded-[2.5rem] overflow-hidden relative border shadow-3xl">
+                <CardHeader className="p-8 flex flex-row items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-emerald-500 text-white rounded-xl shadow-lg">
+                        <div className="p-3 bg-emerald-500 text-white rounded-2xl shadow-lg">
                             <Rocket size={20} />
                         </div>
                         <div>
@@ -89,9 +89,9 @@ export function OverviewManager() {
                     </div>
                     <Badge className="bg-emerald-500/20 text-emerald-500 border-none px-4 py-1 rounded-full font-black text-[9px] tracking-widest animate-pulse">OPTIMAL</Badge>
                 </CardHeader>
-                <CardContent className="px-6 md:px-8 pb-8">
+                <CardContent className="px-8 pb-8">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {['Web Frameworks', 'Secure Access', 'Brand Engine', 'Fast Refresh'].map((item) => (
+                        {['Frameworks', 'Security', 'Branding', 'Refresh'].map((item) => (
                             <div key={item} className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
                                 <ShieldCheck size={14} className="text-emerald-500" />
                                 <span className="text-[9px] font-bold uppercase tracking-wider">{item}</span>
@@ -103,14 +103,14 @@ export function OverviewManager() {
 
             <div className="grid grid-cols-2 gap-6">
                 {stats.map((s, i) => (
-                <Card key={i} className="border-white/5 bg-white/5 rounded-3xl overflow-hidden group hover:border-primary/20 transition-all duration-500 shadow-2xl">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                <Card key={i} className="border-white/5 bg-white/5 rounded-[2rem] overflow-hidden group hover:border-primary/20 transition-all duration-500 shadow-2xl">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 p-6">
                     <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{s.title}</CardTitle>
-                    <div className={cn("p-2 rounded-xl transition-all group-hover:scale-110", s.bg)}>
+                    <div className={cn("p-2.5 rounded-xl transition-all group-hover:scale-110", s.bg)}>
                         <s.icon size={14} className={s.color} />
                     </div>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-6 pt-0">
                     <div className="text-3xl font-black tracking-tighter italic uppercase flex items-center gap-2">
                         {s.count}
                         <ArrowUpRight size={16} className='text-primary opacity-0 group-hover:opacity-100 transition-opacity' />
@@ -122,17 +122,17 @@ export function OverviewManager() {
         </div>
 
         <div className="space-y-8">
-            <Card className="border-primary/20 bg-primary/5 rounded-[2rem] shadow-3xl overflow-hidden relative group">
+            <Card className="border-primary/20 bg-primary/5 rounded-[2.5rem] shadow-3xl overflow-hidden relative group h-full">
                 <div className='absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity'>
                     <BrainCircuit size={80} className='text-primary' />
                 </div>
-                <CardHeader>
+                <CardHeader className='p-8'>
                     <CardTitle className='text-sm font-black uppercase tracking-widest flex items-center gap-2'>
                         <Sparkles size={16} className='text-primary' /> AI Analysis
                     </CardTitle>
                     <CardDescription className='text-[10px] font-medium uppercase'>Intelligence Hub v1.0</CardDescription>
                 </CardHeader>
-                <CardContent className='space-y-4'>
+                <CardContent className='px-8 space-y-4'>
                     {aiReport ? (
                         <div className='space-y-4 animate-reveal'>
                             <p className='text-xs font-medium leading-relaxed italic text-foreground/80'>"{aiReport.summary}"</p>
@@ -173,7 +173,9 @@ export function OverviewManager() {
           </CardHeader>
           <CardContent className="p-4">
             <div className="space-y-2">
-              {isPpdbLoading ? <Skeleton className="h-60 w-full rounded-[2rem]" /> : 
+              {isPpdbLoading ? (
+                Array.from({length: 3}).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-2xl mb-2" />)
+              ) : (
                 recentPpdb && recentPpdb.length > 0 ? recentPpdb.map(app => (
                   <div key={app.id} className="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-transparent hover:border-primary/20 transition-all">
                     <div className="flex items-center gap-4">
@@ -186,12 +188,14 @@ export function OverviewManager() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{format(app.submissionDate?.toDate ? app.submissionDate.toDate() : new Date(app.submissionDate), 'd MMM', { locale: idLocale })}</p>
+                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                        {app.submissionDate?.toDate ? format(app.submissionDate.toDate(), 'd MMM', { locale: idLocale }) : 'Baru'}
+                      </p>
                       <Badge variant="secondary" className="text-[8px] font-black mt-2 px-3 py-0.5 rounded-full bg-primary/10 text-primary border-none">{app.status || 'PENDING'}</Badge>
                     </div>
                   </div>
                 )) : <div className="text-center py-20 opacity-20"><UserPlus size={48} className="mx-auto mb-4" /><p className="text-[10px] font-black uppercase tracking-widest">Belum ada pendaftar baru</p></div>
-              }
+              )}
             </div>
           </CardContent>
         </Card>
