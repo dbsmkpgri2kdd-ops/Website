@@ -1,32 +1,33 @@
 
 # 🏫 SMKS PGRI 2 KEDONDONG - Digital Hub Enterprise v7.5
 
-Selamat datang di ekosistem digital terpadu SMKS PGRI 2 Kedondong. 
+Selamat datang di ekosistem digital terpadu SMKS PGRI 2 Kedondong. Website ini telah ditransformasi menjadi portal **Modern Premium & Profesional** dengan arsitektur **Static Export** untuk kecepatan maksimal.
 
-## 🚀 Panduan Publikasi (Deployment)
+## 🚀 Fitur Unggulan
+- **Premium Design**: Menggunakan tema *Deep Obsidian & Emerald Green* dengan efek *Glassmorphism*.
+- **Static Speed**: Dioptimalkan untuk memuat halaman di bawah 1 detik menggunakan Next.js Static Export.
+- **Integrated Services**: PPDB Online, Tracer Study, dan E-Rapor yang terhubung langsung ke Firebase Client SDK.
+- **Responsive Interface**: Pengalaman pengguna yang mulus di perangkat seluler maupun desktop.
 
-Aplikasi ini telah dioptimalkan untuk **Static Export** agar dapat berjalan sangat cepat melalui CDN Firebase Hosting.
+## 🛠️ Panduan Pengembangan & Publikasi
 
-1. **Build Statis**:
-   ```bash
-   npm run build
-   ```
-   *Perintah ini akan menghasilkan folder `out` yang berisi file HTML/JS murni.*
+### 1. Build Proyek (Static Export)
+Gunakan perintah ini untuk menghasilkan folder `out`:
+```bash
+npm run build
+```
 
-2. **Deploy Langsung**:
-   ```bash
-   firebase deploy
-   ```
-   *Konfigurasi di `firebase.json` telah diatur untuk mengunggah isi folder `out` ke Hosting.*
+### 2. Deploy ke Firebase Hosting
+Setelah folder `out` tercipta, publikasikan ke internet:
+```bash
+firebase deploy
+```
+
+## 📂 Struktur Proyek
+- `src/app`: Logika rute dan halaman utama.
+- `src/components`: Komponen antarmuka (UI) berbasis ShadCN.
+- `src/firebase`: Konfigurasi dan hooks untuk sinkronisasi database.
+- `docs/backend.json`: Cetak biru struktur data sekolah.
 
 ---
-
-## 🛠️ Catatan Teknis (Static Export)
-
-Karena menggunakan `output: 'export'`, fitur berikut berjalan di sisi klien:
-*   **Database**: Semua penyimpanan data (PPDB, Kontak) menggunakan Firebase Client SDK.
-*   **AI (Genkit)**: Fitur asisten AI berbasis server dinonaktifkan dalam mode statis untuk menjamin keberhasilan pembangunan (*build*). Untuk mengaktifkan kembali, gunakan **Firebase App Hosting** dan hapus baris `output: 'export'` di `next.config.js`.
-
----
-
-**Digital Hub v7.5 - Membangun Masa Depan Vokasi.**
+**© 2024 SMKS PGRI 2 KEDONDONG - Membangun Masa Depan Vokasi.**
