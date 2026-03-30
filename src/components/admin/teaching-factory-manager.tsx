@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -62,7 +61,8 @@ export function TeachingFactoryManager() {
   
   const handleEdit = (product: TeachingFactoryProduct) => {
     setEditingProduct(product);
-    // Ensure studentCreator is treated as string for the form
+    
+    // Safety check for legacy object-based creator data
     const creatorString = typeof product.studentCreator === 'object' && product.studentCreator !== null
       ? (product.studentCreator as any).name || ''
       : String(product.studentCreator || '');
