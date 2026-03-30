@@ -91,7 +91,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                 alt="Education Excellence"
                 fill
                 className="object-cover opacity-10 grayscale"
-                priority // LCP Optimization: Load early
+                priority
                 sizes="100vw"
                 data-ai-hint="minimalist university"
               />

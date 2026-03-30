@@ -2,7 +2,7 @@ import {
     Home, Info, Newspaper, UserPlus, Phone, Users, GraduationCap, Award, BookOpen, ImageIcon,
     Building, Quote, Activity, MessageSquare, Calendar, Download, CalendarClock, Library, PenSquare,
     Megaphone, Briefcase, Building2, Factory, ShieldCheck, ScanSearch, FileText, BadgeCheck,
-    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorDot, Palmtree, Link, Globe, Laptop, Sparkles, Palette, MoveUp, MoveDown, GripVertical
+    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorDot, Palmtree, Link, Globe, Laptop, Sparkles, Palette, MoveUp, MoveDown, GripVertical, ChevronRight, ChevronDown
 } from 'lucide-react';
 
 export type NavLink =
@@ -12,10 +12,8 @@ export type NavLink =
     'mitra-industri' | 'bkk' | 'teaching-factory' | 'lsp-sertifikasi' | 'tracer-study' |
     'ppdb-online' | 'cek-status-kelulusan' |
     'kontak' | 'jadwal-pelajaran'|
-    'struktur-organisasi' | 'testimoni-alumni' | 'virtual-tour' | 'database-alumni' | 'e-learning' | 'e-rapor' | 'absensi-online' |
-    'pojok-literasi' | 'osis-corner' | 'forum-diskusi' | 'dokumen-download' | 'prakerin-pkl' | 'portofolio-siswa' |
-    'konsultasi-karir' | 'simulasi-ujian' | 'job-matching' | 'pembayaran-spp' | 'login' |
-    'buku-tamu' | 'feedback-survey' | 'showcase-karya';
+    'testimoni-alumni' | 'database-alumni' | 'pojok-literasi' | 'osis-corner' | 
+    'dokumen-download' | 'prakerin-pkl' | 'buku-tamu' | 'showcase-karya';
 
 export type NavItem = {
     id?: NavLink;
