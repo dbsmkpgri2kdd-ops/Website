@@ -14,6 +14,7 @@ type ProtectedRouteProps = {
 };
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+  // Menggunakan isUserLoading dan userError sesuai dengan tipe data dari useUser()
   const { user, isUserLoading, userError } = useUser();
   const router = useRouter();
   const { toast } = useToast();
@@ -36,7 +37,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
       toast({
         variant: 'destructive',
         title: 'Akses Dibatasi',
-        description: `Anda tidak memiliki izin. Mengalihkan ke dashboard Anda...`,
+        description: `Anda tidak memiliki izin untuk halaman ini.`,
       });
       router.replace(userDashboard);
       return;
@@ -48,8 +49,8 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   if (isUserLoading) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <LoaderCircle className="animate-spin h-12 w-12 text-primary" />
-        <p className="mt-4 text-muted-foreground font-bold uppercase tracking-widest text-[10px]">Memverifikasi Identitas...</p>
+        <LoaderCircle className="animate-spin h-10 w-10 text-primary" />
+        <p className="mt-4 text-muted-foreground font-black uppercase tracking-[0.4em] text-[9px]">Otorisasi Sistem...</p>
       </div>
     );
   }
@@ -57,8 +58,8 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   if (!user || !user.profile || !allowedRoles.includes(user.profile.role)) {
     return (
        <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <LoaderCircle className="animate-spin h-12 w-12 text-primary" />
-        <p className="mt-4 text-muted-foreground font-bold uppercase tracking-widest text-[10px]">Mengarahkan...</p>
+        <LoaderCircle className="animate-spin h-10 w-10 text-primary" />
+        <p className="mt-4 text-muted-foreground font-black uppercase tracking-[0.4em] text-[9px]">Mengarahkan Akses...</p>
       </div>
     );
   }

@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Menghapus output: 'export' karena Server Actions (AI Flows) memerlukan server runtime
   images: {
-    // Menghapus unoptimized: true untuk mengaktifkan optimasi otomatis Next.js
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -15,7 +16,7 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'picsum.photos',
       },
-       {
+      {
         protocol: 'https',
         hostname: 'drive.google.com',
       },
