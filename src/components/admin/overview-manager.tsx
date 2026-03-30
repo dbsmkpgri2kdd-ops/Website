@@ -6,11 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, query, limit, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication } from '@/lib/data';
-import { Newspaper, UserPlus, Sparkles, LoaderCircle, CheckCircle2, Zap, Activity, ShieldCheck, Database, HardDrive, BarChart3, Clock, ArrowUpRight, Cpu, Rocket, Globe, Palette } from 'lucide-react';
+import { Newspaper, UserPlus, ShieldCheck, Activity, Database, HardDrive, BarChart3, Clock, ArrowUpRight, Rocket, Globe, Zap, Palette } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -69,29 +68,29 @@ export function OverviewManager() {
                       <Rocket size={20} />
                   </div>
                   <div>
-                      <CardTitle className="text-lg font-black uppercase italic">Kesiapan Publikasi Statis</CardTitle>
+                      <CardTitle className="text-lg font-black uppercase italic">Kesiapan Portal Digital</CardTitle>
                       <CardDescription className="text-[9px] font-bold uppercase tracking-widest opacity-60">Status Konfigurasi Produksi Website</CardDescription>
                   </div>
               </div>
-              <Badge className="bg-emerald-500/20 text-emerald-500 border-none px-4 py-1 rounded-full font-black text-[9px] tracking-widest animate-pulse">SIAP EKSPOR STATIS</Badge>
+              <Badge className="bg-emerald-500/20 text-emerald-500 border-none px-4 py-1 rounded-full font-black text-[9px] tracking-widest animate-pulse">SISTEM OPTIMAL</Badge>
           </CardHeader>
           <CardContent className="px-6 md:px-8 pb-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
                       <Globe size={16} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Static Export</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Web Frameworks</span>
                   </div>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
                       <ShieldCheck size={16} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">No Server Needed</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Secure Access</span>
                   </div>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
                       <Palette size={16} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Client Side SDK</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Brand Engine</span>
                   </div>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5">
                       <Zap size={16} className="text-emerald-500" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Fast Loading</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Fast Refresh</span>
                   </div>
               </div>
           </CardContent>
@@ -153,7 +152,7 @@ export function OverviewManager() {
         {/* INFRASTRUCTURE STATUS */}
         <Card className="border-white/5 bg-white/5 rounded-[2.5rem] shadow-2xl">
           <CardHeader className="p-8 border-b border-white/5">
-            <CardTitle className="text-sm font-black uppercase tracking-[0.4em]">Infrastruktur Digital</CardTitle>
+            <CardTitle className="text-sm font-black uppercase tracking-[0.4em]">Infrastruktur Sistem</CardTitle>
           </CardHeader>
           <CardContent className="p-8 space-y-8">
             <div className="flex items-center gap-5 group">
