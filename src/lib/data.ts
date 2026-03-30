@@ -73,7 +73,7 @@ export const NAV_MENU_DEFAULT: NavItem[] = [
 
 export const SCHOOL_DATA_ID = "smks-pgri-2-kedondong";
 
-export type School = {
+export interface School {
     id: string;
     name: string;
     shortName: string;
@@ -113,9 +113,9 @@ export type School = {
       sectionOrder?: string[];
     };
     customMenu?: NavItem[];
-};
+}
 
-export type QuickLink = {
+export interface QuickLink {
   id: string;
   title: string;
   description: string;
@@ -123,50 +123,50 @@ export type QuickLink = {
   icon: string;
   audience: 'all' | 'public' | 'guru' | 'siswa';
   createdAt: any;
-};
+}
 
-export type ContactMessage = {
+export interface ContactMessage {
   id: string;
   name: string;
   email: string;
   subject: string;
   message: string;
   createdAt: any;
-};
+}
 
-export type Major = {
+export interface Major {
   id: string;
   name: string;
   description: string;
   icon: string;
-};
+}
 
-export type NewsArticle = {
+export interface NewsArticle {
   id: string;
   title: string;
   category: string;
   content: string;
   imageUrl: string;
   datePublished: any; 
-};
+}
 
-export type Facility = {
+export interface Facility {
   id: string;
   name: string;
   description: string;
   imageUrl: string;
-};
+}
 
-export type OsisPost = {
+export interface OsisPost {
   id: string;
   title: string;
   category: string;
   content: string;
   imageUrl: string;
   datePublished: any;
-};
+}
 
-export type LiteracyArticle = {
+export interface LiteracyArticle {
   id: string;
   title: string;
   category: string;
@@ -175,9 +175,9 @@ export type LiteracyArticle = {
   studentClass: string;
   imageUrl?: string;
   datePublished: any;
-};
+}
 
-export type StudentApplication = {
+export interface StudentApplication {
   id: string;
   schoolId: string;
   studentName: string;
@@ -188,26 +188,26 @@ export type StudentApplication = {
   birthDate?: string;
   gender?: string;
   originSchool?: string;
-};
+}
 
-export type ExtracurricularApplication = {
+export interface ExtracurricularApplication {
   id: string;
   studentName: string;
   studentClass: string;
   extracurricularName: string;
   submissionDate: any;
-};
+}
 
-export type GalleryImage = {
+export interface GalleryImage {
   id: string;
   mediaType: 'image' | 'video';
   imageUrl: string;
   description: string;
   imageHint: string;
   createdAt: any;
-};
+}
 
-export type Achievement = {
+export interface Achievement {
   id: string;
   title: string;
   studentName: string;
@@ -216,9 +216,9 @@ export type Achievement = {
   dateAchieved: any;
   imageUrl: string;
   description?: string;
-};
+}
 
-export type Testimonial = {
+export interface Testimonial {
   id: string;
   studentName: string;
   graduationYear: string;
@@ -226,51 +226,51 @@ export type Testimonial = {
   content: string;
   studentPhotoUrl: string;
   createdAt: any;
-};
+}
 
-export type Extracurricular = {
+export interface Extracurricular {
   id: string;
   name: string;
   description: string;
   icon: string;
   schedule: string;
-};
+}
 
-export type GuestbookEntry = {
+export interface GuestbookEntry {
   id: string;
   name: string;
   origin: string;
   message: string;
   createdAt: any;
-};
+}
 
-export type Event = {
+export interface Event {
   id: string;
   title: string;
   description?: string;
   date: any;
   category: string;
-};
+}
 
-export type DownloadableFile = {
+export interface DownloadableFile {
   id: string;
   title: string;
   description?: string;
   fileUrl: string;
   category: string;
   createdAt: any;
-};
+}
 
-export type Schedule = {
+export interface Schedule {
   id: string;
   className: string;
   dayOfWeek: string;
   timeSlot: string;
   subjectName: string;
   teacherName: string;
-};
+}
 
-export type Book = {
+export interface Book {
   id: string;
   title: string;
   author: string;
@@ -281,35 +281,35 @@ export type Book = {
   description?: string;
   isAvailable: boolean;
   createdAt: any;
-};
+}
 
-export type IndustryPartner = {
+export interface IndustryPartner {
   id: string;
   name: string;
   description: string;
   logoUrl: string;
   websiteUrl?: string;
-};
+}
 
-export type Teacher = {
+export interface Teacher {
     id: string;
     name: string;
     title: string;
     photoUrl: string;
     bio?: string;
     email?: string;
-};
+}
 
-export type Alumnus = {
+export interface Alumnus {
     id: string;
     name: string;
     graduationYear: string;
     occupation: string;
     photoUrl: string;
     notes?: string;
-};
+}
 
-export type JobVacancy = {
+export interface JobVacancy {
   id: string;
   title: string;
   companyName: string;
@@ -319,9 +319,9 @@ export type JobVacancy = {
   applyUrl: string;
   postedDate: any;
   closingDate?: any;
-};
+}
 
-export type TeachingFactoryProduct = {
+export interface TeachingFactoryProduct {
   id: string;
   name: string;
   description: string;
@@ -329,23 +329,23 @@ export type TeachingFactoryProduct = {
   price?: string;
   studentCreator?: string; 
   createdAt: any;
-};
+}
 
-export type UserProfile = {
+export interface UserProfile {
     id?: string;
     email: string;
     displayName?: string;
     role: 'admin' | 'guru' | 'siswa' | 'alumni';
-};
+}
 
-export type LspCertification = {
+export interface LspCertification {
     id: string;
     name: string;
     schemaNumber: string;
     description: string;
-};
+}
 
-export type TracerStudyResponse = {
+export interface TracerStudyResponse {
     id: string;
     name: string;
     graduationYear: string;
@@ -353,17 +353,17 @@ export type TracerStudyResponse = {
     currentActivityDetail: string;
     suggestions?: string;
     submissionDate: any;
-};
+}
 
-export type GraduationStatus = {
+export interface GraduationStatus {
   id: string;
   studentIdentifier: string;
   studentName: string;
   status: 'LULUS' | 'TIDAK LULUS' | 'DIPROSES';
   notes?: string;
-};
+}
 
-export type Prakerin = {
+export interface Prakerin {
   id: string;
   studentName: string;
   studentClass: string;
@@ -371,9 +371,9 @@ export type Prakerin = {
   startDate: any;
   endDate?: any;
   status: 'Aktif' | 'Selesai' | 'Dibatalkan';
-};
+}
 
-export type PortfolioItem = {
+export interface PortfolioItem {
   id: string;
   title: string;
   description: string;
@@ -383,9 +383,9 @@ export type PortfolioItem = {
   studentName?: string;
   studentClass?: string;
   createdAt: any;
-};
+}
 
-export type ERapor = {
+export interface ERapor {
   id: string;
   studentId: string;
   studentName: string;
@@ -393,20 +393,20 @@ export type ERapor = {
   schoolYear: string;
   semester: string;
   createdAt: any;
-};
+}
 
-export type Grade = {
+export interface Grade {
   id: string;
   subjectName: string;
   score: number;
   description: string;
-};
+}
 
-export type AttendanceRecord = {
+export interface AttendanceRecord {
   id: string;
   studentId: string;
   studentName: string;
   date: any;
   status: 'Hadir' | 'Sakit' | 'Izin' | 'Alpa';
   notes?: string;
-};
+}
