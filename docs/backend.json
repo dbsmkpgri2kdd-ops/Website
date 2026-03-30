@@ -1,6 +1,24 @@
 
 {
   "entities": {
+    "Exam": {
+      "title": "Exam",
+      "description": "Jadwal dan konfigurasi ujian online (ExamBro).",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "class": { "type": "string" },
+        "day": { "type": "string" },
+        "startTime": { "type": "string" },
+        "endTime": { "type": "string" },
+        "token": { "type": "string" },
+        "url": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "teacherName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
     "School": {
       "title": "School",
       "description": "Profil utama sekolah dan pengaturan website.",
@@ -50,18 +68,6 @@
         "studentName": { "type": "string" },
         "studentClass": { "type": "string" }
       }
-    },
-    "ContactMessage": {
-      "title": "ContactMessage",
-      "description": "Pesan yang dikirim pengunjung melalui formulir kontak.",
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string" },
-        "subject": { "type": "string" },
-        "message": { "type": "string" },
-        "createdAt": { "type": "string", "format": "date-time" }
-      }
     }
   },
   "auth": {
@@ -72,6 +78,10 @@
       "schema": "#/backend/entities/UserProfile",
       "description": "Data profil pengguna."
     },
+    "/schools/{schoolId}/exams/{examId}": {
+      "schema": "#/backend/entities/Exam",
+      "description": "Basis data ujian online."
+    },
     "/users/{userId}/portfolio/{id}": {
       "schema": "#/backend/entities/PortfolioItem",
       "description": "Koleksi karya digital siswa."
@@ -79,37 +89,6 @@
     "/schools/{schoolId}": {
       "schema": "#/backend/entities/School",
       "description": "Konfigurasi utama sekolah."
-    },
-    "/schools/{schoolId}/quickLinks/{id}": {
-      "description": "Tautan aplikasi cepat."
-    },
-    "/schools/{schoolId}/contactMessages/{id}": {
-      "schema": "#/backend/entities/ContactMessage",
-      "description": "Pesan masuk dari pengunjung."
-    },
-    "/schools/{schoolId}/majors/{id}": { "description": "Daftar jurusan." },
-    "/schools/{schoolId}/newsArticles/{id}": { "description": "Artikel berita." },
-    "/schools/{schoolId}/events/{id}": { "description": "Agenda sekolah." },
-    "/schools/{schoolId}/facilities/{id}": { "description": "Fasilitas sekolah." },
-    "/schools/{schoolId}/gallery/{id}": { "description": "Galeri media." },
-    "/schools/{schoolId}/achievements/{id}": { "description": "Prestasi siswa." },
-    "/schools/{schoolId}/testimonials/{id}": { "description": "Testimoni alumni." },
-    "/schools/{schoolId}/extracurriculars/{id}": { "description": "Daftar ekskul." },
-    "/schools/{schoolId}/books/{id}": { "description": "Katalog perpustakaan." },
-    "/schools/{schoolId}/schedules/{id}": { "description": "Jadwal pelajaran." },
-    "/schools/{schoolId}/jobVacancies/{id}": { "description": "Bursa kerja." },
-    "/schools/{schoolId}/alumni/{id}": { "description": "Database alumni." },
-    "/schools/{schoolId}/tracerStudyResponses/{id}": { "description": "Hasil tracer study." },
-    "/schools/{schoolId}/graduationStatuses/{id}": { "description": "Cek kelulusan." },
-    "/schools/{schoolId}/prakerin/{id}": { "description": "Data magang." },
-    "/schools/{schoolId}/eRapors/{id}": { "description": "Laporan nilai." },
-    "/schools/{schoolId}/attendance/{id}": { "description": "Catatan kehadiran." },
-    "/schools/{schoolId}/downloadableFiles/{id}": { "description": "Pusat unduhan." },
-    "/schools/{schoolId}/literacyArticles/{id}": { "description": "Karya tulis literasi." },
-    "/schools/{schoolId}/osisPosts/{id}": { "description": "Postingan OSIS." },
-    "/schools/{schoolId}/industryPartners/{id}": { "description": "Partner industri." },
-    "/schools/{schoolId}/teachers/{id}": { "description": "Data guru & staf." },
-    "/schools/{schoolId}/teachingFactoryProducts/{id}": { "description": "Produk TeFa." },
-    "/schools/{schoolId}/lspCertifications/{id}": { "description": "Skema LSP." }
+    }
   }
 }

@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles } from 'lucide-react';
+import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles, ShieldCheck } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +17,8 @@ import { PortofolioDigital } from '@/components/siswa/portofolio-digital';
 import { QuickLinksGrid } from '@/components/shared/quick-links-grid';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ExamBroPortal } from '@/components/siswa/exambro-portal';
 
 function SiswaDashboard() {
   const { user, profile } = useUser();
@@ -41,7 +44,7 @@ function SiswaDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-8">
+    <div className="min-h-screen bg-background p-4 sm:p-8 pb-32">
       <header className="max-w-7xl mx-auto flex justify-between items-center mb-12">
         <h1 className="text-3xl font-black font-headline text-primary tracking-tighter uppercase">Student <span className='text-foreground'>Portal</span></h1>
         <Button onClick={handleLogout} variant="outline" className="rounded-xl glass-premium border-primary/20 hover:bg-primary/10">
@@ -50,7 +53,6 @@ function SiswaDashboard() {
         </Button>
       </header>
       <main className="max-w-7xl mx-auto space-y-12 animate-fade-in">
-          {/* SETUP ALERT FOR OWNER */}
           {profile?.role === 'siswa' && (
             <Alert variant="destructive" className="glass-premium border-primary/20 p-8 rounded-[2rem] shadow-2xl overflow-hidden relative group">
               <div className='absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700'></div>
@@ -75,39 +77,55 @@ function SiswaDashboard() {
             </Alert>
           )}
 
-          <Card className="glass-premium border-white/5 rounded-[2.5rem] overflow-hidden relative">
-          <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-primary opacity-50'></div>
-          <CardHeader>
-              <div className="flex flex-col sm:flex-row items-center gap-8 py-4">
-              <Avatar className="h-24 w-24 border-4 border-primary/20 shadow-[0_0_30px_hsla(var(--primary)/0.2)]">
-                  <AvatarFallback className="bg-primary/10 text-primary text-4xl font-black">
-                    {user?.profile?.displayName?.charAt(0) || 'S'}
-                  </AvatarFallback>
-              </Avatar>
-              <div className='text-center sm:text-left'>
-                  <h3 className="text-3xl md:text-4xl font-black font-headline tracking-tighter mb-1">Selamat Datang, {user?.profile?.displayName || 'Siswa'}!</h3>
-                  <p className="text-muted-foreground font-medium text-lg">{user?.email}</p>
-                  <div className='flex flex-wrap justify-center sm:justify-start gap-2 mt-4'>
-                    <Badge className='bg-primary/20 text-primary border-none px-4 py-1 rounded-lg uppercase text-[10px] font-black tracking-widest'>AKTIF</Badge>
-                    <Badge className='bg-secondary/20 text-secondary border-none px-4 py-1 rounded-lg uppercase text-[10px] font-black tracking-widest'>VERIFIED</Badge>
-                  </div>
-              </div>
-              </div>
-          </CardHeader>
+          <Card className="glass-premium border-white/5 rounded-[2.5rem] overflow-hidden relative shadow-3xl">
+            <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-primary opacity-50'></div>
+            <CardHeader>
+                <div className="flex flex-col sm:flex-row items-center gap-8 py-4">
+                <Avatar className="h-24 w-24 border-4 border-primary/20 shadow-[0_0_30px_hsla(var(--primary)/0.2)]">
+                    <AvatarFallback className="bg-primary/10 text-primary text-4xl font-black">
+                      {user?.profile?.displayName?.charAt(0) || 'S'}
+                    </AvatarFallback>
+                </Avatar>
+                <div className='text-center sm:text-left'>
+                    <h3 className="text-3xl md:text-4xl font-black font-headline tracking-tighter mb-1 uppercase italic">Selamat Datang, {user?.profile?.displayName || 'Siswa'}!</h3>
+                    <p className="text-muted-foreground font-medium text-lg uppercase tracking-widest opacity-60">{user?.email}</p>
+                    <div className='flex flex-wrap justify-center sm:justify-start gap-2 mt-4'>
+                      <Badge className='bg-primary/20 text-primary border-none px-4 py-1 rounded-lg uppercase text-[10px] font-black tracking-widest'>AKTIF</Badge>
+                      <Badge className='bg-secondary/20 text-secondary border-none px-4 py-1 rounded-lg uppercase text-[10px] font-black tracking-widest'>SISWA TERVERIFIKASI</Badge>
+                    </div>
+                </div>
+                </div>
+            </CardHeader>
           </Card>
 
-          <QuickLinksGrid audience="siswa" title="Aplikasi Siswa" description="Akses cepat ke platform belajar dan portal akademik Anda." />
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 h-16 glass-premium p-1.5 rounded-2xl border-white/5 mb-12">
+              <TabsTrigger value="overview" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all">Informasi</TabsTrigger>
+              <TabsTrigger value="exams" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all">Ujian Online</TabsTrigger>
+              <TabsTrigger value="academic" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all">Akademik</TabsTrigger>
+              <TabsTrigger value="portfolio" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all">Karya Saya</TabsTrigger>
+            </TabsList>
 
-          <div className='grid lg:grid-cols-2 gap-12'>
-            <div className='space-y-12'>
-              <AbsensiSiswa />
-              <JadwalPelajaran />
-            </div>
-            <div className='space-y-12'>
+            <TabsContent value="overview" className="space-y-12 animate-fade-in">
+              <QuickLinksGrid audience="siswa" title="Aplikasi Siswa" description="Akses cepat ke platform belajar dan portal akademik Anda." />
+              <div className='grid lg:grid-cols-2 gap-12'>
+                <AbsensiSiswa />
+                <JadwalPelajaran />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="exams" className="animate-fade-in">
+              <ExamBroPortal />
+            </TabsContent>
+
+            <TabsContent value="academic" className="animate-fade-in">
               <ERaporSiswa />
+            </TabsContent>
+
+            <TabsContent value="portfolio" className="animate-fade-in">
               <PortofolioDigital />
-            </div>
-          </div>
+            </TabsContent>
+          </Tabs>
       </main>
     </div>
   );

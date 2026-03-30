@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -9,7 +10,7 @@ import {
   PenSquare, ShieldAlert, 
   LoaderCircle, Mail, Award, Library, BadgeCheck, MessageSquare, Quote, 
   DatabaseZap, Palette, Layout, MousePointer2, BriefcaseIcon, Factory, SearchCode,
-  UserPlus
+  UserPlus, ShieldCheck
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -56,13 +57,14 @@ import { TracerStudyManager } from '@/components/admin/tracer-study-manager';
 import { DesignTemplateManager } from '@/components/admin/design-template-manager';
 import { NavigationManager } from '@/components/admin/navigation-manager';
 import { LayoutBuilderManager } from '@/components/admin/layout-builder-manager';
+import { ExamManager } from '@/components/guru/exam-manager';
 
 type AdminTab = 
   | 'overview' | 'school-profile' | 'majors' | 'teachers' | 'facilities' | 'gallery'
   | 'news' | 'agenda' | 'osis' | 'literacy' | 'schedule' | 'rapor' | 'attendance'
   | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings' | 'quick-links' | 'contact-messages'
   | 'achievements' | 'extracurriculars' | 'library' | 'tefa' | 'lsp' | 'graduation' | 'testimonials' | 'alumni' | 'guestbook' | 'downloads' | 'tracer' | 'appearance'
-  | 'navigation' | 'layout-builder';
+  | 'navigation' | 'layout-builder' | 'exams';
 
 function AdminDashboard() {
   const { user, isUserLoading } = useUser();
@@ -91,6 +93,7 @@ function AdminDashboard() {
     { label: 'MANAJER MENU', value: 'navigation', icon: MousePointer2, group: 'EDITOR VISUAL' },
     { label: 'TAMPILAN', value: 'appearance', icon: Palette, group: 'EDITOR VISUAL' },
     
+    { label: 'UJIAN ONLINE', value: 'exams', icon: ShieldCheck, group: 'AKADEMIK' },
     { label: 'PESAN MASUK', value: 'contact-messages', icon: Mail, group: 'KONTEN' },
     { label: 'BERITA', value: 'news', icon: Newspaper, group: 'KONTEN' },
     { label: 'AGENDA', value: 'agenda', icon: Calendar, group: 'KONTEN' },
@@ -128,9 +131,7 @@ function AdminDashboard() {
     );
   }
 
-  const filteredNavItems = isAdmin 
-    ? navItems 
-    : navItems.filter(item => item.value === 'users');
+  const filteredNavItems = navItems;
 
   const groupedNav = filteredNavItems.reduce((acc, item) => {
     if (!acc[item.group]) acc[item.group] = [];
@@ -139,13 +140,12 @@ function AdminDashboard() {
   }, {} as Record<string, typeof navItems>);
 
   const renderContent = () => {
-    if (!isAdmin && activeTab !== 'users') return <UsersManager />;
-
     switch (activeTab) {
       case 'overview': return <OverviewManager />;
       case 'layout-builder': return <LayoutBuilderManager />;
       case 'navigation': return <NavigationManager />;
       case 'appearance': return <DesignTemplateManager />;
+      case 'exams': return <ExamManager />;
       case 'contact-messages': return <ContactMessagesManager />;
       case 'school-profile': return <ProfileManager />;
       case 'teachers': return <TeachersManager />;
@@ -208,7 +208,7 @@ function AdminDashboard() {
             <div className="bg-primary text-white p-2 rounded-lg">
               <DatabaseZap size={20} />
             </div>
-            <span className="font-bold text-lg tracking-tighter uppercase italic">hPANEL</span>
+            <span className="font-bold text-lg tracking-tighter uppercase italic text-white">hPANEL</span>
           </div>
           <Button variant="ghost" size="icon" className="lg:hidden rounded-lg" onClick={() => setIsSidebarOpen(false)}>
             <X size={18} />
