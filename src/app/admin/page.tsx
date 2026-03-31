@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -9,7 +10,7 @@ import {
   PenSquare, ShieldAlert, 
   LoaderCircle, Mail, Award, Library, MessageSquare, Quote, 
   DatabaseZap, Palette, Layout, MousePointer2, BriefcaseIcon, Factory, SearchCode,
-  UserPlus, ShieldCheck
+  UserPlus, ShieldCheck, ScanFace
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -57,13 +58,14 @@ import { DesignTemplateManager } from '@/components/admin/design-template-manage
 import { NavigationManager } from '@/components/admin/navigation-manager';
 import { LayoutBuilderManager } from '@/components/admin/layout-builder-manager';
 import { ExamManager } from '@/components/guru/exam-manager';
+import { BiometricManager } from '@/components/admin/biometric-manager';
 
 type AdminTab = 
   | 'overview' | 'school-profile' | 'majors' | 'teachers' | 'facilities' | 'gallery'
   | 'news' | 'agenda' | 'osis' | 'literacy' | 'schedule' | 'rapor' | 'attendance'
   | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings' | 'quick-links' | 'contact-messages'
   | 'achievements' | 'extracurriculars' | 'library' | 'tefa' | 'lsp' | 'graduation' | 'testimonials' | 'alumni' | 'guestbook' | 'downloads' | 'tracer' | 'appearance'
-  | 'navigation' | 'layout-builder' | 'exams';
+  | 'navigation' | 'layout-builder' | 'exams' | 'biometric-admin';
 
 function AdminDashboard() {
   const { user, isUserLoading } = useUser();
@@ -93,6 +95,7 @@ function AdminDashboard() {
     { label: 'Tampilan Website', value: 'appearance', icon: Palette, group: 'Editor Visual' },
     
     { label: 'Ujian Online', value: 'exams', icon: ShieldCheck, group: 'Akademik' },
+    { label: 'Biometrik Siswa', value: 'biometric-admin', icon: ScanFace, group: 'Akademik' },
     { label: 'Pesan Masuk', value: 'contact-messages', icon: Mail, group: 'Konten' },
     { label: 'Berita Sekolah', value: 'news', icon: Newspaper, group: 'Konten' },
     { label: 'Agenda & Acara', value: 'agenda', icon: Calendar, group: 'Konten' },
@@ -143,6 +146,7 @@ function AdminDashboard() {
       case 'navigation': return <NavigationManager />;
       case 'appearance': return <DesignTemplateManager />;
       case 'exams': return <ExamManager />;
+      case 'biometric-admin': return <BiometricManager />;
       case 'contact-messages': return <ContactMessagesManager />;
       case 'school-profile': return <ProfileManager />;
       case 'teachers': return <TeachersManager />;

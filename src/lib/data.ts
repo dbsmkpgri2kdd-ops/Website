@@ -3,7 +3,7 @@ import {
     Home, Info, Newspaper, UserPlus, Phone, Users, GraduationCap, Award, BookOpen, ImageIcon,
     Building, Quote, Activity, MessageSquare, Calendar, Download, CalendarClock, Library, PenSquare,
     Megaphone, Briefcase, Building2, Factory, ShieldCheck, ScanSearch, FileText, BadgeCheck,
-    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorPlay, Palmtree, Link, Globe, Laptop, Sparkles, Palette, MoveUp, MoveDown, GripVertical, ChevronRight, ChevronDown, Lock, QrCode, Monitor, Camera, CameraOff, Search, MonitorCheck, Fingerprint, MapPin, Venus, Mars
+    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorPlay, Palmtree, Link, Globe, Laptop, Sparkles, Palette, MoveUp, MoveDown, GripVertical, ChevronRight, ChevronDown, Lock, QrCode, Monitor, Camera, CameraOff, Search, MonitorCheck, Fingerprint, MapPin, Venus, Mars, ScanFace
 } from 'lucide-react';
 
 export type NavLink =
@@ -14,7 +14,7 @@ export type NavLink =
     'ppdb-online' | 'cek-status-kelulusan' | 'cek-pendaftaran-ppdb' |
     'kontak' | 'jadwal-pelajaran'|
     'testimoni-alumni' | 'database-alumni' | 'pojok-literasi' | 'osis-corner' | 
-    'dokumen-download' | 'prakerin-pkl' | 'buku-tamu' | 'showcase-karya' | 'exambro';
+    'dokumen-download' | 'prakerin-pkl' | 'buku-tamu' | 'showcase-karya' | 'exambro' | 'biometric-admin';
 
 export type NavItem = {
     id?: NavLink;
@@ -379,6 +379,7 @@ export interface UserProfile {
     birthDate?: string;
     address?: string;
     lastSyncedAt?: any;
+    biometricSignature?: string;
 }
 
 export interface LspCertification {
@@ -455,4 +456,5 @@ export interface AttendanceRecord {
   status: 'Hadir' | 'Sakit' | 'Izin' | 'Alpa';
   notes?: string;
   biometricCode?: string;
+  metadata?: any;
 }
