@@ -1,4 +1,3 @@
-
 import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -11,7 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
-    theme_color: '#221.2 83.2% 53.3%',
+    theme_color: '#3b82f6',
     icons: [
       {
         src: logoUrl,
