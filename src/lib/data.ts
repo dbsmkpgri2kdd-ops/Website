@@ -3,7 +3,7 @@ import {
     Home, Info, Newspaper, UserPlus, Phone, Users, GraduationCap, Award, BookOpen, ImageIcon,
     Building, Quote, Activity, MessageSquare, Calendar, Download, CalendarClock, Library, PenSquare,
     Megaphone, Briefcase, Building2, Factory, ShieldCheck, ScanSearch, FileText, BadgeCheck,
-    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorPlay, Palmtree, Link, Globe, Laptop, Sparkles, Palette, MoveUp, MoveDown, GripVertical, ChevronRight, ChevronDown, Lock, QrCode, Monitor, Camera, CameraOff, Search, MonitorCheck
+    Map, CircleHelp, Network, UserCheck, Clipboard, Wallet, ScrollText, FolderKanban, UserCog, BrainCircuit, ArrowRightLeft, BookUser, AppWindow, Settings, LayoutDashboard, Database, HardDrive, BarChart3, ShieldAlert, MonitorPlay, Palmtree, Link, Globe, Laptop, Sparkles, Palette, MoveUp, MoveDown, GripVertical, ChevronRight, ChevronDown, Lock, QrCode, Monitor, Camera, CameraOff, Search, MonitorCheck, Fingerprint, MapPin, Venus, Mars
 } from 'lucide-react';
 
 export type NavLink =
@@ -92,6 +92,17 @@ export interface Exam {
   createdAt: any;
 }
 
+export interface CsvMappings {
+  nis: string;
+  name: string;
+  class: string;
+  nisn?: string;
+  gender?: string;
+  birthPlace?: string;
+  birthDate?: string;
+  address?: string;
+}
+
 export interface School {
     id: string;
     name: string;
@@ -122,6 +133,7 @@ export interface School {
     welcomeTitle?: string;
     ctaTitle?: string;
     studentDatabaseUrl?: string;
+    csvMappings?: CsvMappings;
     layoutSettings?: {
       showHero?: boolean;
       showPartners?: boolean;
@@ -358,6 +370,12 @@ export interface UserProfile {
     role: 'admin' | 'guru' | 'siswa' | 'alumni';
     nis?: string;
     className?: string;
+    nisn?: string;
+    gender?: string;
+    birthPlace?: string;
+    birthDate?: string;
+    address?: string;
+    lastSyncedAt?: any;
 }
 
 export interface LspCertification {

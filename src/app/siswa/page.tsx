@@ -3,10 +3,10 @@
 
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles } from 'lucide-react';
+import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles, Fingerprint, MapPin, Venus, Mars, Calendar, CreditCard } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader } from '@/components/ui/card';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useUser, useAuth } from '@/firebase';
@@ -19,6 +19,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExamBroPortal } from '@/components/siswa/exambro-portal';
+import { cn } from '@/lib/utils';
 
 function SiswaDashboard() {
   const { user, profile } = useUser();
@@ -43,6 +44,18 @@ function SiswaDashboard() {
     }
   };
 
+  const InfoRow = ({ icon: Icon, label, value }: { icon: any, label: string, value?: string }) => (
+    <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-primary/20 transition-all group">
+        <div className="p-2.5 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
+            <Icon size={16} />
+        </div>
+        <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground opacity-60">{label}</p>
+            <p className="text-xs font-bold text-foreground mt-0.5">{value || '-'}</p>
+        </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background p-4 sm:p-8 pb-32 sm:pb-8 tech-mesh">
       <header className="max-w-7xl mx-auto flex justify-between items-center mb-8 sm:mb-12">
@@ -55,81 +68,86 @@ function SiswaDashboard() {
       </header>
       
       <main className="max-w-7xl mx-auto space-y-8 sm:space-y-12 animate-fade-in">
-          {profile?.role === 'siswa' && (
-            <Alert variant="destructive" className="glass-premium border-primary/20 p-6 sm:p-8 rounded-[2rem] shadow-2xl overflow-hidden relative group border-2">
-              <div className='absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700'></div>
+          {profile?.role === 'siswa' && !profile.nisn && (
+            <Alert variant="default" className="glass-premium border-amber-500/20 p-6 rounded-[2rem] shadow-xl overflow-hidden relative group bg-amber-500/5">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 w-full relative z-10">
                 <div className='flex items-start gap-4'>
-                  <div className='p-3 bg-primary text-background rounded-2xl animate-glow'>
+                  <div className='p-3 bg-amber-500 text-white rounded-2xl animate-pulse'>
                     <ShieldAlert className="h-6 w-6" />
                   </div>
                   <div>
-                    <AlertTitle className="text-lg sm:text-xl font-black text-primary tracking-tight mb-1 flex items-center gap-2">
-                      <Sparkles size={18} /> Pemilik Website?
-                    </AlertTitle>
-                    <AlertDescription className="text-xs sm:text-sm text-muted-foreground font-medium max-w-xl leading-relaxed">
-                      Anda masuk sebagai Siswa. Jika Anda Administrator, silakan pindah ke Panel Admin untuk hak akses penuh.
+                    <AlertTitle className="text-lg font-black text-amber-600 tracking-tight mb-1">Menunggu Sinkronisasi Data</AlertTitle>
+                    <AlertDescription className="text-xs font-medium text-muted-foreground leading-relaxed">
+                      Sistem sedang menunggu sinkronisasi database pusat untuk memvalidasi biodata lengkap Anda berdasarkan NIS {profile.nis}.
                     </AlertDescription>
                   </div>
                 </div>
-                <Button onClick={() => router.push('/admin')} className="font-bold h-12 sm:h-14 px-8 rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all text-sm">
-                  Panel Admin <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
               </div>
             </Alert>
           )}
 
-          <Card className="glass-premium border-white/5 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden relative shadow-3xl">
-            <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-primary opacity-50'></div>
-            <CardHeader>
-                <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 py-2 sm:py-4">
-                <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-4 border-primary/20 shadow-[0_0_30px_hsla(var(--primary)/0.2)]">
-                    <AvatarFallback className="bg-primary/10 text-primary text-3xl sm:text-4xl font-black">
-                      {user?.profile?.displayName?.charAt(0) || 'S'}
-                    </AvatarFallback>
-                </Avatar>
-                <div className='text-center sm:text-left'>
-                    <h3 className="text-2xl sm:text-3xl font-black font-headline tracking-tight mb-1 italic">Halo, {user?.profile?.displayName || 'Siswa'}!</h3>
-                    <p className="text-muted-foreground font-medium text-sm sm:text-base opacity-60 truncate max-w-[250px] sm:max-w-none">{user?.email}</p>
-                    <div className='flex flex-wrap justify-center sm:justify-start gap-2 mt-4'>
-                      <Badge className='bg-primary/20 text-primary border-none px-4 py-1 rounded-lg text-[10px] font-bold'>Status Aktif</Badge>
-                      <Badge className='bg-secondary/20 text-secondary border-none px-4 py-1 rounded-lg text-[10px] font-bold'>Terverifikasi</Badge>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* KARTU IDENTITAS DIGITAL */}
+            <Card className="lg:col-span-1 glass-premium border-white/5 rounded-[2.5rem] overflow-hidden relative shadow-3xl group">
+                <div className='absolute top-0 left-0 w-full h-2 bg-primary'></div>
+                <CardHeader className="p-8 text-center sm:text-left space-y-6">
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                        <Avatar className="h-24 w-24 border-4 border-primary/20 shadow-2xl group-hover:scale-105 transition-transform duration-700">
+                            <AvatarFallback className="bg-primary/10 text-primary text-4xl font-black italic">
+                                {profile?.displayName?.charAt(0) || 'S'}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className='flex-1 min-w-0'>
+                            <h3 className="text-2xl font-black font-headline tracking-tighter uppercase italic leading-none truncate">{profile?.displayName || 'Siswa'}</h3>
+                            <p className="text-primary font-bold text-xs uppercase tracking-widest mt-2">{profile?.className || 'Kelas Belum Sinkron'}</p>
+                            <div className='flex gap-2 mt-4'>
+                                <Badge className='bg-emerald-500/10 text-emerald-600 border-none px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest'>Status Aktif</Badge>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                </div>
-            </CardHeader>
-          </Card>
+                </CardHeader>
+                <CardContent className="px-8 pb-8 space-y-3">
+                    <InfoRow icon={Fingerprint} label="Nomor Induk Siswa (NIS)" value={profile?.nis} />
+                    <InfoRow icon={CreditCard} label="Nomor Induk Nasional (NISN)" value={profile?.nisn} />
+                    <InfoRow icon={Venus} label="Jenis Kelamin" value={profile?.gender} />
+                    <InfoRow icon={Calendar} label="Tempat, Tanggal Lahir" value={`${profile?.birthPlace || '-'}, ${profile?.birthDate || '-'}`} />
+                    <InfoRow icon={MapPin} label="Alamat Terdaftar" value={profile?.address} />
+                </CardContent>
+            </Card>
 
-          <Tabs defaultValue="overview" className="w-full">
-            <div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-                <TabsList className="flex w-fit sm:grid sm:w-full grid-cols-4 h-14 sm:h-16 glass-premium p-1.5 rounded-2xl border-white/5 mb-8 sm:mb-12 gap-2">
-                    <TabsTrigger value="overview" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0">Informasi</TabsTrigger>
-                    <TabsTrigger value="exams" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0">Ujian Online</TabsTrigger>
-                    <TabsTrigger value="academic" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0">Akademik</TabsTrigger>
-                    <TabsTrigger value="portfolio" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0">Karya Digital</TabsTrigger>
-                </TabsList>
+            <div className="lg:col-span-2 space-y-8">
+                <Tabs defaultValue="overview" className="w-full">
+                    <div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <TabsList className="flex w-fit sm:grid sm:w-full grid-cols-4 h-14 sm:h-16 glass-premium p-1.5 rounded-2xl border-white/5 gap-2">
+                            <TabsTrigger value="overview" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0">Informasi</TabsTrigger>
+                            <TabsTrigger value="exams" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0">Ujian Online</TabsTrigger>
+                            <TabsTrigger value="academic" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0">Akademik</TabsTrigger>
+                            <TabsTrigger value="portfolio" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0">Karya Digital</TabsTrigger>
+                        </TabsList>
+                    </div>
+
+                    <TabsContent value="overview" className="space-y-8 animate-fade-in pt-4">
+                        <QuickLinksGrid audience="siswa" title="Aplikasi Siswa" description="Akses cepat ke platform belajar dan portal akademik terpadu Anda." />
+                        <div className='grid sm:grid-cols-2 gap-8'>
+                            <AbsensiSiswa />
+                            <JadwalPelajaran />
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="exams" className="animate-fade-in pt-4">
+                        <ExamBroPortal />
+                    </TabsContent>
+
+                    <TabsContent value="academic" className="animate-fade-in pt-4">
+                        <ERaporSiswa />
+                    </TabsContent>
+
+                    <TabsContent value="portfolio" className="animate-fade-in pt-4">
+                        <PortofolioDigital />
+                    </TabsContent>
+                </Tabs>
             </div>
-
-            <TabsContent value="overview" className="space-y-8 sm:space-y-12 animate-fade-in">
-              <QuickLinksGrid audience="siswa" title="Aplikasi Siswa" description="Akses cepat ke platform belajar dan portal akademik Anda." />
-              <div className='grid lg:grid-cols-2 gap-8 sm:gap-12'>
-                <AbsensiSiswa />
-                <JadwalPelajaran />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="exams" className="animate-fade-in">
-              <ExamBroPortal />
-            </TabsContent>
-
-            <TabsContent value="academic" className="animate-fade-in">
-              <ERaporSiswa />
-            </TabsContent>
-
-            <TabsContent value="portfolio" className="animate-fade-in">
-              <PortofolioDigital />
-            </TabsContent>
-          </Tabs>
+          </div>
       </main>
     </div>
   );

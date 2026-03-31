@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Hammer, Database, Table as TableIcon, CheckCircle2, XCircle, Search } from 'lucide-react';
+import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Hammer, Database, Table as TableIcon, CheckCircle2, XCircle, Search, Settings2, ListTodo } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -24,6 +24,16 @@ const formSchema = z.object({
   studentDatabaseUrl: z.string().url('URL CSV tidak valid.').optional().or(z.literal('')),
   primaryColor: z.string().optional(),
   accentColor: z.string().optional(),
+  csvMappings: z.object({
+    nis: z.string().min(1, 'NIS mapping wajib.'),
+    name: z.string().min(1, 'Nama mapping wajib.'),
+    class: z.string().min(1, 'Kelas mapping wajib.'),
+    nisn: z.string().optional(),
+    gender: z.string().optional(),
+    birthPlace: z.string().optional(),
+    birthDate: z.string().optional(),
+    address: z.string().optional(),
+  }),
   layoutSettings: z.object({
     showHero: z.boolean().default(true),
     showPartners: z.boolean().default(true),
@@ -39,6 +49,7 @@ export function SystemSettingsManager() {
   const { toast } = useToast();
   const firestore = useFirestore();
   const [csvPreview, setCsvPreview] = useState<any[]>([]);
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
   const [isTestingCsv, setIsTestingCsv] = useState(false);
   const [csvError, setCsvError] = useState<string | null>(null);
 
@@ -52,6 +63,16 @@ export function SystemSettingsManager() {
       studentDatabaseUrl: '',
       primaryColor: '221 83% 53%',
       accentColor: '262 83% 58%',
+      csvMappings: {
+        nis: 'NIS',
+        name: 'NAMA',
+        class: 'KELAS',
+        nisn: 'NISN',
+        gender: 'JK',
+        birthPlace: 'TEMPAT LAHIR',
+        birthDate: 'TANGGAL LAHIR',
+        address: 'ALAMAT'
+      },
       layoutSettings: {
         showHero: true,
         showPartners: true,
@@ -71,6 +92,10 @@ export function SystemSettingsManager() {
         studentDatabaseUrl: schoolData.studentDatabaseUrl || '',
         primaryColor: schoolData.primaryColor || '221 83% 53%',
         accentColor: schoolData.accentColor || '262 83% 58%',
+        csvMappings: {
+            ...form.getValues('csvMappings'),
+            ...schoolData.csvMappings
+        },
         layoutSettings: {
             ...form.getValues('layoutSettings'),
             ...schoolData.layoutSettings
@@ -90,6 +115,7 @@ export function SystemSettingsManager() {
       const text = await response.text();
       const lines = text.split('\n');
       const headers = lines[0].split(',').map(h => h.trim());
+      setCsvHeaders(headers);
       
       const data = lines.slice(1, 6).map(line => {
         const values = line.split(',').map(v => v.trim());
@@ -100,10 +126,10 @@ export function SystemSettingsManager() {
       });
 
       setCsvPreview(data);
-      toast({ title: 'Koneksi berhasil', description: 'Data CSV terbaca dengan benar.' });
+      toast({ title: 'Koneksi Berhasil', description: 'Data CSV terbaca dengan benar.' });
     } catch (e) {
       setCsvError("Gagal mengambil data. Pastikan link CSV dipublikasikan ke web.");
-      toast({ variant: 'destructive', title: 'Koneksi gagal', description: 'Periksa kembali URL database Anda.' });
+      toast({ variant: 'destructive', title: 'Koneksi Gagal', description: 'Periksa kembali URL database Anda.' });
     } finally {
       setIsTestingCsv(false);
     }
@@ -112,7 +138,7 @@ export function SystemSettingsManager() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!firestore || !schoolDocRef) return;
     setDocumentNonBlocking(schoolDocRef, values, { merge: true });
-    toast({ title: 'Konfigurasi disimpan', description: 'Pengaturan sistem telah diperbarui.' });
+    toast({ title: 'Konfigurasi Disimpan', description: 'Pengaturan sistem telah diperbarui.' });
   }
 
   if (isLoading) return <div className="flex justify-center py-20"><LoaderCircle className="animate-spin text-primary h-8 w-8" /></div>;
@@ -121,9 +147,9 @@ export function SystemSettingsManager() {
     <div className="space-y-8 animate-fade-in pb-20">
       <Alert className="bg-primary/5 border-primary/20">
         <ShieldAlert className="h-4 w-4 text-primary" />
-        <AlertTitle className='font-bold text-xs'>Kustomisasi identitas</AlertTitle>
+        <AlertTitle className='font-bold text-xs'>Kustomisasi Identitas & Data</AlertTitle>
         <AlertDescription className='text-xs font-medium'>
-          Atur identitas visual dan integrasi data sekolah Anda secara terpusat.
+          Atur identitas visual dan integrasi data profil siswa sekolah Anda secara terpusat.
         </AlertDescription>
       </Alert>
 
@@ -132,14 +158,13 @@ export function SystemSettingsManager() {
           <div className="grid lg:grid-cols-2 gap-8">
             
             <div className="space-y-8">
-              {/* Data & Core Settings */}
               <Card className="shadow-2xl border-none rounded-[2rem]">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className='p-2 bg-blue-500/10 text-blue-500 rounded-xl'><Database size={20} /></div>
-                    <CardTitle className='text-xl font-headline font-bold italic'>Integrasi data</CardTitle>
+                    <CardTitle className='text-xl font-headline font-bold italic'>Integrasi Database Siswa</CardTitle>
                   </div>
-                  <CardDescription>Hubungkan database siswa eksternal untuk sinkronisasi profil otomatis.</CardDescription>
+                  <CardDescription>Hubungkan Google Sheets (CSV) untuk sinkronisasi profil otomatis.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <FormField
@@ -147,46 +172,77 @@ export function SystemSettingsManager() {
                     name="studentDatabaseUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Link CSV database siswa</FormLabel>
+                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Link CSV Database</FormLabel>
                         <div className="flex gap-2">
                           <FormControl><Input {...field} placeholder="https://docs.google.com/spreadsheets/.../pub?output=csv" className='h-12 rounded-xl'/></FormControl>
                           <Button type="button" onClick={testCsvConnection} variant="outline" className="h-12 rounded-xl px-6" disabled={isTestingCsv}>
                             {isTestingCsv ? <LoaderCircle className='animate-spin' /> : <Search size={18} />}
                           </Button>
                         </div>
-                        <FormDescription className="text-[9px]">Sistem mendeteksi kolom: 'NIS', 'Nama', 'Kelas'.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
                   {csvPreview.length > 0 && (
-                    <div className="mt-4 space-y-3 animate-reveal">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-[10px] font-bold uppercase text-primary tracking-widest flex items-center gap-2">
-                          <CheckCircle2 size={12} /> Preview data (5 baris pertama)
+                    <div className="mt-4 space-y-6 animate-reveal">
+                      <div className='bg-primary/5 p-6 rounded-2xl border border-primary/10'>
+                        <h4 className="text-[10px] font-black uppercase text-primary tracking-widest flex items-center gap-2 mb-4">
+                          <Settings2 size={12} /> Pemetaan Kolom CSV
                         </h4>
-                        <Button variant="ghost" size="sm" onClick={() => setCsvPreview([])} className="h-6 text-[9px] font-bold uppercase">Tutup</Button>
+                        <div className="grid grid-cols-2 gap-4">
+                          {[
+                            { name: 'nis', label: 'Kolom NIS (ID)' },
+                            { name: 'name', label: 'Kolom Nama' },
+                            { name: 'class', label: 'Kolom Kelas' },
+                            { name: 'nisn', label: 'Kolom NISN' },
+                            { name: 'gender', label: 'Kolom Jenis Kelamin' },
+                            { name: 'birthPlace', label: 'Kolom Tempat Lahir' },
+                            { name: 'birthDate', label: 'Kolom Tgl Lahir' },
+                            { name: 'address', label: 'Kolom Alamat' },
+                          ].map(mapping => (
+                            <FormField
+                              key={mapping.name}
+                              control={form.control}
+                              name={`csvMappings.${mapping.name}` as any}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-[9px] font-bold uppercase opacity-60">{mapping.label}</FormLabel>
+                                  <FormControl><Input {...field} className='h-9 text-xs rounded-lg' placeholder="Nama Header CSV" /></FormControl>
+                                </FormItem>
+                              )}
+                            />
+                          ))}
+                        </div>
                       </div>
-                      <div className="rounded-xl border overflow-hidden bg-muted/20">
-                        <Table>
-                          <TableHeader>
-                            <TableRow className="h-8">
-                              <TableHead className="text-[9px] font-black px-3">NIS</TableHead>
-                              <TableHead className="text-[9px] font-black px-3">Nama</TableHead>
-                              <TableHead className="text-[9px] font-black px-3">Kelas</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {csvPreview.map((row, i) => (
-                              <TableRow key={i} className="h-8">
-                                <TableCell className="text-[10px] font-mono px-3">{row.NIS || row.nis || '-'}</TableCell>
-                                <TableCell className="text-[10px] px-3 truncate max-w-[120px]">{row.Nama || row.nama || row.name || '-'}</TableCell>
-                                <TableCell className="text-[10px] px-3">{row.Kelas || row.kelas || row.class || '-'}</TableCell>
+
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-[10px] font-bold uppercase text-primary tracking-widest flex items-center gap-2">
+                            <CheckCircle2 size={12} /> Preview Data Terbaca
+                          </h4>
+                          <Button variant="ghost" size="sm" onClick={() => setCsvPreview([])} className="h-6 text-[9px] font-bold uppercase">Tutup Preview</Button>
+                        </div>
+                        <div className="rounded-xl border overflow-hidden bg-muted/20">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="h-8">
+                                {csvHeaders.slice(0, 4).map(h => (
+                                  <TableHead key={h} className="text-[9px] font-black px-3">{h}</TableHead>
+                                ))}
                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                            </TableHeader>
+                            <TableBody>
+                              {csvPreview.map((row, i) => (
+                                <TableRow key={i} className="h-8">
+                                  {csvHeaders.slice(0, 4).map(h => (
+                                    <TableCell key={h} className="text-[10px] px-3 truncate max-w-[100px]">{row[h] || '-'}</TableCell>
+                                  ))}
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -200,56 +256,49 @@ export function SystemSettingsManager() {
                 </CardContent>
               </Card>
 
-              {/* Appearance Settings */}
               <Card className="shadow-2xl border-none rounded-[2rem]">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className='p-2 bg-primary/10 text-primary rounded-xl'><Palette size={20} /></div>
-                    <CardTitle className='text-xl font-headline font-bold italic'>Branding sekolah</CardTitle>
+                    <CardTitle className='text-xl font-headline font-bold italic'>Branding & Warna</CardTitle>
                   </div>
                   <CardDescription>Ubah skema warna global website (format HSL).</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="primaryColor"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Warna utama (Primary)</FormLabel>
-                        <FormControl><Input {...field} placeholder="e.g. 221 83% 53%" className='h-12 rounded-xl'/></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="accentColor"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Warna aksen (Accent)</FormLabel>
-                        <FormControl><Input {...field} placeholder="e.g. 262 83% 58%" className='h-12 rounded-xl'/></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className='grid grid-cols-2 gap-4'>
+                    <FormField
+                      control={form.control}
+                      name="primaryColor"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Warna Utama</FormLabel>
+                          <FormControl><Input {...field} placeholder="e.g. 221 83% 53%" className='h-12 rounded-xl'/></FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="accentColor"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Warna Aksen</FormLabel>
+                          <FormControl><Input {...field} placeholder="e.g. 262 83% 58%" className='h-12 rounded-xl'/></FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="shadow-2xl border-none rounded-[2rem]">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className='p-2 bg-destructive/10 text-destructive rounded-xl'><Hammer size={20} /></div>
-                    <CardTitle className='text-xl font-headline font-bold italic'>Akses sistem</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
+              <Card className="shadow-2xl border-none rounded-[2rem] bg-muted/20">
+                <CardContent className='pt-6'>
                   <FormField
                     control={form.control}
                     name="isMaintenanceMode"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-2xl border p-5 shadow-sm bg-muted/20">
+                      <FormItem className="flex flex-row items-center justify-between rounded-2xl border p-5 shadow-sm bg-card">
                         <div className="space-y-0.5">
-                          <FormLabel className='font-bold text-xs'>Mode pemeliharaan</FormLabel>
+                          <FormLabel className='font-bold text-xs'>Mode Pemeliharaan</FormLabel>
                           <FormDescription className="text-[10px]">Kunci akses publik sementara untuk perbaikan.</FormDescription>
                         </div>
                         <FormControl>
@@ -262,25 +311,24 @@ export function SystemSettingsManager() {
               </Card>
             </div>
 
-            {/* Layout Settings */}
             <Card className="shadow-2xl border-none rounded-[2.5rem]">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className='p-2 bg-primary/10 text-primary rounded-xl'><Layout size={20} /></div>
-                  <CardTitle className='text-xl font-headline font-bold italic'>Tata letak beranda</CardTitle>
+                  <CardTitle className='text-xl font-headline font-bold italic'>Tata Letak Beranda</CardTitle>
                 </div>
                 <CardDescription>Kontrol visibilitas bagian-bagian di halaman depan.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-3">
                   {[
-                    { name: 'showHero', label: 'Impact hero banner', desc: 'Banner utama di bagian atas' },
-                    { name: 'showPartners', label: 'Industry slider', desc: 'Logo mitra industri' },
-                    { name: 'showStats', label: 'School statistics', desc: 'Pencapaian angka sekolah' },
-                    { name: 'showMajors', label: 'Academic programs', desc: 'Blok informasi jurusan' },
-                    { name: 'showNews', label: 'Activity updates', desc: 'Berita dan pengumuman' },
-                    { name: 'showShowcase', label: 'Student portfolio', desc: 'Karya inovasi siswa' },
-                    { name: 'showCta', label: 'Call to action', desc: 'Banner pendaftaran siswa baru' },
+                    { name: 'showHero', label: 'Impact Hero Banner', desc: 'Banner utama di bagian atas' },
+                    { name: 'showPartners', label: 'Industry Slider', desc: 'Logo mitra industri' },
+                    { name: 'showStats', label: 'School Statistics', desc: 'Pencapaian angka sekolah' },
+                    { name: 'showMajors', label: 'Academic Programs', desc: 'Blok informasi jurusan' },
+                    { name: 'showNews', label: 'Activity Updates', desc: 'Berita dan pengumuman' },
+                    { name: 'showShowcase', label: 'Student Portfolio', desc: 'Karya inovasi siswa' },
+                    { name: 'showCta', label: 'Call to Action', desc: 'Banner pendaftaran siswa baru' },
                   ].map((item) => (
                     <FormField
                       key={item.name}
@@ -307,7 +355,7 @@ export function SystemSettingsManager() {
           <div className="flex justify-end sticky bottom-8 z-50">
             <Button type="submit" size="lg" className="font-bold px-12 h-16 rounded-3xl shadow-3xl glow-primary hover:scale-[1.02] transition-all">
               {form.formState.isSubmitting ? <LoaderCircle className="animate-spin mr-2" /> : <Save className="mr-2 h-5 w-5" />}
-              Simpan semua perubahan
+              Simpan Semua Perubahan
             </Button>
           </div>
         </form>

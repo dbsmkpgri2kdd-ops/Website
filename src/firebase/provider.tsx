@@ -6,7 +6,7 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
-import { SCHOOL_DATA_ID, type UserProfile, type School } from '@/lib/data';
+import { SCHOOL_DATA_ID, type UserProfile, type School, type CsvMappings } from '@/lib/data';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -73,7 +73,6 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           const userSnap = await getDoc(userDocRef);
           
           if (!userSnap.exists()) {
-            // Cek inisialisasi sistem untuk admin pertama
             const initRef = doc(firestore, 'app_roles/initialized/init', 'system');
             const initSnap = await getDoc(initRef);
             const isFirstUser = !initSnap.exists();
@@ -90,35 +89,35 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               await setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
             }
           } else {
-            // LOGIKA SINKRONISASI DATA SISWA VIA CSV (Hanya untuk role siswa)
+            // LOGIKA SINKRONISASI DATA SISWA VIA CSV
             const userData = userSnap.data() as UserProfile;
             
-            if (userData.role === 'siswa' && userData.nis && !userData.displayName?.includes(' ')) {
-              // Jika nama masih default/email dan ada NIS, coba sinkronisasi dari CSV
+            if (userData.role === 'siswa' && userData.nis && !userData.nisn) {
               const schoolSnap = await getDoc(doc(firestore, 'schools', SCHOOL_DATA_ID));
               const schoolData = schoolSnap.data() as School;
               
-              if (schoolData?.studentDatabaseUrl) {
+              if (schoolData?.studentDatabaseUrl && schoolData.csvMappings) {
                 try {
                   const response = await fetch(schoolData.studentDatabaseUrl);
                   const csvText = await response.text();
                   const studentData = parseCSV(csvText);
                   
-                  // Cari baris yang cocok dengan NIS
-                  // Asumsi kolom di CSV bernama 'NIS', 'Nama', 'Kelas'
-                  const match = studentData.find(s => String(s.NIS) === String(userData.nis) || String(s.nis) === String(userData.nis));
+                  const mappings = schoolData.csvMappings;
+                  const match = studentData.find(s => String(s[mappings.nis]) === String(userData.nis));
                   
                   if (match) {
-                    const fullName = match.Nama || match.nama || match.NAME || match.name;
-                    const className = match.Kelas || match.kelas || match.CLASS || match.class;
+                    const updates: any = {
+                      displayName: match[mappings.name] || userData.displayName,
+                      className: match[mappings.class] || 'Umum',
+                      nisn: match[mappings.nisn || 'NISN'] || '',
+                      gender: match[mappings.gender || 'JK'] || '',
+                      birthPlace: match[mappings.birthPlace || 'TEMPAT LAHIR'] || '',
+                      birthDate: match[mappings.birthDate || 'TANGGAL LAHIR'] || '',
+                      address: match[mappings.address || 'ALAMAT'] || '',
+                      lastSyncedAt: serverTimestamp()
+                    };
                     
-                    if (fullName) {
-                      await updateDoc(userDocRef, {
-                        displayName: fullName,
-                        className: className || 'Umum',
-                        lastSyncedAt: serverTimestamp()
-                      });
-                    }
+                    await updateDoc(userDocRef, updates);
                   }
                 } catch (csvError) {
                   console.error("CSV Sync Error:", csvError);
