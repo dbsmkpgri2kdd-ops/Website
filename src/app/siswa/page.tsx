@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { LogOut, Sparkles, Fingerprint, MapPin, Calendar, RefreshCcw, UserCog, HeartPulse, User, Phone, ShieldCheck, GraduationCap, BookOpen, UserCheck, Smartphone } from 'lucide-react';
+import { LogOut, Sparkles, Fingerprint, MapPin, Calendar, RefreshCcw, UserCog, HeartPulse, User, Phone, ShieldCheck, GraduationCap, BookOpen, UserCheck, Smartphone, LayoutGrid } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -50,7 +50,7 @@ function SiswaDashboard() {
             <Icon size={16} />
         </div>
         <div className="flex-1 min-w-0">
-            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-primary/60 transition-colors">{label}</p>
+            <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-primary transition-colors">{label}</p>
             <p className="text-xs font-bold text-slate-900 mt-0.5 truncate">{value || '-'}</p>
         </div>
     </div>
@@ -65,7 +65,7 @@ function SiswaDashboard() {
             </div>
             <div className='flex flex-col'>
                 <h1 className="text-xl sm:text-3xl font-black font-headline text-slate-900 tracking-tighter uppercase italic leading-none">Siswa <span className='text-primary not-italic'>Portal.</span></h1>
-                <span className='text-[9px] font-black uppercase tracking-[0.4em] text-primary opacity-40 mt-1'>Digital Identity Center</span>
+                <span className='text-[9px] font-black uppercase tracking-[0.4em] text-primary opacity-60 mt-1'>Digital Identity Center</span>
             </div>
         </div>
         <Button onClick={handleLogout} variant="outline" className="rounded-2xl h-12 px-8 font-black text-[10px] uppercase tracking-widest border-slate-200 text-slate-600 hover:bg-slate-50 transition-all shadow-sm">

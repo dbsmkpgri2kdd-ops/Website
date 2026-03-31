@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -93,7 +92,7 @@ const Header = ({
         return (
           <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1.5 px-4 py-2 text-[11px] font-black text-slate-600 hover:text-primary transition-colors focus:outline-none uppercase tracking-widest">
+              <button className="flex items-center gap-1.5 px-4 py-2 text-[11px] font-black text-slate-700 hover:text-primary transition-colors focus:outline-none uppercase tracking-widest">
                 {item.label}
                 <ChevronDown className="h-3 w-3 opacity-40" />
               </button>
@@ -116,7 +115,7 @@ const Header = ({
           <button
             key={idx}
             onClick={() => item.id && setActiveTab(item.id)}
-            className='px-4 py-2 text-[11px] font-black text-slate-600 hover:text-primary transition-colors uppercase tracking-widest'
+            className='px-4 py-2 text-[11px] font-black text-slate-700 hover:text-primary transition-colors uppercase tracking-widest'
           >
             {item.label}
           </button>
@@ -181,7 +180,7 @@ const Header = ({
                 </SheetTrigger>
                 <SheetContent side="right" className="p-0 w-full sm:w-[400px] border-none shadow-3xl bg-white">
                     <SheetHeader className="p-10 border-b border-slate-100 text-left bg-slate-50/30">
-                        <SheetTitle className='font-black text-3xl tracking-tighter uppercase italic font-headline'>Navigasi Utama</SheetTitle>
+                        <SheetTitle className='font-black text-3xl tracking-tighter uppercase italic font-headline text-slate-900'>Navigasi Utama</SheetTitle>
                     </SheetHeader>
                     
                     <ScrollArea className='h-[calc(100vh-200px)] py-8'>
@@ -194,7 +193,7 @@ const Header = ({
                                   <button
                                     key={cIdx}
                                     onClick={() => { child.id && setActiveTab(child.id); setIsMenuOpen(false); }}
-                                    className="w-full text-left py-4 px-5 rounded-2xl text-[11px] font-black text-slate-600 hover:bg-primary/5 hover:text-primary transition-all uppercase tracking-widest"
+                                    className="w-full text-left py-4 px-5 rounded-2xl text-[11px] font-black text-slate-700 hover:bg-primary/5 hover:text-primary transition-all uppercase tracking-widest"
                                   >
                                     {child.label}
                                   </button>
@@ -203,7 +202,7 @@ const Header = ({
                             ) : (
                               <button
                                 onClick={() => { mainItem.id && setActiveTab(mainItem.id); setIsMenuOpen(false); }}
-                                className="w-full text-left py-4 px-5 rounded-2xl text-[11px] font-black text-slate-600 hover:bg-primary/5 hover:text-primary transition-all uppercase tracking-widest"
+                                className="w-full text-left py-4 px-5 rounded-2xl text-[11px] font-black text-slate-700 hover:bg-primary/5 hover:text-primary transition-all uppercase tracking-widest"
                               >
                                 {mainItem.label}
                               </button>

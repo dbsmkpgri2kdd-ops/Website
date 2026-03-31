@@ -19,9 +19,9 @@ type QuickLinksGridProps = {
 };
 
 /**
- * Komponen Grid untuk menampilkan Tautan Aplikasi berdasarkan audiens.
- * Dioptimalkan untuk PWA (3-4 kolom di mobile) dengan gaya app-drawer.
- * Desain: Clean White dengan aksen Royal Blue & Yellow.
+ * Komponen Grid Layanan Digital v3.8 (Mobile-App style)
+ * Dioptimalkan untuk mode PWA (3-4 kolom pada perangkat seluler).
+ * Menonjolkan konsep Clean White, Royal Blue, dan Vibrant Yellow.
  */
 export function QuickLinksGrid({ audience, title = "Layanan Digital", description = "Akses satu pintu untuk seluruh kebutuhan administratif dan akademik civitas." }: QuickLinksGridProps) {
   const firestore = useFirestore();
@@ -46,36 +46,36 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
   if (!isLoading && (!links || links.length === 0)) return null;
 
   const renderIcon = (iconStr: string) => {
-    if (iconStr.includes('fa-')) {
-      return (
-        <div className="p-2.5 md:p-3 rounded-2xl bg-primary text-white shadow-xl glow-primary w-12 h-12 md:w-14 md:h-14 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-          <i className={cn(iconStr, "text-xl md:text-2xl")} />
-        </div>
-      );
-    }
-    const IconComp = iconMap[iconStr] || Globe;
+    const isFontAwesome = iconStr.includes('fa-');
     return (
-      <div className="p-2.5 md:p-3 rounded-2xl bg-primary text-white shadow-xl glow-primary w-12 h-12 md:w-14 md:h-14 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-        <IconComp className="w-6 h-6 md:w-7 md:h-7" />
+      <div className="p-3 md:p-4 rounded-2xl bg-primary text-white shadow-xl glow-primary w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-500">
+        {isFontAwesome ? (
+          <i className={cn(iconStr, "text-xl md:text-2xl")} />
+        ) : (
+          (() => {
+            const IconComp = iconMap[iconStr] || Globe;
+            return <IconComp className="w-6 h-6 md:w-8 md:h-8" />;
+          })()
+        )}
       </div>
     );
   };
 
   return (
-    <div className="animate-fade-in">
-      <div className="mb-10 md:mb-12 text-center md:text-left space-y-3">
-        <div className='flex items-center gap-2 text-primary justify-center md:justify-start'>
+    <div className="animate-reveal">
+      <div className="mb-10 md:mb-16 text-center md:text-left space-y-3">
+        <div className='flex items-center gap-3 text-primary justify-center md:justify-start'>
             <Sparkles size={14} className='animate-pulse text-accent' />
-            <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-primary">Portal Layanan Terpadu</span>
+            <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-primary">Academic Hub Services</span>
         </div>
-        <h2 className="text-2xl md:text-4xl font-black text-slate-900 leading-tight tracking-tighter uppercase italic">{title}</h2>
-        <p className="text-muted-foreground text-[10px] md:text-sm max-w-2xl font-bold opacity-80 uppercase tracking-widest">{description}</p>
+        <h2 className="text-3xl md:text-5xl font-black text-slate-900 leading-tight tracking-tighter uppercase italic font-headline">{title}</h2>
+        <p className="text-slate-600 text-[10px] md:text-sm max-w-2xl font-bold opacity-80 uppercase tracking-widest leading-relaxed">{description}</p>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-8">
+      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-10">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-32 md:h-48 rounded-[2rem]" />
+            <Skeleton key={i} className="h-32 md:h-56 rounded-[2rem] md:rounded-[3rem]" />
           ))
         ) : (
           links?.map((link) => {
@@ -87,20 +87,20 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <Card className="h-full rounded-[2rem] md:rounded-[3rem] shadow-lg md:shadow-xl border-slate-100 bg-white hover:border-primary/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 overflow-hidden border">
-                  <CardHeader className="flex flex-col items-center gap-3 md:gap-4 p-4 md:p-8 pb-3 md:pb-4 text-center">
+                <Card className="h-full rounded-[2rem] md:rounded-[3.5rem] shadow-xl md:shadow-2xl border-slate-100 bg-white hover:border-primary/20 hover:shadow-primary/10 transition-all duration-700 hover:-translate-y-2 overflow-hidden border-2">
+                  <CardHeader className="flex flex-col items-center gap-4 md:gap-6 p-4 md:p-10 pb-3 md:pb-6 text-center">
                     {renderIcon(link.icon)}
                     <div className="w-full">
-                      <CardTitle className="text-[10px] md:text-base font-black text-slate-900 leading-tight group-hover:text-primary transition-colors uppercase italic tracking-tight line-clamp-2 min-h-[2.5em] flex items-center justify-center">
+                      <CardTitle className="text-[9px] md:text-base font-black text-slate-900 leading-tight group-hover:text-primary transition-colors uppercase italic tracking-tighter line-clamp-2 min-h-[2em] flex items-center justify-center font-headline">
                         {link.title}
                       </CardTitle>
-                      <div className="hidden md:flex items-center justify-center text-[9px] text-muted-foreground font-black uppercase tracking-widest mt-2 opacity-40 group-hover:opacity-100 transition-opacity">
-                        Buka Aplikasi <ExternalLink size={10} className="ml-1.5" />
+                      <div className="hidden md:flex items-center justify-center text-[9px] text-muted-foreground font-black uppercase tracking-widest mt-3 opacity-40 group-hover:opacity-100 transition-opacity">
+                        Launch App <ExternalLink size={10} className="ml-1.5" />
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="px-8 pb-8 hidden md:block">
-                    <p className="text-[11px] text-muted-foreground leading-relaxed font-bold uppercase tracking-wider text-center line-clamp-2 opacity-60">
+                  <CardContent className="px-10 pb-10 hidden lg:block">
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-bold uppercase tracking-wider text-center line-clamp-2 opacity-80">
                       {link.description}
                     </p>
                   </CardContent>

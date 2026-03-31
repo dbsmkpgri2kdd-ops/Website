@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Clean White with Professional Blue & Vibrant Yellow */
+    /* Clean White with Professional Royal Blue & Vibrant Yellow */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -12,16 +12,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
     
-    --primary: 221.2 83.2% 53.3%; /* Professional Royal Blue */
+    --primary: 221.2 83.2% 53.3%; /* Royal Blue */
     --primary-foreground: 210 40% 98%;
     
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 30%; /* Sharper contrast for white bg */
+    --muted-foreground: 215.4 16.3% 30%; /* Darker for 100% contrast on white */
     
-    --accent: 47.9 95.8% 53.1%; /* Vibrant Academic Yellow */
+    --accent: 47.9 95.8% 53.1%; /* Vibrant Yellow */
     --accent-foreground: 222.2 47.4% 11.2%;
     
     --destructive: 0 84.2% 60.2%;
@@ -30,11 +30,10 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
-    --radius: 1.25rem;
+    --radius: 1.5rem;
   }
 
   .dark {
-    /* Obsidian Dark with Blue/Yellow accents */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 6.5%;
@@ -71,11 +70,11 @@
 
 @layer utilities {
   .glass-premium {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-sm;
+    @apply bg-card/80 backdrop-blur-2xl border border-border/50 shadow-2xl;
   }
 
   .fresh-card {
-    @apply bg-card border border-border/40 shadow-xl hover:shadow-2xl transition-all duration-300;
+    @apply bg-card border border-border/40 shadow-xl hover:shadow-2xl transition-all duration-500;
   }
   
   .tech-mesh {
@@ -84,12 +83,12 @@
   }
 
   .animate-reveal {
-    animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes reveal {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(20px); filter: blur(8px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -100,15 +99,25 @@
     scrollbar-width: none;
   }
 
-  .sidebar-menu-item {
-    @apply flex items-center gap-3 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-muted;
-  }
-
   .glow-primary {
-    box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.3);
+    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.4);
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px -5px hsl(var(--accent) / 0.4);
+    box-shadow: 0 10px 30px -10px hsl(var(--accent) / 0.5);
+  }
+
+  .shadow-3xl {
+    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
   }
 }

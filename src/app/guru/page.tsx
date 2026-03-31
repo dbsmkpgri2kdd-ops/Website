@@ -81,7 +81,7 @@ function GuruDashboard() {
                     <span className='text-[11px] font-black uppercase tracking-[0.4em]'>Akses Terverifikasi v7.5</span>
                   </div>
                   <CardTitle className="text-3xl md:text-5xl font-black font-headline tracking-tighter uppercase italic text-slate-900 leading-none">Bapak/Ibu {user?.profile?.displayName || 'Guru'}</CardTitle>
-                  <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em] mt-4 opacity-80">{user?.email}</p>
+                  <p className="text-slate-500 font-bold text-xs uppercase tracking-[0.2em] mt-4 opacity-80">{user?.email}</p>
                   
                   <div className='flex flex-wrap justify-center md:justify-start gap-3 mt-8'>
                     <div className='px-5 py-2 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3'>
@@ -98,7 +98,7 @@ function GuruDashboard() {
           </CardHeader>
           <CardContent className="relative z-10 p-8 md:p-14 pt-0 md:pt-0 border-t border-slate-50 mt-4 bg-slate-50/30">
               <div className='py-8'>
-                <p className="text-slate-500 text-xs md:text-sm font-bold leading-relaxed uppercase tracking-widest opacity-60 max-w-3xl">
+                <p className="text-slate-600 text-xs md:text-sm font-bold leading-relaxed uppercase tracking-widest opacity-80 max-w-3xl">
                     Selamat datang di Pusat Manajemen Akademik Digital. Gunakan panel di bawah untuk mengelola nilai e-rapor, monitoring kehadiran siswa, dan konfigurasi ujian ExamBro secara real-time.
                 </p>
               </div>

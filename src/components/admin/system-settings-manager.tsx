@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -13,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Database, Table as TableIcon, CheckCircle2, XCircle, Search, Settings2, MapPin, Link as LinkIcon, UserCog, HeartPulse, User } from 'lucide-react';
+import { LoaderCircle, Save, ShieldAlert, Layout, Database, Settings2, MapPin, Link as LinkIcon, Search, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -66,7 +65,7 @@ export function SystemSettingsManager() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       isMaintenanceMode: false,
-      studentDatabaseUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlz-4RtUAcUs_1Pw05ocYs2_T96rk4KYy8mwxLlRnO2uhqzdwGayvdxfislfADgA/pub?gid=593474967&single=true&output=csv',
+      studentDatabaseUrl: '',
       attendanceWebhookUrl: '',
       latitude: -5.4,
       longitude: 105.1,
@@ -100,19 +99,19 @@ export function SystemSettingsManager() {
     if (schoolData) {
       form.reset({
         isMaintenanceMode: schoolData.isMaintenanceMode || false,
-        studentDatabaseUrl: schoolData.studentDatabaseUrl || 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlz-4RtUAcUs_1Pw05ocYs2_T96rk4KYy8mwxLlRnO2uhqzdwGayvdxfislfADgA/pub?gid=593474967&single=true&output=csv',
+        studentDatabaseUrl: schoolData.studentDatabaseUrl || '',
         attendanceWebhookUrl: schoolData.attendanceWebhookUrl || '',
         latitude: schoolData.latitude || -5.4,
         longitude: schoolData.longitude || 105.1,
-        primaryColor: schoolData.primaryColor || '221 83% 53%',
-        accentColor: schoolData.accentColor || '262 83% 58%',
+        primaryColor: schoolData.primaryColor || '221.2 83.2% 53.3%',
+        accentColor: schoolData.accentColor || '47.9 95.8% 53.1%',
         csvMappings: {
             ...form.getValues('csvMappings'),
-            ...schoolData.csvMappings
+            ...(schoolData.csvMappings as any)
         },
         layoutSettings: {
             ...form.getValues('layoutSettings'),
-            ...schoolData.layoutSettings
+            ...(schoolData.layoutSettings as any)
         }
       });
     }
@@ -128,6 +127,8 @@ export function SystemSettingsManager() {
       const response = await fetch(url);
       const text = await response.text();
       const lines = text.split('\n').filter(l => l.trim() !== '');
+      if (lines.length === 0) throw new Error("File kosong");
+      
       const headers = lines[0].split(',').map(h => h.trim());
       setCsvHeaders(headers);
       
@@ -149,21 +150,27 @@ export function SystemSettingsManager() {
     }
   };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore || !schoolDocRef) return;
     setDocumentNonBlocking(schoolDocRef, values, { merge: true });
     toast({ title: 'Konfigurasi Disimpan', description: 'Pengaturan sistem telah diperbarui.' });
-  }
+  };
 
-  if (isLoading) return <div className="flex justify-center py-20"><LoaderCircle className="animate-spin text-primary h-8 w-8" /></div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-20">
+        <LoaderCircle className="animate-spin text-primary h-8 w-8" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-reveal pb-20">
       <Alert className="bg-primary/5 border-primary/20">
         <ShieldAlert className="h-4 w-4 text-primary" />
-        <AlertTitle className='font-bold text-xs'>Kustomisasi Identitas & Data</AlertTitle>
-        <AlertDescription className='text-xs font-medium'>
-          Atur identitas visual, lokasi geofencing absensi, dan integrasi data profil siswa sekolah Anda.
+        <AlertTitle className='font-bold text-xs uppercase tracking-widest text-slate-900'>Kustomisasi Identitas & Data</AlertTitle>
+        <AlertDescription className='text-[11px] font-bold text-slate-600 uppercase tracking-widest leading-relaxed mt-1'>
+          Atur identitas visual, lokasi geofencing absensi, dan integrasi data profil siswa sekolah Anda secara real-time.
         </AlertDescription>
       </Alert>
 
@@ -172,24 +179,24 @@ export function SystemSettingsManager() {
           <div className="grid lg:grid-cols-2 gap-8">
             
             <div className="space-y-8">
-              <Card className="shadow-2xl border-none rounded-[2rem]">
-                <CardHeader>
+              <Card className="shadow-2xl border-slate-100 rounded-[3rem] bg-white overflow-hidden">
+                <CardHeader className='p-8 border-b border-slate-100'>
                   <div className="flex items-center gap-3">
-                    <div className='p-2 bg-blue-500/10 text-blue-500 rounded-xl'><Database size={20} /></div>
-                    <CardTitle className='text-xl font-headline font-bold italic'>Integrasi Database Siswa</CardTitle>
+                    <div className='p-2.5 bg-primary text-white rounded-2xl shadow-xl glow-primary'><Database size={20} /></div>
+                    <CardTitle className='text-xl font-headline font-black uppercase italic tracking-tighter text-slate-900'>Database Siswa</CardTitle>
                   </div>
-                  <CardDescription>Hubungkan Google Sheets (CSV) untuk sinkronisasi profil otomatis.</CardDescription>
+                  <CardDescription className='text-[10px] font-bold uppercase tracking-widest mt-1'>Sinkronisasi profil otomatis via Google Sheets.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="p-8 space-y-6">
                   <FormField
                     control={form.control}
                     name="studentDatabaseUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Link CSV Database</FormLabel>
+                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">Link CSV Database</FormLabel>
                         <div className="flex gap-2">
-                          <FormControl><Input {...field} placeholder="https://docs.google.com/spreadsheets/.../pub?output=csv" className='h-12 rounded-xl'/></FormControl>
-                          <Button type="button" onClick={testCsvConnection} variant="outline" className="h-12 rounded-xl px-6" disabled={isTestingCsv}>
+                          <FormControl><Input {...field} placeholder="https://docs.google.com/spreadsheets/.../pub?output=csv" className='h-12 rounded-xl bg-slate-50 border-slate-100 focus:border-primary'/></FormControl>
+                          <Button type="button" onClick={testCsvConnection} variant="outline" className="h-12 rounded-xl px-6 border-slate-200" disabled={isTestingCsv}>
                             {isTestingCsv ? <LoaderCircle className='animate-spin' /> : <Search size={18} />}
                           </Button>
                         </div>
@@ -200,8 +207,8 @@ export function SystemSettingsManager() {
 
                   {csvPreview.length > 0 && (
                     <div className="mt-4 space-y-6 animate-reveal">
-                      <div className='bg-primary/5 p-6 rounded-2xl border border-primary/10'>
-                        <h4 className="text-[10px] font-black uppercase text-primary tracking-widest flex items-center gap-2 mb-4">
+                      <div className='bg-primary/5 p-6 rounded-[2rem] border border-primary/10'>
+                        <h4 className="text-[10px] font-black uppercase text-primary tracking-[0.3em] flex items-center gap-2 mb-6">
                           <Settings2 size={12} /> Pemetaan Kolom CSV
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
@@ -218,15 +225,15 @@ export function SystemSettingsManager() {
                             { name: 'homeroomTeacher', label: 'Kolom Wali Kelas' },
                             { name: 'guardianTeacher', label: 'Kolom Guru Wali' },
                             { name: 'studentAffairs', label: 'Kolom Kesiswaan' },
-                          ].map(mapping => (
+                          ].map((mapping) => (
                             <FormField
                               key={mapping.name}
                               control={form.control}
                               name={`csvMappings.${mapping.name}` as any}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel className="text-[9px] font-bold uppercase opacity-60">{mapping.label}</FormLabel>
-                                  <FormControl><Input {...field} className='h-9 text-xs rounded-lg' placeholder="Nama Header CSV" /></FormControl>
+                                  <FormLabel className="text-[9px] font-black uppercase text-slate-400">{mapping.label}</FormLabel>
+                                  <FormControl><Input {...field} className='h-9 text-[10px] font-bold rounded-lg bg-white border-slate-100' placeholder="Nama Header CSV" /></FormControl>
                                 </FormItem>
                               )}
                             />
@@ -236,26 +243,26 @@ export function SystemSettingsManager() {
 
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-[10px] font-bold uppercase text-primary tracking-widest flex items-center gap-2">
+                          <h4 className="text-[10px] font-black uppercase text-primary tracking-[0.3em] flex items-center gap-2">
                             <CheckCircle2 size={12} /> Preview Data Terbaca
                           </h4>
-                          <Button variant="ghost" size="sm" onClick={() => setCsvPreview([])} className="h-6 text-[9px] font-bold uppercase">Tutup Preview</Button>
+                          <Button variant="ghost" size="sm" onClick={() => setCsvPreview([])} className="h-6 text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-primary">Tutup Preview</Button>
                         </div>
-                        <div className="rounded-xl border overflow-hidden bg-muted/20">
+                        <div className="rounded-2xl border border-slate-100 overflow-hidden bg-slate-50/50 shadow-inner">
                           <div className="overflow-x-auto">
                             <Table>
                                 <TableHeader>
-                                <TableRow className="h-8">
+                                <TableRow className="h-10 border-slate-100 bg-slate-100/50">
                                     {csvHeaders.slice(0, 6).map(h => (
-                                    <TableHead key={h} className="text-[9px] font-black px-3">{h}</TableHead>
+                                    <TableHead key={h} className="text-[9px] font-black px-4 uppercase text-slate-500">{h}</TableHead>
                                     ))}
                                 </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                 {csvPreview.map((row, i) => (
-                                    <TableRow key={i} className="h-8">
+                                    <TableRow key={i} className="h-10 border-slate-100">
                                     {csvHeaders.slice(0, 6).map(h => (
-                                        <TableCell key={h} className="text-[10px] px-3 truncate max-w-[100px]">{row[h] || '-'}</TableCell>
+                                        <TableCell key={h} className="text-[10px] font-bold px-4 truncate max-w-[120px] text-slate-600">{row[h] || '-'}</TableCell>
                                     ))}
                                     </TableRow>
                                 ))}
@@ -268,31 +275,31 @@ export function SystemSettingsManager() {
                   )}
 
                   {csvError && (
-                    <Alert variant="destructive" className="rounded-xl p-3 bg-destructive/5">
-                      <XCircle size={14} className="mt-0.5" />
-                      <AlertDescription className="text-[10px] font-medium">{csvError}</AlertDescription>
+                    <Alert variant="destructive" className="rounded-2xl p-4 bg-destructive/5 border-destructive/20">
+                      <XCircle size={16} className="mt-0.5" />
+                      <AlertDescription className="text-[10px] font-black uppercase tracking-widest">{csvError}</AlertDescription>
                     </Alert>
                   )}
                 </CardContent>
               </Card>
 
-              <Card className="shadow-2xl border-none rounded-[2rem]">
-                <CardHeader>
+              <Card className="shadow-2xl border-slate-100 rounded-[3rem] bg-white overflow-hidden">
+                <CardHeader className='p-8 border-b border-slate-100'>
                   <div className="flex items-center gap-3">
-                    <div className='p-2 bg-amber-500/10 text-amber-500 rounded-xl'><LinkIcon size={20} /></div>
-                    <CardTitle className='text-xl font-headline font-bold italic'>Rekap Absensi (Google Sheets)</CardTitle>
+                    <div className='p-2.5 bg-accent text-accent-foreground rounded-2xl shadow-xl glow-accent'><LinkIcon size={20} /></div>
+                    <CardTitle className='text-xl font-headline font-black uppercase italic tracking-tighter text-slate-900'>Rekap Absensi</CardTitle>
                   </div>
-                  <CardDescription>URL Webhook untuk mengirim data absensi ke spreadsheet eksternal.</CardDescription>
+                  <CardDescription className='text-[10px] font-bold uppercase tracking-widest mt-1'>Koneksi Webhook Google Apps Script.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="p-8 space-y-6">
                   <FormField
                     control={form.control}
                     name="attendanceWebhookUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Google Apps Script URL</FormLabel>
-                        <FormControl><Input {...field} placeholder="https://script.google.com/macros/s/.../exec" className='h-12 rounded-xl'/></FormControl>
-                        <FormDescription className="text-[10px]">Data absensi harian akan langsung masuk ke Google Sheet Anda.</FormDescription>
+                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">Google Apps Script URL</FormLabel>
+                        <FormControl><Input {...field} placeholder="https://script.google.com/macros/s/.../exec" className='h-12 rounded-xl bg-slate-50 border-slate-100'/></FormControl>
+                        <FormDescription className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-2">Seluruh data absensi harian akan dikirim secara real-time ke spreadsheet eksternal Anda.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -300,23 +307,23 @@ export function SystemSettingsManager() {
                 </CardContent>
               </Card>
 
-              <Card className="shadow-2xl border-none rounded-[2rem]">
-                <CardHeader>
+              <Card className="shadow-2xl border-slate-100 rounded-[3rem] bg-white overflow-hidden">
+                <CardHeader className='p-8 border-b border-slate-100'>
                   <div className="flex items-center gap-3">
-                    <div className='p-2 bg-emerald-500/10 text-emerald-500 rounded-xl'><MapPin size={20} /></div>
-                    <CardTitle className='text-xl font-headline font-bold italic'>Geofencing Absensi</CardTitle>
+                    <div className='p-2.5 bg-emerald-500 text-white rounded-2xl shadow-xl shadow-emerald-500/20'><MapPin size={20} /></div>
+                    <CardTitle className='text-xl font-headline font-black uppercase italic tracking-tighter text-slate-900'>Geofencing</CardTitle>
                   </div>
-                  <CardDescription>Titik koordinat pusat sekolah untuk validasi absensi (radius 30m).</CardDescription>
+                  <CardDescription className='text-[10px] font-bold uppercase tracking-widest mt-1'>Validasi lokasi absensi berbasis radius.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="p-8 space-y-6">
                   <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="latitude"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Latitude</FormLabel>
-                          <FormControl><Input {...field} type="number" step="any" placeholder="-5.4000" className='h-12 rounded-xl'/></FormItem>
+                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">Latitude</FormLabel>
+                          <FormControl><Input {...field} type="number" step="any" placeholder="-5.4000" className='h-12 rounded-xl bg-slate-50 border-slate-100 font-mono'/></FormItem>
                         </FormItem>
                       )}
                     />
@@ -325,34 +332,37 @@ export function SystemSettingsManager() {
                       name="longitude"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Longitude</FormLabel>
-                          <FormControl><Input {...field} type="number" step="any" placeholder="105.1000" className='h-12 rounded-xl'/></FormItem>
+                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">Longitude</FormLabel>
+                          <FormControl><Input {...field} type="number" step="any" placeholder="105.1000" className='h-12 rounded-xl bg-slate-50 border-slate-100 font-mono'/></FormItem>
                         </FormItem>
                       )}
                     />
                   </div>
-                  <p className='text-[10px] text-muted-foreground font-medium italic'>*Siswa wajib berada dalam jarak 30 meter dari titik ini untuk melakukan absensi biometrik.</p>
+                  <div className='flex gap-3 bg-amber-500/5 p-4 rounded-xl border border-amber-500/10'>
+                    <ShieldAlert size={16} className='text-amber-600 shrink-0 mt-0.5' />
+                    <p className='text-[9px] text-amber-700 font-bold uppercase tracking-widest leading-relaxed'>Siswa wajib berada dalam radius 30 meter dari titik ini untuk melakukan absensi biometrik secara valid.</p>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="shadow-2xl border-none rounded-[2.5rem]">
-              <CardHeader>
+            <Card className="shadow-2xl border-slate-100 rounded-[3rem] bg-white overflow-hidden h-fit sticky top-24">
+              <CardHeader className='p-8 border-b border-slate-100'>
                 <div className="flex items-center gap-3">
-                  <div className='p-2 bg-primary/10 text-primary rounded-xl'><Layout size={20} /></div>
-                  <CardTitle className='text-xl font-headline font-bold italic'>Tata Letak Beranda</CardTitle>
+                  <div className='p-2.5 bg-primary text-white rounded-2xl shadow-xl glow-primary'><Layout size={20} /></div>
+                  <CardTitle className='text-xl font-headline font-black uppercase italic tracking-tighter text-slate-900'>Layout Beranda</CardTitle>
                 </div>
-                <CardDescription>Kontrol visibilitas bagian-bagian di halaman depan.</CardDescription>
+                <CardDescription className='text-[10px] font-bold uppercase tracking-widest mt-1'>Kontrol visibilitas modul halaman depan.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-8 space-y-4">
                 <div className="grid gap-3">
                   {[
-                    { name: 'showHero', label: 'Impact Hero Banner', desc: 'Banner utama di bagian atas' },
-                    { name: 'showPartners', label: 'Industry Slider', desc: 'Logo mitra industri' },
+                    { name: 'showHero', label: 'Impact Hero Banner', desc: 'Banner utama visual atas' },
+                    { name: 'showPartners', label: 'Industry Slider', desc: 'Logo mitra industri strategis' },
                     { name: 'showStats', label: 'School Statistics', desc: 'Pencapaian angka sekolah' },
                     { name: 'showMajors', label: 'Academic Programs', desc: 'Blok informasi jurusan' },
-                    { name: 'showNews', label: 'Activity Updates', desc: 'Berita dan pengumuman' },
-                    { name: 'showShowcase', label: 'Student Portfolio', desc: 'Karya inovasi siswa' },
+                    { name: 'showNews', label: 'Activity Updates', desc: 'Berita dan pengumuman resmi' },
+                    { name: 'showShowcase', label: 'Student Portfolio', desc: 'Pameran karya inovasi siswa' },
                     { name: 'showCta', label: 'Call to Action', desc: 'Banner pendaftaran siswa baru' },
                   ].map((item) => (
                     <FormField
@@ -360,10 +370,10 @@ export function SystemSettingsManager() {
                       control={form.control}
                       name={`layoutSettings.${item.name}` as any}
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-xl border p-4 hover:bg-muted/10 transition-colors">
+                        <FormItem className="flex flex-row items-center justify-between rounded-2xl border border-slate-100 p-5 hover:bg-slate-50 transition-all group">
                           <div className="space-y-0.5">
-                            <FormLabel className="text-xs font-bold">{item.label}</FormLabel>
-                            <FormDescription className="text-[9px]">{item.desc}</FormDescription>
+                            <FormLabel className="text-xs font-black uppercase tracking-tight text-slate-900 group-hover:text-primary transition-colors">{item.label}</FormLabel>
+                            <FormDescription className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{item.desc}</FormDescription>
                           </div>
                           <FormControl>
                             <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -378,9 +388,9 @@ export function SystemSettingsManager() {
           </div>
 
           <div className="flex justify-end sticky bottom-8 z-50">
-            <Button type="submit" size="lg" className="font-bold px-12 h-16 rounded-3xl shadow-3xl glow-primary hover:scale-[1.02] transition-all">
-              {form.formState.isSubmitting ? <LoaderCircle className="animate-spin mr-2" /> : <Save className="mr-2 h-5 w-5" />}
-              Simpan Semua Perubahan
+            <Button type="submit" size="lg" className="font-black px-12 h-16 rounded-[2rem] shadow-3xl glow-primary hover:scale-[1.05] transition-all uppercase tracking-widest bg-accent text-accent-foreground border-none">
+              {form.formState.isSubmitting ? <LoaderCircle className="animate-spin mr-3 h-5 w-5" /> : <Save className="mr-3 h-5 w-5" />}
+              Simpan Konfigurasi Sistem
             </Button>
           </div>
         </form>
