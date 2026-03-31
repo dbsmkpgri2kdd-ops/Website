@@ -76,24 +76,6 @@ export default function Home() {
   }, [firestore]);
   const { data: schoolData, isLoading: isSchoolDataLoading } = useDoc<School>(schoolDocRef);
   
-  const selectedArticleRef = useMemoFirebase(() => {
-    if (!firestore || !selectedArticleId) return null;
-    return doc(firestore, `schools/${SCHOOL_DATA_ID}/newsArticles`, selectedArticleId);
-  }, [firestore, selectedArticleId]);
-  const { data: selectedArticle } = useDoc<NewsArticle>(selectedArticleRef);
-
-  const selectedLiteracyRef = useMemoFirebase(() => {
-    if (!firestore || !selectedLiteracyArticleId) return null;
-    return doc(firestore, `schools/${SCHOOL_DATA_ID}/literacyArticles`, selectedLiteracyArticleId);
-  }, [firestore, selectedLiteracyArticleId]);
-  const { data: selectedLiteracyArticle } = useDoc<LiteracyArticle>(selectedLiteracyRef);
-  
-  const selectedOsisRef = useMemoFirebase(() => {
-    if (!firestore || !selectedOsisPostId) return null;
-    return doc(firestore, `schools/${SCHOOL_DATA_ID}/osisPosts`, selectedOsisPostId);
-  }, [firestore, selectedOsisPostId]);
-  const { data: selectedOsisPost } = useDoc<OsisPost>(selectedOsisRef);
-
   const handleSetTab = (tab: NavLink) => {
     setActiveTab(tab);
     setSelectedArticleId(null);
@@ -108,18 +90,6 @@ export default function Home() {
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const handleSelectLiteracyArticle = (articleId: string) => {
-    setSelectedLiteracyArticleId(articleId);
-    setActiveTab('pojok-literasi');
-    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-  
-  const handleSelectOsisPost = (postId: string) => {
-    setSelectedOsisPostId(postId);
-    setActiveTab('osis-corner');
-    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
   const renderSection = () => {
     if (!mounted) return <SectionSkeleton />;
 
@@ -130,16 +100,6 @@ export default function Home() {
                 description="Kami sedang meningkatkan performa sistem untuk pengalaman digital yang lebih baik." 
             />
         );
-    }
-
-    if (selectedArticleId && selectedArticle) {
-      return <NewsDetailSection article={selectedArticle} onBack={() => setSelectedArticleId(null)} />;
-    }
-    if (selectedLiteracyArticleId && selectedLiteracyArticle) {
-      return <LiteracyDetailSection article={selectedLiteracyArticle} onBack={() => setSelectedLiteracyArticleId(null)} />;
-    }
-    if (selectedOsisPostId && selectedOsisPost) {
-      return <OsisCornerDetailSection post={selectedOsisPost} onBack={() => setSelectedOsisPostId(null)} />;
     }
 
     switch (activeTab) {
@@ -182,9 +142,9 @@ export default function Home() {
       case 'kontak':
         return <ContactSection schoolData={schoolData} isSchoolDataLoading={isSchoolDataLoading} />;
       case 'pojok-literasi':
-        return <LiteracySection onSelectArticle={handleSelectLiteracyArticle} />;
+        return <LiteracySection onSelectArticle={() => {}} />;
       case 'osis-corner':
-        return <OsisCornerSection onSelectPost={handleSelectOsisPost} />;
+        return <OsisCornerSection onSelectPost={() => {}} />;
       case 'database-alumni':
         return <AlumniSection />;
       case 'jadwal-pelajaran':

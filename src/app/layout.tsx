@@ -1,4 +1,6 @@
-import type { Metadata, Viewport } from 'next';
+'use client';
+
+import React, { useEffect } from 'react';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
@@ -8,7 +10,6 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
 import { AIAssistant } from '@/components/ai/ai-assistant';
 import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
-import Script from 'next/script';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -22,38 +23,31 @@ const inter = Inter({
   display: 'swap',
 });
 
-export const viewport: Viewport = {
-  themeColor: '#3b82f6',
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  viewportFit: 'cover',
-};
-
-const logoUrl = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
-
-export const metadata: Metadata = {
-  title: {
-    default: 'SMKS PGRI 2 Kedondong',
-    template: '%s | SmartSchool'
-  },
-  description: "Official Website SMKS PGRI 2 Kedondong. Pusat Pendidikan Vokasi Berstandar Industri Masa Depan dengan Ekosistem Digital Terpadu.",
-  icons: {
-    icon: logoUrl,
-    shortcut: logoUrl,
-    apple: logoUrl,
-  },
-  keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "STM", "STM Kedondong", "PPDB 2026"],
-  authors: [{ name: "SMKS PGRI 2 Kedondong" }],
-  creator: "Digital Excellence Team",
-  metadataBase: new URL('https://studio-128676595-62275.web.app'),
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    // Registrasi Service Worker di sisi klien untuk menghindari Hydration Error
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then((reg) => {
+          reg.onupdatefound = () => {
+            const installingWorker = reg.installing;
+            if (installingWorker) {
+              installingWorker.onstatechange = () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  window.location.reload();
+                }
+              };
+            }
+          };
+        });
+      });
+    }
+  }, []);
+
   return (
     <html lang="id" suppressHydrationWarning>
       <body 
@@ -80,27 +74,6 @@ export default function RootLayout({
           </ThemeProvider>
           
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-          
-          <Script id="register-sw" strategy="afterInteractive">
-            {`
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').then(function(reg) {
-                    reg.onupdatefound = () => {
-                      const installingWorker = reg.installing;
-                      if (installingWorker) {
-                        installingWorker.onstatechange = () => {
-                          if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            window.location.reload();
-                          }
-                        };
-                      }
-                    };
-                  });
-                });
-              }
-            `}
-          </Script>
       </body>
     </html>
   );

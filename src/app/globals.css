@@ -60,7 +60,7 @@
     @apply font-headline tracking-tighter font-bold text-foreground;
   }
   
-  /* Enforce No Italics Global Policy */
+  /* Global Zero Italics Policy */
   *, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea {
     font-style: normal !important;
   }
