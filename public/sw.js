@@ -1,12 +1,17 @@
-/**
- * Service Worker ExamBro & Digital Hub v5.5
- * Strategi: Skip Waiting & Clients Claim untuk Update Otomatis PWA.
- */
-
-const CACHE_NAME = 'prida-pwa-cache-v7.5';
+const CACHE_NAME = 'prida-cache-v1';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/manifest.webmanifest',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css'
+];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -21,10 +26,22 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  return self.clients.claim();
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  // Pass-through fetch for Static Export compatibility
-  event.respondWith(fetch(event.request));
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match('/');
+      })
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
 });

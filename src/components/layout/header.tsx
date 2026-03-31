@@ -43,7 +43,7 @@ const Header = ({
   useEffect(() => {
     setMounted(true);
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -65,6 +65,7 @@ const Header = ({
         onClick={handleAuthClick}
         variant={user ? "default" : "outline"}
         size="icon"
+        aria-label={user ? "Buka Dashboard" : "Masuk ke Sistem"}
         className={cn(
           "h-9 w-9 rounded-lg transition-all shrink-0 shadow-sm",
           user ? "bg-primary text-white border-none" : "border-slate-200 text-slate-600 hover:bg-slate-50",
@@ -123,9 +124,10 @@ const Header = ({
       isScrolled ? "h-14" : "h-20"
     )}>
       <div className="max-w-7xl mx-auto px-6 h-full">
-        <div className="flex justify-between items-center h-full">
+        <nav className="flex justify-between items-center h-full">
           <button
             onClick={() => setActiveTab('home')}
+            aria-label="Beranda"
             className="flex items-center gap-3 group"
           >
             <div className="relative w-9 h-9 overflow-hidden rounded-xl bg-primary/5 p-1 transition-all duration-300 group-hover:scale-105 border border-primary/5">
@@ -150,9 +152,9 @@ const Header = ({
             </div>
           </button>
 
-          <nav className="hidden lg:flex items-center space-x-0.5">
+          <div className="hidden lg:flex items-center space-x-0.5">
              {mounted && renderNavItems(currentMenu)}
-          </nav>
+          </div>
 
           <div className="flex items-center gap-2">
              <AuthButton className="hidden md:flex" />
@@ -160,7 +162,7 @@ const Header = ({
              <ThemeToggle />
              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9 bg-slate-50 hover:bg-primary/5 text-slate-600 hover:text-primary transition-all">
+                  <Button variant="ghost" size="icon" aria-label="Buka Menu" className="rounded-lg h-9 w-9 bg-slate-50 hover:bg-primary/5 text-slate-600 hover:text-primary transition-all">
                     <Menu size={20} />
                   </Button>
                 </SheetTrigger>
@@ -203,7 +205,7 @@ const Header = ({
                 </SheetContent>
               </Sheet>
           </div>
-        </div>
+        </nav>
       </div>
     </header>
   );

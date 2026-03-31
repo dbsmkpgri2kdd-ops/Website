@@ -25,8 +25,7 @@ export const viewport: Viewport = {
   themeColor: '#3b82f6',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 5,
   viewportFit: 'cover',
 };
 
@@ -43,10 +42,11 @@ export const metadata: Metadata = {
     shortcut: logoUrl,
     apple: logoUrl,
   },
-  keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "STM", " STM Kedondong", "PPDB 2026"],
+  keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "STM", "STM Kedondong", "PPDB 2026"],
   authors: [{ name: "SMKS PGRI 2 Kedondong" }],
   creator: "Digital Excellence Team",
   manifest: '/manifest.webmanifest',
+  metadataBase: new URL('https://studio-128676595-62275.web.app'),
 };
 
 export default function RootLayout({
@@ -59,20 +59,20 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-        {/* Force PWA Service Worker Registration on Load */}
         <script dangerouslySetInnerHTML={{
           __html: `
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/sw.js').then(function(reg) {
-                  console.log('PRIDA PWA: Service worker registered.');
                   reg.onupdatefound = () => {
                     const installingWorker = reg.installing;
-                    installingWorker.onstatechange = () => {
-                      if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        window.location.reload(); // Refresh to get the latest version automatically
-                      }
-                    };
+                    if (installingWorker) {
+                      installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                          window.location.reload();
+                        }
+                      };
+                    }
                   };
                 });
               });
@@ -82,7 +82,7 @@ export default function RootLayout({
       </head>
       <body 
         className={cn(
-          "min-h-screen bg-background font-sans antialiased selection:bg-primary/10",
+          "min-h-screen bg-background font-sans antialiased",
           jakarta.variable, 
           inter.variable
         )}

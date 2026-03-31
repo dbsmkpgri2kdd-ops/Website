@@ -22,39 +22,39 @@ const SectionSkeleton = () => (
   </div>
 );
 
-// Performance Optimization: Strategic Dynamic imports
-const ProfileSection = dynamic(() => import('@/components/sections/profile'), { loading: () => <SectionSkeleton />, ssr: true });
-const NewsSection = dynamic(() => import('@/components/sections/news'), { loading: () => <SectionSkeleton />, ssr: false });
-const PpdbSection = dynamic(() => import('@/components/sections/ppdb'), { loading: () => <SectionSkeleton />, ssr: false });
-const ContactSection = dynamic(() => import('@/components/sections/contact'), { loading: () => <SectionSkeleton />, ssr: false });
-const MajorsSection = dynamic(() => import('@/components/sections/majors'), { loading: () => <SectionSkeleton />, ssr: false });
-const FacilitiesSection = dynamic(() => import('@/components/sections/facilities'), { loading: () => <SectionSkeleton />, ssr: false });
-const GallerySection = dynamic(() => import('@/components/sections/gallery'), { loading: () => <SectionSkeleton />, ssr: false });
-const AchievementsSection = dynamic(() => import('@/components/sections/achievements'), { loading: () => <SectionSkeleton />, ssr: false });
-const NewsDetailSection = dynamic(() => import('@/components/sections/news-detail'), { loading: () => <SectionSkeleton />, ssr: false });
-const TestimonialsSection = dynamic(() => import('@/components/sections/testimonials'), { loading: () => <SectionSkeleton />, ssr: false });
-const ExtracurricularsSection = dynamic(() => import('@/components/sections/extracurriculars'), { loading: () => <SectionSkeleton />, ssr: false });
-const AgendaSection = dynamic(() => import('@/components/sections/agenda'), { loading: () => <SectionSkeleton />, ssr: false });
-const DownloadsSection = dynamic(() => import('@/components/sections/downloads'), { loading: () => <SectionSkeleton />, ssr: false });
-const ScheduleSection = dynamic(() => import('@/components/shared/schedule-section'), { loading: () => <SectionSkeleton />, ssr: false });
-const LibrarySection = dynamic(() => import('@/components/sections/library'), { loading: () => <SectionSkeleton />, ssr: false });
-const LiteracySection = dynamic(() => import('@/components/sections/literacy-section'), { loading: () => <SectionSkeleton />, ssr: false });
-const LiteracyDetailSection = dynamic(() => import('@/components/sections/literacy-detail-section'), { loading: () => <SectionSkeleton />, ssr: false });
-const OsisCornerSection = dynamic(() => import('@/components/sections/osis-corner'), { loading: () => <SectionSkeleton />, ssr: false });
-const OsisCornerDetailSection = dynamic(() => import('@/components/sections/osis-corner-detail'), { loading: () => <SectionSkeleton />, ssr: false });
-const IndustryPartnersSection = dynamic(() => import('@/components/sections/industry-partners'), { loading: () => <SectionSkeleton />, ssr: false });
-const BkkSection = dynamic(() => import('@/components/sections/bkk'), { loading: () => <SectionSkeleton />, ssr: false });
-const TeachingFactorySection = dynamic(() => import('@/components/sections/teaching-factory'), { loading: () => <SectionSkeleton />, ssr: false });
-const LspSection = dynamic(() => import('@/components/sections/lsp'), { loading: () => <SectionSkeleton />, ssr: false });
-const TracerStudySection = dynamic(() => import('@/components/sections/tracer-study'), { loading: () => <SectionSkeleton />, ssr: false });
-const CheckGraduationSection = dynamic(() => import('@/components/sections/check-graduation'), { loading: () => <SectionSkeleton />, ssr: false });
-const PpdbStatusCheckSection = dynamic(() => import('@/components/sections/ppdb-status-check'), { loading: () => <SectionSkeleton />, ssr: false });
-const TeachersSection = dynamic(() => import('@/components/sections/teachers'), { loading: () => <SectionSkeleton />, ssr: false });
-const PlaceholderSection = dynamic(() => import('@/components/sections/placeholder-section'), { loading: () => <SectionSkeleton />, ssr: false });
-const AlumniSection = dynamic(() => import('@/components/sections/alumni'), { loading: () => <SectionSkeleton />, ssr: false });
-const GuestbookSection = dynamic(() => import('@/components/sections/guestbook'), { loading: () => <SectionSkeleton />, ssr: false });
-const PrakerinSection = dynamic(() => import('@/components/sections/prakerin'), { loading: () => <SectionSkeleton />, ssr: false });
-const ShowcaseSection = dynamic(() => import('@/components/sections/showcase'), { loading: () => <SectionSkeleton />, ssr: false });
+// Performance Optimization: Lighter initial load
+const ProfileSection = dynamic(() => import('@/components/sections/profile'), { loading: () => <SectionSkeleton /> });
+const NewsSection = dynamic(() => import('@/components/sections/news'), { loading: () => <SectionSkeleton /> });
+const PpdbSection = dynamic(() => import('@/components/sections/ppdb'), { loading: () => <SectionSkeleton /> });
+const ContactSection = dynamic(() => import('@/components/sections/contact'), { loading: () => <SectionSkeleton /> });
+const MajorsSection = dynamic(() => import('@/components/sections/majors'), { loading: () => <SectionSkeleton /> });
+const FacilitiesSection = dynamic(() => import('@/components/sections/facilities'), { loading: () => <SectionSkeleton /> });
+const GallerySection = dynamic(() => import('@/components/sections/gallery'), { loading: () => <SectionSkeleton /> });
+const AchievementsSection = dynamic(() => import('@/components/sections/achievements'), { loading: () => <SectionSkeleton /> });
+const NewsDetailSection = dynamic(() => import('@/components/sections/news-detail'), { loading: () => <SectionSkeleton /> });
+const TestimonialsSection = dynamic(() => import('@/components/sections/testimonials'), { loading: () => <SectionSkeleton /> });
+const ExtracurricularsSection = dynamic(() => import('@/components/sections/extracurriculars'), { loading: () => <SectionSkeleton /> });
+const AgendaSection = dynamic(() => import('@/components/sections/agenda'), { loading: () => <SectionSkeleton /> });
+const DownloadsSection = dynamic(() => import('@/components/sections/downloads'), { loading: () => <SectionSkeleton /> });
+const ScheduleSection = dynamic(() => import('@/components/shared/schedule-section'), { loading: () => <SectionSkeleton /> });
+const LibrarySection = dynamic(() => import('@/components/sections/library'), { loading: () => <SectionSkeleton /> });
+const LiteracySection = dynamic(() => import('@/components/sections/literacy-section'), { loading: () => <SectionSkeleton /> });
+const LiteracyDetailSection = dynamic(() => import('@/components/sections/literacy-detail-section'), { loading: () => <SectionSkeleton /> });
+const OsisCornerSection = dynamic(() => import('@/components/sections/osis-corner'), { loading: () => <SectionSkeleton /> });
+const OsisCornerDetailSection = dynamic(() => import('@/components/sections/osis-corner-detail'), { loading: () => <SectionSkeleton /> });
+const IndustryPartnersSection = dynamic(() => import('@/components/sections/industry-partners'), { loading: () => <SectionSkeleton /> });
+const BkkSection = dynamic(() => import('@/components/sections/bkk'), { loading: () => <SectionSkeleton /> });
+const TeachingFactorySection = dynamic(() => import('@/components/sections/teaching-factory'), { loading: () => <SectionSkeleton /> });
+const LspSection = dynamic(() => import('@/components/sections/lsp'), { loading: () => <SectionSkeleton /> });
+const TracerStudySection = dynamic(() => import('@/components/sections/tracer-study'), { loading: () => <SectionSkeleton /> });
+const CheckGraduationSection = dynamic(() => import('@/components/sections/check-graduation'), { loading: () => <SectionSkeleton /> });
+const PpdbStatusCheckSection = dynamic(() => import('@/components/sections/ppdb-status-check'), { loading: () => <SectionSkeleton /> });
+const TeachersSection = dynamic(() => import('@/components/sections/teachers'), { loading: () => <SectionSkeleton /> });
+const AlumniSection = dynamic(() => import('@/components/sections/alumni'), { loading: () => <SectionSkeleton /> });
+const GuestbookSection = dynamic(() => import('@/components/sections/guestbook'), { loading: () => <SectionSkeleton /> });
+const PrakerinSection = dynamic(() => import('@/components/sections/prakerin'), { loading: () => <SectionSkeleton /> });
+const ShowcaseSection = dynamic(() => import('@/components/sections/showcase'), { loading: () => <SectionSkeleton /> });
+const PlaceholderSection = dynamic(() => import('@/components/sections/placeholder-section'), { loading: () => <SectionSkeleton /> });
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<NavLink>('home');
@@ -100,37 +100,25 @@ export default function Home() {
     setSelectedArticleId(null);
     setSelectedLiteracyArticleId(null);
     setSelectedOsisPostId(null);
-    if (typeof window !== 'undefined') window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   const handleSelectArticle = (articleId: string) => {
     setSelectedArticleId(articleId);
     setActiveTab('berita-pengumuman');
-    if (typeof window !== 'undefined') window.scrollTo(0, 0);
-  }
-
-  const handleBackToNews = () => {
-    setSelectedArticleId(null);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   const handleSelectLiteracyArticle = (articleId: string) => {
     setSelectedLiteracyArticleId(articleId);
     setActiveTab('pojok-literasi');
-    if (typeof window !== 'undefined') window.scrollTo(0, 0);
-  }
-
-  const handleBackToLiteracy = () => {
-    setSelectedLiteracyArticleId(null);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   
   const handleSelectOsisPost = (postId: string) => {
     setSelectedOsisPostId(postId);
     setActiveTab('osis-corner');
-    if (typeof window !== 'undefined') window.scrollTo(0, 0);
-  }
-
-  const handleBackToOsisCorner = () => {
-    setSelectedOsisPostId(null);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   const renderSection = () => {
@@ -139,20 +127,20 @@ export default function Home() {
     if (schoolData?.isMaintenanceMode && !isAdmin) {
         return (
             <PlaceholderSection 
-                title="Sistem Dalam Pemeliharaan" 
-                description="Kami sedang meningkatkan performa sistem untuk memberikan pengalaman digital yang lebih baik bagi seluruh civitas akademika." 
+                title="Sistem Pemeliharaan" 
+                description="Kami sedang meningkatkan performa sistem untuk pengalaman digital yang lebih baik." 
             />
         );
     }
 
     if (selectedArticleId && selectedArticle) {
-      return <NewsDetailSection article={selectedArticle} onBack={handleBackToNews} />;
+      return <NewsDetailSection article={selectedArticle} onBack={() => setSelectedArticleId(null)} />;
     }
     if (selectedLiteracyArticleId && selectedLiteracyArticle) {
-      return <LiteracyDetailSection article={selectedLiteracyArticle} onBack={handleBackToLiteracy} />;
+      return <LiteracyDetailSection article={selectedLiteracyArticle} onBack={() => setSelectedLiteracyArticleId(null)} />;
     }
     if (selectedOsisPostId && selectedOsisPost) {
-      return <OsisCornerDetailSection post={selectedOsisPost} onBack={handleBackToOsisCorner} />;
+      return <OsisCornerDetailSection post={selectedOsisPost} onBack={() => setSelectedOsisPostId(null)} />;
     }
 
     switch (activeTab) {
@@ -215,7 +203,7 @@ export default function Home() {
       case 'showcase-karya':
         return <ShowcaseSection />;
       default:
-        return <PlaceholderSection title="Feature Not Ready" description={`Halaman (${activeTab}) sedang dalam tahap integrasi database.`} />;
+        return <PlaceholderSection title="Fitur Belum Tersedia" description={`Halaman (${activeTab}) sedang dalam tahap integrasi.`} />;
     }
   };
 
@@ -228,7 +216,7 @@ export default function Home() {
         schoolData={schoolData}
         isSchoolDataLoading={isSchoolDataLoading}
       />
-      <main className="flex-grow pb-24 md:pb-0">
+      <main className="flex-grow pb-24 md:pb-0" role="main">
         <Suspense fallback={<SectionSkeleton />}>
             {renderSection()}
         </Suspense>
