@@ -61,6 +61,7 @@ export default function Home() {
   const [selectedLiteracyArticleId, setSelectedLiteracyArticleId] = useState<string | null>(null);
   const [selectedOsisPostId, setSelectedOsisPostId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -169,8 +170,8 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header
-        isMenuOpen={false}
-        setIsMenuOpen={() => {}}
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
         setActiveTab={handleSetTab}
         schoolData={schoolData}
         isSchoolDataLoading={isSchoolDataLoading}
@@ -182,7 +183,7 @@ export default function Home() {
       <BottomNav
         activeTab={activeTab}
         setActiveTab={handleSetTab}
-        setIsMenuOpen={() => {}}
+        setIsMenuOpen={setIsMenuOpen}
       />
     </div>
   );
