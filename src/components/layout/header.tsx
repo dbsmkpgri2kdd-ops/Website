@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -63,18 +64,18 @@ const Header = ({
         onClick={handleAuthClick}
         variant={user ? "default" : "outline"}
         className={cn(
-          "px-3 sm:px-6 h-10 rounded-xl font-black text-[9px] tracking-[0.2em] uppercase transition-all hover:scale-105 shadow-xl",
+          "px-3 sm:px-6 h-10 rounded-xl font-bold text-[11px] tracking-wide transition-all hover:scale-105 shadow-xl",
           !user && "border-white/10 hover:bg-white/5",
           className
         )}
       >
         {user ? (
             <span className='flex items-center gap-2'>
-                <DatabaseZap size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'DASBOR'}</span>
+                <DatabaseZap size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'Dasbor'}</span>
             </span>
         ) : (
           <span className='flex items-center gap-2'>
-            <LogIn size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'MASUK'}</span>
+            <LogIn size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'Masuk'}</span>
           </span>
         )}
       </Button>
@@ -89,7 +90,7 @@ const Header = ({
         return (
           <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1.5 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors focus:outline-none">
+              <button className="flex items-center gap-1.5 px-4 py-2 text-[12px] font-semibold text-foreground/70 hover:text-primary transition-colors focus:outline-none">
                 {item.label}
                 <ChevronDown className="h-3 w-3 opacity-40" />
               </button>
@@ -99,7 +100,7 @@ const Header = ({
                 <DropdownMenuItem
                   key={cIdx}
                   onClick={() => child.id && setActiveTab(child.id)}
-                  className='font-bold text-[9px] uppercase tracking-widest cursor-pointer rounded-xl py-3 px-4 focus:bg-primary/10 focus:text-primary mb-1 transition-all'
+                  className='font-semibold text-[11px] cursor-pointer rounded-xl py-3 px-4 focus:bg-primary/10 focus:text-primary mb-1 transition-all'
                 >
                   {child.label}
                 </DropdownMenuItem>
@@ -112,7 +113,7 @@ const Header = ({
           <button
             key={idx}
             onClick={() => item.id && setActiveTab(item.id)}
-            className='px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors'
+            className='px-4 py-2 text-[12px] font-semibold text-foreground/70 hover:text-primary transition-colors'
           >
             {item.label}
           </button>
@@ -147,11 +148,11 @@ const Header = ({
                 />
               )}
             </div>
-            <div className="flex flex-col items-start leading-none hidden sm:flex">
-                <span className="font-black text-sm tracking-tight uppercase">
+            <div className="flex flex-col items-start leading-none hidden sm:flex text-left">
+                <span className="font-black text-sm tracking-tight">
                 {schoolData?.shortName || "SMKS PGRI 2"}
                 </span>
-                <span className='text-[7px] font-bold text-primary uppercase tracking-[0.4em] mt-0.5'>Digital Excellence</span>
+                <span className='text-[8px] font-bold text-primary tracking-widest mt-0.5'>Digital Excellence</span>
             </div>
           </button>
 
@@ -174,22 +175,22 @@ const Header = ({
                     <SheetHeader className="p-8 border-b border-white/5">
                         <div className="flex items-center gap-3 text-primary mb-4">
                           <DatabaseZap size={18} />
-                          <span className='text-[9px] font-black uppercase tracking-[0.4em]'>Portal Core v7.5</span>
+                          <span className='text-[10px] font-bold tracking-wider'>Portal Core v7.5</span>
                         </div>
-                        <SheetTitle className='text-left font-black text-3xl uppercase tracking-tighter italic'>MENU PORTAL</SheetTitle>
+                        <SheetTitle className='text-left font-black text-2xl tracking-tight italic'>Menu Portal</SheetTitle>
                     </SheetHeader>
                     
                     <ScrollArea className='h-[calc(100vh-180px)] py-6'>
                         {currentMenu.map((mainItem, mIdx) => (
                           <div key={mIdx} className="px-8 mb-8">
-                            <h3 className="px-2 text-[8px] font-black uppercase tracking-[0.5em] text-muted-foreground/40 mb-4">{mainItem.label}</h3>
+                            <h3 className="px-2 text-[10px] font-bold tracking-widest text-muted-foreground/40 mb-4 uppercase">{mainItem.label}</h3>
                             {mainItem.children ? (
                               <div className="grid grid-cols-1 gap-1">
                                 {mainItem.children.map((child, cIdx) => (
                                   <button
                                     key={cIdx}
                                     onClick={() => { child.id && setActiveTab(child.id); setIsMenuOpen(false); }}
-                                    className="w-full text-left py-3.5 px-4 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 hover:text-primary transition-all"
+                                    className="w-full text-left py-3 px-4 rounded-xl text-[13px] font-semibold hover:bg-white/5 hover:text-primary transition-all"
                                   >
                                     {child.label}
                                   </button>
@@ -198,7 +199,7 @@ const Header = ({
                             ) : (
                               <button
                                 onClick={() => { mainItem.id && setActiveTab(mainItem.id); setIsMenuOpen(false); }}
-                                className="w-full text-left py-3.5 px-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:text-primary transition-all"
+                                className="w-full text-left py-3 px-4 rounded-xl text-[13px] font-semibold hover:text-primary transition-all"
                               >
                                 {mainItem.label}
                               </button>

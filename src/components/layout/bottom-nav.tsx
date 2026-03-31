@@ -1,3 +1,4 @@
+
 'use client';
 import { Home, Newspaper, UserPlus, LayoutGrid } from 'lucide-react';
 import type { NavLink } from '@/lib/data';
@@ -11,7 +12,6 @@ type BottomNavProps = {
 
 /**
  * Bilah navigasi bawah khusus mobile.
- * Diperbarui: Desain solid (tidak melayang) yang menempel di bawah bingkai layar.
  */
 export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: BottomNavProps) {
   const navItems = [
@@ -41,7 +41,7 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
               )}
             >
               <item.icon className={cn("w-5 h-5 mb-1", isActive ? "stroke-[2.5px]" : "stroke-2")} />
-              <span className="text-[8px] font-black uppercase tracking-widest">
+              <span className="text-[10px] font-bold tracking-tight">
                 {item.label}
               </span>
             </button>
@@ -55,7 +55,7 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
           className="flex flex-col items-center justify-center flex-1 text-muted-foreground opacity-60 hover:opacity-100 active:scale-95"
         >
           <LayoutGrid className="w-5 h-5 mb-1" />
-          <span className="text-[8px] font-black uppercase tracking-widest">Menu</span>
+          <span className="text-[10px] font-bold tracking-tight">Menu</span>
         </button>
       </div>
     </div>

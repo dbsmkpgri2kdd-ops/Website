@@ -81,43 +81,43 @@ function AdminDashboard() {
     try {
       await signOut(auth);
       router.replace('/');
-      toast({ title: 'SESI BERAKHIR', description: 'Kembali ke halaman utama...' });
+      toast({ title: 'Sesi Berakhir', description: 'Kembali ke halaman utama...' });
     } catch (error) {
-      toast({ variant: 'destructive', title: 'LOGOUT GAGAL' });
+      toast({ variant: 'destructive', title: 'Logout Gagal' });
     }
   };
 
   const navItems = [
-    { label: 'RINGKASAN', value: 'overview', icon: LayoutDashboard, group: 'UTAMA' },
-    { label: 'BUILDER BERANDA', value: 'layout-builder', icon: Layout, group: 'EDITOR VISUAL' },
-    { label: 'MANAJER MENU', value: 'navigation', icon: MousePointer2, group: 'EDITOR VISUAL' },
-    { label: 'TAMPILAN', value: 'appearance', icon: Palette, group: 'EDITOR VISUAL' },
+    { label: 'Ringkasan', value: 'overview', icon: LayoutDashboard, group: 'Utama' },
+    { label: 'Builder Beranda', value: 'layout-builder', icon: Layout, group: 'Editor Visual' },
+    { label: 'Manajer Menu', value: 'navigation', icon: MousePointer2, group: 'Editor Visual' },
+    { label: 'Tampilan Website', value: 'appearance', icon: Palette, group: 'Editor Visual' },
     
-    { label: 'UJIAN ONLINE', value: 'exams', icon: ShieldCheck, group: 'AKADEMIK' },
-    { label: 'PESAN MASUK', value: 'contact-messages', icon: Mail, group: 'KONTEN' },
-    { label: 'BERITA', value: 'news', icon: Newspaper, group: 'KONTEN' },
-    { label: 'AGENDA', value: 'agenda', icon: Calendar, group: 'KONTEN' },
-    { label: 'OSIS CORNER', value: 'osis', icon: Bell, group: 'KONTEN' },
-    { label: 'LITERASI', value: 'literacy', icon: PenSquare, group: 'KONTEN' },
-    { label: 'GALERI', value: 'gallery', icon: FileBox, group: 'KONTEN' },
-    { label: 'TESTIMONI', value: 'testimonials', icon: Quote, group: 'KONTEN' },
-    { label: 'BUKU TAMU', value: 'guestbook', icon: MessageSquare, group: 'KONTEN' },
+    { label: 'Ujian Online', value: 'exams', icon: ShieldCheck, group: 'Akademik' },
+    { label: 'Pesan Masuk', value: 'contact-messages', icon: Mail, group: 'Konten' },
+    { label: 'Berita Sekolah', value: 'news', icon: Newspaper, group: 'Konten' },
+    { label: 'Agenda & Acara', value: 'agenda', icon: Calendar, group: 'Konten' },
+    { label: 'Osis Corner', value: 'osis', icon: Bell, group: 'Konten' },
+    { label: 'Pojok Literasi', value: 'literacy', icon: PenSquare, group: 'Konten' },
+    { label: 'Galeri Media', value: 'gallery', icon: FileBox, group: 'Konten' },
+    { label: 'Testimoni Alumni', value: 'testimonials', icon: Quote, group: 'Konten' },
+    { label: 'Buku Tamu', value: 'guestbook', icon: MessageSquare, group: 'Konten' },
 
-    { label: 'STAF & GURU', value: 'teachers', icon: Users2, group: 'AKADEMIK' },
-    { label: 'JURUSAN', value: 'majors', icon: GraduationCap, group: 'AKADEMIK' },
-    { label: 'PRESTASI', value: 'achievements', icon: Award, group: 'AKADEMIK' },
-    { label: 'PERPUSTAKAAN', value: 'library', icon: Library, group: 'AKADEMIK' },
+    { label: 'Staf & Guru', value: 'teachers', icon: Users2, group: 'Akademik' },
+    { label: 'Daftar Jurusan', value: 'majors', icon: GraduationCap, group: 'Akademik' },
+    { label: 'Prestasi Siswa', value: 'achievements', icon: Award, group: 'Akademik' },
+    { label: 'Perpustakaan', value: 'library', icon: Library, group: 'Akademik' },
     
-    { label: 'PPDB ONLINE', value: 'ppdb', icon: UserPlus, group: 'ADMINISTRASI' },
-    { label: 'KERJA SAMA', value: 'partners', icon: BriefcaseIcon, group: 'ADMINISTRASI' },
-    { label: 'BURSA KERJA', value: 'jobs', icon: Briefcase, group: 'ADMINISTRASI' },
-    { label: 'TEACHING FACTORY', value: 'tefa', icon: Factory, group: 'ADMINISTRASI' },
-    { label: 'TRACER STUDY', value: 'tracer', icon: SearchCode, group: 'ADMINISTRASI' },
+    { label: 'PPDB Online', value: 'ppdb', icon: UserPlus, group: 'Administrasi' },
+    { label: 'Kerja Sama Mitra', value: 'partners', icon: BriefcaseIcon, group: 'Administrasi' },
+    { label: 'Bursa Kerja', value: 'jobs', icon: Briefcase, group: 'Administrasi' },
+    { label: 'Teaching Factory', value: 'tefa', icon: Factory, group: 'Administrasi' },
+    { label: 'Tracer Study', value: 'tracer', icon: SearchCode, group: 'Administrasi' },
 
-    { label: 'PENGGUNA', value: 'users', icon: ShieldAlert, group: 'SISTEM' },
-    { label: 'IDENTITAS', value: 'school-profile', icon: Building2, group: 'SISTEM' },
-    { label: 'TAUTAN CEPAT', value: 'quick-links', icon: LinkIcon, group: 'SISTEM' },
-    { label: 'KONFIGURASI', value: 'settings', icon: Settings, group: 'SISTEM' },
+    { label: 'Manajemen Pengguna', value: 'users', icon: ShieldAlert, group: 'Sistem' },
+    { label: 'Identitas Sekolah', value: 'school-profile', icon: Building2, group: 'Sistem' },
+    { label: 'Tautan Cepat', value: 'quick-links', icon: LinkIcon, group: 'Sistem' },
+    { label: 'Konfigurasi Sistem', value: 'settings', icon: Settings, group: 'Sistem' },
   ];
 
   if (isUserLoading) {
@@ -125,7 +125,7 @@ function AdminDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className='flex flex-col items-center gap-4'>
             <LoaderCircle className="animate-spin text-primary h-10 w-10" />
-            <p className='text-[9px] font-bold uppercase tracking-[0.4em] text-muted-foreground'>Sinkronisasi Dasbor...</p>
+            <p className='text-xs font-semibold tracking-wide text-muted-foreground'>Sinkronisasi dasbor...</p>
         </div>
       </div>
     );
@@ -180,14 +180,14 @@ function AdminDashboard() {
     <button
       onClick={() => { setActiveTab(item.value as AdminTab); setIsSidebarOpen(false); }}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[10px] font-bold tracking-widest transition-all duration-300 group uppercase",
+        "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 group",
         activeTab === item.value 
-          ? "bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]" 
+          ? "bg-primary text-white shadow-md shadow-primary/10" 
           : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
       )}
     >
-      <item.icon size={16} className={cn("transition-all", activeTab === item.value ? "opacity-100" : "opacity-40 group-hover:opacity-100")} />
-      {item.label}
+      <item.icon size={16} className={cn("transition-all shrink-0", activeTab === item.value ? "opacity-100" : "opacity-50 group-hover:opacity-100")} />
+      <span className="truncate">{item.label}</span>
     </button>
   );
 
@@ -198,69 +198,69 @@ function AdminDashboard() {
       )}
 
       <aside className={cn(
-        "fixed lg:sticky top-0 left-0 h-screen w-64 bg-card border-r border-white/5 z-[70] transition-all duration-500 flex flex-col shadow-2xl",
+        "fixed lg:sticky top-0 left-0 h-screen w-64 bg-card border-r border-white/5 z-[70] transition-all duration-300 flex flex-col shadow-xl",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="p-8 border-b border-white/5 flex items-center justify-between">
+        <div className="p-6 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary text-white p-2 rounded-lg">
-              <DatabaseZap size={20} />
+            <div className="bg-primary text-white p-1.5 rounded-lg">
+              <DatabaseZap size={18} />
             </div>
-            <span className="font-bold text-lg tracking-tighter uppercase italic text-white">hPANEL</span>
+            <span className="font-bold text-base tracking-tight text-white">hPANEL v7.5</span>
           </div>
-          <Button variant="ghost" size="icon" className="lg:hidden rounded-lg" onClick={() => setIsSidebarOpen(false)}>
-            <X size={18} />
+          <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-8 w-8" onClick={() => setIsSidebarOpen(false)}>
+            <X size={16} />
           </Button>
         </div>
 
-        <ScrollArea className="flex-grow p-4">
-          <div className="space-y-8 pb-10">
+        <ScrollArea className="flex-grow px-3 py-4">
+          <div className="space-y-6 pb-10">
             {Object.entries(groupedNav).map(([group, items]) => (
-              <div key={group} className="space-y-1">
-                <h3 className="px-4 text-[8px] font-bold uppercase tracking-[0.4em] text-muted-foreground/50 mb-2">{group}</h3>
+              <div key={group} className="space-y-0.5">
+                <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 mb-1.5">{group}</h3>
                 {items.map(item => <NavButton key={item.value} item={item} />)}
               </div>
             ))}
           </div>
         </ScrollArea>
 
-        <div className="p-6 border-t border-white/5 bg-white/[0.02]">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 mb-4">
-            <Avatar className="h-9 w-9 border border-white/10">
+        <div className="p-4 border-t border-white/5 bg-white/[0.01]">
+          <div className="flex items-center gap-3 p-2 rounded-xl bg-white/5 border border-white/5 mb-3">
+            <Avatar className="h-8 w-8 border border-white/10">
               <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-[10px] font-bold truncate uppercase tracking-tight">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
-              <p className="text-[8px] font-medium text-muted-foreground uppercase tracking-widest">{user?.profile?.role || 'User'}</p>
+              <p className="text-[11px] font-bold truncate">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
+              <p className="text-[9px] font-medium text-muted-foreground capitalize">{user?.profile?.role || 'User'}</p>
             </div>
           </div>
-          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start h-10 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold text-[9px] tracking-widest uppercase">
-            <LogOut size={14} className="mr-3 opacity-40" /> KELUAR SISTEM
+          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start h-9 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-semibold text-[11px]">
+            <LogOut size={14} className="mr-2.5 opacity-50" /> Keluar Sistem
           </Button>
         </div>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        <header className="h-16 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
+        <header className="h-14 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-9 w-9 bg-white/5" onClick={() => setIsSidebarOpen(true)}>
-              <Menu size={20} />
+            <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-8 w-8 bg-white/5" onClick={() => setIsSidebarOpen(true)}>
+              <Menu size={18} />
             </Button>
-            <h1 className="font-bold text-[10px] text-muted-foreground uppercase tracking-[0.4em] hidden sm:block">
-              SISTEM / {navItems.find(i => i.value === activeTab)?.label || 'DASBOR'}
+            <h1 className="font-semibold text-xs text-muted-foreground tracking-wide hidden sm:block">
+              Sistem / {navItems.find(i => i.value === activeTab)?.label || 'Dasbor'}
             </h1>
           </div>
           
-          <div className='flex items-center gap-2 sm:gap-4'>
+          <div className='flex items-center gap-3'>
             <ThemeToggle />
-            <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9 sm:h-10 sm:w-10 relative border border-white/5 bg-white/5">
-                <Bell size={18} />
-                <span className="absolute top-2.5 sm:top-3 right-2.5 sm:right-3 w-1.5 h-1.5 bg-primary rounded-full" />
+            <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9 relative border border-white/5 bg-white/5">
+                <Bell size={16} />
+                <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full" />
             </Button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-10 bg-slate-50/5 dark:bg-transparent">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-slate-50/5 dark:bg-transparent">
           <div className="max-w-6xl mx-auto">
             <div className='animate-reveal'>
                 {renderContent()}
