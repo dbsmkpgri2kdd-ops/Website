@@ -80,9 +80,9 @@ function AdminDashboard() {
     try {
       await signOut(auth);
       router.replace('/');
-      toast({ title: 'Sesi Berakhir', description: 'Kembali ke halaman utama...' });
+      toast({ title: 'Sesi berakhir', description: 'Kembali ke halaman utama.' });
     } catch (error) {
-      toast({ variant: 'destructive', title: 'Logout Gagal' });
+      toast({ variant: 'destructive', title: 'Logout gagal' });
     }
   };
 
@@ -179,13 +179,13 @@ function AdminDashboard() {
     <button
       onClick={() => { setActiveTab(item.value as AdminTab); setIsSidebarOpen(false); }}
       className={cn(
-        "w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all duration-200 group",
+        "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group",
         activeTab === item.value 
-          ? "bg-primary text-white shadow-sm" 
+          ? "bg-primary text-white shadow-md shadow-primary/20" 
           : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
       )}
     >
-      <item.icon size={16} className={cn("transition-all shrink-0", activeTab === item.value ? "opacity-100" : "opacity-60 group-hover:opacity-100")} />
+      <item.icon size={18} className={cn("transition-all shrink-0", activeTab === item.value ? "opacity-100" : "opacity-60 group-hover:opacity-100")} />
       <span className="truncate">{item.label}</span>
     </button>
   );
@@ -201,11 +201,11 @@ function AdminDashboard() {
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             <div className="bg-primary text-white p-1.5 rounded-lg">
-              <DatabaseZap size={18} />
+              <DatabaseZap size={20} />
             </div>
-            <span className="font-bold text-base tracking-tight text-slate-900">hPANEL v7.5</span>
+            <span className="font-bold text-lg tracking-tight text-slate-900">hPanel v7.5</span>
           </div>
           <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-8 w-8" onClick={() => setIsSidebarOpen(false)}>
             <X size={16} />
@@ -213,10 +213,10 @@ function AdminDashboard() {
         </div>
 
         <ScrollArea className="flex-grow px-3 py-4">
-          <div className="space-y-5 pb-10">
+          <div className="space-y-6 pb-10">
             {Object.entries(groupedNav).map(([group, items]) => (
-              <div key={group} className="space-y-0.5">
-                <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">{group}</h3>
+              <div key={group} className="space-y-1">
+                <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">{group}</h3>
                 {items.map(item => <NavButton key={item.value} item={item} />)}
               </div>
             ))}
@@ -224,42 +224,42 @@ function AdminDashboard() {
         </ScrollArea>
 
         <div className="p-4 border-t border-slate-100 bg-slate-50/50">
-          <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-slate-200 mb-3">
-            <Avatar className="h-8 w-8 border border-slate-100">
-              <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
+          <div className="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200 mb-3 shadow-sm">
+            <Avatar className="h-9 w-9 border border-slate-100">
+              <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-[11px] font-bold text-slate-900 truncate">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
-              <p className="text-[9px] font-semibold text-slate-500 capitalize">{user?.profile?.role || 'Pengguna'}</p>
+              <p className="text-xs font-bold text-slate-900 truncate">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
+              <p className="text-[10px] font-semibold text-slate-500 capitalize">{user?.profile?.role || 'User'}</p>
             </div>
           </div>
-          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start h-9 rounded-lg text-slate-600 hover:text-destructive hover:bg-destructive/5 font-bold text-[11px]">
-            <LogOut size={14} className="mr-2.5 opacity-60" /> Keluar Sistem
+          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start h-10 rounded-lg text-slate-600 hover:text-destructive hover:bg-destructive/5 font-bold text-xs">
+            <LogOut size={16} className="mr-3 opacity-60" /> Keluar sistem
           </Button>
         </div>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        <header className="h-14 border-b border-slate-200 bg-white/80 backdrop-blur-xl flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
+        <header className="h-16 border-b border-slate-200 bg-white/80 backdrop-blur-xl flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-8 w-8 bg-slate-100" onClick={() => setIsSidebarOpen(true)}>
-              <Menu size={18} />
+            <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-9 w-9 bg-slate-100" onClick={() => setIsSidebarOpen(true)}>
+              <Menu size={20} />
             </Button>
-            <h1 className="font-bold text-xs text-slate-500 tracking-wide hidden sm:block">
-              Sistem / {navItems.find(i => i.value === activeTab)?.label || 'Dasbor'}
+            <h1 className="font-semibold text-sm text-slate-500 tracking-tight hidden sm:block">
+              Sistem / {navItems.find(i => i.value === activeTab)?.label || 'Dashboard'}
             </h1>
           </div>
           
           <div className='flex items-center gap-3'>
             <ThemeToggle />
-            <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9 relative border border-slate-200 bg-white">
-                <Bell size={16} className="text-slate-600" />
-                <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full" />
+            <Button variant="ghost" size="icon" className="rounded-lg h-10 w-10 relative border border-slate-200 bg-white">
+                <Bell size={18} className="text-slate-600" />
+                <span className="absolute top-3 right-3 w-2 h-2 bg-primary rounded-full border-2 border-white" />
             </Button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 custom-scrollbar">
           <div className="max-w-6xl mx-auto">
             <div className='animate-reveal'>
                 {renderContent()}

@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Standard Formal Fresh Theme - SMKS PGRI 2 KEDONDONG */
+    /* Fresh Modern Light Theme - SMKS PGRI 2 KEDONDONG */
     --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -63,6 +63,10 @@
 }
 
 @layer utilities {
+  .glass-premium {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.05)];
+  }
+
   .fresh-card {
     @apply bg-white border border-slate-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300;
   }
@@ -87,5 +91,9 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .sidebar-menu-item {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200;
   }
 }

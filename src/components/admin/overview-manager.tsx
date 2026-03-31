@@ -49,17 +49,17 @@ export function OverviewManager() {
   };
 
   const stats = [
-    { title: 'Publikasi', count: recentNews?.length || 0, icon: Newspaper, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { title: 'Pendaftar', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { title: 'Keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { title: 'Jaringan', count: 'Stabil', icon: Activity, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { title: 'Publikasi aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { title: 'Pendaftar baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { title: 'Status keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { title: 'Koneksi jaringan', count: 'Stabil', icon: Activity, color: 'text-amber-600', bg: 'bg-amber-50' },
   ];
 
   return (
     <div className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
-            <h2 className='text-3xl font-bold tracking-tight text-slate-900'>Ringkasan Sistem</h2>
+            <h2 className='text-3xl font-bold tracking-tight text-slate-900'>Ringkasan sistem</h2>
             <p className='text-sm font-medium text-slate-500 mt-1'>Pusat kendali operasional digital sekolah.</p>
         </div>
         <div className='flex items-center gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm'>
@@ -67,7 +67,7 @@ export function OverviewManager() {
                 <Clock size={20} />
             </div>
             <div>
-                <p className='text-[10px] font-bold text-slate-400 uppercase tracking-widest'>Waktu Sistem</p>
+                <p className='text-[10px] font-bold text-slate-400 uppercase tracking-widest'>Waktu sistem</p>
                 <p className='text-xs font-bold text-slate-900'>{currentTime || '--:--'} WIB</p>
             </div>
         </div>
@@ -82,11 +82,11 @@ export function OverviewManager() {
                             <Rocket size={20} />
                         </div>
                         <div>
-                            <CardTitle className="text-lg font-bold text-slate-900">Portal Sudah Siap</CardTitle>
+                            <CardTitle className="text-lg font-bold text-slate-900">Portal siap digunakan</CardTitle>
                             <CardDescription className="text-xs font-medium text-emerald-700/70">Semua layanan berjalan dengan optimal.</CardDescription>
                         </div>
                     </div>
-                    <Badge className="bg-emerald-500/10 text-emerald-600 border-none px-4 py-1 rounded-full font-bold text-[10px] tracking-wider">Optimal</Badge>
+                    <Badge className="bg-emerald-500/10 text-emerald-600 border-none px-4 py-1 rounded-full font-bold text-[10px]">Optimal</Badge>
                 </CardHeader>
                 <CardContent className="px-8 pb-8">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -104,7 +104,7 @@ export function OverviewManager() {
                 {stats.map((s, i) => (
                 <Card key={i} className="border-slate-200 bg-white rounded-[2rem] group hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-md">
                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 p-6">
-                    <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{s.title}</CardTitle>
+                    <CardTitle className="text-[11px] font-bold text-slate-400">{s.title}</CardTitle>
                     <div className={cn("p-2.5 rounded-xl transition-all group-hover:scale-110", s.bg)}>
                         <s.icon size={14} className={s.color} />
                     </div>
@@ -126,7 +126,7 @@ export function OverviewManager() {
                     <CardTitle className='text-sm font-bold flex items-center gap-2 text-slate-900'>
                         <Sparkles size={16} className='text-primary' /> Analisis AI
                     </CardTitle>
-                    <CardDescription className='text-xs font-medium text-slate-500'>Wawasan Cerdas v1.0</CardDescription>
+                    <CardDescription className='text-xs font-medium text-slate-500'>Wawasan cerdas v1.0</CardDescription>
                 </CardHeader>
                 <CardContent className='px-8 space-y-4'>
                     {aiReport ? (
@@ -140,7 +140,7 @@ export function OverviewManager() {
                                     </div>
                                 ))}
                             </div>
-                            <Button onClick={() => setAiReport(null)} variant="ghost" className="w-full text-[10px] font-bold text-slate-400 hover:text-primary">Reset Analisis</Button>
+                            <Button onClick={() => setAiReport(null)} variant="ghost" className="w-full text-[10px] font-bold text-slate-400 hover:text-primary">Reset analisis</Button>
                         </div>
                     ) : (
                         <div className='text-center space-y-6 py-4'>
@@ -151,7 +151,7 @@ export function OverviewManager() {
                                 className='w-full h-12 rounded-xl font-bold text-xs shadow-sm'
                             >
                                 {isGeneratingAi ? <LoaderCircle className='animate-spin mr-2' size={14}/> : <BrainCircuit className='mr-2' size={14}/>}
-                                {isGeneratingAi ? 'Menganalisis...' : 'Mulai Analisis'}
+                                {isGeneratingAi ? 'Menganalisis...' : 'Mulai analisis'}
                             </Button>
                         </div>
                     )}
@@ -164,7 +164,7 @@ export function OverviewManager() {
         <Card className="lg:col-span-2 border-slate-200 bg-white rounded-[2.5rem] shadow-sm">
           <CardHeader className="p-8 border-b border-slate-100">
             <CardTitle className="text-sm font-bold flex items-center gap-3 text-slate-900">
-                <UserPlus size={18} className="text-primary" /> Pendaftaran Terbaru
+                <UserPlus size={18} className="text-primary" /> Pendaftaran terbaru
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4">
@@ -198,14 +198,14 @@ export function OverviewManager() {
 
         <Card className="border-slate-200 bg-white rounded-[2.5rem] shadow-sm">
           <CardHeader className="p-8 border-b border-slate-100">
-            <CardTitle className="text-sm font-bold text-slate-900">Infrastruktur Sistem</CardTitle>
+            <CardTitle className="text-sm font-bold text-slate-900">Infrastruktur sistem</CardTitle>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             {[
-                { icon: Database, label: 'Basis Data', status: 'Sinkronisasi', color: 'text-blue-600', bg: 'bg-blue-50' },
+                { icon: Database, label: 'Basis data', status: 'Sinkronisasi', color: 'text-blue-600', bg: 'bg-blue-50' },
                 { icon: ShieldCheck, label: 'Keamanan', status: 'Terenkripsi', color: 'text-indigo-600', bg: 'bg-indigo-50' },
                 { icon: HardDrive, label: 'Penyimpanan', status: 'Optimal', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                { icon: BarChart3, label: 'Lalu Lintas', status: 'Normal', color: 'text-amber-600', bg: 'bg-amber-50' },
+                { icon: BarChart3, label: 'Lalu lintas', status: 'Normal', color: 'text-amber-600', bg: 'bg-amber-50' },
             ].map((infra, idx) => (
                 <div key={idx} className="flex items-center gap-4 group">
                     <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform", infra.bg, infra.color)}>

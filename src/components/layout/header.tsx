@@ -1,8 +1,7 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Menu, X, LogIn, LayoutGrid } from 'lucide-react';
+import { ChevronDown, Menu, LogIn, LayoutGrid } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { NAV_MENU_DEFAULT, type NavItem, type School } from '@/lib/data';
@@ -90,12 +89,12 @@ const Header = ({
         return (
           <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-foreground/70 hover:text-primary transition-colors focus:outline-none">
+              <button className="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-slate-600 hover:text-primary transition-colors focus:outline-none">
                 {item.label}
                 <ChevronDown className="h-3 w-3 opacity-40" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-52 p-1.5 rounded-xl shadow-xl border-border bg-popover/95 backdrop-blur-md">
+            <DropdownMenuContent align="start" className="w-52 p-1.5 rounded-xl shadow-xl border-border bg-white/95 backdrop-blur-md">
               {item.children.map((child, cIdx) => (
                 <DropdownMenuItem
                   key={cIdx}
@@ -113,7 +112,7 @@ const Header = ({
           <button
             key={idx}
             onClick={() => item.id && setActiveTab(item.id)}
-            className='px-3 py-2 text-sm font-semibold text-foreground/70 hover:text-primary transition-colors'
+            className='px-3 py-2 text-sm font-semibold text-slate-600 hover:text-primary transition-colors'
           >
             {item.label}
           </button>
@@ -124,7 +123,7 @@ const Header = ({
 
   return (
     <header className={cn(
-      "sticky top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300",
+      "sticky top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 transition-all duration-300",
       isScrolled ? "h-16 shadow-sm" : "h-20"
     )}>
       <div className="max-w-7xl mx-auto px-6 h-full">
@@ -134,25 +133,25 @@ const Header = ({
             onClick={() => setActiveTab('home')}
             className="flex items-center gap-3 group"
           >
-            <div className="relative w-9 h-9 overflow-hidden rounded-lg bg-primary/5 p-1 transition-transform group-hover:scale-105">
+            <div className="relative w-10 h-10 overflow-hidden rounded-lg bg-primary/5 p-1.5 transition-transform group-hover:scale-105">
               {isSchoolDataLoading ? (
                 <Skeleton className="w-full h-full rounded-md" />
               ) : (
                 <Image
                   src={convertGoogleDriveLink(schoolData?.logoUrl || "https://picsum.photos/seed/logo/40/40")}
                   alt="Logo"
-                  width={36}
-                  height={36}
+                  width={40}
+                  height={40}
                   className="object-contain"
                   priority
                 />
               )}
             </div>
-            <div className="flex flex-col items-start leading-none hidden sm:flex text-left">
-                <span className="font-bold text-sm text-foreground">
+            <div className="flex flex-col items-start leading-tight hidden sm:flex text-left">
+                <span className="font-bold text-sm text-slate-900 tracking-tight">
                 {schoolData?.shortName || "SMKS PGRI 2"}
                 </span>
-                <span className='text-[10px] font-medium text-muted-foreground'>Digital Excellence</span>
+                <span className='text-[10px] font-semibold text-slate-400'>Portal Digital</span>
             </div>
           </button>
 
@@ -167,26 +166,26 @@ const Header = ({
              <ThemeToggle />
              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9 hover:bg-muted">
+                  <Button variant="ghost" size="icon" className="rounded-lg h-10 w-10 bg-slate-50 hover:bg-slate-100">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="p-0 w-full sm:w-[350px] border-none shadow-xl bg-background">
-                    <SheetHeader className="p-6 border-b border-border">
-                        <SheetTitle className='text-left font-bold text-xl'>Menu Portal</SheetTitle>
+                <SheetContent side="right" className="p-0 w-full sm:w-[350px] border-none shadow-2xl bg-white">
+                    <SheetHeader className="p-6 border-b border-slate-100">
+                        <SheetTitle className='text-left font-bold text-xl'>Menu portal</SheetTitle>
                     </SheetHeader>
                     
                     <ScrollArea className='h-[calc(100vh-160px)] py-4'>
                         {currentMenu.map((mainItem, mIdx) => (
                           <div key={mIdx} className="px-6 mb-6">
-                            <h3 className="px-2 text-[10px] font-bold tracking-widest text-muted-foreground mb-2 uppercase">{mainItem.label}</h3>
+                            <h3 className="px-2 text-[10px] font-bold tracking-widest text-slate-400 mb-2 uppercase">{mainItem.label}</h3>
                             {mainItem.children ? (
                               <div className="grid grid-cols-1 gap-0.5">
                                 {mainItem.children.map((child, cIdx) => (
                                   <button
                                     key={cIdx}
                                     onClick={() => { child.id && setActiveTab(child.id); setIsMenuOpen(false); }}
-                                    className="w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium hover:bg-muted transition-all"
+                                    className="w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium hover:bg-slate-50 transition-all"
                                   >
                                     {child.label}
                                   </button>
@@ -195,7 +194,7 @@ const Header = ({
                             ) : (
                               <button
                                 onClick={() => { mainItem.id && setActiveTab(mainItem.id); setIsMenuOpen(false); }}
-                                className="w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium hover:bg-muted transition-all"
+                                className="w-full text-left py-2.5 px-3 rounded-xl text-sm font-medium hover:bg-slate-50 transition-all"
                               >
                                 {mainItem.label}
                               </button>
@@ -204,8 +203,8 @@ const Header = ({
                         ))}
                     </ScrollArea>
                     
-                    <div className="p-6 border-t border-border">
-                        <AuthButton className="w-full h-12 text-sm" />
+                    <div className="p-6 border-t border-slate-100 bg-slate-50/50">
+                        <AuthButton className="w-full h-14 text-sm rounded-2xl shadow-lg" />
                     </div>
                 </SheetContent>
               </Sheet>
