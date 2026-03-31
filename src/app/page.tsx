@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, Suspense } from 'react';
@@ -16,7 +15,7 @@ const SectionLoader = () => (
   <div className="flex items-center justify-center h-[80vh] bg-background">
     <div className='flex flex-col items-center gap-4'>
         <LoaderCircle className="w-12 h-12 animate-spin text-primary" />
-        <p className='text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground'>Syncing School Data...</p>
+        <p className='text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground'>Syncing school data...</p>
     </div>
   </div>
 );

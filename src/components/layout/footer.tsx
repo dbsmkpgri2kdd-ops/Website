@@ -59,16 +59,16 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
   ];
 
   return (
-    <footer className="bg-[#0a0c1b] text-white pt-16 md:pt-24 pb-12 overflow-hidden relative">
+    <footer className="bg-[#0a0c1b] text-white pt-12 md:pt-20 pb-8 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -mr-48 -mt-48"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-[120px] -ml-48 -mb-48"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 md:gap-16 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16 mb-10">
         
-          <div className="lg:col-span-2 space-y-6 md:space-y-8">
-            <div className="flex items-center gap-4">
-               <div className="w-12 h-12 md:w-14 md:h-14 bg-white p-2 rounded-2xl shadow-2xl relative overflow-hidden">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center gap-3">
+               <div className="w-10 h-10 md:w-12 md:h-12 bg-white p-1.5 rounded-xl shadow-2xl relative overflow-hidden">
                   {isSchoolDataLoading ? (
                       <Skeleton className="w-full h-full rounded-lg" />
                   ) : (
@@ -81,37 +81,37 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                       />
                   )}
                </div>
-              <div className="font-black text-xl md:text-2xl font-headline tracking-tighter">
-                {isSchoolDataLoading ? <Skeleton className="h-8 w-40" /> : (schoolData?.shortName || "SMKS PGRI 2")}
+              <div className="font-bold text-lg md:text-xl tracking-tight">
+                {isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
               </div>
             </div>
             
-            <div className="space-y-4 text-gray-400">
+            <div className="space-y-3 text-gray-400">
                 <div className="flex items-start gap-3">
-                    <MapPin size={20} className="text-primary mt-1 shrink-0" />
-                    <div className="text-xs md:text-sm leading-relaxed flex-1">
+                    <MapPin size={16} className="text-primary mt-1 shrink-0" />
+                    <div className="text-xs leading-relaxed flex-1 opacity-80">
                       {isSchoolDataLoading ? (
-                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-3 w-full" />
                       ) : (
                         <div className="whitespace-pre-wrap">{schoolData?.address}</div>
                       )}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Phone size={18} className="text-primary shrink-0" />
-                    <div className="text-xs md:text-sm flex-1">
+                    <Phone size={14} className="text-primary shrink-0" />
+                    <div className="text-xs flex-1 opacity-80">
                       {isSchoolDataLoading ? (
-                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-24" />
                       ) : (
                         <div>{schoolData?.phone}</div>
                       )}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Mail size={18} className="text-primary shrink-0" />
-                    <div className="text-xs md:text-sm flex-1">
+                    <Mail size={14} className="text-primary shrink-0" />
+                    <div className="text-xs flex-1 opacity-80">
                       {isSchoolDataLoading ? (
-                        <Skeleton className="h-4 w-40" />
+                        <Skeleton className="h-3 w-32" />
                       ) : (
                         <div>{schoolData?.email}</div>
                       )}
@@ -119,59 +119,61 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               {schoolData?.facebookUrl && (
-                  <Button asChild variant="secondary" size="icon" className="rounded-xl bg-white/5 hover:bg-primary hover:text-white border-white/10">
-                  <a href={schoolData.facebookUrl} target='_blank' rel='noopener noreferrer' aria-label="Facebook"><Facebook size={18}/></a>
+                  <Button asChild variant="secondary" size="icon" className="h-8 w-8 rounded-lg bg-white/5 hover:bg-primary hover:text-white border-white/5">
+                  <a href={schoolData.facebookUrl} target='_blank' rel='noopener noreferrer' aria-label="Facebook"><Facebook size={14}/></a>
                   </Button>
               )}
               {schoolData?.instagramUrl && (
-                  <Button asChild variant="secondary" size="icon" className="rounded-xl bg-white/5 hover:bg-primary hover:text-white border-white/10">
-                  <a href={schoolData.instagramUrl} target='_blank' rel='noopener noreferrer' aria-label="Instagram"><Instagram size={18}/></a>
+                  <Button asChild variant="secondary" size="icon" className="h-8 w-8 rounded-lg bg-white/5 hover:bg-primary hover:text-white border-white/5">
+                  <a href={schoolData.instagramUrl} target='_blank' rel='noopener noreferrer' aria-label="Instagram"><Instagram size={14}/></a>
                   </Button>
               )}
               {schoolData?.tiktokUrl && (
-                  <Button asChild variant="secondary" size="icon" className="rounded-xl bg-white/5 hover:bg-primary hover:text-white border-white/10">
-                  <a href={schoolData.tiktokUrl} target='_blank' rel='noopener noreferrer' aria-label="TikTok"><TiktokIcon className="w-4 h-4 fill-current" /></a>
+                  <Button asChild variant="secondary" size="icon" className="h-8 w-8 rounded-lg bg-white/5 hover:bg-primary hover:text-white border-white/5">
+                  <a href={schoolData.tiktokUrl} target='_blank' rel='noopener noreferrer' aria-label="TikTok"><TiktokIcon className="w-3.5 h-3.5 fill-current" /></a>
                   </Button>
               )}
               {schoolData?.youtubeUrl && (
-                  <Button asChild variant="secondary" size="icon" className="rounded-xl bg-white/5 hover:bg-primary hover:text-white border-white/10">
-                  <a href={schoolData.youtubeUrl} target='_blank' rel='noopener noreferrer' aria-label="YouTube"><Youtube size={18}/></a>
+                  <Button asChild variant="secondary" size="icon" className="h-8 w-8 rounded-lg bg-white/5 hover:bg-primary hover:text-white border-white/5">
+                  <a href={schoolData.youtubeUrl} target='_blank' rel='noopener noreferrer' aria-label="YouTube"><Youtube size={14}/></a>
                   </Button>
               )}
             </div>
           </div>
           
-          {columns.map((col, idx) => (
-            <div key={idx} className="lg:col-span-1 space-y-4 md:space-y-6">
-                <h5 className="font-black text-[10px] uppercase tracking-[0.2em] text-primary">{col.title}</h5>
-                <ul className="space-y-3 md:space-y-4">
-                    {col.links.map(link => (
-                        <li key={link.label}>
-                            <button 
-                                onClick={() => setActiveTab(link.id as NavLink)} 
-                                className="text-gray-400 hover:text-white text-xs md:text-sm transition-colors duration-300 flex items-center group font-medium"
-                            >
-                                <span className="w-0 group-hover:w-2 h-[1px] bg-primary mr-0 group-hover:mr-2 transition-all"></span>
-                                {link.label}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-          ))}
+          <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-8">
+            {columns.map((col, idx) => (
+              <div key={idx} className="space-y-4">
+                  <h5 className="font-bold text-[11px] text-primary tracking-wider">{col.title}</h5>
+                  <ul className="space-y-2.5">
+                      {col.links.map(link => (
+                          <li key={link.label}>
+                              <button 
+                                  onClick={() => setActiveTab(link.id as NavLink)} 
+                                  className="text-gray-400 hover:text-white text-xs transition-colors duration-300 flex items-center group font-medium"
+                              >
+                                  <span className="w-0 group-hover:w-1.5 h-[1px] bg-primary mr-0 group-hover:mr-1.5 transition-all"></span>
+                                  {link.label}
+                              </button>
+                          </li>
+                      ))}
+                  </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-gray-500 text-[10px] font-bold uppercase tracking-widest">
-          <div className="flex flex-col md:flex-row items-center gap-2 text-center md:text-left">
-            <span>© {currentYear || '2024'} {schoolData?.name || "SMKS PGRI 2 KEDONDONG"}.</span>
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500 text-[10px] font-medium tracking-tight">
+          <div className="flex flex-col md:flex-row items-center gap-1 text-center md:text-left">
+            <span>© {currentYear || '2024'} {schoolData?.name || "SMKS PGRI 2 Kedondong"}.</span>
             <span className="hidden md:inline">|</span>
-            <span>Educational Excellence</span>
+            <span>Educational excellence for future leaders.</span>
           </div>
-          <div className="flex gap-8">
-            <span className="hover:text-white cursor-pointer transition-colors">Privacy</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Terms</span>
+          <div className="flex gap-6">
+            <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>
           </div>
         </div>
       </div>
