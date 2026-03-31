@@ -60,7 +60,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden tech-mesh">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6 relative overflow-hidden tech-mesh">
             <div className='absolute top-0 left-0 w-full h-full bg-primary/5 opacity-40 pointer-events-none'></div>
             
             <div className="max-w-md w-full space-y-6 animate-reveal relative z-10">
@@ -68,16 +68,16 @@ export default function LoginPage() {
                     onClick={() => router.push('/')}
                     className="flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors mb-4"
                 >
-                    <ArrowLeft size={16} /> Kembali ke Beranda
+                    <ArrowLeft size={16} /> Kembali ke beranda
                 </button>
 
-                <Card className="border-slate-200 shadow-2xl rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-md">
+                <Card className="border-border shadow-2xl rounded-[2rem] overflow-hidden bg-card/80 backdrop-blur-md">
                     <CardHeader className="text-center pt-10 pb-4">
                         <div className="mb-4 mx-auto w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center">
                             <ShieldCheck size={28} />
                         </div>
-                        <CardTitle className="text-2xl font-bold tracking-tight text-slate-900">
-                            {isRegisterMode ? 'Buat Akun Baru' : 'Identitas Digital'}
+                        <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
+                            {isRegisterMode ? 'Buat akun baru' : 'Identitas digital'}
                         </CardTitle>
                         <CardDescription className="text-sm font-medium text-muted-foreground">
                             Akses Portal Terpadu SMKS PGRI 2 Kedondong
@@ -88,14 +88,14 @@ export default function LoginPage() {
                         {!auth && (
                             <Alert variant="destructive" className="mb-6 rounded-xl">
                                 <ShieldAlert className="h-4 w-4" />
-                                <AlertTitle className='font-bold text-xs'>Kesalahan Konfigurasi</AlertTitle>
+                                <AlertTitle className='font-bold text-xs'>Kesalahan konfigurasi</AlertTitle>
                                 <AlertDescription className="text-[11px]">Layanan autentikasi belum siap.</AlertDescription>
                             </Alert>
                         )}
 
                         <form onSubmit={handleAuth} className="space-y-4">
                             <div className="space-y-1.5">
-                                <Label className="text-xs font-bold text-slate-700 ml-1">Alamat Email</Label>
+                                <Label className="text-xs font-bold text-foreground ml-1">Alamat email</Label>
                                 <div className='relative'>
                                     <Input 
                                         type="email" 
@@ -103,7 +103,7 @@ export default function LoginPage() {
                                         required 
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="h-11 rounded-xl bg-white border-slate-200 focus:border-primary pl-10"
+                                        className="h-11 rounded-xl bg-background border-border focus:border-primary pl-10"
                                         disabled={isSubmitting}
                                     />
                                     <Mail className='absolute left-3.5 top-3 text-muted-foreground' size={16} />
@@ -111,14 +111,14 @@ export default function LoginPage() {
                             </div>
                             
                             <div className="space-y-1.5">
-                                <Label className="text-xs font-bold text-slate-700 ml-1">Kata Sandi</Label>
+                                <Label className="text-xs font-bold text-foreground ml-1">Kata sandi</Label>
                                 <div className="relative">
                                     <Input 
                                         type={showPassword ? "text" : "password"} 
                                         required 
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="h-11 rounded-xl bg-white border-slate-200 focus:border-primary pl-10 pr-12"
+                                        className="h-11 rounded-xl bg-background border-border focus:border-primary pl-10 pr-12"
                                         placeholder='Min. 6 karakter'
                                         disabled={isSubmitting}
                                     />
@@ -144,10 +144,10 @@ export default function LoginPage() {
                                 ) : (
                                     isRegisterMode ? <UserPlus className="mr-2 h-4 w-4"/> : <LogIn className="mr-2 h-4 w-4"/>
                                 )}
-                                {isSubmitting ? 'Memverifikasi...' : (isRegisterMode ? 'Daftar Sekarang' : 'Masuk ke Portal')}
+                                {isSubmitting ? 'Memverifikasi...' : (isRegisterMode ? 'Daftar sekarang' : 'Masuk ke portal')}
                             </Button>
 
-                            <div className="pt-6 text-center border-t border-slate-100 mt-4">
+                            <div className="pt-6 text-center border-t border-border mt-4">
                                 <button 
                                     type="button" 
                                     onClick={() => setIsRegisterMode(!isRegisterMode)}

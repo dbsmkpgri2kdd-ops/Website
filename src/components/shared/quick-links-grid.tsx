@@ -47,14 +47,14 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
   const renderIcon = (iconStr: string) => {
     if (iconStr.includes('fa-')) {
       return (
-        <div className="p-3 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm w-12 h-12 flex items-center justify-center">
+        <div className="p-3 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-sm w-12 h-12 flex items-center justify-center">
           <i className={cn(iconStr, "text-xl")} />
         </div>
       );
     }
     const IconComp = iconMap[iconStr] || Globe;
     return (
-      <div className="p-3 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
+      <div className="p-3 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-sm">
         <IconComp size={24} />
       </div>
     );
@@ -67,7 +67,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
             <Sparkles size={14} className='animate-pulse' />
             <span className="text-xs font-bold uppercase tracking-widest">Digital Hub</span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">{title}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">{title}</h2>
         <p className="text-muted-foreground text-sm max-w-2xl font-medium">{description}</p>
       </div>
 
@@ -86,11 +86,11 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <Card className="h-full rounded-2xl shadow-sm border-border bg-white hover:border-primary/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden border">
+                <Card className="h-full rounded-2xl shadow-sm border-border bg-card hover:border-primary/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden border">
                   <CardHeader className="flex flex-row items-center gap-4 p-6 pb-3">
                     {renderIcon(link.icon)}
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-base font-bold text-slate-900 truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
+                      <CardTitle className="text-base font-bold text-foreground truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
                       <div className="flex items-center text-[10px] text-muted-foreground font-medium mt-1 opacity-60">
                         Buka Aplikasi <ExternalLink size={10} className="ml-1" />
                       </div>

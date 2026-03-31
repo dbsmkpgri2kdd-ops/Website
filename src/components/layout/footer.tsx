@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -60,7 +59,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
   ];
 
   return (
-    <footer className="bg-white border-t border-border pt-12 pb-8 overflow-hidden relative tech-mesh">
+    <footer className="bg-background border-t border-border pt-12 pb-8 overflow-hidden relative tech-mesh">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
         
@@ -91,19 +90,19 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                       {isSchoolDataLoading ? (
                         <Skeleton className="h-3 w-full" />
                       ) : (
-                        <div className="whitespace-pre-wrap">{schoolData?.address}</div>
+                        <div className="whitespace-pre-wrap text-foreground">{schoolData?.address}</div>
                       )}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Phone size={14} className="text-primary shrink-0" />
-                    <div className="text-xs">
+                    <div className="text-xs text-foreground">
                       {isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Mail size={14} className="text-primary shrink-0" />
-                    <div className="text-xs">
+                    <div className="text-xs text-foreground">
                       {isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
                     </div>
                 </div>

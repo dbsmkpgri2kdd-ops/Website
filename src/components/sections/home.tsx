@@ -84,7 +84,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'hero':
         if (settings?.showHero === false) return null;
         return (
-          <section key="hero" className="relative min-h-[85dvh] flex items-center overflow-hidden bg-white">
+          <section key="hero" className="relative min-h-[85dvh] flex items-center overflow-hidden bg-background">
             <div className="absolute inset-0 z-0">
                <Image
                 src="https://images.unsplash.com/photo-1523050853063-bd8012fbb230?q=80&w=2070"
@@ -95,7 +95,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                 sizes="100vw"
                 data-ai-hint="bright university"
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-white via-white/95 to-primary/10"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-background via-background/95 to-primary/10"></div>
             </div>
             <div className="relative z-10 max-w-7xl mx-auto px-6 w-full py-20">
                 <div className="max-w-3xl space-y-8 animate-reveal">
@@ -103,17 +103,17 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     <Sparkles size={14} className="animate-pulse" />
                     <span>Pusat Keunggulan Vokasi 2025</span>
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 leading-[1.1]">
+                  <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
                     {schoolData?.heroTitle || "Membangun Masa Depan"} <br/><span className="text-primary">Generasi Ahli & Kompeten.</span>
                   </h1>
-                  <p className="text-base md:text-xl text-slate-600 max-w-xl font-medium leading-relaxed">
+                  <p className="text-base md:text-xl text-muted-foreground max-w-xl font-medium leading-relaxed">
                     {schoolData?.heroSubtitle || "Persiapkan diri Anda untuk karier profesional melalui pendidikan berkualitas berbasis industri di SMKS PGRI 2 Kedondong."}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-4">
                     <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-14 px-10 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all">
                         Daftar Calon Siswa <ArrowRight className='ml-2 h-5 w-5' />
                     </Button>
-                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" size="lg" className="h-14 px-10 rounded-2xl font-bold border-slate-200">
+                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" size="lg" className="h-14 px-10 rounded-2xl font-bold border-border">
                         Kenali Kami
                     </Button>
                   </div>
@@ -125,11 +125,11 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'partners':
         if (settings?.showPartners === false) return null;
         return (
-          <section key="partners" className="bg-slate-50/50 py-14 border-y border-slate-100">
+          <section key="partners" className="bg-muted/30 py-14 border-y border-border">
             <div className="max-w-7xl mx-auto px-6 items-center grid lg:grid-cols-4 gap-10">
                 <div className="lg:col-span-1 text-center md:text-left">
                     <p className="text-xs font-bold text-primary uppercase tracking-widest mb-1">Bekerja Sama Dengan</p>
-                    <h3 className="text-xl font-bold text-slate-900">Mitra Industri Strategis</h3>
+                    <h3 className="text-xl font-bold text-foreground">Mitra Industri Strategis</h3>
                 </div>
                 <div className="lg:col-span-3">
                     <PartnersSlider partners={partners || []} />
@@ -152,7 +152,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'stats':
         if (settings?.showStats === false) return null;
         return (
-          <section key="stats" className="max-w-7xl mx-auto px-6 py-20 bg-white">
+          <section key="stats" className="max-w-7xl mx-auto px-6 py-20 bg-background">
             <StatisticsSection 
               studentCount={schoolData?.studentCount || 0}
               teacherCount={schoolData?.teacherCount || 0}
@@ -172,19 +172,19 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     <div className='h-px w-8 bg-primary/30'></div>
                     <span className="text-xs font-bold uppercase tracking-widest">Akademik</span>
                   </div>
-                  <h2 className="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight">Program Unggulan</h2>
-                  <p className="text-slate-500 text-sm max-w-2xl font-medium leading-relaxed">Kurikulum yang disinkronkan langsung dengan standar kebutuhan dunia kerja internasional.</p>
+                  <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Program Unggulan</h2>
+                  <p className="text-muted-foreground text-sm max-w-2xl font-medium leading-relaxed">Kurikulum yang disinkronkan langsung dengan standar kebutuhan dunia kerja internasional.</p>
               </div>
               <div className="grid md:grid-cols-3 gap-8">
                   {(areMajorsLoading ? Array(3).fill({}) : (majors || [])).slice(0, 3).map((major: any, i: number) => {
                     const Icon = iconMap[major.icon] || BookOpen;
                     return (
-                         <Card key={major.id || i} className="p-10 rounded-[2.5rem] border-slate-100 bg-white hover:border-primary/30 transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-xl group">
+                         <Card key={major.id || i} className="p-10 rounded-[2.5rem] border-border bg-card hover:border-primary/30 transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-xl group">
                               <div className="w-14 h-14 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110">
                                   <Icon size={28} />
                               </div>
-                              <h3 className="text-xl font-bold mb-4 text-slate-900">{major.name || 'Bidang Studi'}</h3>
-                              <p className="text-slate-500 text-sm leading-relaxed mb-8 flex-grow font-medium">
+                              <h3 className="text-xl font-bold mb-4 text-foreground">{major.name || 'Bidang Studi'}</h3>
+                              <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-grow font-medium">
                                 {major.description || 'Deskripsi mendalam mengenai kompetensi keahlian akan segera tersedia untuk publik.'}
                               </p>
                               <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-primary font-bold text-sm hover:bg-transparent flex justify-start items-center group/btn">
@@ -200,7 +200,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'showcase':
         if (settings?.showShowcase === false) return null;
         return (
-          <div key="showcase" className="bg-slate-50 py-24 border-y border-slate-100">
+          <div key="showcase" className="bg-muted/20 py-24 border-y border-border">
             <ShowcaseSection />
           </div>
         );
@@ -215,17 +215,17 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                         <div className='h-px w-8 bg-primary/30'></div>
                         <span className="text-xs font-bold uppercase tracking-widest">Informasi</span>
                       </div>
-                      <h2 className="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight">Warta Kampus</h2>
-                      <p className="text-slate-500 text-sm font-medium">Informasi resmi, prestasi, dan agenda terbaru dari lingkungan sekolah.</p>
+                      <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Warta Kampus</h2>
+                      <p className="text-muted-foreground text-sm font-medium">Informasi resmi, prestasi, dan agenda terbaru dari lingkungan sekolah.</p>
                   </div>
-                  <Button onClick={() => setActiveTab('berita-pengumuman')} variant="outline" className="rounded-xl h-12 px-8 font-bold text-xs border-slate-200">
+                  <Button onClick={() => setActiveTab('berita-pengumuman')} variant="outline" className="rounded-xl h-12 px-8 font-bold text-xs border-border">
                       Lihat Arsip Berita
                   </Button>
               </div>
               <div className="grid md:grid-cols-3 gap-10">
                 {(areNewsLoading ? Array(3).fill({}) : (newsArticles || [])).slice(0, 3).map((news: any, i: number) => (
                     <div key={news.id || i} className="group cursor-pointer space-y-5" onClick={() => news.id && onSelectArticle(news.id)}>
-                      <div className="aspect-[16/10] relative rounded-[2rem] overflow-hidden bg-slate-100 border border-slate-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl">
+                      <div className="aspect-[16/10] relative rounded-[2rem] overflow-hidden bg-muted border border-border shadow-sm transition-all duration-500 group-hover:shadow-2xl">
                         {areNewsLoading ? <Skeleton className="w-full h-full" /> : (
                           <Image 
                             src={convertGoogleDriveLink(news.imageUrl || "https://picsum.photos/seed/news/800/500")} 
@@ -238,10 +238,10 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                       <div className="space-y-3 px-2">
                         <div className="flex items-center gap-3 text-[11px] font-bold text-primary">
                             <span className='bg-primary/10 px-3 py-1 rounded-full'>{news.category || 'Berita'}</span>
-                            <span className="text-slate-400 font-medium">{formatDateLabel(news.datePublished)}</span>
+                            <span className="text-muted-foreground font-medium">{formatDateLabel(news.datePublished)}</span>
                         </div>
-                        <h3 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors text-slate-900 line-clamp-2">{news.title || 'Informasi Akademik Penting'}</h3>
-                        <p className='text-slate-500 text-sm line-clamp-2 leading-relaxed font-medium'>{news.content}</p>
+                        <h3 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors text-foreground line-clamp-2">{news.title || 'Informasi Akademik Penting'}</h3>
+                        <p className='text-muted-foreground text-sm line-clamp-2 leading-relaxed font-medium'>{news.content}</p>
                       </div>
                     </div>
                 ))}
@@ -281,7 +281,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
   };
 
   return (
-      <div className="pb-24 animate-reveal tech-mesh bg-white">
+      <div className="pb-24 animate-reveal tech-mesh bg-background">
         {sectionOrder.map(sectionId => renderSection(sectionId))}
       </div>
   );
