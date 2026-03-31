@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Menu, LogIn, LayoutGrid, Sparkles } from 'lucide-react';
+import { ChevronDown, Menu, LogIn, LayoutGrid } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { NAV_MENU_DEFAULT, type NavItem, type School } from '@/lib/data';
@@ -58,28 +58,21 @@ const Header = ({
     if (isMenuOpen) setIsMenuOpen(false);
   };
 
-  const AuthButton = ({ className, showLabel = true }: { className?: string, showLabel?: boolean }) => {
-    if (!mounted || isUserLoading) return <Skeleton className={cn('h-10 w-10 sm:w-24 rounded-lg', className)} />;
+  const AuthButton = ({ className }: { className?: string }) => {
+    if (!mounted || isUserLoading) return <Skeleton className={cn('h-11 w-11 rounded-xl', className)} />;
 
     return (
       <Button
         onClick={handleAuthClick}
         variant={user ? "default" : "outline"}
+        size="icon"
         className={cn(
-          "px-6 h-11 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
+          "h-11 w-11 rounded-xl transition-all shrink-0",
           user ? "bg-primary text-white shadow-xl glow-primary border-none" : "border-slate-200 text-slate-600 hover:bg-slate-50",
           className
         )}
       >
-        {user ? (
-            <span className='flex items-center gap-2'>
-                <LayoutGrid size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'Dashboard'}</span>
-            </span>
-        ) : (
-          <span className='flex items-center gap-2'>
-            <LogIn size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'Akses Masuk'}</span>
-          </span>
-        )}
+        {user ? <LayoutGrid size={20} /> : <LogIn size={20} />}
       </Button>
     );
   };
@@ -209,7 +202,7 @@ const Header = ({
                     </ScrollArea>
                     
                     <div className="p-10 border-t border-slate-100 bg-slate-50/50">
-                        <AuthButton className="w-full h-16 text-xs rounded-2xl shadow-3xl bg-accent text-accent-foreground border-none" />
+                        <AuthButton className="w-full h-16 rounded-2xl shadow-3xl bg-accent text-accent-foreground border-none" />
                     </div>
                 </SheetContent>
               </Sheet>
