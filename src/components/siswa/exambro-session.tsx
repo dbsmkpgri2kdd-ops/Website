@@ -1,9 +1,9 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { ShieldAlert, X, Maximize, AlertTriangle, MonitorOff, Camera, CameraOff, LoaderCircle, Clock, Timer, ShieldCheck, Zap, Wifi, Lock, Smartphone } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { useFirestore, useUser, setDocumentNonBlocking } from '@/firebase';
@@ -14,20 +14,23 @@ type ExamBroSessionProps = {
   url: string;
   isCameraRequired?: boolean;
   durationMinutes?: number;
+  unlockToken: string;
   onExit: () => void;
 };
 
 /**
  * ExamBro Session v5.5 - Super Strict App Mode
- * Dioptimalkan untuk PWA Android dengan penguncian sistem dan sinkronisasi proctoring.
+ * Implementasi fitur Lockdown pada pelanggaran ke-3.
  */
-export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, onExit }: ExamBroSessionProps) {
+export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
   const { user } = useUser();
   const [violationCount, setViolationCount] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showAlarm, setShowAlarm] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const [tokenInput, setTokenInput] = useState('');
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
   const [isCameraLoading, setIsCameraLoading] = useState(isCameraRequired);
   const [isStandalone, setIsStandalone] = useState(false);
@@ -79,6 +82,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
             isCameraActive: hasCameraPermission,
             minutesRemaining: Math.floor(timeLeft / 60),
             isAppMode: isStandalone,
+            isLocked,
             status: 'ACTIVE'
         }, { merge: true });
     }, 5000);
@@ -87,7 +91,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         clearInterval(interval);
         setDocumentNonBlocking(sessionRef, { status: 'COMPLETED', exitAt: serverTimestamp() }, { merge: true });
     };
-  }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone]);
+  }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone, isLocked]);
 
   useEffect(() => {
     if (timeLeft === null) return;
@@ -134,13 +138,13 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
   useEffect(() => {
     const handleVisibilityChange = () => { 
-      if (document.hidden && !isTimeUp && isFullScreen) {
+      if (document.hidden && !isTimeUp && isFullScreen && !isLocked) {
         handleViolation("SISTEM: TERDETEKSI PINDAH APLIKASI / MINIMIZE!");
       } 
     };
     
     const handleBlur = () => { 
-      if (!isTimeUp && isFullScreen) {
+      if (!isTimeUp && isFullScreen && !isLocked) {
         handleViolation("PERINGATAN: FOKUS LAYAR TERDETEKSI BERPINDAH!"); 
       }
     };
@@ -148,7 +152,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     const handleFullScreenChange = () => {
       const isCurrentlyFull = !!document.fullscreenElement;
       setIsFullScreen(isCurrentlyFull);
-      if (!isCurrentlyFull && !isTimeUp && hasCameraPermission) {
+      if (!isCurrentlyFull && !isTimeUp && hasCameraPermission && !isLocked) {
         handleViolation("PELANGGARAN: MODE LAYAR PENUH DIMATIKAN!");
       }
     };
@@ -157,7 +161,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     const preventKeys = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'F12') {
         e.preventDefault();
-        handleViolation(`SISTEM: TOMBOL TERLARANG ${e.key} DITEKAN!`);
+        if (!isLocked) handleViolation(`SISTEM: TOMBOL TERLARANG ${e.key} DITEKAN!`);
       }
     };
 
@@ -182,7 +186,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
     const preventBack = (e: any) => {
       window.history.pushState(null, "", window.location.href);
-      if (!isTimeUp) handleViolation("AKSI TERLARANG: TOMBOL BACK!");
+      if (!isTimeUp && !isLocked) handleViolation("AKSI TERLARANG: TOMBOL BACK!");
     };
     window.history.pushState(null, "", window.location.href);
     window.addEventListener('popstate', preventBack);
@@ -200,11 +204,18 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         document.body.style.userSelect = 'auto';
       }
     };
-  }, [isTimeUp, isFullScreen, hasCameraPermission]);
+  }, [isTimeUp, isFullScreen, hasCameraPermission, isLocked]);
 
   const handleViolation = (msg: string) => {
-    setViolationCount(prev => prev + 1);
-    setShowAlarm(true);
+    const newCount = violationCount + 1;
+    setViolationCount(newCount);
+    
+    if (newCount >= 3) {
+      setIsLocked(true);
+      setShowAlarm(false);
+    } else {
+      setShowAlarm(true);
+    }
     
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate([500, 200, 500, 200, 500]);
@@ -215,6 +226,18 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     if (typeof window !== 'undefined') {
         const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
         audio.play().catch(() => {});
+    }
+  };
+
+  const handleUnlock = () => {
+    if (tokenInput.toUpperCase() === unlockToken.toUpperCase()) {
+      setIsLocked(false);
+      setViolationCount(0);
+      setTokenInput('');
+      enterFullScreen();
+      toast({ title: 'AKSES DIBUKA', description: 'Silakan lanjutkan pengerjaan ujian Anda.' });
+    } else {
+      toast({ variant: 'destructive', title: 'TOKEN SALAH', description: 'Token keamanan tidak valid. Hubungi pengawas.' });
     }
   };
 
@@ -266,7 +289,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         </div>
 
         <div className="flex items-center gap-4">
-          {!isFullScreen && !isTimeUp && (
+          {!isFullScreen && !isTimeUp && !isLocked && (
             <Button variant="destructive" size="sm" onClick={enterFullScreen} className="h-9 text-[9px] font-black uppercase px-6 rounded-xl animate-pulse">
               <Maximize size={14} className="mr-2" /> AKTIFKAN SECURE MODE
             </Button>
@@ -298,11 +321,37 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
             </div>
         )}
 
-        {showAlarm && !isTimeUp && (
+        {showAlarm && !isTimeUp && !isLocked && (
           <div className="absolute inset-0 bg-red-700/95 backdrop-blur-2xl flex flex-col items-center justify-center z-50 p-10 text-center">
             <AlertTriangle size={64} className="text-white mb-10 animate-bounce" />
             <h2 className="text-5xl font-black text-white uppercase italic tracking-tighter mb-6 font-headline">SECURITY BREACH!</h2>
             <Button size="lg" variant="secondary" onClick={() => { setShowAlarm(false); enterFullScreen(); }} className="h-20 px-16 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest shadow-3xl">SAYA MENGERTI</Button>
+          </div>
+        )}
+
+        {isLocked && !isTimeUp && (
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center z-[55] p-10 text-center space-y-8 animate-reveal">
+            <div className="w-24 h-24 bg-red-500 text-white rounded-[2rem] flex items-center justify-center shadow-[0_0_50px_rgba(239,68,68,0.5)] animate-pulse">
+                <Lock size={48} />
+            </div>
+            <div className="space-y-2">
+                <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter font-headline">EXAM LOCKDOWN</h2>
+                <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.3em] max-w-sm mx-auto leading-relaxed">
+                    Sesi Anda telah dikunci karena pelanggaran berulang. Silakan hubungi pengawas untuk mendapatkan token pembuka.
+                </p>
+            </div>
+            
+            <div className="w-full max-w-xs space-y-4">
+                <Input 
+                    placeholder="MASUKKAN TOKEN UNTUK MEMBUKA" 
+                    value={tokenInput}
+                    onChange={(e) => setTokenInput(e.target.value.toUpperCase())}
+                    className="h-16 rounded-2xl bg-white/5 border-white/10 text-center font-black text-xl tracking-[0.5em] text-white focus-visible:ring-red-500"
+                />
+                <Button onClick={handleUnlock} size="lg" className="w-full h-16 rounded-2xl font-black uppercase tracking-[0.2em] shadow-3xl glow-primary bg-red-600 hover:bg-red-700">
+                    VERIFIKASI & BUKA AKSES
+                </Button>
+            </div>
           </div>
         )}
 

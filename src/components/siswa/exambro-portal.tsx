@@ -24,6 +24,7 @@ export function ExamBroPortal() {
   const [selectedExamUrl, setSelectedExamUrl] = useState<string>('');
   const [isCameraRequired, setIsCameraRequired] = useState(false);
   const [examDuration, setExamDuration] = useState(60);
+  const [examToken, setExamToken] = useState<string>('');
   
   const [selectedExamId, setSelectedExamId] = useState<string>('');
   const [inputToken, setInputToken] = useState<string>('');
@@ -54,6 +55,7 @@ export function ExamBroPortal() {
     setSelectedExamUrl(url);
     setIsCameraRequired(camRequired);
     setExamDuration(duration);
+    setExamToken(requiredToken || 'ADMIN');
     setIsExamActive(true);
   };
 
@@ -86,6 +88,7 @@ export function ExamBroPortal() {
         url={selectedExamUrl} 
         isCameraRequired={isCameraRequired} 
         durationMinutes={examDuration}
+        unlockToken={examToken}
         onExit={() => setIsExamActive(false)} 
       />
     );
