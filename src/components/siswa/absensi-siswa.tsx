@@ -2,17 +2,19 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { UserCheck, Activity, HeartPulse, FileQuestion, Percent, ShieldCheck } from 'lucide-react';
+import { UserCheck, Activity, HeartPulse, FileQuestion, Percent, ShieldCheck, LoaderCircle } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type AttendanceRecord } from '@/lib/data';
-import { Skeleton } from '../ui/skeleton';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
-import { Badge } from '../ui/badge';
-import { format } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { cn, formatDate } from '@/lib/utils';
 
+/**
+ * Komponen Rekap Kehadiran Siswa v3.8.
+ * Menampilkan statistik dan riwayat presensi digital secara real-time.
+ */
 export function AbsensiSiswa() {
   const { user } = useUser();
   const firestore = useFirestore();
@@ -52,13 +54,7 @@ export function AbsensiSiswa() {
         case 'Alpa': return <Badge variant="destructive" className="font-black text-[9px] uppercase tracking-widest px-3 py-1">Alpa</Badge>;
         default: return <Badge variant="outline" className='font-black text-[9px] uppercase tracking-widest'>{status}</Badge>;
     }
-  }
-  
-  const formatDateLabel = (date: any) => {
-    if (!date || !mounted) return 'N/A';
-    const jsDate = date.seconds ? new Date(date.seconds * 1000) : new Date(date);
-    return format(jsDate, "d MMMM yyyy", { locale: idLocale });
-  }
+  };
 
   return (
     <Card className="shadow-2xl border-slate-100 rounded-[3rem] bg-white overflow-hidden border-2">
@@ -66,7 +62,7 @@ export function AbsensiSiswa() {
         <div className='flex items-center gap-3'>
             <div className='p-2 bg-primary text-white rounded-xl shadow-xl glow-primary'><UserCheck size={20} /></div>
             <div>
-                <CardTitle className="text-xl font-headline font-black uppercase italic tracking-tighter text-slate-900">Rekap Kehadiran</CardTitle>
+                <CardTitle className="text-xl font-headline font-black uppercase tracking-tighter text-slate-900">Rekap Kehadiran</CardTitle>
                 <CardDescription className='text-[10px] font-bold uppercase tracking-widest mt-1'>Monitor persentase kehadiran Anda secara real-time.</CardDescription>
             </div>
         </div>
@@ -80,19 +76,19 @@ export function AbsensiSiswa() {
             <div className="grid grid-cols-2 gap-4 mb-10">
                 <Card className="bg-primary/5 border-primary/10 rounded-[1.5rem] p-5 shadow-inner">
                     <p className="text-[9px] font-black text-primary uppercase tracking-widest mb-2 flex items-center gap-2"><Percent size={10}/> Persentase</p>
-                    <div className="text-3xl font-black text-slate-900 font-headline italic">{stats.percentage}%</div>
+                    <div className="text-3xl font-black text-slate-900 font-headline tracking-tighter">{stats.percentage}%</div>
                 </Card>
                  <Card className="bg-amber-500/5 border-amber-500/10 rounded-[1.5rem] p-5 shadow-inner">
                     <p className="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-2 flex items-center gap-2"><HeartPulse size={10}/> Sakit</p>
-                    <div className="text-3xl font-black text-slate-900 font-headline italic">{stats.sakit} <span className='text-[10px] uppercase not-italic opacity-40'>Hari</span></div>
+                    <div className="text-3xl font-black text-slate-900 font-headline tracking-tighter">{stats.sakit} <span className='text-[10px] uppercase opacity-40'>Hari</span></div>
                 </Card>
                  <Card className="bg-blue-500/5 border-blue-500/10 rounded-[1.5rem] p-5 shadow-inner">
                     <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-2 flex items-center gap-2"><FileQuestion size={10}/> Izin</p>
-                    <div className="text-3xl font-black text-slate-900 font-headline italic">{stats.izin} <span className='text-[10px] uppercase not-italic opacity-40'>Hari</span></div>
+                    <div className="text-3xl font-black text-slate-900 font-headline tracking-tighter">{stats.izin} <span className='text-[10px] uppercase opacity-40'>Hari</span></div>
                 </Card>
                  <Card className="bg-red-500/5 border-red-500/10 rounded-[1.5rem] p-5 shadow-inner">
                     <p className="text-[9px] font-black text-red-600 uppercase tracking-widest mb-2 flex items-center gap-2"><Activity size={10}/> Alpa</p>
-                    <div className="text-3xl font-black text-slate-900 font-headline italic">{stats.alpa} <span className='text-[10px] uppercase not-italic opacity-40'>Hari</span></div>
+                    <div className="text-3xl font-black text-slate-900 font-headline tracking-tighter">{stats.alpa} <span className='text-[10px] uppercase opacity-40'>Hari</span></div>
                 </Card>
             </div>
         )}
@@ -105,7 +101,7 @@ export function AbsensiSiswa() {
         <div className="rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
             <Table>
                 <TableHeader className='bg-slate-50/50'>
-                    <TableRow className='border-slate-100'>
+                    <TableRow className='border-slate-100 hover:bg-transparent'>
                         <TableHead className='font-black text-[9px] uppercase tracking-widest text-slate-500 px-6'>Tanggal</TableHead>
                         <TableHead className='font-black text-[9px] uppercase tracking-widest text-slate-500'>Status</TableHead>
                         <TableHead className='font-black text-[9px] uppercase tracking-widest text-slate-500 px-6'>Keterangan</TableHead>
@@ -116,7 +112,9 @@ export function AbsensiSiswa() {
                     {!isLoading && records && records.length > 0 ? (
                         records.map(record => (
                             <TableRow key={record.id} className='border-slate-100 hover:bg-slate-50 transition-colors'>
-                                <TableCell className="font-bold text-xs px-6 py-4">{formatDateLabel(record.date)}</TableCell>
+                                <TableCell className="font-bold text-xs px-6 py-4">
+                                    {mounted ? formatDate(record.date) : '...'}
+                                </TableCell>
                                 <TableCell>{getStatusBadge(record.status)}</TableCell>
                                 <TableCell className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-6">{record.notes || '-'}</TableCell>
                             </TableRow>
