@@ -53,11 +53,14 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
       </head>
-      <body className={cn(
-        "min-h-screen bg-background font-sans antialiased selection:bg-primary/10",
-        jakarta.variable, 
-        inter.variable
-      )}>
+      <body 
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased selection:bg-primary/10",
+          jakarta.variable, 
+          inter.variable
+        )}
+        suppressHydrationWarning
+      >
           <ThemeProvider
             attribute="class"
             defaultTheme="light"

@@ -1,6 +1,6 @@
-
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Users, UserCheck, BookOpen, GraduationCap, Factory } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -14,6 +14,11 @@ type StatisticsSectionProps = {
 };
 
 const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCount, isLoading }: StatisticsSectionProps) => {
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
     
     const stats = [
         {
@@ -55,10 +60,10 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
                 </div>
                 <div className="space-y-1 text-center sm:text-left">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{stat.title}</p>
-                    {isLoading ? (
+                    {isLoading || !mounted ? (
                         <Skeleton className='h-8 w-20' />
                     ) : (
-                        <div className="text-3xl font-bold text-slate-900">
+                        <div className="text-3xl font-bold text-slate-900" suppressHydrationWarning>
                           {stat.value > 0 ? stat.value.toLocaleString('id-ID') : '0'}
                         </div>
                     )}

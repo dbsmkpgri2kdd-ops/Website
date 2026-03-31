@@ -153,7 +153,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[10px] font-medium">
           <div className="text-center md:text-left">
-            <span>© {mounted ? currentYear : '2025'} {schoolName}.</span>
+            <span suppressHydrationWarning>© {mounted ? currentYear : '2025'} {schoolName}.</span>
           </div>
           <div className="flex gap-6">
             <span className="hover:text-primary cursor-pointer transition-colors">Privacy Policy</span>
