@@ -1,7 +1,5 @@
-
 'use client';
 /**
- * Deprecated: Redundant component.
- * Use src/components/sections/home/partners-slider.tsx instead.
+ * Deprecated: Use src/components/sections/home/partners-slider.tsx
  */
 export default function DeprecatedPartnersSlider() { return null; }

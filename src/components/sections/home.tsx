@@ -85,7 +85,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     </div>
                   ) : (
                     <>
-                      <h1 className="text-3xl md:text-5xl font-bold tracking-tighter text-slate-900 leading-[1.1] uppercase">
+                      <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 leading-[1.1] uppercase">
                         {schoolData?.heroTitle || "Membangun Masa Depan"} <br/>
                         <span className="text-primary">Ahli & Kompeten.</span>
                       </h1>
@@ -95,10 +95,10 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     </>
                   )}
                   <div className="flex flex-wrap gap-3 pt-2">
-                    <Button onClick={() => setActiveTab('ppdb-online')} variant="accent" size="xl" className="font-bold text-[10px] uppercase tracking-widest glow-accent">
+                    <Button onClick={() => setActiveTab('ppdb-online')} variant="accent" size="xl" className="font-black text-[10px] uppercase tracking-widest glow-accent">
                         Daftar Calon Siswa <ArrowRight size={14} className="ml-2" />
                     </Button>
-                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" className="h-14 px-8 rounded-2xl font-bold text-[10px] uppercase tracking-widest border-slate-100 text-slate-500 hover:bg-slate-50 transition-all">
+                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" className="h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest border-slate-100 text-slate-500 hover:bg-slate-50 transition-all">
                         Profil Sekolah
                     </Button>
                   </div>
@@ -159,14 +159,14 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                                 <Skeleton className="h-40 w-full rounded-xl" />
                               ) : (
                                 <>
-                                  <div className="w-10 h-10 bg-primary/5 text-primary rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all">
+                                  <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all text-primary border border-primary/5">
                                       <IconComp size={20} />
                                   </div>
-                                  <h3 className="text-sm font-bold mb-1 text-slate-900 uppercase tracking-tight">{major.name || 'Bidang Studi'}</h3>
+                                  <h3 className="text-sm font-black mb-1 text-slate-900 uppercase tracking-tight">{major.name || 'Bidang Studi'}</h3>
                                   <p className="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow font-bold uppercase tracking-widest opacity-70">
                                     {major.description || 'Program keahlian unggulan.'}
                                   </p>
-                                  <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-primary font-bold text-[9px] uppercase tracking-widest hover:bg-transparent flex justify-start items-center">
+                                  <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-primary font-black text-[9px] uppercase tracking-widest hover:bg-transparent flex justify-start items-center">
                                     Detail <ChevronRight size={12} className="ml-1" />
                                   </Button>
                                 </>
@@ -215,7 +215,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                                 <span>•</span>
                                 <span>{formatDateLabel(news.datePublished)}</span>
                             </div>
-                            <h3 className="text-xs font-bold leading-snug text-slate-900 line-clamp-2 uppercase tracking-tight group-hover:text-primary transition-colors">{news.title || 'Judul Berita'}</h3>
+                            <h3 className="text-xs font-black leading-snug text-slate-900 line-clamp-2 uppercase tracking-tight group-hover:text-primary transition-colors">{news.title || 'Judul Berita'}</h3>
                           </>
                         )}
                       </div>
@@ -231,7 +231,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
           <section key="cta" className="max-w-7xl mx-auto px-6 py-12 md:py-16">
             <div className="rounded-[2.5rem] p-8 md:p-16 text-center bg-white shadow-xl relative overflow-hidden border border-slate-100">
               <div className="relative z-10 space-y-6">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 max-w-xl mx-auto leading-tight tracking-tighter uppercase">
+                <h2 className="text-2xl md:text-3xl font-black text-slate-900 max-w-xl mx-auto leading-tight tracking-tighter uppercase">
                   {schoolData?.ctaTitle || "Siap Menjadi Ahli Berkompetensi?"}
                 </h2>
                 <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] max-w-sm mx-auto leading-relaxed">
