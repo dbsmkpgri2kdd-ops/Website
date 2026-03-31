@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     shortcut: logoUrl,
     apple: logoUrl,
   },
-  keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "PPDB 2025"],
+  keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "STM", " STM Kedondong", "PPDB 2026"],
   authors: [{ name: "SMKS PGRI 2 Kedondong" }],
   creator: "Digital Excellence Team",
   manifest: '/manifest.webmanifest',

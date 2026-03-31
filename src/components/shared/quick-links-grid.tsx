@@ -18,10 +18,6 @@ type QuickLinksGridProps = {
   description?: string;
 };
 
-/**
- * QuickLinksGrid v6.0 - Optimized for PWA & Minimalist Aesthetic
- * 3 columns on mobile, 4 on small screens, up to 6 on desktop.
- */
 export function QuickLinksGrid({ audience, title, description }: QuickLinksGridProps) {
   const firestore = useFirestore();
 
@@ -48,7 +44,7 @@ export function QuickLinksGrid({ audience, title, description }: QuickLinksGridP
         ) : (
           (() => {
             const IconComp = iconMap[iconStr] || Globe;
-            return <IconComp className="w-5 h-5" />;
+            return <IconComp size={16} />;
           })()
         )}
       </div>

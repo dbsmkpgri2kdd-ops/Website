@@ -66,8 +66,8 @@ const Header = ({
         variant={user ? "default" : "outline"}
         size="icon"
         className={cn(
-          "h-9 w-9 rounded-lg transition-all shrink-0",
-          user ? "bg-primary text-white shadow-sm border-none" : "border-slate-200 text-slate-600 hover:bg-slate-50",
+          "h-9 w-9 rounded-lg transition-all shrink-0 shadow-sm",
+          user ? "bg-primary text-white border-none" : "border-slate-200 text-slate-600 hover:bg-slate-50",
           className
         )}
       >
@@ -124,7 +124,6 @@ const Header = ({
     )}>
       <div className="max-w-7xl mx-auto px-6 h-full">
         <div className="flex justify-between items-center h-full">
-          {/* Logo */}
           <button
             onClick={() => setActiveTab('home')}
             className="flex items-center gap-3 group"
@@ -151,12 +150,10 @@ const Header = ({
             </div>
           </button>
 
-          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center space-x-0.5">
              {mounted && renderNavItems(currentMenu)}
           </nav>
 
-          {/* Actions */}
           <div className="flex items-center gap-2">
              <AuthButton className="hidden md:flex" />
              <div className='h-6 w-px bg-slate-100 mx-1 hidden md:block'></div>
@@ -169,7 +166,7 @@ const Header = ({
                 </SheetTrigger>
                 <SheetContent side="right" className="p-0 w-full sm:w-[320px] border-none shadow-2xl bg-white">
                     <SheetHeader className="p-8 border-b border-slate-50 text-left bg-slate-50/20">
-                        <SheetTitle className='font-bold text-xl tracking-tighter uppercase font-headline text-slate-900'>Navigasi</SheetTitle>
+                        <SheetTitle className='font-bold text-xl tracking-tighter uppercase text-slate-900'>Navigasi</SheetTitle>
                     </SheetHeader>
                     
                     <ScrollArea className='h-[calc(100vh-180px)] py-6'>
