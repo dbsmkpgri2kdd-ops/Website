@@ -58,21 +58,34 @@ const Header = ({
   };
 
   const AuthButton = ({ className }: { className?: string }) => {
-    if (!mounted || isUserLoading) return <Skeleton className={cn('h-9 w-9 rounded-lg', className)} />;
+    if (!mounted || isUserLoading) return <Skeleton className={cn('h-9 rounded-lg', className?.includes('w-full') ? 'w-full h-12' : 'w-9')} />;
+
+    const isFullWidth = className?.includes('w-full');
 
     return (
       <Button
         onClick={handleAuthClick}
         variant={user ? "default" : "outline"}
-        size="icon"
+        size={isFullWidth ? "default" : "icon"}
         aria-label={user ? "Buka Dashboard" : "Masuk ke Sistem"}
         className={cn(
-          "h-9 w-9 rounded-lg transition-all shrink-0 shadow-sm",
+          "h-9 rounded-lg transition-all shrink-0 shadow-sm",
+          !isFullWidth && "w-9",
           user ? "bg-primary text-white border-none" : "border-slate-200 text-slate-600 hover:bg-slate-50",
           className
         )}
       >
-        {user ? <LayoutGrid size={18} /> : <LogIn size={18} />}
+        {user ? (
+          <>
+            <LayoutGrid size={18} className={cn(isFullWidth && "mr-2")} />
+            {isFullWidth && <span className="font-bold">Dashboard</span>}
+          </>
+        ) : (
+          <>
+            <LogIn size={18} className={cn(isFullWidth && "mr-2")} />
+            {isFullWidth && <span className="font-bold">Masuk</span>}
+          </>
+        )}
       </Button>
     );
   };

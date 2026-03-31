@@ -81,7 +81,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             phone: "0812-3456-7890",
             vision: "Mewujudkan lulusan yang kompeten, berakhlak mulia, dan siap kerja.",
             mission: ["Menerapkan kurikulum berbasis industri", "Menanamkan nilai-nilai karakter bangsa", "Meningkatkan kualitas SDM dan sarpras"],
-            primaryColor: "221 83% 53%",
+            primaryColor: "221 100% 50%",
             accentColor: "45 100% 50%",
             layoutSettings: {
               showHero: true,
