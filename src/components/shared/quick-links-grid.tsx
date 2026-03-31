@@ -21,7 +21,7 @@ type QuickLinksGridProps = {
 /**
  * Komponen Grid untuk menampilkan Tautan Aplikasi berdasarkan audiens.
  * Dioptimalkan untuk PWA (3-4 kolom di mobile) dengan gaya app-drawer.
- * Menggunakan skema warna Clean White - Blue & Yellow.
+ * Desain: Clean White dengan aksen Royal Blue & Yellow.
  */
 export function QuickLinksGrid({ audience, title = "Layanan Digital", description = "Akses satu pintu untuk seluruh kebutuhan administratif dan akademik civitas." }: QuickLinksGridProps) {
   const firestore = useFirestore();
@@ -48,14 +48,14 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
   const renderIcon = (iconStr: string) => {
     if (iconStr.includes('fa-')) {
       return (
-        <div className="p-2.5 md:p-3 rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm w-12 h-12 md:w-14 md:h-14 flex items-center justify-center shrink-0">
+        <div className="p-2.5 md:p-3 rounded-2xl bg-primary text-white shadow-xl glow-primary w-12 h-12 md:w-14 md:h-14 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
           <i className={cn(iconStr, "text-xl md:text-2xl")} />
         </div>
       );
     }
     const IconComp = iconMap[iconStr] || Globe;
     return (
-      <div className="p-2.5 md:p-3 rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm w-12 h-12 md:w-14 md:h-14 flex items-center justify-center shrink-0">
+      <div className="p-2.5 md:p-3 rounded-2xl bg-primary text-white shadow-xl glow-primary w-12 h-12 md:w-14 md:h-14 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
         <IconComp className="w-6 h-6 md:w-7 md:h-7" />
       </div>
     );
@@ -63,7 +63,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
 
   return (
     <div className="animate-fade-in">
-      <div className="mb-8 md:mb-12 text-center md:text-left space-y-3">
+      <div className="mb-10 md:mb-12 text-center md:text-left space-y-3">
         <div className='flex items-center gap-2 text-primary justify-center md:justify-start'>
             <Sparkles size={14} className='animate-pulse text-accent' />
             <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-primary">Portal Layanan Terpadu</span>
@@ -72,7 +72,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
         <p className="text-muted-foreground text-[10px] md:text-sm max-w-2xl font-bold opacity-80 uppercase tracking-widest">{description}</p>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-8">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-8">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-32 md:h-48 rounded-[2rem]" />
@@ -87,7 +87,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <Card className="h-full rounded-[2rem] md:rounded-[2.5rem] shadow-lg md:shadow-xl border-slate-100 bg-white hover:border-primary/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 overflow-hidden border">
+                <Card className="h-full rounded-[2rem] md:rounded-[3rem] shadow-lg md:shadow-xl border-slate-100 bg-white hover:border-primary/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 overflow-hidden border">
                   <CardHeader className="flex flex-col items-center gap-3 md:gap-4 p-4 md:p-8 pb-3 md:pb-4 text-center">
                     {renderIcon(link.icon)}
                     <div className="w-full">

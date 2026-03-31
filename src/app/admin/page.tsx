@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -10,7 +9,7 @@ import {
   PenSquare, ShieldAlert, 
   LoaderCircle, Mail, Award, Library, MessageSquare, Quote, 
   DatabaseZap, Palette, Layout, MousePointer2, BriefcaseIcon, Factory, SearchCode,
-  UserPlus, ShieldCheck, ScanFace
+  UserPlus, ShieldCheck, ScanFace, Sparkles
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -124,10 +123,10 @@ function AdminDashboard() {
 
   if (isUserLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className='flex flex-col items-center gap-4'>
             <LoaderCircle className="animate-spin text-primary h-10 w-10" />
-            <p className='text-xs font-semibold text-muted-foreground'>Menyiapkan dasbor...</p>
+            <p className='text-xs font-black uppercase tracking-widest text-muted-foreground'>Otorisasi hPanel...</p>
         </div>
       </div>
     );
@@ -183,87 +182,96 @@ function AdminDashboard() {
     <button
       onClick={() => { setActiveTab(item.value as AdminTab); setIsSidebarOpen(false); }}
       className={cn(
-        "w-full flex items-center gap-2.5 px-3 py-1 rounded-lg text-[13px] font-medium transition-all duration-200 group",
+        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[12px] font-bold uppercase tracking-wider transition-all duration-200 group",
         activeTab === item.value 
-          ? "bg-primary text-white shadow-md shadow-primary/20" 
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          ? "bg-primary text-white shadow-xl glow-primary" 
+          : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
       )}
     >
-      <item.icon size={15} className={cn("transition-all shrink-0", activeTab === item.value ? "opacity-100" : "opacity-60 group-hover:opacity-100")} />
+      <item.icon size={16} className={cn("transition-all shrink-0", activeTab === item.value ? "opacity-100" : "opacity-40 group-hover:opacity-100")} />
       <span className="truncate">{item.label}</span>
     </button>
   );
 
   return (
-    <div className="min-h-screen bg-background flex overflow-hidden">
+    <div className="min-h-screen bg-white flex overflow-hidden tech-mesh">
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-background/40 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsSidebarOpen(false)} />
       )}
 
       <aside className={cn(
-        "fixed lg:sticky top-0 left-0 h-screen w-56 bg-card border-r border-border z-[70] transition-all duration-300 flex flex-col shadow-sm",
+        "fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-100 z-[70] transition-all duration-300 flex flex-col shadow-2xl",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="p-4 border-b border-border flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="bg-primary text-white p-1.5 rounded-lg">
-              <DatabaseZap size={16} />
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary text-white p-2 rounded-xl shadow-xl glow-primary">
+              <DatabaseZap size={18} />
             </div>
-            <span className="font-bold text-sm tracking-tight text-foreground">hPanel v7.5</span>
+            <div className='flex flex-col'>
+                <span className="font-black text-sm tracking-tighter text-slate-900 uppercase italic">hPanel <span className='text-primary'>v7.5</span></span>
+                <span className='text-[8px] font-black uppercase tracking-[0.3em] text-primary opacity-60'>Digital Hub Ent.</span>
+            </div>
           </div>
-          <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-8 w-8" onClick={() => setIsSidebarOpen(false)}>
-            <X size={16} />
+          <Button variant="ghost" size="icon" className="lg:hidden rounded-xl h-9 w-9 bg-slate-50" onClick={() => setIsSidebarOpen(false)}>
+            <X size={18} />
           </Button>
         </div>
 
-        <ScrollArea className="flex-grow px-2 py-3">
-          <div className="space-y-4 pb-10">
+        <ScrollArea className="flex-grow px-3 py-6">
+          <div className="space-y-8 pb-10">
             {Object.entries(groupedNav).map(([group, items]) => (
-              <div key={group} className="space-y-0.5">
-                <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 mb-1">{group}</h3>
+              <div key={group} className="space-y-1">
+                <h3 className="px-4 text-[9px] font-black uppercase tracking-[0.4em] text-primary mb-3 opacity-40">{group}</h3>
                 {items.map(item => <NavButton key={item.value} item={item} />)}
               </div>
             ))}
           </div>
         </ScrollArea>
 
-        <div className="p-3 border-t border-border bg-muted/20">
-          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-card border border-border mb-2 shadow-sm">
-            <Avatar className="h-7 w-7 border border-border">
-              <AvatarFallback className="bg-primary/10 text-primary text-[9px] font-bold">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
+        <div className="p-4 border-t border-slate-100 bg-slate-50/30">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 mb-3 shadow-sm">
+            <Avatar className="h-9 w-9 border-2 border-primary/10">
+              <AvatarFallback className="bg-primary/5 text-primary text-[10px] font-black uppercase">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-[10px] font-bold text-foreground truncate">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
-              <p className="text-[8px] font-semibold text-muted-foreground capitalize">{user?.profile?.role || 'User'}</p>
+              <p className="text-[11px] font-black text-slate-900 truncate uppercase italic tracking-tight">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
+              <div className='flex items-center gap-1.5'>
+                <div className='w-1 h-1 rounded-full bg-emerald-500'></div>
+                <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Active Admin</p>
+              </div>
             </div>
           </div>
-          <button onClick={handleLogout} className="w-full flex items-center px-2 py-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold text-[10px] transition-colors">
-            <LogOut size={13} className="mr-2 opacity-60" /> Keluar sistem
+          <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 h-11 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-black text-[10px] uppercase tracking-widest transition-all border border-transparent hover:border-destructive/10">
+            <LogOut size={14} className="opacity-60" /> Keluar Sistem
           </button>
         </div>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        <header className="h-14 border-b border-border bg-card/80 backdrop-blur-xl flex items-center justify-between px-4 sm:px-6 shrink-0 z-30">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-8 w-8 bg-muted" onClick={() => setIsSidebarOpen(true)}>
-              <Menu size={18} />
+        <header className="h-16 border-b border-slate-100 bg-white/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0 z-30">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="lg:hidden rounded-xl h-10 w-10 bg-slate-50 border border-slate-100" onClick={() => setIsSidebarOpen(true)}>
+              <Menu size={20} />
             </Button>
-            <h1 className="font-semibold text-xs text-muted-foreground tracking-tight hidden sm:block">
-              Sistem / {navItems.find(i => i.value === activeTab)?.label || 'Ringkasan'}
-            </h1>
+            <div className='flex items-center gap-3'>
+                <div className='h-8 w-1 bg-primary rounded-full hidden sm:block'></div>
+                <h1 className="font-black text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden sm:block">
+                  Sistem Hub / <span className='text-primary'>{navItems.find(i => i.value === activeTab)?.label || 'Ringkasan'}</span>
+                </h1>
+            </div>
           </div>
           
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-3'>
             <ThemeToggle />
-            <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9 relative border border-border bg-card">
-                <Bell size={16} className="text-muted-foreground" />
-                <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full border-2 border-card" />
+            <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 relative border border-slate-100 bg-white shadow-sm hover:bg-slate-50 transition-all">
+                <Bell size={18} className="text-slate-600" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-accent rounded-full border-2 border-white shadow-lg animate-pulse" />
             </Button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar">
           <div className="max-w-6xl mx-auto">
             <div className='animate-reveal'>
                 {renderContent()}
