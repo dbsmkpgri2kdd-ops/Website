@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Hammer, Database, Table as TableIcon, CheckCircle2, XCircle, Search, Settings2, ListTodo } from 'lucide-react';
+import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Hammer, Database, Table as TableIcon, CheckCircle2, XCircle, Search, Settings2, ListTodo, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -22,6 +22,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 const formSchema = z.object({
   isMaintenanceMode: z.boolean().default(false),
   studentDatabaseUrl: z.string().url('URL CSV tidak valid.').optional().or(z.literal('')),
+  latitude: z.coerce.number().optional(),
+  longitude: z.coerce.number().optional(),
   primaryColor: z.string().optional(),
   accentColor: z.string().optional(),
   csvMappings: z.object({
@@ -61,6 +63,8 @@ export function SystemSettingsManager() {
     defaultValues: {
       isMaintenanceMode: false,
       studentDatabaseUrl: '',
+      latitude: -5.4,
+      longitude: 105.1,
       primaryColor: '221 83% 53%',
       accentColor: '262 83% 58%',
       csvMappings: {
@@ -90,6 +94,8 @@ export function SystemSettingsManager() {
       form.reset({
         isMaintenanceMode: schoolData.isMaintenanceMode || false,
         studentDatabaseUrl: schoolData.studentDatabaseUrl || '',
+        latitude: schoolData.latitude || -5.4,
+        longitude: schoolData.longitude || 105.1,
         primaryColor: schoolData.primaryColor || '221 83% 53%',
         accentColor: schoolData.accentColor || '262 83% 58%',
         csvMappings: {
@@ -149,7 +155,7 @@ export function SystemSettingsManager() {
         <ShieldAlert className="h-4 w-4 text-primary" />
         <AlertTitle className='font-bold text-xs'>Kustomisasi Identitas & Data</AlertTitle>
         <AlertDescription className='text-xs font-medium'>
-          Atur identitas visual dan integrasi data profil siswa sekolah Anda secara terpusat.
+          Atur identitas visual, lokasi geofencing absensi, dan integrasi data profil siswa sekolah Anda.
         </AlertDescription>
       </Alert>
 
@@ -253,6 +259,41 @@ export function SystemSettingsManager() {
                       <AlertDescription className="text-[10px] font-medium">{csvError}</AlertDescription>
                     </Alert>
                   )}
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-2xl border-none rounded-[2rem]">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className='p-2 bg-emerald-500/10 text-emerald-500 rounded-xl'><MapPin size={20} /></div>
+                    <CardTitle className='text-xl font-headline font-bold italic'>Geofencing Absensi</CardTitle>
+                  </div>
+                  <CardDescription>Titik koordinat pusat sekolah untuk validasi absensi (radius 30m).</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="latitude"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Latitude</FormLabel>
+                          <FormControl><Input {...field} type="number" step="any" placeholder="-5.4000" className='h-12 rounded-xl'/></FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="longitude"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Longitude</FormLabel>
+                          <FormControl><Input {...field} type="number" step="any" placeholder="105.1000" className='h-12 rounded-xl'/></FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <p className='text-[10px] text-muted-foreground font-medium italic'>*Siswa wajib berada dalam jarak 30 meter dari titik ini untuk melakukan absensi biometrik.</p>
                 </CardContent>
               </Card>
 

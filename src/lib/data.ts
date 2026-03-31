@@ -134,6 +134,8 @@ export interface School {
     ctaTitle?: string;
     studentDatabaseUrl?: string;
     csvMappings?: CsvMappings;
+    latitude?: number;
+    longitude?: number;
     layoutSettings?: {
       showHero?: boolean;
       showPartners?: boolean;

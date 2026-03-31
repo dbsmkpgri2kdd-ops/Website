@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -18,6 +19,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExamBroPortal } from '@/components/siswa/exambro-portal';
+import { BiometricAttendance } from '@/components/siswa/biometric-attendance';
 import { cn } from '@/lib/utils';
 
 function SiswaDashboard() {
@@ -91,35 +93,40 @@ function SiswaDashboard() {
           )}
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* KARTU IDENTITAS DIGITAL */}
-            <Card className="lg:col-span-1 border-border/60 bg-card rounded-[2.5rem] overflow-hidden relative shadow-sm group">
-                <div className='absolute top-0 left-0 w-full h-2 bg-primary'></div>
-                <CardHeader className="p-8 text-center sm:text-left space-y-6">
-                    <div className="flex flex-col sm:flex-row items-center gap-6">
-                        <Avatar className="h-24 w-24 border-4 border-primary/10 shadow-sm group-hover:scale-105 transition-transform duration-500">
-                            <AvatarFallback className="bg-primary/5 text-primary text-4xl font-bold italic">
-                                {profile?.displayName?.charAt(0) || 'S'}
-                            </AvatarFallback>
-                        </Avatar>
-                        <div className='flex-1 min-w-0'>
-                            <h3 className="text-2xl font-bold font-headline tracking-tight text-foreground truncate">{profile?.displayName || 'Siswa'}</h3>
-                            <p className="text-primary font-bold text-xs uppercase tracking-widest mt-1">{profile?.className || 'Belum sinkron'}</p>
-                            <div className='flex gap-2 mt-4'>
-                                <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-600 border-none px-3 py-1 rounded-lg text-[10px] font-bold'>Aktif</Badge>
+            <div className="lg:col-span-1 space-y-8">
+                {/* KARTU IDENTITAS DIGITAL */}
+                <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden relative shadow-sm group">
+                    <div className='absolute top-0 left-0 w-full h-2 bg-primary'></div>
+                    <CardHeader className="p-8 text-center sm:text-left space-y-6">
+                        <div className="flex flex-col sm:flex-row items-center gap-6">
+                            <Avatar className="h-24 w-24 border-4 border-primary/10 shadow-sm group-hover:scale-105 transition-transform duration-500">
+                                <AvatarFallback className="bg-primary/5 text-primary text-4xl font-bold italic">
+                                    {profile?.displayName?.charAt(0) || 'S'}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className='flex-1 min-w-0'>
+                                <h3 className="text-2xl font-bold font-headline tracking-tight text-foreground truncate">{profile?.displayName || 'Siswa'}</h3>
+                                <p className="text-primary font-bold text-xs uppercase tracking-widest mt-1">{profile?.className || 'Belum sinkron'}</p>
+                                <div className='flex gap-2 mt-4'>
+                                    <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-600 border-none px-3 py-1 rounded-lg text-[10px] font-bold'>Aktif</Badge>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </CardHeader>
-                <CardContent className="px-8 pb-8 space-y-3">
-                    <InfoRow icon={Fingerprint} label="Nomor Induk Siswa (NIS)" value={profile?.nis} />
-                    <InfoRow icon={CreditCard} label="Nomor Induk Nasional (NISN)" value={profile?.nisn} />
-                    <div className="grid grid-cols-2 gap-3">
-                        <InfoRow icon={profile?.gender === 'Perempuan' ? Venus : Mars} label="Gender" value={profile?.gender} />
-                        <InfoRow icon={Calendar} label="Kelahiran" value={profile?.birthPlace ? `${profile.birthPlace}, ${profile.birthDate}` : '-'} />
-                    </div>
-                    <InfoRow icon={MapPin} label="Alamat terdaftar" value={profile?.address} />
-                </CardContent>
-            </Card>
+                    </CardHeader>
+                    <CardContent className="px-8 pb-8 space-y-3">
+                        <InfoRow icon={Fingerprint} label="Nomor Induk Siswa (NIS)" value={profile?.nis} />
+                        <InfoRow icon={CreditCard} label="Nomor Induk Nasional (NISN)" value={profile?.nisn} />
+                        <div className="grid grid-cols-2 gap-3">
+                            <InfoRow icon={profile?.gender === 'Perempuan' ? Venus : Mars} label="Gender" value={profile?.gender} />
+                            <InfoRow icon={Calendar} label="Kelahiran" value={profile?.birthPlace ? `${profile.birthPlace}, ${profile.birthDate}` : '-'} />
+                        </div>
+                        <InfoRow icon={MapPin} label="Alamat terdaftar" value={profile?.address} />
+                    </CardContent>
+                </Card>
+
+                {/* ABSENSI BIOMETRIK */}
+                <BiometricAttendance />
+            </div>
 
             <div className="lg:col-span-2 space-y-8">
                 <Tabs defaultValue="overview" className="w-full">
