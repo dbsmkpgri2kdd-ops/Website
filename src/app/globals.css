@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Fresh Modern Light Theme */
+    /* Fresh Modern Light Theme - Berbasis Biru Korporat Lembut */
     --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -28,7 +28,7 @@
   }
 
   .dark {
-    /* Premium Obsidian Dark Theme */
+    /* Deep Obsidian Dark Theme - Mewah & Kontras Tinggi */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 6.5%;
@@ -95,6 +95,6 @@
   }
 
   .sidebar-menu-item {
-    @apply flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-muted;
+    @apply flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-muted;
   }
 }

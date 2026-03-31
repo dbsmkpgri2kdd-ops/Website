@@ -65,7 +65,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
       <div className="mb-12 text-center md:text-left space-y-3">
         <div className='flex items-center gap-2 text-primary justify-center md:justify-start'>
             <Sparkles size={14} className='animate-pulse' />
-            <span className="text-xs font-bold uppercase tracking-widest">Digital Hub</span>
+            <span className="text-xs font-bold uppercase tracking-widest">Digital hub</span>
         </div>
         <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">{title}</h2>
         <p className="text-muted-foreground text-sm max-w-2xl font-medium">{description}</p>
@@ -92,7 +92,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
                     <div className="flex-1 min-w-0">
                       <CardTitle className="text-base font-bold text-foreground truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
                       <div className="flex items-center text-[10px] text-muted-foreground font-medium mt-1 opacity-60">
-                        Buka Aplikasi <ExternalLink size={10} className="ml-1" />
+                        Buka aplikasi <ExternalLink size={10} className="ml-1" />
                       </div>
                     </div>
                   </CardHeader>

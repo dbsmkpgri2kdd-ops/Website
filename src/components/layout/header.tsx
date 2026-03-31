@@ -144,6 +144,7 @@ const Header = ({
                   height={40}
                   className="object-contain"
                   priority
+                  unoptimized
                 />
               )}
             </div>
@@ -171,8 +172,8 @@ const Header = ({
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="p-0 w-full sm:w-[350px] border-none shadow-2xl bg-background">
-                    <SheetHeader className="p-6 border-b border-border">
-                        <SheetTitle className='text-left font-bold text-xl'>Menu portal</SheetTitle>
+                    <SheetHeader className="p-6 border-b border-border text-left">
+                        <SheetTitle className='font-bold text-xl'>Menu Utama</SheetTitle>
                     </SheetHeader>
                     
                     <ScrollArea className='h-[calc(100vh-160px)] py-4'>
