@@ -113,7 +113,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-14 px-10 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all">
                         Daftar Calon Siswa <ArrowRight className='ml-2 h-5 w-5' />
                     </Button>
-                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" size="lg" className="h-14 px-10 rounded-2xl font-bold border-border">
+                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" size="lg" className="h-14 px-10 rounded-2xl font-bold border-border text-foreground">
                         Kenali Kami
                     </Button>
                   </div>
@@ -218,7 +218,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                       <h2 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight">Warta Kampus</h2>
                       <p className="text-muted-foreground text-sm font-medium">Informasi resmi, prestasi, dan agenda terbaru dari lingkungan sekolah.</p>
                   </div>
-                  <Button onClick={() => setActiveTab('berita-pengumuman')} variant="outline" className="rounded-xl h-12 px-8 font-bold text-xs border-border">
+                  <Button onClick={() => setActiveTab('berita-pengumuman')} variant="outline" className="rounded-xl h-12 px-8 font-bold text-xs border-border text-foreground">
                       Lihat Arsip Berita
                   </Button>
               </div>
