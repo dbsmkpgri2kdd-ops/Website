@@ -52,16 +52,13 @@
 @layer base {
   * {
     @apply border-border selection:bg-primary/10 selection:text-primary;
+    font-style: normal !important;
   }
   body {
     @apply bg-background text-foreground antialiased font-sans;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-headline tracking-tighter font-bold text-foreground;
-  }
-  
-  /* Global Zero Italics Policy */
-  *, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea {
+    @apply font-headline tracking-tighter font-bold text-foreground uppercase;
     font-style: normal !important;
   }
 }

@@ -13,13 +13,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
     ],
   },
-  experimental: {
-    // Mengatasi peringatan Cross-Origin di lingkungan Cloud Workstations
-    allowedDevOrigins: [
-      '*.cloudworkstations.dev',
-      'localhost:9002'
-    ]
-  }
+  // Konfigurasi standar untuk stabilitas build statis
 };
 
 export default nextConfig;

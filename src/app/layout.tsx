@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
@@ -26,10 +26,13 @@ const inter = Inter({
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.Node;
 }>) {
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    // Registrasi Service Worker di sisi klien untuk menghindari Hydration Error
+    setMounted(true);
+    // Registrasi Service Worker PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then((reg) => {
@@ -43,7 +46,7 @@ export default function RootLayout({
               };
             }
           };
-        });
+        }).catch(err => console.log('PWA: Registration failed', err));
       });
     }
   }, []);
@@ -67,8 +70,12 @@ export default function RootLayout({
             <FirebaseClientProvider>
               <ThemeSync />
               {children}
-              <AIAssistant />
-              <PWAInstallPrompt />
+              {mounted && (
+                <>
+                  <AIAssistant />
+                  <PWAInstallPrompt />
+                </>
+              )}
             </FirebaseClientProvider>
             <Toaster />
           </ThemeProvider>
