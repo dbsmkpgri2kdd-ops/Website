@@ -133,6 +133,7 @@ export interface School {
     welcomeTitle?: string;
     ctaTitle?: string;
     studentDatabaseUrl?: string;
+    attendanceWebhookUrl?: string; // Baru: Untuk integrasi Google Sheets
     csvMappings?: CsvMappings;
     latitude?: number;
     longitude?: number;
@@ -451,4 +452,5 @@ export interface AttendanceRecord {
   date: any;
   status: 'Hadir' | 'Sakit' | 'Izin' | 'Alpa';
   notes?: string;
+  faceImageUrl?: string;
 }

@@ -13,15 +13,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Hammer, Database, Table as TableIcon, CheckCircle2, XCircle, Search, Settings2, ListTodo, MapPin } from 'lucide-react';
+import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Database, Table as TableIcon, CheckCircle2, XCircle, Search, Settings2, MapPin, Link as LinkIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 const formSchema = z.object({
   isMaintenanceMode: z.boolean().default(false),
   studentDatabaseUrl: z.string().url('URL CSV tidak valid.').optional().or(z.literal('')),
+  attendanceWebhookUrl: z.string().url('URL Webhook tidak valid.').optional().or(z.literal('')),
   latitude: z.coerce.number().optional(),
   longitude: z.coerce.number().optional(),
   primaryColor: z.string().optional(),
@@ -63,6 +63,7 @@ export function SystemSettingsManager() {
     defaultValues: {
       isMaintenanceMode: false,
       studentDatabaseUrl: '',
+      attendanceWebhookUrl: '',
       latitude: -5.4,
       longitude: 105.1,
       primaryColor: '221 83% 53%',
@@ -94,6 +95,7 @@ export function SystemSettingsManager() {
       form.reset({
         isMaintenanceMode: schoolData.isMaintenanceMode || false,
         studentDatabaseUrl: schoolData.studentDatabaseUrl || '',
+        attendanceWebhookUrl: schoolData.attendanceWebhookUrl || '',
         latitude: schoolData.latitude || -5.4,
         longitude: schoolData.longitude || 105.1,
         primaryColor: schoolData.primaryColor || '221 83% 53%',
@@ -265,6 +267,30 @@ export function SystemSettingsManager() {
               <Card className="shadow-2xl border-none rounded-[2rem]">
                 <CardHeader>
                   <div className="flex items-center gap-3">
+                    <div className='p-2 bg-amber-500/10 text-amber-500 rounded-xl'><LinkIcon size={20} /></div>
+                    <CardTitle className='text-xl font-headline font-bold italic'>Rekap Absensi (Google Sheets)</CardTitle>
+                  </div>
+                  <CardDescription>URL Webhook untuk mengirim data absensi ke spreadsheet eksternal.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="attendanceWebhookUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Google Apps Script URL</FormLabel>
+                        <FormControl><Input {...field} placeholder="https://script.google.com/macros/s/.../exec" className='h-12 rounded-xl'/></FormControl>
+                        <FormDescription className="text-[10px]">Data absensi harian akan langsung masuk ke Google Sheet Anda.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-2xl border-none rounded-[2rem]">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
                     <div className='p-2 bg-emerald-500/10 text-emerald-500 rounded-xl'><MapPin size={20} /></div>
                     <CardTitle className='text-xl font-headline font-bold italic'>Geofencing Absensi</CardTitle>
                   </div>
@@ -278,7 +304,7 @@ export function SystemSettingsManager() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Latitude</FormLabel>
-                          <FormControl><Input {...field} type="number" step="any" placeholder="-5.4000" className='h-12 rounded-xl'/></FormControl>
+                          <FormControl><Input {...field} type="number" step="any" placeholder="-5.4000" className='h-12 rounded-xl'/></FormItem>
                         </FormItem>
                       )}
                     />
@@ -288,7 +314,7 @@ export function SystemSettingsManager() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Longitude</FormLabel>
-                          <FormControl><Input {...field} type="number" step="any" placeholder="105.1000" className='h-12 rounded-xl'/></FormControl>
+                          <FormControl><Input {...field} type="number" step="any" placeholder="105.1000" className='h-12 rounded-xl'/></FormItem>
                         </FormItem>
                       )}
                     />
