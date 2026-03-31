@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Database, Table as TableIcon, CheckCircle2, XCircle, Search, Settings2, MapPin, Link as LinkIcon } from 'lucide-react';
+import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Database, Table as TableIcon, CheckCircle2, XCircle, Search, Settings2, MapPin, Link as LinkIcon, UserCog, HeartPulse, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -30,11 +30,15 @@ const formSchema = z.object({
     nis: z.string().min(1, 'NIS mapping wajib.'),
     name: z.string().min(1, 'Nama mapping wajib.'),
     class: z.string().min(1, 'Kelas mapping wajib.'),
-    nisn: z.string().optional(),
-    gender: z.string().optional(),
-    birthPlace: z.string().optional(),
-    birthDate: z.string().optional(),
+    session: z.string().min(1, 'Sesi mapping wajib.'),
     address: z.string().optional(),
+    phone: z.string().optional(),
+    parentName: z.string().optional(),
+    parentPhone: z.string().optional(),
+    bkTeacher: z.string().optional(),
+    homeroomTeacher: z.string().optional(),
+    guardianTeacher: z.string().optional(),
+    studentAffairs: z.string().optional(),
   }),
   layoutSettings: z.object({
     showHero: z.boolean().default(true),
@@ -70,13 +74,17 @@ export function SystemSettingsManager() {
       accentColor: '262 83% 58%',
       csvMappings: {
         nis: 'NIS',
-        name: 'NAMA',
-        class: 'KELAS',
-        nisn: 'NISN',
-        gender: 'JK',
-        birthPlace: 'TEMPAT LAHIR',
-        birthDate: 'TANGGAL LAHIR',
-        address: 'ALAMAT'
+        name: 'Nama',
+        class: 'Kelas',
+        session: 'Sesi',
+        address: 'Alamat',
+        phone: 'No HP',
+        parentName: 'Orang Tua',
+        parentPhone: 'HP Orang Tua',
+        bkTeacher: 'Guru BK',
+        homeroomTeacher: 'Wali Kelas',
+        guardianTeacher: 'Guru Wali',
+        studentAffairs: 'Kesiswaan'
       },
       layoutSettings: {
         showHero: true,
@@ -121,7 +129,7 @@ export function SystemSettingsManager() {
     try {
       const response = await fetch(url);
       const text = await response.text();
-      const lines = text.split('\n');
+      const lines = text.split('\n').filter(l => l.trim() !== '');
       const headers = lines[0].split(',').map(h => h.trim());
       setCsvHeaders(headers);
       
@@ -200,14 +208,18 @@ export function SystemSettingsManager() {
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
                           {[
-                            { name: 'nis', label: 'Kolom NIS (ID)' },
+                            { name: 'nis', label: 'Kolom NIS' },
                             { name: 'name', label: 'Kolom Nama' },
                             { name: 'class', label: 'Kolom Kelas' },
-                            { name: 'nisn', label: 'Kolom NISN' },
-                            { name: 'gender', label: 'Kolom Jenis Kelamin' },
-                            { name: 'birthPlace', label: 'Kolom Tempat Lahir' },
-                            { name: 'birthDate', label: 'Kolom Tgl Lahir' },
+                            { name: 'session', label: 'Kolom Sesi' },
                             { name: 'address', label: 'Kolom Alamat' },
+                            { name: 'phone', label: 'Kolom No HP' },
+                            { name: 'parentName', label: 'Kolom Orang Tua' },
+                            { name: 'parentPhone', label: 'Kolom HP Ortu' },
+                            { name: 'bkTeacher', label: 'Kolom Guru BK' },
+                            { name: 'homeroomTeacher', label: 'Kolom Wali Kelas' },
+                            { name: 'guardianTeacher', label: 'Kolom Guru Wali' },
+                            { name: 'studentAffairs', label: 'Kolom Kesiswaan' },
                           ].map(mapping => (
                             <FormField
                               key={mapping.name}
@@ -232,24 +244,26 @@ export function SystemSettingsManager() {
                           <Button variant="ghost" size="sm" onClick={() => setCsvPreview([])} className="h-6 text-[9px] font-bold uppercase">Tutup Preview</Button>
                         </div>
                         <div className="rounded-xl border overflow-hidden bg-muted/20">
-                          <Table>
-                            <TableHeader>
-                              <TableRow className="h-8">
-                                {csvHeaders.slice(0, 4).map(h => (
-                                  <TableHead key={h} className="text-[9px] font-black px-3">{h}</TableHead>
-                                ))}
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {csvPreview.map((row, i) => (
-                                <TableRow key={i} className="h-8">
-                                  {csvHeaders.slice(0, 4).map(h => (
-                                    <TableCell key={h} className="text-[10px] px-3 truncate max-w-[100px]">{row[h] || '-'}</TableCell>
-                                  ))}
+                          <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                <TableRow className="h-8">
+                                    {csvHeaders.slice(0, 6).map(h => (
+                                    <TableHead key={h} className="text-[9px] font-black px-3">{h}</TableHead>
+                                    ))}
                                 </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
+                                </TableHeader>
+                                <TableBody>
+                                {csvPreview.map((row, i) => (
+                                    <TableRow key={i} className="h-8">
+                                    {csvHeaders.slice(0, 6).map(h => (
+                                        <TableCell key={h} className="text-[10px] px-3 truncate max-w-[100px]">{row[h] || '-'}</TableCell>
+                                    ))}
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -320,60 +334,6 @@ export function SystemSettingsManager() {
                     />
                   </div>
                   <p className='text-[10px] text-muted-foreground font-medium italic'>*Siswa wajib berada dalam jarak 30 meter dari titik ini untuk melakukan absensi biometrik.</p>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-2xl border-none rounded-[2rem]">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className='p-2 bg-primary/10 text-primary rounded-xl'><Palette size={20} /></div>
-                    <CardTitle className='text-xl font-headline font-bold italic'>Branding & Warna</CardTitle>
-                  </div>
-                  <CardDescription>Ubah skema warna global website (format HSL).</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className='grid grid-cols-2 gap-4'>
-                    <FormField
-                      control={form.control}
-                      name="primaryColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Warna Utama</FormLabel>
-                          <FormControl><Input {...field} placeholder="e.g. 221 83% 53%" className='h-12 rounded-xl'/></FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="accentColor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Warna Aksen</FormLabel>
-                          <FormControl><Input {...field} placeholder="e.g. 262 83% 58%" className='h-12 rounded-xl'/></FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-2xl border-none rounded-[2rem] bg-muted/20">
-                <CardContent className='pt-6'>
-                  <FormField
-                    control={form.control}
-                    name="isMaintenanceMode"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-2xl border p-5 shadow-sm bg-card">
-                        <div className="space-y-0.5">
-                          <FormLabel className='font-bold text-xs'>Mode Pemeliharaan</FormLabel>
-                          <FormDescription className="text-[10px]">Kunci akses publik sementara untuk perbaikan.</FormDescription>
-                        </div>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
                 </CardContent>
               </Card>
             </div>

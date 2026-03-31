@@ -34,9 +34,11 @@ export interface FirebaseContextState extends UserAuthState {
 
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
 
-// Utility untuk parsing CSV sederhana
+// Utility untuk parsing CSV sederhana dengan pembersihan spasi
 const parseCSV = (csv: string) => {
-  const lines = csv.split('\n');
+  const lines = csv.split('\n').filter(line => line.trim() !== '');
+  if (lines.length === 0) return [];
+  
   const headers = lines[0].split(',').map(h => h.trim());
   return lines.slice(1).map(line => {
     const values = line.split(',').map(v => v.trim());
@@ -89,10 +91,10 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               await setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
             }
           } else {
-            // LOGIKA SINKRONISASI DATA SISWA VIA CSV
+            // LOGIKA SINKRONISASI DATA SISWA VIA CSV (MENDALAM)
             const userData = userSnap.data() as UserProfile;
             
-            if (userData.role === 'siswa' && userData.nis && !userData.nisn) {
+            if (userData.role === 'siswa' && userData.nis && !userData.lastSyncedAt) {
               const schoolSnap = await getDoc(doc(firestore, 'schools', SCHOOL_DATA_ID));
               const schoolData = schoolSnap.data() as School;
               
@@ -103,17 +105,22 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
                   const studentData = parseCSV(csvText);
                   
                   const mappings = schoolData.csvMappings;
-                  const match = studentData.find(s => String(s[mappings.nis]) === String(userData.nis));
+                  // Cari berdasarkan NIS (dikirim saat pendaftaran)
+                  const match = studentData.find(s => String(s[mappings.nis]).trim() === String(userData.nis).trim());
                   
                   if (match) {
                     const updates: any = {
                       displayName: match[mappings.name] || userData.displayName,
-                      className: match[mappings.class] || 'Umum',
-                      nisn: match[mappings.nisn || 'NISN'] || '',
-                      gender: match[mappings.gender || 'JK'] || '',
-                      birthPlace: match[mappings.birthPlace || 'TEMPAT LAHIR'] || '',
-                      birthDate: match[mappings.birthDate || 'TANGGAL LAHIR'] || '',
-                      address: match[mappings.address || 'ALAMAT'] || '',
+                      className: match[mappings.class] || 'X',
+                      session: (match[mappings.session] === 'Siang' ? 'Siang' : 'Pagi'),
+                      address: match[mappings.address] || '',
+                      phone: match[mappings.phone] || '',
+                      parentName: match[mappings.parentName] || '',
+                      parentPhone: match[mappings.parentPhone] || '',
+                      bkTeacher: match[mappings.bkTeacher] || '',
+                      homeroomTeacher: match[mappings.homeroomTeacher] || '',
+                      guardianTeacher: match[mappings.guardianTeacher] || '',
+                      studentAffairs: match[mappings.studentAffairs] || '',
                       lastSyncedAt: serverTimestamp()
                     };
                     

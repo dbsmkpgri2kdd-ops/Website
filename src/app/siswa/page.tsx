@@ -3,7 +3,7 @@
 
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles, Fingerprint, MapPin, Venus, Mars, Calendar, CreditCard, RefreshCcw, Clock } from 'lucide-react';
+import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles, Fingerprint, MapPin, Venus, Mars, Calendar, CreditCard, RefreshCcw, Clock, UserCog, HeartPulse, User } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -45,9 +45,9 @@ function SiswaDashboard() {
     }
   };
 
-  const InfoRow = ({ icon: Icon, label, value }: { icon: any, label: string, value?: string }) => (
+  const InfoRow = ({ icon: Icon, label, value, color }: { icon: any, label: string, value?: string, color?: string }) => (
     <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted/30 border border-border/50 hover:border-primary/20 transition-all group">
-        <div className="p-2.5 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
+        <div className={cn("p-2.5 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all", color)}>
             <Icon size={16} />
         </div>
         <div className="flex-1 min-w-0">
@@ -74,7 +74,7 @@ function SiswaDashboard() {
       </header>
       
       <main className="max-w-7xl mx-auto space-y-8 animate-reveal">
-          {profile?.role === 'siswa' && !profile.nisn && (
+          {profile?.role === 'siswa' && !profile.lastSyncedAt && (
             <Alert className="bg-amber-500/10 border-amber-500/20 p-6 rounded-[2rem] shadow-sm relative overflow-hidden group">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 w-full relative z-10">
                 <div className='flex items-start gap-4'>
@@ -84,7 +84,7 @@ function SiswaDashboard() {
                   <div>
                     <AlertTitle className="text-lg font-bold text-amber-600 tracking-tight mb-1">Menunggu sinkronisasi data</AlertTitle>
                     <AlertDescription className="text-xs font-medium text-muted-foreground leading-relaxed">
-                      Sistem sedang menunggu validasi database pusat untuk memuat biodata lengkap Anda berdasarkan NIS {profile.nis}.
+                      Sistem sedang mencari biodata lengkap Anda berdasarkan NIS {profile.nis} di database sekolah.
                     </AlertDescription>
                   </div>
                 </div>
@@ -106,9 +106,9 @@ function SiswaDashboard() {
                             </Avatar>
                             <div className='flex-1 min-w-0'>
                                 <h3 className="text-2xl font-bold font-headline tracking-tight text-foreground truncate">{profile?.displayName || 'Siswa'}</h3>
-                                <p className="text-primary font-bold text-xs uppercase tracking-widest mt-1">{profile?.className || 'Belum sinkron'}</p>
+                                <p className="text-primary font-bold text-xs uppercase tracking-widest mt-1">{profile?.className || 'Belum Sinkron'}</p>
                                 <div className='flex gap-2 mt-4'>
-                                    <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-600 border-none px-3 py-1 rounded-lg text-[10px] font-bold'>Aktif</Badge>
+                                    <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-600 border-none px-3 py-1 rounded-lg text-[10px] font-bold'>Status Aktif</Badge>
                                     <Badge variant="outline" className='border-primary/20 text-primary px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest'>Shift {profile?.session || 'Pagi'}</Badge>
                                 </div>
                             </div>
@@ -116,12 +116,16 @@ function SiswaDashboard() {
                     </CardHeader>
                     <CardContent className="px-8 pb-8 space-y-3">
                         <InfoRow icon={Fingerprint} label="Nomor Induk Siswa (NIS)" value={profile?.nis} />
-                        <InfoRow icon={Clock} label="Sesi Terdaftar" value={`Sesi ${profile?.session || 'Pagi'}`} />
-                        <div className="grid grid-cols-2 gap-3">
-                            <InfoRow icon={profile?.gender === 'Perempuan' ? Venus : Mars} label="Gender" value={profile?.gender} />
-                            <InfoRow icon={Calendar} label="Kelahiran" value={profile?.birthPlace ? `${profile.birthPlace}, ${profile.birthDate}` : '-'} />
-                        </div>
                         <InfoRow icon={MapPin} label="Alamat terdaftar" value={profile?.address} />
+                        
+                        <div className="pt-4 mt-2 border-t border-border/50">
+                            <p className='text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4'>Informasi Akademik</p>
+                            <div className="grid grid-cols-1 gap-3">
+                                <InfoRow icon={UserCog} label="Wali Kelas" value={profile?.homeroomTeacher} color="bg-indigo-500/10 text-indigo-600" />
+                                <InfoRow icon={HeartPulse} label="Guru BK" value={profile?.bkTeacher} color="bg-rose-500/10 text-rose-600" />
+                                <InfoRow icon={User} label="Orang Tua" value={profile?.parentName} color="bg-amber-500/10 text-amber-600" />
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -134,14 +138,14 @@ function SiswaDashboard() {
                     <div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
                         <TabsList className="flex w-fit sm:grid sm:w-full grid-cols-4 h-14 bg-muted/50 p-1 rounded-2xl border border-border/50 gap-1">
                             <TabsTrigger value="overview" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Dashboard</TabsTrigger>
-                            <TabsTrigger value="exams" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Ujian online</TabsTrigger>
+                            <TabsTrigger value="exams" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Ujian Online</TabsTrigger>
                             <TabsTrigger value="academic" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Akademik</TabsTrigger>
-                            <TabsTrigger value="portfolio" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Karya digital</TabsTrigger>
+                            <TabsTrigger value="portfolio" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Karya Digital</TabsTrigger>
                         </TabsList>
                     </div>
 
                     <TabsContent value="overview" className="space-y-8 animate-fade-in pt-4">
-                        <QuickLinksGrid audience="siswa" title="Akses cepat" description="Portal layanan mandiri dan aplikasi penunjang belajar siswa." />
+                        <QuickLinksGrid audience="siswa" title="Akses Cepat" description="Portal layanan mandiri dan aplikasi penunjang belajar siswa." />
                         <div className='grid sm:grid-cols-2 gap-8'>
                             <AbsensiSiswa />
                             <JadwalPelajaran />
