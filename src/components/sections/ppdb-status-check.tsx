@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -38,7 +37,7 @@ export default function PpdbStatusCheckSection() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) {
-        toast({ variant: 'destructive', title: 'Database Offline', description: 'Sinkronisasi cloud sedang berlangsung.' });
+        toast({ variant: 'destructive', title: 'Database offline', description: 'Sinkronisasi cloud sedang berlangsung.' });
         return;
     }
     
@@ -57,7 +56,7 @@ export default function PpdbStatusCheckSection() {
       }
     } catch (error) {
       console.error("PPDB Check Error:", error);
-      toast({ variant: 'destructive', title: 'Kesalahan Sistem', description: 'Gagal memuat status pendaftaran.' });
+      toast({ variant: 'destructive', title: 'Kesalahan sistem', description: 'Gagal memuat status pendaftaran.' });
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +69,7 @@ export default function PpdbStatusCheckSection() {
             color: 'text-emerald-500', 
             bg: 'bg-emerald-500/10', 
             border: 'border-emerald-500/20',
-            label: 'SELAMAT! ANDA LOLOS SELEKSI',
+            label: 'Selamat! Anda lolos seleksi',
             desc: 'Silakan segera datang ke sekolah untuk melakukan verifikasi berkas asli dan proses daftar ulang administratif.'
         };
         case 'DITOLAK': return { 
@@ -78,7 +77,7 @@ export default function PpdbStatusCheckSection() {
             color: 'text-red-500', 
             bg: 'bg-red-500/10', 
             border: 'border-red-500/20',
-            label: 'BELUM BERHASIL LOLOS',
+            label: 'Belum berhasil lolos',
             desc: 'Terima kasih atas minat Anda. Tetap semangat dan jangan menyerah, masih banyak jalan menuju kesuksesan.'
         };
         case 'CADANGAN': return { 
@@ -86,7 +85,7 @@ export default function PpdbStatusCheckSection() {
             color: 'text-amber-500', 
             bg: 'bg-amber-500/10', 
             border: 'border-amber-500/20',
-            label: 'STATUS: DAFTAR CADANGAN',
+            label: 'Status: Daftar cadangan',
             desc: 'Nama Anda masuk dalam antrean cadangan. Kami akan menghubungi jika terdapat kuota tambahan yang tersedia.'
         };
         default: return { 
@@ -94,7 +93,7 @@ export default function PpdbStatusCheckSection() {
             color: 'text-blue-500', 
             bg: 'bg-blue-500/10', 
             border: 'border-blue-500/20',
-            label: 'DALAM PROSES VERIFIKASI',
+            label: 'Dalam proses verifikasi',
             desc: 'Data Anda telah diterima. Tim panitia sedang melakukan pengecekan berkas dan validasi data secara menyeluruh.'
         };
     }
@@ -105,11 +104,11 @@ export default function PpdbStatusCheckSection() {
       <div className='mb-12 space-y-4 text-center'>
         <div className='inline-flex items-center gap-3 px-4 py-1.5 rounded-lg bg-primary/5 border border-primary/10 text-primary shadow-xl'>
             <ShieldCheck size={14} className='animate-pulse' />
-            <span className='text-[9px] font-black uppercase tracking-[0.3em]'>Secure Admission Portal</span>
+            <span className='text-[9px] font-black uppercase tracking-[0.3em]'>Secure admission portal</span>
         </div>
-        <h2 className="text-4xl md:text-5xl font-black font-headline tracking-tighter uppercase italic">Lacak <span className='text-primary not-italic'>Pendaftaran.</span></h2>
-        <p className="text-muted-foreground text-[11px] font-bold max-w-xl mx-auto uppercase tracking-[0.2em] leading-loose opacity-60">
-            Gunakan Nomor WhatsApp Orang Tua yang terdaftar untuk memantau progres seleksi calon siswa baru secara real-time.
+        <h2 className="text-4xl md:text-5xl font-black font-headline tracking-tighter text-foreground leading-none">Lacak pendaftaran</h2>
+        <p className="text-muted-foreground text-sm font-medium max-w-xl mx-auto leading-relaxed opacity-60">
+            Gunakan nomor WhatsApp orang tua yang terdaftar untuk memantau progres seleksi calon siswa baru secara real-time.
         </p>
       </div>
 
@@ -122,20 +121,20 @@ export default function PpdbStatusCheckSection() {
                         name="phone"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 text-left block ml-2">WhatsApp No. Terdaftar</FormLabel>
+                            <FormLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-2">WhatsApp orang tua</FormLabel>
                             <FormControl>
                                 <div className='relative'>
                                     <Input placeholder="0812XXXXXXXX" {...field} className="text-center text-lg h-16 rounded-[1.5rem] bg-white/5 border-white/10 font-bold tracking-widest pr-12" />
                                     <Phone className='absolute right-5 top-5 text-muted-foreground opacity-20' size={24} />
                                 </div>
                             </FormControl>
-                            <FormMessage className="text-[10px] uppercase font-bold" />
+                            <FormMessage className="text-xs" />
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" size="lg" className="w-full h-16 rounded-[1.5rem] font-black uppercase tracking-[0.3em] shadow-3xl glow-primary hover:scale-[1.02] transition-all" disabled={isLoading}>
+                    <Button type="submit" size="lg" className="w-full h-16 rounded-[1.5rem] font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all" disabled={isLoading}>
                         {isLoading ? <LoaderCircle className="animate-spin mr-2" /> : <Search className='mr-3' />}
-                        LIHAT HASIL SELEKSI
+                        Lihat hasil seleksi
                     </Button>
                 </form>
             </Form>
@@ -145,9 +144,9 @@ export default function PpdbStatusCheckSection() {
       {result === 'not_found' && (
         <div className="mt-12 p-10 rounded-[2.5rem] bg-red-500/5 border-2 border-dashed border-red-500/20 text-red-500 animate-reveal w-full max-w-lg text-center">
             <XCircle className="h-12 w-12 mx-auto mb-4 opacity-40" />
-            <h3 className="text-lg font-black uppercase tracking-tighter italic">Data Tidak Ditemukan</h3>
-            <p className="text-[9px] font-bold uppercase tracking-widest mt-2 opacity-60 leading-relaxed">
-                Nomor tersebut tidak ditemukan dalam sistem kami.<br/>Pastikan nomor yang diinput sesuai saat melakukan pendaftaran online.
+            <h3 className="text-lg font-bold italic">Data tidak ditemukan</h3>
+            <p className="text-xs font-medium mt-2 opacity-60 leading-relaxed">
+                Nomor tersebut tidak ditemukan dalam sistem kami. Pastikan nomor yang diinput sesuai saat melakukan pendaftaran online.
             </p>
         </div>
       )}
@@ -165,15 +164,15 @@ export default function PpdbStatusCheckSection() {
                                     <StatusIcon size={40} className='animate-pulse' />
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-[9px] font-black uppercase tracking-[0.4em] opacity-40">CALON SISWA TERDAFTAR</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-[0.4em] opacity-40">Calon siswa terdaftar</p>
                                     <h3 className="text-3xl font-black italic uppercase tracking-tighter font-headline leading-none">{result.studentName}</h3>
-                                    <Badge variant="outline" className="text-[9px] font-black uppercase px-3 py-1 border-white/10 mt-2">{result.chosenMajor}</Badge>
+                                    <Badge variant="outline" className="text-[9px] font-bold px-3 py-1 border-white/10 mt-2">{result.chosenMajor}</Badge>
                                 </div>
                             </div>
                             
                             <div className="pt-8 border-t border-white/10 space-y-6">
                                 <div className='space-y-2'>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest opacity-60 text-center">KEPUTUSAN PANITIA SELEKSI:</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest opacity-60 text-center">Keputusan panitia seleksi:</p>
                                     <div className={cn("text-5xl font-black italic uppercase tracking-tighter font-headline text-center drop-shadow-2xl", config.color)}>
                                         {result.status}
                                     </div>
@@ -182,16 +181,16 @@ export default function PpdbStatusCheckSection() {
                                 <div className='bg-white/5 p-6 rounded-[2rem] border border-white/5 space-y-3'>
                                     <div className='flex items-center gap-2 text-primary'>
                                         <Sparkles size={14} />
-                                        <p className="text-[10px] font-black uppercase tracking-widest">{config.label}</p>
+                                        <p className="text-[10px] font-bold uppercase tracking-widest">{config.label}</p>
                                     </div>
-                                    <p className="text-[11px] font-medium leading-relaxed opacity-80 uppercase tracking-wider">
+                                    <p className="text-xs font-medium leading-relaxed opacity-80">
                                         {config.desc}
                                     </p>
                                 </div>
 
                                 <div className='flex justify-center'>
-                                    <Button variant="link" className='text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground hover:text-primary transition-colors'>
-                                        Hubungi Panitia PPDB <ArrowRight size={12} className='ml-2' />
+                                    <Button variant="link" className='text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors'>
+                                        Hubungi panitia PPDB <ArrowRight size={12} className='ml-2' />
                                     </Button>
                                 </div>
                             </div>

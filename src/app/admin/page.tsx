@@ -88,35 +88,35 @@ function AdminDashboard() {
 
   const navItems = [
     { label: 'Ringkasan', value: 'overview', icon: LayoutDashboard, group: 'Utama' },
-    { label: 'Builder beranda', value: 'layout-builder', icon: Layout, group: 'Editor visual' },
-    { label: 'Manajer menu', value: 'navigation', icon: MousePointer2, group: 'Editor visual' },
-    { label: 'Tampilan website', value: 'appearance', icon: Palette, group: 'Editor visual' },
+    { label: 'Builder Beranda', value: 'layout-builder', icon: Layout, group: 'Editor Visual' },
+    { label: 'Manajer Menu', value: 'navigation', icon: MousePointer2, group: 'Editor Visual' },
+    { label: 'Tampilan Website', value: 'appearance', icon: Palette, group: 'Editor Visual' },
     
-    { label: 'Ujian online', value: 'exams', icon: ShieldCheck, group: 'Akademik' },
-    { label: 'Pesan masuk', value: 'contact-messages', icon: Mail, group: 'Konten' },
-    { label: 'Berita sekolah', value: 'news', icon: Newspaper, group: 'Konten' },
-    { label: 'Agenda & acara', value: 'agenda', icon: Calendar, group: 'Konten' },
-    { label: 'Osis corner', value: 'osis', icon: Bell, group: 'Konten' },
-    { label: 'Pojok literasi', value: 'literacy', icon: PenSquare, group: 'Konten' },
-    { label: 'Galeri media', value: 'gallery', icon: FileBox, group: 'Konten' },
-    { label: 'Testimoni alumni', value: 'testimonials', icon: Quote, group: 'Konten' },
-    { label: 'Buku tamu', value: 'guestbook', icon: MessageSquare, group: 'Konten' },
+    { label: 'Ujian Online', value: 'exams', icon: ShieldCheck, group: 'Akademik' },
+    { label: 'Pesan Masuk', value: 'contact-messages', icon: Mail, group: 'Konten' },
+    { label: 'Berita Sekolah', value: 'news', icon: Newspaper, group: 'Konten' },
+    { label: 'Agenda & Acara', value: 'agenda', icon: Calendar, group: 'Konten' },
+    { label: 'Osis Corner', value: 'osis', icon: Bell, group: 'Konten' },
+    { label: 'Pojok Literasi', value: 'literacy', icon: PenSquare, group: 'Konten' },
+    { label: 'Galeri Media', value: 'gallery', icon: FileBox, group: 'Konten' },
+    { label: 'Testimoni Alumni', value: 'testimonials', icon: Quote, group: 'Konten' },
+    { label: 'Buku Tamu', value: 'guestbook', icon: MessageSquare, group: 'Konten' },
 
-    { label: 'Staf & guru', value: 'teachers', icon: Users2, group: 'Akademik' },
-    { label: 'Daftar jurusan', value: 'majors', icon: GraduationCap, group: 'Akademik' },
-    { label: 'Prestasi siswa', value: 'achievements', icon: Award, group: 'Akademik' },
+    { label: 'Staf & Guru', value: 'teachers', icon: Users2, group: 'Akademik' },
+    { label: 'Daftar Jurusan', value: 'majors', icon: GraduationCap, group: 'Akademik' },
+    { label: 'Prestasi Siswa', value: 'achievements', icon: Award, group: 'Akademik' },
     { label: 'Perpustakaan', value: 'library', icon: Library, group: 'Akademik' },
     
-    { label: 'PPDB online', value: 'ppdb', icon: UserPlus, group: 'Administrasi' },
-    { label: 'Kerja sama mitra', value: 'partners', icon: BriefcaseIcon, group: 'Administrasi' },
-    { label: 'Bursa kerja', value: 'jobs', icon: Briefcase, group: 'Administrasi' },
-    { label: 'Teaching factory', value: 'tefa', icon: Factory, group: 'Administrasi' },
-    { label: 'Tracer study', value: 'tracer', icon: SearchCode, group: 'Administrasi' },
+    { label: 'PPDB Online', value: 'ppdb', icon: UserPlus, group: 'Administrasi' },
+    { label: 'Kerja Sama Mitra', value: 'partners', icon: BriefcaseIcon, group: 'Administrasi' },
+    { label: 'Bursa Kerja', value: 'jobs', icon: Briefcase, group: 'Administrasi' },
+    { label: 'Teaching Factory', value: 'tefa', icon: Factory, group: 'Administrasi' },
+    { label: 'Tracer Study', value: 'tracer', icon: SearchCode, group: 'Administrasi' },
 
-    { label: 'Manajemen pengguna', value: 'users', icon: ShieldAlert, group: 'Sistem' },
-    { label: 'Identitas sekolah', value: 'school-profile', icon: Building2, group: 'Sistem' },
-    { label: 'Tautan cepat', value: 'quick-links', icon: LinkIcon, group: 'Sistem' },
-    { label: 'Konfigurasi sistem', value: 'settings', icon: Settings, group: 'Sistem' },
+    { label: 'Manajemen Pengguna', value: 'users', icon: ShieldAlert, group: 'Sistem' },
+    { label: 'Identitas Sekolah', value: 'school-profile', icon: Building2, group: 'Sistem' },
+    { label: 'Tautan Cepat', value: 'quick-links', icon: LinkIcon, group: 'Sistem' },
+    { label: 'Konfigurasi Sistem', value: 'settings', icon: Settings, group: 'Sistem' },
   ];
 
   if (isUserLoading) {
@@ -179,13 +179,13 @@ function AdminDashboard() {
     <button
       onClick={() => { setActiveTab(item.value as AdminTab); setIsSidebarOpen(false); }}
       className={cn(
-        "w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 group",
+        "w-full flex items-center gap-2.5 px-3 py-1 rounded-lg text-[13px] font-medium transition-all duration-200 group",
         activeTab === item.value 
           ? "bg-primary text-white shadow-md shadow-primary/20" 
           : "text-muted-foreground hover:bg-muted hover:text-foreground"
       )}
     >
-      <item.icon size={16} className={cn("transition-all shrink-0", activeTab === item.value ? "opacity-100" : "opacity-60 group-hover:opacity-100")} />
+      <item.icon size={15} className={cn("transition-all shrink-0", activeTab === item.value ? "opacity-100" : "opacity-60 group-hover:opacity-100")} />
       <span className="truncate">{item.label}</span>
     </button>
   );
@@ -197,69 +197,69 @@ function AdminDashboard() {
       )}
 
       <aside className={cn(
-        "fixed lg:sticky top-0 left-0 h-screen w-60 bg-card border-r border-border z-[70] transition-all duration-300 flex flex-col shadow-sm",
+        "fixed lg:sticky top-0 left-0 h-screen w-56 bg-card border-r border-border z-[70] transition-all duration-300 flex flex-col shadow-sm",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="p-5 border-b border-border flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="p-4 border-b border-border flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
             <div className="bg-primary text-white p-1.5 rounded-lg">
-              <DatabaseZap size={18} />
+              <DatabaseZap size={16} />
             </div>
-            <span className="font-bold text-base tracking-tight text-foreground">hPanel v7.5</span>
+            <span className="font-bold text-sm tracking-tight text-foreground">hPanel v7.5</span>
           </div>
           <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-8 w-8" onClick={() => setIsSidebarOpen(false)}>
             <X size={16} />
           </Button>
         </div>
 
-        <ScrollArea className="flex-grow px-3 py-4">
-          <div className="space-y-5 pb-10">
+        <ScrollArea className="flex-grow px-2 py-3">
+          <div className="space-y-4 pb-10">
             {Object.entries(groupedNav).map(([group, items]) => (
-              <div key={group} className="space-y-1">
-                <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 mb-1.5">{group}</h3>
+              <div key={group} className="space-y-0.5">
+                <h3 className="px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 mb-1">{group}</h3>
                 {items.map(item => <NavButton key={item.value} item={item} />)}
               </div>
             ))}
           </div>
         </ScrollArea>
 
-        <div className="p-4 border-t border-border bg-muted/20">
-          <div className="flex items-center gap-3 p-2 rounded-xl bg-card border border-border mb-3 shadow-sm">
-            <Avatar className="h-8 w-8 border border-border">
-              <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
+        <div className="p-3 border-t border-border bg-muted/20">
+          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-card border border-border mb-2 shadow-sm">
+            <Avatar className="h-7 w-7 border border-border">
+              <AvatarFallback className="bg-primary/10 text-primary text-[9px] font-bold">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-[11px] font-bold text-foreground truncate">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
-              <p className="text-[9px] font-semibold text-muted-foreground capitalize">{user?.profile?.role || 'User'}</p>
+              <p className="text-[10px] font-bold text-foreground truncate">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
+              <p className="text-[8px] font-semibold text-muted-foreground capitalize">{user?.profile?.role || 'User'}</p>
             </div>
           </div>
-          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start h-9 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold text-[11px]">
-            <LogOut size={14} className="mr-2.5 opacity-60" /> Keluar sistem
+          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start h-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold text-[10px] px-2">
+            <LogOut size={13} className="mr-2 opacity-60" /> Keluar sistem
           </Button>
         </div>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        <header className="h-16 border-b border-border bg-card/80 backdrop-blur-xl flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-9 w-9 bg-muted" onClick={() => setIsSidebarOpen(true)}>
-              <Menu size={20} />
+        <header className="h-14 border-b border-border bg-card/80 backdrop-blur-xl flex items-center justify-between px-4 sm:px-6 shrink-0 z-30">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-8 w-8 bg-muted" onClick={() => setIsSidebarOpen(true)}>
+              <Menu size={18} />
             </Button>
-            <h1 className="font-semibold text-sm text-muted-foreground tracking-tight hidden sm:block">
+            <h1 className="font-semibold text-xs text-muted-foreground tracking-tight hidden sm:block">
               Sistem / {navItems.find(i => i.value === activeTab)?.label || 'Dashboard'}
             </h1>
           </div>
           
-          <div className='flex items-center gap-3'>
+          <div className='flex items-center gap-2'>
             <ThemeToggle />
-            <Button variant="ghost" size="icon" className="rounded-lg h-10 w-10 relative border border-border bg-card">
-                <Bell size={18} className="text-muted-foreground" />
-                <span className="absolute top-3 right-3 w-2 h-2 bg-primary rounded-full border-2 border-card" />
+            <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9 relative border border-border bg-card">
+                <Bell size={16} className="text-muted-foreground" />
+                <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full border-2 border-card" />
             </Button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
           <div className="max-w-6xl mx-auto">
             <div className='animate-reveal'>
                 {renderContent()}

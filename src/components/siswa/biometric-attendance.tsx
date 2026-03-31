@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -42,7 +41,7 @@ export function BiometricAttendance() {
 
   const handleStartAttendance = async () => {
     if (!navigator.geolocation) {
-      toast({ variant: 'destructive', title: 'GPS Tidak Didukung', description: 'Browser Anda tidak mendukung geolokasi.' });
+      toast({ variant: 'destructive', title: 'GPS tidak didukung', description: 'Browser Anda tidak mendukung geolokasi.' });
       return;
     }
 
@@ -113,7 +112,7 @@ export function BiometricAttendance() {
       studentName: user.profile?.displayName || user.email,
       date: serverTimestamp(),
       status: 'Hadir',
-      notes: 'Absensi Biometrik Wajah & GPS (Radius Verified)',
+      notes: 'Absensi biometrik wajah & GPS (Radius terverifikasi)',
       metadata: {
         distance: distance,
         type: 'BIOMETRIC_APP'
@@ -126,7 +125,7 @@ export function BiometricAttendance() {
     }
 
     setStatus('SUCCESS');
-    toast({ title: 'Presensi Berhasil', description: 'Kehadiran Anda telah dicatat oleh sistem.' });
+    toast({ title: 'Presensi berhasil', description: 'Kehadiran Anda telah dicatat oleh sistem.' });
   };
 
   return (
@@ -138,14 +137,14 @@ export function BiometricAttendance() {
                     <ShieldCheck size={20} />
                 </div>
                 <div>
-                    <CardTitle className="text-xl font-black italic uppercase font-headline">Biometric <span className="text-primary">Attendance</span></CardTitle>
-                    <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Validasi Kehadiran Digital v1.0</CardDescription>
+                    <CardTitle className="text-xl font-bold italic uppercase font-headline">Absensi <span className="text-primary">Biometrik</span></CardTitle>
+                    <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Validasi kehadiran digital v1.0</CardDescription>
                 </div>
             </div>
             {status === 'IDLE' && (
                 <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                    <span className="text-[9px] font-black uppercase tracking-widest">Sistem Ready</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest">Sistem siap</span>
                 </div>
             )}
         </div>
@@ -159,13 +158,13 @@ export function BiometricAttendance() {
                     <Navigation size={40} className="text-primary group-hover:scale-110 transition-transform" />
                 </div>
                 <div className="space-y-2">
-                    <h4 className="text-lg font-black uppercase italic tracking-tighter">Deteksi Lokasi & Wajah</h4>
+                    <h4 className="text-lg font-black uppercase italic tracking-tighter">Deteksi lokasi & wajah</h4>
                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
                         Pastikan Anda berada di area sekolah (Radius 30m) untuk memulai proses absensi biometrik.
                     </p>
                 </div>
-                <Button onClick={handleStartAttendance} className="w-full h-16 rounded-[1.5rem] font-black uppercase tracking-[0.3em] shadow-3xl glow-primary hover:scale-[1.02] transition-all">
-                    MULAI ABSENSI SEKARANG
+                <Button onClick={handleStartAttendance} className="w-full h-16 rounded-[1.5rem] font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all">
+                    Mulai absensi sekarang
                 </Button>
             </div>
         )}
@@ -175,7 +174,7 @@ export function BiometricAttendance() {
                 <LoaderCircle className="h-16 w-16 animate-spin mx-auto text-primary" />
                 <div className="space-y-1">
                     <p className="text-sm font-black uppercase italic tracking-widest">Memeriksa GPS...</p>
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase">Sinkronisasi Koordinat Satelit</p>
+                    <p className="text-[9px] font-bold text-muted-foreground uppercase">Sinkronisasi koordinat satelit</p>
                 </div>
             </div>
         )}
@@ -198,14 +197,14 @@ export function BiometricAttendance() {
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
                         <span className="text-[8px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                             <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
-                            Biometric Live Scan
+                            Biometrik pemindaian aktif
                         </span>
                     </div>
                 </div>
 
                 <div className="space-y-4">
                     <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-                        <span className="text-primary">{status === 'SCANNING' ? 'Menganalisis Wajah...' : 'Inisialisasi Sensor...'}</span>
+                        <span className="text-primary">{status === 'SCANNING' ? 'Menganalisis wajah...' : 'Inisialisasi sensor...'}</span>
                         <span className="opacity-40">{scanProgress}%</span>
                     </div>
                     <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
@@ -225,7 +224,7 @@ export function BiometricAttendance() {
                     <CheckCircle2 size={48} className="relative z-10" />
                 </div>
                 <div className="space-y-2">
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter">Presensi Berhasil</h3>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter">Presensi berhasil</h3>
                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
                         Data kehadiran Anda telah diverifikasi secara biometrik dan tersimpan di database sekolah.
                     </p>
@@ -235,12 +234,12 @@ export function BiometricAttendance() {
                         <Sparkles size={14} />
                     </div>
                     <div className="text-left leading-none">
-                        <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Status Kehadiran</p>
+                        <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Status kehadiran</p>
                         <p className="text-xs font-bold uppercase">Terverifikasi 100%</p>
                     </div>
                 </div>
-                <Button variant="outline" onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-black text-[9px] uppercase tracking-[0.3em] border-white/5 hover:bg-white/5">
-                    Kembali Ke Dashboard
+                <Button variant="outline" onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-bold text-[11px] uppercase border-white/5 hover:bg-white/5">
+                    Kembali ke dashboard
                 </Button>
             </div>
         )}
@@ -251,13 +250,13 @@ export function BiometricAttendance() {
                     <AlertCircle size={48} />
                 </div>
                 <div className="space-y-3">
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-red-500">Akses Ditolak</h3>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-red-500">Akses ditolak</h3>
                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
                         {errorMsg}
                     </p>
                 </div>
-                <Button onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-black text-[9px] uppercase tracking-[0.3em] bg-red-500 text-white hover:bg-red-600">
-                    Coba Lagi
+                <Button onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-bold text-[11px] uppercase bg-red-500 text-white hover:bg-red-600">
+                    Coba lagi
                 </Button>
             </div>
         )}

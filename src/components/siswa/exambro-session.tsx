@@ -21,7 +21,6 @@ type ExamBroSessionProps = {
 /**
  * ExamBro Session v5.5 - Super Strict App Mode
  * Implementasi fitur Lockdown pada pelanggaran ke-3.
- * Menggunakan warna semantik agar visibilitas terjaga di mode apa pun.
  */
 export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
@@ -251,7 +250,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   };
 
   const handleExitRequest = () => { 
-    if (confirm("Konfirmasi Akhir: Apakah Anda yakin ingin mengakhiri sesi ujian?")) {
+    if (confirm("Konfirmasi akhir: Apakah Anda yakin ingin mengakhiri sesi ujian?")) {
       onExit(); 
     } 
   }
@@ -272,7 +271,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
           <div className={cn("p-2 rounded-xl", isStandalone ? "bg-emerald-500/10 text-emerald-600" : "bg-primary/10 text-primary")}>
             {isStandalone ? <Smartphone className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col leading-tight">
             <span className="text-[10px] font-bold uppercase tracking-widest text-foreground">ExamBro v5.5 {isStandalone ? 'App' : 'Browser'} Mode</span>
             <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pelanggaran: {violationCount}</span>
           </div>
@@ -317,15 +316,15 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         ) : !isTimeUp && (
             <div className="w-full h-full bg-background flex flex-col items-center justify-center text-center p-10">
                 <CameraOff size={100} className="text-red-500 mb-8 opacity-20" />
-                <h3 className="text-3xl font-bold text-foreground uppercase italic mb-4 tracking-tighter font-headline">Biometric Required</h3>
-                <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-bold text-xs tracking-widest shadow-xl">Reload & Izinkan</Button>
+                <h3 className="text-3xl font-bold text-foreground uppercase italic mb-4 tracking-tighter font-headline">Biometric required</h3>
+                <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-bold text-xs tracking-widest shadow-xl">Reload & izinkan</Button>
             </div>
         )}
 
         {showAlarm && !isTimeUp && !isLocked && (
           <div className="absolute inset-0 bg-destructive/95 backdrop-blur-3xl flex flex-col items-center justify-center z-50 p-10 text-center text-white">
             <AlertTriangle size={64} className="mb-10 animate-bounce" />
-            <h2 className="text-5xl font-black uppercase italic tracking-tighter mb-6 font-headline">Security Breach!</h2>
+            <h2 className="text-5xl font-black uppercase italic tracking-tighter mb-6 font-headline">Security breach!</h2>
             <Button size="lg" variant="secondary" onClick={() => { setShowAlarm(false); enterFullScreen(); }} className="h-20 px-16 rounded-[2.5rem] font-bold text-xl uppercase tracking-widest shadow-2xl">Saya mengerti</Button>
           </div>
         )}
@@ -336,7 +335,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
                 <Lock size={48} />
             </div>
             <div className="space-y-3">
-                <h2 className="text-4xl font-bold italic uppercase tracking-tighter font-headline">Exam Lockdown</h2>
+                <h2 className="text-4xl font-bold italic uppercase tracking-tighter font-headline">Exam lockdown</h2>
                 <p className="text-muted-foreground text-[11px] font-bold uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
                     Sesi Anda terkunci karena pelanggaran berulang. Silakan hubungi pengawas untuk mendapatkan token pembuka.
                 </p>
@@ -369,7 +368,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Digital Hub Enterprise v7.5 • SMKS PGRI 2 Kedondong</p>
         <div className='flex items-center gap-2'>
             <div className={cn("w-1.5 h-1.5 rounded-full", isStandalone ? "bg-emerald-500" : "bg-primary")}></div>
-            <span className="text-[9px] font-bold text-foreground uppercase tracking-widest">Integrity: {isStandalone ? 'Verified' : 'Web_mode'}</span>
+            <span className="text-[9px] font-bold text-foreground uppercase tracking-widest">Integrity: {isStandalone ? 'Verified' : 'Web mode'}</span>
         </div>
       </footer>
     </div>
