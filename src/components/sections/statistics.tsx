@@ -1,7 +1,8 @@
+
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, UserCheck, BookOpen, Building, GraduationCap, Factory, ShieldCheck, Zap } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Users, UserCheck, BookOpen, GraduationCap, Factory } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type StatisticsSectionProps = {
@@ -16,49 +17,49 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
     
     const stats = [
         {
-            title: 'SISWA AKTIF',
+            title: 'Siswa Aktif',
             value: studentCount,
             icon: GraduationCap,
-            color: 'text-primary',
-            bg: 'bg-primary/10'
+            color: 'text-blue-600',
+            bg: 'bg-blue-50'
         },
         {
-            title: 'TENAGA PENDIDIK',
+            title: 'Tenaga Pendidik',
             value: teacherCount,
             icon: UserCheck,
-            color: 'text-amber-500',
-            bg: 'bg-amber-500/10'
+            color: 'text-amber-600',
+            bg: 'bg-amber-50'
         },
         {
-            title: 'PROGRAM STUDI',
+            title: 'Program Studi',
             value: majorCount,
             icon: BookOpen,
-            color: 'text-emerald-500',
-            bg: 'bg-emerald-500/10'
+            color: 'text-emerald-600',
+            bg: 'bg-emerald-50'
         },
         {
-            title: 'JEJAK INDUSTRI',
+            title: 'Mitra Industri',
             value: partnerCount,
             icon: Factory,
-            color: 'text-indigo-500',
-            bg: 'bg-indigo-500/10'
+            color: 'text-indigo-600',
+            bg: 'bg-indigo-50'
         },
     ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-            <div key={index} className="group flex flex-col space-y-6">
-                <div className={`w-16 h-16 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-2xl`}>
-                    <stat.icon size={28} />
+            <div key={index} className="flex flex-col items-center sm:items-start p-6 rounded-2xl bg-white border border-border shadow-sm group hover:border-primary/30 transition-all">
+                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center mb-4 transition-transform group-hover:scale-110 shadow-sm`}>
+                    <stat.icon size={24} />
                 </div>
-                <div className="space-y-1">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-60">{stat.title}</p>
+                <div className="space-y-1 text-center sm:text-left">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{stat.title}</p>
                     {isLoading ? (
-                        <Skeleton className='h-10 w-24' />
+                        <Skeleton className='h-8 w-20' />
                     ) : (
-                        <div className="text-5xl font-black text-foreground tracking-tighter italic">
-                          {stat.value > 0 ? stat.value : '0'}
+                        <div className="text-3xl font-bold text-slate-900">
+                          {stat.value > 0 ? stat.value.toLocaleString('id-ID') : '0'}
                         </div>
                     )}
                 </div>

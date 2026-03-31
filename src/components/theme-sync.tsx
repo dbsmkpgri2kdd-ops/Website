@@ -7,8 +7,9 @@ import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { SCHOOL_DATA_ID, type School } from '@/lib/data';
 
 /**
- * Sinkronisasi Tema Global v2.5.
+ * Sinkronisasi Tema Global v3.0.
  * Menerapkan variabel CSS berdasarkan template dan warna yang dipilih admin secara dinamis.
+ * Fokus pada Clean & Fresh Modern style.
  */
 export function ThemeSync() {
   const firestore = useFirestore();
@@ -23,7 +24,7 @@ export function ThemeSync() {
 
     const root = document.documentElement;
 
-    // 1. Terapkan Warna Primer & Aksen
+    // 1. Terapkan Warna Primer & Aksen jika tersedia di database
     if (schoolData.primaryColor) {
       root.style.setProperty('--primary', schoolData.primaryColor);
       root.style.setProperty('--ring', schoolData.primaryColor);
@@ -33,35 +34,9 @@ export function ThemeSync() {
       root.style.setProperty('--accent', schoolData.accentColor);
     }
 
-    // 2. Terapkan ID Template sebagai Atribut Data
-    if (schoolData.selectedTemplate) {
-      root.setAttribute('data-template', schoolData.selectedTemplate);
-    } else {
-      root.setAttribute('data-template', 'obsidian-minimal');
-    }
-
-    // 3. Logika Estetika Template Tingkat Lanjut
-    const template = schoolData.selectedTemplate || 'obsidian-minimal';
-    
-    // Default Radius
-    let radius = '1rem';
-    
-    if (template.includes('minimal') || template.includes('zen') || template.includes('slate')) {
-      radius = '0.5rem';
-    } else if (template.includes('cyber') || template.includes('neon')) {
-      radius = '0px';
-    } else if (template.includes('fresh') || template.includes('nature') || template.includes('bloom') || template.includes('dreams')) {
-      radius = '2.5rem';
-    } else if (template.includes('corporate') || template.includes('royal')) {
-      radius = '1.25rem';
-    }
-    
-    root.style.setProperty('--radius', radius);
-
-    // 4. Force Dark Theme as Primary requested
-    if (!localStorage.getItem('theme')) {
-        root.classList.add('dark');
-    }
+    // 2. Logika Border Radius Berdasarkan Karakter Sekolah
+    // Kami standarisasi pada 0.75rem untuk kesan modern yang ramah
+    root.style.setProperty('--radius', '0.75rem');
 
   }, [schoolData]);
 

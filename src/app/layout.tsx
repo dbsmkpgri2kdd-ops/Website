@@ -4,7 +4,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
-import { Plus_Jakarta_Sans, Inter, Alegreya } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
 import { AIAssistant } from '@/components/ai/ai-assistant';
@@ -16,20 +16,14 @@ const jakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-const fontInter = Inter({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
 });
 
-const fontAlegreya = Alegreya({
-  subsets: ['latin'],
-  variable: '--font-alegreya',
-  display: 'swap',
-});
-
 export const viewport: Viewport = {
-  themeColor: '#10b981',
+  themeColor: '#3b82f6',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -55,20 +49,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" suppressHydrationWarning className="dark">
+    <html lang="id" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
       </head>
       <body className={cn(
-        "font-sans antialiased selection:bg-primary/30",
+        "min-h-screen bg-background font-sans antialiased selection:bg-primary/10",
         jakarta.variable, 
-        fontInter.variable, 
-        fontAlegreya.variable
+        inter.variable
       )}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
+            defaultTheme="light"
+            enableSystem={true}
             disableTransitionOnChange
           >
             <FirebaseClientProvider>

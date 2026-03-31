@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Menu, X, LogIn, DatabaseZap } from 'lucide-react';
+import { ChevronDown, Menu, X, LogIn, LayoutGrid } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { NAV_MENU_DEFAULT, type NavItem, type School } from '@/lib/data';
@@ -57,21 +57,21 @@ const Header = ({
   };
 
   const AuthButton = ({ className, showLabel = true }: { className?: string, showLabel?: boolean }) => {
-    if (isUserLoading) return <Skeleton className={cn('h-10 w-10 sm:w-24 rounded-xl', className)} />;
+    if (isUserLoading) return <Skeleton className={cn('h-10 w-10 sm:w-24 rounded-lg', className)} />;
 
     return (
       <Button
         onClick={handleAuthClick}
         variant={user ? "default" : "outline"}
         className={cn(
-          "px-3 sm:px-6 h-10 rounded-xl font-bold text-[11px] tracking-wide transition-all hover:scale-105 shadow-xl",
-          !user && "border-white/10 hover:bg-white/5",
+          "px-4 h-10 rounded-lg font-bold text-xs transition-all",
+          !user && "border-input hover:bg-muted",
           className
         )}
       >
         {user ? (
             <span className='flex items-center gap-2'>
-                <DatabaseZap size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'Dasbor'}</span>
+                <LayoutGrid size={14} /> <span className={cn(showLabel ? "inline" : "hidden")}>{showLabel && 'Dasbor'}</span>
             </span>
         ) : (
           <span className='flex items-center gap-2'>
@@ -82,7 +82,7 @@ const Header = ({
     );
   };
   
-  const currentMenu = schoolData?.customMenu || NAV_MENU_DEFAULT;
+  const currentMenu = (schoolData?.customMenu || NAV_MENU_DEFAULT).filter(item => item.id !== 'exambro');
 
   const renderNavItems = (items: NavItem[]) => {
     return items.map((item, idx) => {
@@ -90,17 +90,17 @@ const Header = ({
         return (
           <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1.5 px-4 py-2 text-[12px] font-semibold text-foreground/70 hover:text-primary transition-colors focus:outline-none">
+              <button className="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-foreground/70 hover:text-primary transition-colors focus:outline-none">
                 {item.label}
                 <ChevronDown className="h-3 w-3 opacity-40" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 p-2 rounded-2xl shadow-2xl border-white/5 bg-card/95 backdrop-blur-3xl">
+            <DropdownMenuContent align="start" className="w-52 p-1.5 rounded-xl shadow-xl border-border bg-popover/95 backdrop-blur-md">
               {item.children.map((child, cIdx) => (
                 <DropdownMenuItem
                   key={cIdx}
                   onClick={() => child.id && setActiveTab(child.id)}
-                  className='font-semibold text-[11px] cursor-pointer rounded-xl py-3 px-4 focus:bg-primary/10 focus:text-primary mb-1 transition-all'
+                  className='font-medium text-xs cursor-pointer rounded-lg py-2.5 px-3 focus:bg-primary/10 focus:text-primary transition-all'
                 >
                   {child.label}
                 </DropdownMenuItem>
@@ -113,7 +113,7 @@ const Header = ({
           <button
             key={idx}
             onClick={() => item.id && setActiveTab(item.id)}
-            className='px-4 py-2 text-[12px] font-semibold text-foreground/70 hover:text-primary transition-colors'
+            className='px-3 py-2 text-sm font-semibold text-foreground/70 hover:text-primary transition-colors'
           >
             {item.label}
           </button>
@@ -124,8 +124,8 @@ const Header = ({
 
   return (
     <header className={cn(
-      "sticky top-0 w-full z-50 bg-background border-b border-white/5 transition-all duration-300",
-      isScrolled ? "h-16 shadow-lg" : "h-20"
+      "sticky top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300",
+      isScrolled ? "h-16 shadow-sm" : "h-20"
     )}>
       <div className="max-w-7xl mx-auto px-6 h-full">
         <div className="flex justify-between items-center h-full">
@@ -134,13 +134,13 @@ const Header = ({
             onClick={() => setActiveTab('home')}
             className="flex items-center gap-3 group"
           >
-            <div className="relative w-9 h-9 overflow-hidden rounded-xl bg-white p-1.5 shadow-xl transition-transform group-hover:rotate-12 group-hover:scale-110">
+            <div className="relative w-9 h-9 overflow-hidden rounded-lg bg-primary/5 p-1 transition-transform group-hover:scale-105">
               {isSchoolDataLoading ? (
-                <Skeleton className="w-full h-full rounded-lg" />
+                <Skeleton className="w-full h-full rounded-md" />
               ) : (
                 <Image
                   src={convertGoogleDriveLink(schoolData?.logoUrl || "https://picsum.photos/seed/logo/40/40")}
-                  alt="Logo Sekolah"
+                  alt="Logo"
                   width={36}
                   height={36}
                   className="object-contain"
@@ -149,10 +149,10 @@ const Header = ({
               )}
             </div>
             <div className="flex flex-col items-start leading-none hidden sm:flex text-left">
-                <span className="font-black text-sm tracking-tight">
+                <span className="font-bold text-sm text-foreground">
                 {schoolData?.shortName || "SMKS PGRI 2"}
                 </span>
-                <span className='text-[8px] font-bold text-primary tracking-widest mt-0.5'>Digital Excellence</span>
+                <span className='text-[10px] font-medium text-muted-foreground'>Digital Excellence</span>
             </div>
           </button>
 
@@ -163,34 +163,30 @@ const Header = ({
 
           {/* ACTIONS */}
           <div className="flex items-center gap-2 sm:gap-3">
-             <AuthButton className="flex" showLabel={true} />
+             <AuthButton className="hidden sm:flex" />
              <ThemeToggle />
              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9 sm:h-10 sm:w-10 hover:bg-white/5">
+                  <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9 hover:bg-muted">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="p-0 w-full sm:w-[400px] border-none shadow-3xl bg-background/95 backdrop-blur-3xl">
-                    <SheetHeader className="p-8 border-b border-white/5">
-                        <div className="flex items-center gap-3 text-primary mb-4">
-                          <DatabaseZap size={18} />
-                          <span className='text-[10px] font-bold tracking-wider'>Portal Core v7.5</span>
-                        </div>
-                        <SheetTitle className='text-left font-black text-2xl tracking-tight italic'>Menu Portal</SheetTitle>
+                <SheetContent side="right" className="p-0 w-full sm:w-[350px] border-none shadow-xl bg-background">
+                    <SheetHeader className="p-6 border-b border-border">
+                        <SheetTitle className='text-left font-bold text-xl'>Menu Portal</SheetTitle>
                     </SheetHeader>
                     
-                    <ScrollArea className='h-[calc(100vh-180px)] py-6'>
+                    <ScrollArea className='h-[calc(100vh-160px)] py-4'>
                         {currentMenu.map((mainItem, mIdx) => (
-                          <div key={mIdx} className="px-8 mb-8">
-                            <h3 className="px-2 text-[10px] font-bold tracking-widest text-muted-foreground/40 mb-4 uppercase">{mainItem.label}</h3>
+                          <div key={mIdx} className="px-6 mb-6">
+                            <h3 className="px-2 text-[10px] font-bold tracking-widest text-muted-foreground mb-2 uppercase">{mainItem.label}</h3>
                             {mainItem.children ? (
-                              <div className="grid grid-cols-1 gap-1">
+                              <div className="grid grid-cols-1 gap-0.5">
                                 {mainItem.children.map((child, cIdx) => (
                                   <button
                                     key={cIdx}
                                     onClick={() => { child.id && setActiveTab(child.id); setIsMenuOpen(false); }}
-                                    className="w-full text-left py-3 px-4 rounded-xl text-[13px] font-semibold hover:bg-white/5 hover:text-primary transition-all"
+                                    className="w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium hover:bg-muted transition-all"
                                   >
                                     {child.label}
                                   </button>
@@ -199,7 +195,7 @@ const Header = ({
                             ) : (
                               <button
                                 onClick={() => { mainItem.id && setActiveTab(mainItem.id); setIsMenuOpen(false); }}
-                                className="w-full text-left py-3 px-4 rounded-xl text-[13px] font-semibold hover:text-primary transition-all"
+                                className="w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium hover:bg-muted transition-all"
                               >
                                 {mainItem.label}
                               </button>
@@ -208,8 +204,8 @@ const Header = ({
                         ))}
                     </ScrollArea>
                     
-                    <div className="p-8 border-t border-white/5 bg-white/5">
-                        <AuthButton className="w-full h-14 text-sm" showLabel={true} />
+                    <div className="p-6 border-t border-border">
+                        <AuthButton className="w-full h-12 text-sm" />
                     </div>
                 </SheetContent>
               </Sheet>

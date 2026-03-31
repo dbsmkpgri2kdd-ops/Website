@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -59,37 +60,34 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
   ];
 
   return (
-    <footer className="bg-[#0a0c1b] text-white pt-12 md:pt-20 pb-8 overflow-hidden relative">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -mr-48 -mt-48"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-[120px] -ml-48 -mb-48"></div>
-
+    <footer className="bg-white border-t border-border pt-12 pb-8 overflow-hidden relative tech-mesh">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
         
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
-               <div className="w-10 h-10 md:w-12 md:h-12 bg-white p-1.5 rounded-xl shadow-2xl relative overflow-hidden">
+               <div className="w-10 h-10 bg-primary/5 p-1.5 rounded-lg relative overflow-hidden">
                   {isSchoolDataLoading ? (
-                      <Skeleton className="w-full h-full rounded-lg" />
+                      <Skeleton className="w-full h-full" />
                   ) : (
                       <Image
                       src={convertGoogleDriveLink(schoolData?.logoUrl || "https://picsum.photos/seed/logo/40/40")}
                       alt="Logo"
                       fill
-                      className='object-contain p-1'
+                      className='object-contain'
                       unoptimized
                       />
                   )}
                </div>
-              <div className="font-bold text-lg md:text-xl tracking-tight">
+              <div className="font-bold text-lg tracking-tight text-foreground">
                 {isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
               </div>
             </div>
             
-            <div className="space-y-3 text-gray-400">
+            <div className="space-y-3 text-muted-foreground">
                 <div className="flex items-start gap-3">
                     <MapPin size={16} className="text-primary mt-1 shrink-0" />
-                    <div className="text-xs leading-relaxed flex-1 opacity-80">
+                    <div className="text-xs leading-relaxed flex-1">
                       {isSchoolDataLoading ? (
                         <Skeleton className="h-3 w-full" />
                       ) : (
@@ -99,62 +97,47 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 </div>
                 <div className="flex items-center gap-3">
                     <Phone size={14} className="text-primary shrink-0" />
-                    <div className="text-xs flex-1 opacity-80">
-                      {isSchoolDataLoading ? (
-                        <Skeleton className="h-3 w-24" />
-                      ) : (
-                        <div>{schoolData?.phone}</div>
-                      )}
+                    <div className="text-xs">
+                      {isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Mail size={14} className="text-primary shrink-0" />
-                    <div className="text-xs flex-1 opacity-80">
-                      {isSchoolDataLoading ? (
-                        <Skeleton className="h-3 w-32" />
-                      ) : (
-                        <div>{schoolData?.email}</div>
-                      )}
+                    <div className="text-xs">
+                      {isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
                     </div>
                 </div>
             </div>
 
             <div className="flex gap-2">
-              {schoolData?.facebookUrl && (
-                  <Button asChild variant="secondary" size="icon" className="h-8 w-8 rounded-lg bg-white/5 hover:bg-primary hover:text-white border-white/5">
-                  <a href={schoolData.facebookUrl} target='_blank' rel='noopener noreferrer' aria-label="Facebook"><Facebook size={14}/></a>
+              {[
+                { icon: Facebook, url: schoolData?.facebookUrl },
+                { icon: Instagram, url: schoolData?.instagramUrl },
+                { icon: TiktokIcon, url: schoolData?.tiktokUrl, isSvg: true },
+                { icon: Youtube, url: schoolData?.youtubeUrl }
+              ].map((social, i) => (
+                social.url && (
+                  <Button key={i} asChild variant="outline" size="icon" className="h-8 w-8 rounded-lg hover:bg-primary/10 hover:text-primary">
+                    <a href={social.url} target='_blank' rel='noopener noreferrer'>
+                      {social.isSvg ? <social.icon className="w-3.5 h-3.5 fill-current" /> : <social.icon size={14}/>}
+                    </a>
                   </Button>
-              )}
-              {schoolData?.instagramUrl && (
-                  <Button asChild variant="secondary" size="icon" className="h-8 w-8 rounded-lg bg-white/5 hover:bg-primary hover:text-white border-white/5">
-                  <a href={schoolData.instagramUrl} target='_blank' rel='noopener noreferrer' aria-label="Instagram"><Instagram size={14}/></a>
-                  </Button>
-              )}
-              {schoolData?.tiktokUrl && (
-                  <Button asChild variant="secondary" size="icon" className="h-8 w-8 rounded-lg bg-white/5 hover:bg-primary hover:text-white border-white/5">
-                  <a href={schoolData.tiktokUrl} target='_blank' rel='noopener noreferrer' aria-label="TikTok"><TiktokIcon className="w-3.5 h-3.5 fill-current" /></a>
-                  </Button>
-              )}
-              {schoolData?.youtubeUrl && (
-                  <Button asChild variant="secondary" size="icon" className="h-8 w-8 rounded-lg bg-white/5 hover:bg-primary hover:text-white border-white/5">
-                  <a href={schoolData.youtubeUrl} target='_blank' rel='noopener noreferrer' aria-label="YouTube"><Youtube size={14}/></a>
-                  </Button>
-              )}
+                )
+              ))}
             </div>
           </div>
           
           <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-8">
             {columns.map((col, idx) => (
               <div key={idx} className="space-y-4">
-                  <h5 className="font-bold text-[11px] text-primary tracking-wider">{col.title}</h5>
+                  <h5 className="font-bold text-xs text-foreground uppercase tracking-wider">{col.title}</h5>
                   <ul className="space-y-2.5">
                       {col.links.map(link => (
                           <li key={link.label}>
                               <button 
                                   onClick={() => setActiveTab(link.id as NavLink)} 
-                                  className="text-gray-400 hover:text-white text-xs transition-colors duration-300 flex items-center group font-medium"
+                                  className="text-muted-foreground hover:text-primary text-xs transition-colors duration-300 flex items-center font-medium"
                               >
-                                  <span className="w-0 group-hover:w-1.5 h-[1px] bg-primary mr-0 group-hover:mr-1.5 transition-all"></span>
                                   {link.label}
                               </button>
                           </li>
@@ -165,15 +148,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500 text-[10px] font-medium tracking-tight">
-          <div className="flex flex-col md:flex-row items-center gap-1 text-center md:text-left">
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[10px] font-medium">
+          <div className="text-center md:text-left">
             <span>© {currentYear || '2024'} {schoolData?.name || "SMKS PGRI 2 Kedondong"}.</span>
-            <span className="hidden md:inline">|</span>
-            <span>Educational excellence for future leaders.</span>
           </div>
           <div className="flex gap-6">
-            <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>
+            <span className="hover:text-primary cursor-pointer transition-colors">Privacy Policy</span>
+            <span className="hover:text-primary cursor-pointer transition-colors">Terms of Service</span>
           </div>
         </div>
       </div>
