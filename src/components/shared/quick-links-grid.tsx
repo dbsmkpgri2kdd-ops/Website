@@ -69,7 +69,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
             <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-primary">Portal Layanan Terpadu</span>
         </div>
         <h2 className="text-2xl md:text-4xl font-black text-slate-900 leading-tight tracking-tighter uppercase italic">{title}</h2>
-        <p className="text-muted-foreground text-[10px] md:text-sm max-w-2xl font-bold opacity-80">{description}</p>
+        <p className="text-muted-foreground text-[10px] md:text-sm max-w-2xl font-bold opacity-80 uppercase tracking-widest">{description}</p>
       </div>
 
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-8">
@@ -87,7 +87,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <Card className="h-full rounded-[2rem] md:rounded-[2.5rem] shadow-sm md:shadow-lg border-slate-100 bg-white hover:border-primary/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 overflow-hidden border">
+                <Card className="h-full rounded-[2rem] md:rounded-[2.5rem] shadow-lg md:shadow-xl border-slate-100 bg-white hover:border-primary/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 overflow-hidden border">
                   <CardHeader className="flex flex-col items-center gap-3 md:gap-4 p-4 md:p-8 pb-3 md:pb-4 text-center">
                     {renderIcon(link.icon)}
                     <div className="w-full">
@@ -100,7 +100,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
                     </div>
                   </CardHeader>
                   <CardContent className="px-8 pb-8 hidden md:block">
-                    <p className="text-[11px] text-muted-foreground leading-relaxed font-medium text-center line-clamp-2 opacity-60">
+                    <p className="text-[11px] text-muted-foreground leading-relaxed font-bold uppercase tracking-wider text-center line-clamp-2 opacity-60">
                       {link.description}
                     </p>
                   </CardContent>
