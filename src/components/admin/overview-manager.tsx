@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, query, limit, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication } from '@/lib/data';
-import { Newspaper, UserPlus, ShieldCheck, Activity, Database, HardDrive, BarChart3, Clock, ArrowUpRight, Rocket, BrainCircuit, Sparkles, LoaderCircle } from 'lucide-react';
+import { Newspaper, UserPlus, ShieldCheck, Activity, Clock, ArrowUpRight, Rocket, BrainCircuit, Sparkles, LoaderCircle, Database, HardDrive, BarChart3 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -171,7 +171,7 @@ export function OverviewManager() {
           </CardHeader>
           <CardContent className="p-4">
             <div className="space-y-1">
-              {isPpdbLoading || !mounted ? (
+              {!mounted || isPpdbLoading ? (
                 Array.from({length: 3}).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-2xl mb-2" />)
               ) : (
                 recentPpdb && recentPpdb.length > 0 ? recentPpdb.map(app => (

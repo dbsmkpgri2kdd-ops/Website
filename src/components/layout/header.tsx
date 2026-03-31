@@ -58,7 +58,7 @@ const Header = ({
   };
 
   const AuthButton = ({ className, showLabel = true }: { className?: string, showLabel?: boolean }) => {
-    if (isUserLoading || !mounted) return <Skeleton className={cn('h-10 w-10 sm:w-24 rounded-lg', className)} />;
+    if (!mounted || isUserLoading) return <Skeleton className={cn('h-10 w-10 sm:w-24 rounded-lg', className)} />;
 
     return (
       <Button
@@ -136,7 +136,7 @@ const Header = ({
             className="flex items-center gap-3 group"
           >
             <div className="relative w-10 h-10 overflow-hidden rounded-lg bg-primary/5 p-1.5 transition-transform group-hover:scale-105">
-              {isSchoolDataLoading || !mounted ? (
+              {!mounted || isSchoolDataLoading ? (
                 <Skeleton className="w-full h-full rounded-md" />
               ) : (
                 <Image
@@ -152,7 +152,7 @@ const Header = ({
             </div>
             <div className="flex flex-col items-start leading-tight hidden sm:flex text-left">
                 <span className="font-bold text-sm text-foreground tracking-tight">
-                {mounted ? (schoolData?.shortName || "SMKS PGRI 2") : "SMKS PGRI 2"}
+                {!mounted ? "SMKS PGRI 2" : (schoolData?.shortName || "SMKS PGRI 2")}
                 </span>
                 <span className='text-[10px] font-semibold text-muted-foreground'>Portal Digital</span>
             </div>
@@ -160,7 +160,7 @@ const Header = ({
 
           {/* DESKTOP NAV */}
           <nav className="hidden lg:flex items-center space-x-1">
-             {renderNavItems(currentMenu)}
+             {mounted && renderNavItems(currentMenu)}
           </nav>
 
           {/* ACTIONS */}
@@ -179,7 +179,7 @@ const Header = ({
                     </SheetHeader>
                     
                     <ScrollArea className='h-[calc(100vh-160px)] py-4'>
-                        {currentMenu.map((mainItem, mIdx) => (
+                        {mounted && currentMenu.map((mainItem, mIdx) => (
                           <div key={mIdx} className="px-6 mb-6">
                             <h3 className="px-2 text-[10px] font-bold tracking-widest text-muted-foreground mb-2 uppercase">{mainItem.label}</h3>
                             {mainItem.children ? (

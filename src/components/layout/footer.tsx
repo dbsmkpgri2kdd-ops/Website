@@ -23,7 +23,7 @@ const TiktokIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) => {
   const [mounted, setMounted] = useState(false);
-  const [currentYear, setCurrentYear] = useState<number>(2024);
+  const [currentYear, setCurrentYear] = useState<number>(2025);
 
   useEffect(() => {
     setMounted(true);
@@ -60,6 +60,8 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
     }
   ];
 
+  const schoolName = mounted && schoolData?.name ? schoolData.name : "SMKS PGRI 2 Kedondong";
+
   return (
     <footer className="bg-background border-t border-border pt-12 pb-8 overflow-hidden relative tech-mesh">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -68,7 +70,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
                <div className="w-10 h-10 bg-primary/5 p-1.5 rounded-lg relative overflow-hidden">
-                  {isSchoolDataLoading ? (
+                  {!mounted || isSchoolDataLoading ? (
                       <Skeleton className="w-full h-full" />
                   ) : (
                       <Image
@@ -81,7 +83,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                   )}
                </div>
               <div className="font-bold text-lg tracking-tight text-foreground">
-                {isSchoolDataLoading || !mounted ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
+                {!mounted || isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
               </div>
             </div>
             
@@ -89,7 +91,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 <div className="flex items-start gap-3">
                     <MapPin size={16} className="text-primary mt-1 shrink-0" />
                     <div className="text-xs leading-relaxed flex-1">
-                      {isSchoolDataLoading || !mounted ? (
+                      {!mounted || isSchoolDataLoading ? (
                         <Skeleton className="h-3 w-full" />
                       ) : (
                         <div className="whitespace-pre-wrap text-foreground">{schoolData?.address}</div>
@@ -99,13 +101,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 <div className="flex items-center gap-3">
                     <Phone size={14} className="text-primary shrink-0" />
                     <div className="text-xs text-foreground">
-                      {isSchoolDataLoading || !mounted ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
+                      {!mounted || isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Mail size={14} className="text-primary shrink-0" />
                     <div className="text-xs text-foreground">
-                      {isSchoolDataLoading || !mounted ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
+                      {!mounted || isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
                     </div>
                 </div>
             </div>
@@ -151,7 +153,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[10px] font-medium">
           <div className="text-center md:text-left">
-            <span>© {mounted ? currentYear : '2024'} {mounted ? (schoolData?.name || "SMKS PGRI 2 Kedondong") : "SMKS PGRI 2 Kedondong"}.</span>
+            <span>© {mounted ? currentYear : '2025'} {schoolName}.</span>
           </div>
           <div className="flex gap-6">
             <span className="hover:text-primary cursor-pointer transition-colors">Privacy Policy</span>
