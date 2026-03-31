@@ -3,7 +3,7 @@
 
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { LogOut, User as UserIcon, ShieldCheck, BookOpen, GraduationCap, Briefcase, FileText } from 'lucide-react';
+import { LogOut, User as UserIcon, ShieldCheck } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,7 +18,6 @@ import { ManajemenPrakerin } from '@/components/shared/manajemen-prakerin';
 import { AchievementsManager } from '@/components/admin/achievements-manager';
 import { ERaporManager } from '@/components/shared/e-rapor-manager';
 import { ManajemenAbsensi } from '@/components/guru/manajemen-absensi';
-import { QuickLinksGrid } from '@/components/shared/quick-links-grid';
 import { ExamManager } from '@/components/guru/exam-manager';
 
 

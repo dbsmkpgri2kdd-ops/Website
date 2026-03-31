@@ -8,7 +8,7 @@ import {
   GraduationCap, Building2, Briefcase, Bell, Menu, X, 
   Newspaper, Calendar, Link as LinkIcon,
   PenSquare, ShieldAlert, 
-  LoaderCircle, Mail, Award, Library, BadgeCheck, MessageSquare, Quote, 
+  LoaderCircle, Mail, Award, Library, MessageSquare, Quote, 
   DatabaseZap, Palette, Layout, MousePointer2, BriefcaseIcon, Factory, SearchCode,
   UserPlus, ShieldCheck
 } from 'lucide-react';
@@ -131,9 +131,7 @@ function AdminDashboard() {
     );
   }
 
-  const filteredNavItems = navItems;
-
-  const groupedNav = filteredNavItems.reduce((acc, item) => {
+  const groupedNav = navItems.reduce((acc, item) => {
     if (!acc[item.group]) acc[item.group] = [];
     acc[item.group].push(item);
     return acc;

@@ -54,7 +54,6 @@ const AlumniSection = dynamic(() => import('@/components/sections/alumni'), { lo
 const GuestbookSection = dynamic(() => import('@/components/sections/guestbook'), { loading: () => <SectionLoader />, ssr: false });
 const PrakerinSection = dynamic(() => import('@/components/sections/prakerin'), { loading: () => <SectionLoader />, ssr: false });
 const ShowcaseSection = dynamic(() => import('@/components/sections/showcase'), { loading: () => <SectionLoader />, ssr: false });
-const ExamBroPortal = dynamic(() => import('@/components/siswa/exambro-portal').then(mod => mod.ExamBroPortal), { loading: () => <SectionLoader />, ssr: false });
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -208,8 +207,6 @@ export default function Home() {
         return <CheckGraduationSection />;
       case 'showcase-karya':
         return <ShowcaseSection />;
-      case 'exambro':
-        return <ExamBroPortal />;
       default:
         return <PlaceholderSection title="Feature Not Ready" description={`Halaman (${activeTab}) sedang dalam tahap integrasi database.`} />;
     }
