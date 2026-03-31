@@ -1,4 +1,3 @@
-
 'use client';
 
 import { firebaseConfig } from './config';
@@ -16,9 +15,15 @@ export type FirebaseServices = {
 
 /**
  * Inisialisasi aman untuk Client Side.
+ * Mencegah eksekusi pada lingkungan Server (SSR) untuk menghindari Hydration Mismatch.
  */
 export function initializeFirebase(): FirebaseServices {
   try {
+    // SSR Guard: Jangan inisialisasi Firebase di server
+    if (typeof window === 'undefined') {
+      return { firebaseApp: null, auth: null, firestore: null, storage: null };
+    }
+
     const isConfigValid = !!(firebaseConfig && firebaseConfig.projectId && firebaseConfig.projectId !== "");
     
     if (!isConfigValid) {

@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -61,7 +60,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
     }
   ];
 
-  const schoolName = mounted && schoolData?.name ? schoolData.name : "SMKS PGRI 2 Kedondong";
+  const schoolName = schoolData?.name || "SMKS PGRI 2 Kedondong";
   const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
 
   return (
@@ -72,7 +71,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
                <div className="w-12 h-12 bg-primary/5 p-1.5 rounded-lg relative overflow-hidden shadow-inner border border-primary/10">
-                  {!mounted || isSchoolDataLoading ? (
+                  {isSchoolDataLoading ? (
                       <Skeleton className="w-full h-full" />
                   ) : (
                       <Image
@@ -85,7 +84,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                   )}
                </div>
               <div className="font-bold text-lg tracking-tight text-foreground">
-                {!mounted || isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
+                {isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
               </div>
             </div>
             
@@ -93,7 +92,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 <div className="flex items-start gap-3">
                     <MapPin size={16} className="text-primary mt-1 shrink-0" />
                     <div className="text-xs leading-relaxed flex-1">
-                      {!mounted || isSchoolDataLoading ? (
+                      {isSchoolDataLoading ? (
                         <Skeleton className="h-3 w-full" />
                       ) : (
                         <div className="whitespace-pre-wrap text-foreground">{schoolData?.address}</div>
@@ -103,13 +102,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 <div className="flex items-center gap-3">
                     <Phone size={14} className="text-primary shrink-0" />
                     <div className="text-xs text-foreground">
-                      {!mounted || isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
+                      {isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Mail size={14} className="text-primary shrink-0" />
                     <div className="text-xs text-foreground">
-                      {!mounted || isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
+                      {isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
                     </div>
                 </div>
             </div>
