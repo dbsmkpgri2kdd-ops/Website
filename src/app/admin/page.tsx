@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -210,7 +211,6 @@ function AdminDashboard() {
             </div>
             <div className='flex flex-col'>
                 <span className="font-black text-sm tracking-tighter text-slate-900 uppercase italic">hPanel <span className='text-primary'>v7.5</span></span>
-                <span className='text-[8px] font-black uppercase tracking-[0.3em] text-primary opacity-60'>Digital Hub Ent.</span>
             </div>
           </div>
           <Button variant="ghost" size="icon" className="lg:hidden rounded-xl h-9 w-9 bg-slate-50" onClick={() => setIsSidebarOpen(false)}>

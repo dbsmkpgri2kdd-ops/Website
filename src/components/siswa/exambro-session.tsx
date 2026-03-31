@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -365,7 +366,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       </main>
 
       <footer className="h-10 bg-card border-t border-border px-8 flex items-center justify-between shrink-0 opacity-60">
-        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Digital Hub Enterprise v7.5 • SMKS PGRI 2 Kedondong</p>
+        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">SMKS PGRI 2 Kedondong</p>
         <div className='flex items-center gap-2'>
             <div className={cn("w-1.5 h-1.5 rounded-full", isStandalone ? "bg-emerald-500" : "bg-primary")}></div>
             <span className="text-[9px] font-bold text-foreground uppercase tracking-widest">Integrity: {isStandalone ? 'Verified' : 'Web mode'}</span>

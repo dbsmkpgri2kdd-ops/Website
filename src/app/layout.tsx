@@ -1,3 +1,4 @@
+
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -34,7 +35,7 @@ const logoUrl = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-imag
 
 export const metadata: Metadata = {
   title: {
-    default: 'SMKS PGRI 2 Kedondong | Digital Hub Enterprise',
+    default: 'SMKS PGRI 2 Kedondong',
     template: '%s | SmartSchool'
   },
   description: "Official Website SMKS PGRI 2 Kedondong. Pusat Pendidikan Vokasi Berstandar Industri Masa Depan dengan Ekosistem Digital Terpadu.",

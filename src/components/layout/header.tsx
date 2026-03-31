@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -155,10 +156,6 @@ const Header = ({
                 <span className="font-black text-base text-slate-900 tracking-tighter uppercase italic">
                 {!mounted ? "SMKS PGRI 2" : (schoolData?.shortName || "SMKS PGRI 2")}
                 </span>
-                <div className='flex items-center gap-1'>
-                    <Sparkles size={10} className='text-accent animate-pulse' />
-                    <span className='text-[9px] font-black text-primary uppercase tracking-[0.3em]'>Digital Hub Enterprise</span>
-                </div>
             </div>
           </button>
 

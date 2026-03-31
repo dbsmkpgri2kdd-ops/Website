@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -70,7 +71,7 @@ function SiswaDashboard() {
         </div>
         <Button onClick={handleLogout} variant="outline" className="rounded-2xl h-12 px-8 font-black text-[10px] uppercase tracking-widest border-slate-200 text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
           <LogOut className="mr-2 h-4 w-4 opacity-40" />
-          <span className="hidden sm:inline">Keluar Sistem</span>
+          <span className="hidden sm:inline">Logout Sistem</span>
           <span className="sm:hidden">Keluar</span>
         </Button>
       </header>
@@ -190,6 +191,12 @@ function SiswaDashboard() {
             </div>
           </div>
       </main>
+      
+      <footer className="max-w-7xl mx-auto mt-20 pt-8 border-t border-slate-100 text-center">
+          <p className='text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 opacity-60'>
+              &copy; 2025 SMKS PGRI 2 KEDONDONG • OFFICIAL PORTAL
+          </p>
+      </footer>
     </div>
   );
 }
