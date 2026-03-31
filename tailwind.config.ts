@@ -11,8 +11,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-jakarta)', 'sans-serif'],
+        sans: ['var(--font-inter)', 'var(--font-jakarta)', 'sans-serif'],
         headline: ['var(--font-jakarta)', 'sans-serif'],
+        formal: ['var(--font-inter)', 'sans-serif'],
+        serif: ['var(--font-alegreya)', 'serif'],
         code: ['monospace'],
       },
       colors: {

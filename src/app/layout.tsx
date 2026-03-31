@@ -4,7 +4,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
-import { Plus_Jakarta_Sans, Belleza, Alegreya } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter, Alegreya } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
 import { AIAssistant } from '@/components/ai/ai-assistant';
@@ -16,10 +16,9 @@ const jakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-const fontBelleza = Belleza({
-  weight: '400',
+const fontInter = Inter({
   subsets: ['latin'],
-  variable: '--font-belleza',
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -63,7 +62,7 @@ export default function RootLayout({
       <body className={cn(
         "font-sans antialiased selection:bg-primary/30",
         jakarta.variable, 
-        fontBelleza.variable, 
+        fontInter.variable, 
         fontAlegreya.variable
       )}>
           <ThemeProvider
