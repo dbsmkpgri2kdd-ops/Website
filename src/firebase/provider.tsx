@@ -34,7 +34,6 @@ export interface FirebaseContextState extends UserAuthState {
 
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
 
-// Utility untuk parsing CSV sederhana dengan pembersihan spasi
 const parseCSV = (csv: string) => {
   const lines = csv.split('\n').filter(line => line.trim() !== '');
   if (lines.length === 0) return [];
@@ -91,7 +90,6 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               await setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
             }
           } else {
-            // LOGIKA SINKRONISASI DATA SISWA VIA CSV (MENDALAM)
             const userData = userSnap.data() as UserProfile;
             
             if (userData.role === 'siswa' && userData.nis && !userData.lastSyncedAt) {
@@ -105,7 +103,6 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
                   const studentData = parseCSV(csvText);
                   
                   const mappings = schoolData.csvMappings;
-                  // Cari berdasarkan NIS (dikirim saat pendaftaran)
                   const match = studentData.find(s => String(s[mappings.nis]).trim() === String(userData.nis).trim());
                   
                   if (match) {

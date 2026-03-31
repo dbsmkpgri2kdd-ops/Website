@@ -66,12 +66,10 @@ export function SystemSettingsManager() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       isMaintenanceMode: false,
-      studentDatabaseUrl: '',
+      studentDatabaseUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlz-4RtUAcUs_1Pw05ocYs2_T96rk4KYy8mwxLlRnO2uhqzdwGayvdxfislfADgA/pub?gid=593474967&single=true&output=csv',
       attendanceWebhookUrl: '',
       latitude: -5.4,
       longitude: 105.1,
-      primaryColor: '221 83% 53%',
-      accentColor: '262 83% 58%',
       csvMappings: {
         nis: 'NIS',
         name: 'Nama',
@@ -102,7 +100,7 @@ export function SystemSettingsManager() {
     if (schoolData) {
       form.reset({
         isMaintenanceMode: schoolData.isMaintenanceMode || false,
-        studentDatabaseUrl: schoolData.studentDatabaseUrl || '',
+        studentDatabaseUrl: schoolData.studentDatabaseUrl || 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlz-4RtUAcUs_1Pw05ocYs2_T96rk4KYy8mwxLlRnO2uhqzdwGayvdxfislfADgA/pub?gid=593474967&single=true&output=csv',
         attendanceWebhookUrl: schoolData.attendanceWebhookUrl || '',
         latitude: schoolData.latitude || -5.4,
         longitude: schoolData.longitude || 105.1,
@@ -160,7 +158,7 @@ export function SystemSettingsManager() {
   if (isLoading) return <div className="flex justify-center py-20"><LoaderCircle className="animate-spin text-primary h-8 w-8" /></div>;
 
   return (
-    <div className="space-y-8 animate-fade-in pb-20">
+    <div className="space-y-8 animate-reveal pb-20">
       <Alert className="bg-primary/5 border-primary/20">
         <ShieldAlert className="h-4 w-4 text-primary" />
         <AlertTitle className='font-bold text-xs'>Kustomisasi Identitas & Data</AlertTitle>

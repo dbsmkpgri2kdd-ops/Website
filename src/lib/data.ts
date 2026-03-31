@@ -105,10 +105,6 @@ export interface CsvMappings {
   homeroomTeacher: string;
   guardianTeacher: string;
   studentAffairs: string;
-  nisn?: string;
-  gender?: string;
-  birthPlace?: string;
-  birthDate?: string;
 }
 
 export interface School {
@@ -390,10 +386,6 @@ export interface UserProfile {
     homeroomTeacher?: string;
     guardianTeacher?: string;
     studentAffairs?: string;
-    nisn?: string;
-    gender?: string;
-    birthPlace?: string;
-    birthDate?: string;
     lastSyncedAt?: any;
     biometricSignature?: string;
 }
