@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect } from 'react';
@@ -7,9 +6,9 @@ import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { SCHOOL_DATA_ID, type School } from '@/lib/data';
 
 /**
- * Sinkronisasi Tema Global v3.0.
- * Menerapkan variabel CSS berdasarkan template dan warna yang dipilih admin secara dinamis.
- * Fokus pada Clean & Fresh Modern style.
+ * Sinkronisasi Tema Global v3.5.
+ * Menerapkan variabel CSS berdasarkan warna yang dipilih admin secara dinamis.
+ * Dipadukan dengan sistem Light/Dark mode dari next-themes.
  */
 export function ThemeSync() {
   const firestore = useFirestore();
@@ -24,8 +23,9 @@ export function ThemeSync() {
 
     const root = document.documentElement;
 
-    // 1. Terapkan Warna Primer & Aksen jika tersedia di database
+    // Terapkan Warna Primer & Aksen jika tersedia di database
     if (schoolData.primaryColor) {
+      // Pastikan format HSL valid untuk Tailwind
       root.style.setProperty('--primary', schoolData.primaryColor);
       root.style.setProperty('--ring', schoolData.primaryColor);
     }
@@ -34,8 +34,7 @@ export function ThemeSync() {
       root.style.setProperty('--accent', schoolData.accentColor);
     }
 
-    // 2. Logika Border Radius Berdasarkan Karakter Sekolah
-    // Kami standarisasi pada 0.75rem untuk kesan modern yang ramah
+    // Border radius standar formal modern
     root.style.setProperty('--radius', '0.75rem');
 
   }, [schoolData]);
