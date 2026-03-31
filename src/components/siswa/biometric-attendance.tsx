@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Camera, MapPin, LoaderCircle, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, Navigation } from 'lucide-center';
+import { Camera, MapPin, LoaderCircle, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, Navigation } from 'lucide-react';
 import { useUser, useFirestore, addDocumentNonBlocking, useDoc, useMemoFirebase } from '@/firebase';
 import { collection, serverTimestamp, doc } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type School } from '@/lib/data';

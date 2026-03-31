@@ -233,9 +233,9 @@ function AdminDashboard() {
               <p className="text-[8px] font-semibold text-muted-foreground capitalize">{user?.profile?.role || 'User'}</p>
             </div>
           </div>
-          <Button onClick={handleLogout} variant="ghost" className="w-full justify-start h-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold text-[10px] px-2">
+          <button onClick={handleLogout} className="w-full flex items-center px-2 py-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold text-[10px] transition-colors">
             <LogOut size={13} className="mr-2 opacity-60" /> Keluar sistem
-          </Button>
+          </button>
         </div>
       </aside>
 
@@ -246,7 +246,7 @@ function AdminDashboard() {
               <Menu size={18} />
             </Button>
             <h1 className="font-semibold text-xs text-muted-foreground tracking-tight hidden sm:block">
-              Sistem / {navItems.find(i => i.value === activeTab)?.label || 'Dashboard'}
+              Sistem / {navItems.find(i => i.value === activeTab)?.label || 'Ringkasan'}
             </h1>
           </div>
           

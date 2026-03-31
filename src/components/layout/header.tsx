@@ -130,7 +130,7 @@ const Header = ({
     )}>
       <div className="max-w-7xl mx-auto px-6 h-full">
         <div className="flex justify-between items-center h-full">
-          {/* LOGO */}
+          {/* Logo */}
           <button
             onClick={() => setActiveTab('home')}
             className="flex items-center gap-3 group"
@@ -154,16 +154,16 @@ const Header = ({
                 <span className="font-bold text-sm text-foreground tracking-tight">
                 {!mounted ? "SMKS PGRI 2" : (schoolData?.shortName || "SMKS PGRI 2")}
                 </span>
-                <span className='text-[10px] font-semibold text-muted-foreground'>Portal Digital</span>
+                <span className='text-[10px] font-semibold text-muted-foreground'>Portal digital</span>
             </div>
           </button>
 
-          {/* DESKTOP NAV */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center space-x-1">
              {mounted && renderNavItems(currentMenu)}
           </nav>
 
-          {/* ACTIONS */}
+          {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
              <AuthButton className="hidden sm:flex" />
              <ThemeToggle />
