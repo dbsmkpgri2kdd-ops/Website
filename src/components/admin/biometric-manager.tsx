@@ -5,10 +5,11 @@ import { useState, useRef, useMemo, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Camera, LoaderCircle, CheckCircle2, ShieldCheck, 
   ScanFace, UserPlus, Users, Search, Filter, Fingerprint,
-  Smartphone, MapPin, Zap
+  Smartphone, MapPin, Zap, MonitorCheck, Volume2
 } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase, updateDocumentNonBlocking, addDocumentNonBlocking, useDoc } from '@/firebase';
 import { collection, query, where, orderBy, doc, serverTimestamp } from 'firebase/firestore';
@@ -22,7 +23,7 @@ type BiometricStatus = 'IDLE' | 'SCANNING' | 'SUCCESS' | 'ERROR';
 
 /**
  * Komponen Admin untuk Manajemen Biometrik & Terminal Absensi Kolektif.
- * Memungkinkan Admin mendaftarkan wajah siswa (Enrollment) dan mencatat kehadiran.
+ * Dioptimalkan dengan Pemindaian Otomatis dan Umpan Balik Suara.
  */
 export function BiometricManager() {
   const { toast } = useToast();
@@ -36,6 +37,14 @@ export function BiometricManager() {
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Sound Feedback
+  const playSuccessSound = () => {
+    if (typeof window !== 'undefined') {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+      audio.play().catch(e => console.warn("Audio play blocked", e));
+    }
+  };
 
   // 1. Fetch Students
   const studentsQuery = useMemoFirebase(() => {
@@ -59,7 +68,7 @@ export function BiometricManager() {
     if (!students) return [];
     return students.filter(s => {
       const matchesClass = selectedClass === 'ALL' || s.className === selectedClass;
-      const matchesSearch = (s.displayName || s.email).toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = (s.displayName || s.email || '').toLowerCase().includes(searchQuery.toLowerCase());
       return matchesClass && matchesSearch;
     });
   }, [students, selectedClass, searchQuery]);
@@ -120,13 +129,13 @@ export function BiometricManager() {
 
     let progress = 0;
     const interval = setInterval(() => {
-      progress += 10;
+      progress += 10; // Terminal lebih cepat (Auto-Scan)
       setScanProgress(progress);
       if (progress >= 100) {
         clearInterval(interval);
         processCapture('ATTENDANCE');
       }
-    }, 80);
+    }, 60);
   };
 
   const generateHash = (dataUrl: string) => {
@@ -154,6 +163,7 @@ export function BiometricManager() {
       if (mode === 'ENROLL') {
         const userRef = doc(firestore, 'users', selectedStudentId);
         updateDocumentNonBlocking(userRef, { biometricSignature: signature });
+        playSuccessSound();
         toast({ title: 'Registrasi Berhasil', description: `Wajah ${student?.displayName} telah terdaftar.` });
       } else {
         const attendanceRef = collection(firestore, `schools/${SCHOOL_DATA_ID}/attendance`);
@@ -164,9 +174,9 @@ export function BiometricManager() {
           studentClass: student?.className || 'N/A',
           date: serverTimestamp(),
           status: 'Hadir',
-          notes: 'Dicatat oleh Admin (Terminal Biometrik)',
+          notes: 'Dicatat otomatis oleh Terminal Sekolah',
           biometricCode: signature,
-          metadata: { type: 'ADMIN_TERMINAL' }
+          metadata: { type: 'ADMIN_TERMINAL_AUTO' }
         };
         addDocumentNonBlocking(attendanceRef, attendanceData);
 
@@ -179,7 +189,8 @@ export function BiometricManager() {
           }).catch(() => {});
         }
 
-        toast({ title: 'Absensi Berhasil', description: `${student?.displayName} telah hadir.` });
+        playSuccessSound();
+        toast({ title: 'Absensi Berhasil', description: `${student?.displayName} tercatat hadir.` });
       }
 
       setStatus('SUCCESS');
@@ -187,7 +198,7 @@ export function BiometricManager() {
       setTimeout(() => setStatus('IDLE'), 3000);
     } catch (e) {
       setStatus('ERROR');
-      toast({ variant: 'destructive', title: 'Gagal' });
+      toast({ variant: 'destructive', title: 'Proses Gagal', description: 'Terjadi kesalahan sistem.' });
     }
   };
 
@@ -196,11 +207,11 @@ export function BiometricManager() {
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
             <h2 className='text-3xl font-bold tracking-tight text-foreground'>Manajemen Biometrik</h2>
-            <p className='text-sm font-medium text-muted-foreground mt-1'>Pendaftaran & pencatatan kehadiran digital terpusat.</p>
+            <p className='text-sm font-medium text-muted-foreground mt-1'>Pendaftaran & terminal kehadiran otomatis.</p>
         </div>
         <div className='flex items-center gap-3 bg-emerald-500/10 text-emerald-600 p-3 rounded-2xl border border-emerald-500/20'>
             <div className='w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_emerald]'></div>
-            <p className='text-[10px] font-black uppercase tracking-widest'>Sensor Biometrik Aktif</p>
+            <p className='text-[10px] font-black uppercase tracking-widest'>Terminal Sensor Aktif</p>
         </div>
       </div>
 
@@ -210,7 +221,7 @@ export function BiometricManager() {
             <UserPlus className="mr-2 h-4 w-4" /> Registrasi Wajah
           </TabsTrigger>
           <TabsTrigger value="terminal" className="rounded-xl font-bold text-xs">
-            <ScanFace className="mr-2 h-4 w-4" /> Terminal Absensi
+            <ScanFace className="mr-2 h-4 w-4" /> Terminal Otomatis
           </TabsTrigger>
         </TabsList>
 
@@ -238,13 +249,13 @@ export function BiometricManager() {
                       <SelectValue placeholder="Semua Kelas" />
                     </SelectTrigger>
                     <SelectContent className='rounded-xl'>
-                      <SelectItem value="ALL" className="font-bold text-[10px] uppercase">SEMUA KELAS</SelectItem>
+                      <SelectItem value="ALL" className="font-bold text-[10px] uppercase">Semua Kelas</SelectItem>
                       {classes.map(c => <SelectItem key={c} value={c} className="font-bold text-[10px] uppercase">{c}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 
-                <ScrollArea className="h-[400px]">
+                <ScrollArea className="h-[450px]">
                   <div className="p-4 space-y-1">
                     {isStudentsLoading ? (
                       Array.from({length: 5}).map((_, i) => <div key={i} className="h-14 w-full bg-muted animate-pulse rounded-xl" />)
@@ -317,8 +328,8 @@ function EnrollmentCard({ status, student, onStart, progress, videoRef, canvasRe
             <UserPlus size={24} />
           </div>
           <div>
-            <CardTitle className="text-xl font-bold italic uppercase font-headline">Enrollment <span className="text-primary">Wajah</span></CardTitle>
-            <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Daftarkan identitas biometrik siswa baru.</CardDescription>
+            <CardTitle className="text-xl font-bold italic uppercase font-headline">Pendaftaran <span className="text-primary">Wajah</span></CardTitle>
+            <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Registrasi identitas biometrik siswa baru.</CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -331,13 +342,13 @@ function EnrollmentCard({ status, student, onStart, progress, videoRef, canvasRe
               <ScanFace size={64} className="text-primary/40" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter">Siap Mendaftar?</h3>
+              <h3 className="text-2xl font-black italic uppercase tracking-tighter">Mulai Enrollment</h3>
               <p className="text-xs text-muted-foreground font-medium max-w-sm mx-auto leading-relaxed">
-                {student ? `Anda akan mendaftarkan wajah ${student.displayName}. Pastikan pencahayaan cukup.` : 'Pilih siswa dari daftar sebelah kiri untuk memulai registrasi.'}
+                {student ? `Anda akan mendaftarkan wajah ${student.displayName}. Pastikan pencahayaan cukup dan wajah terlihat jelas.` : 'Pilih siswa dari daftar sebelah kiri untuk memulai registrasi.'}
               </p>
             </div>
             <Button onClick={onStart} disabled={!student} className="h-16 px-12 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all">
-              Mulai Pemindaian Enrollment
+              Mulai Pemindaian Biometrik
             </Button>
           </div>
         )}
@@ -365,11 +376,12 @@ function EnrollmentCard({ status, student, onStart, progress, videoRef, canvasRe
 
         {status === 'SUCCESS' && (
           <div className="py-12 space-y-6 animate-reveal text-center">
-            <div className="w-24 h-24 bg-emerald-500 text-white rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl">
-              <CheckCircle2 size={48} />
+            <div className="w-24 h-24 bg-emerald-500 text-white rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl relative">
+              <div className='absolute inset-0 bg-emerald-500 rounded-[2rem] animate-ping opacity-20'></div>
+              <CheckCircle2 size={48} className='relative z-10' />
             </div>
-            <h3 className="text-2xl font-black italic uppercase">Registrasi Selesai</h3>
-            <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Database Identitas Digital Diperbarui</p>
+            <h3 className="text-2xl font-black italic uppercase">Registrasi Berhasil</h3>
+            <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Identitas Digital Siswa Telah Diperbarui</p>
           </div>
         )}
       </CardContent>
@@ -381,13 +393,19 @@ function TerminalCard({ status, student, onStart, progress, videoRef, canvasRef 
   return (
     <Card className="rounded-[3rem] border-none shadow-2xl bg-card overflow-hidden">
       <CardHeader className="p-8 border-b bg-emerald-500/5">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-emerald-500 text-white rounded-2xl shadow-lg">
-            <MonitorCheck size={24} />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-emerald-600 text-white rounded-2xl shadow-lg">
+              <MonitorCheck size={24} />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold italic uppercase font-headline">Terminal <span className="text-emerald-600">Otomatis</span></CardTitle>
+              <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Mode pemindaian cepat & rekap otomatis.</CardDescription>
+            </div>
           </div>
-          <div>
-            <CardTitle className="text-xl font-bold italic uppercase font-headline">Absensi <span className="text-emerald-600">Terminal</span></CardTitle>
-            <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Terminal absensi kolektif via kamera admin.</CardDescription>
+          <div className='flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg'>
+            <Volume2 size={14} className='text-emerald-600' />
+            <span className='text-[9px] font-black uppercase text-emerald-600'>Audio On</span>
           </div>
         </div>
       </CardHeader>
@@ -400,13 +418,13 @@ function TerminalCard({ status, student, onStart, progress, videoRef, canvasRef 
               <Zap size={64} className="text-emerald-500/40 animate-pulse" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter">Catat Kehadiran</h3>
+              <h3 className="text-2xl font-black italic uppercase tracking-tighter">Rekam Kehadiran</h3>
               <p className="text-xs text-muted-foreground font-medium max-w-sm mx-auto leading-relaxed">
-                {student ? `Rekam kehadiran untuk ${student.displayName} secara manual via Terminal.` : 'Pilih siswa untuk melakukan absensi melalui kamera sekolah.'}
+                {student ? `Terminal siap memindai ${student.displayName}. Data akan otomatis terkirim ke Google Sheets.` : 'Pilih siswa dari daftar untuk memulai terminal absensi otomatis.'}
               </p>
             </div>
             <Button onClick={onStart} disabled={!student} className="h-16 px-12 rounded-2xl font-bold shadow-xl shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700 hover:scale-[1.02] transition-all">
-              Absenkan Siswa Sekarang
+              Aktifkan Terminal Sekarang
             </Button>
           </div>
         )}
@@ -417,11 +435,18 @@ function TerminalCard({ status, student, onStart, progress, videoRef, canvasRef 
               <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
               <div className="absolute inset-0 pointer-events-none">
                 <div className="w-full h-1 bg-emerald-500/50 absolute top-0 animate-[scan_2s_infinite] shadow-[0_0_15px_emerald]"></div>
+                <div className="absolute inset-0 border-[20px] border-black/40"></div>
+              </div>
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
+                <span className="text-[8px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                  <div className='w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse'></div>
+                  Scanning In Progress
+                </span>
               </div>
             </div>
             <div className="space-y-4 max-w-xs mx-auto">
               <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-emerald-600">
-                <span>Memproses Data...</span>
+                <span>Memproses Identitas...</span>
                 <span>{progress}%</span>
               </div>
               <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
@@ -432,12 +457,18 @@ function TerminalCard({ status, student, onStart, progress, videoRef, canvasRef 
         )}
 
         {status === 'SUCCESS' && (
-          <div className="py-12 space-y-6 animate-reveal text-center">
-            <div className="w-24 h-24 bg-emerald-500 text-white rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl">
-              <CheckCircle2 size={48} />
+          <div className="py-12 space-y-8 animate-reveal text-center">
+            <div className="w-28 h-28 bg-emerald-500 text-white rounded-[2.5rem] flex items-center justify-center mx-auto shadow-2xl relative">
+              <div className='absolute inset-0 bg-emerald-500 rounded-[2.5rem] animate-ping opacity-20'></div>
+              <CheckCircle2 size={56} className='relative z-10' />
             </div>
-            <h3 className="text-2xl font-black italic uppercase">Absensi Tercatat</h3>
-            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Laporan Telah Dikirim ke Google Sheets</p>
+            <div className='space-y-2'>
+              <h3 className="text-3xl font-black italic uppercase tracking-tighter">Absensi Dicatat</h3>
+              <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Berhasil Terkirim ke Google Sheets</p>
+            </div>
+            <div className='bg-emerald-500/5 border border-emerald-500/10 p-4 rounded-2xl max-w-xs mx-auto'>
+              <p className='text-xs font-bold text-emerald-700 italic'>"{student?.displayName} hadir tepat waktu"</p>
+            </div>
           </div>
         )}
       </CardContent>
