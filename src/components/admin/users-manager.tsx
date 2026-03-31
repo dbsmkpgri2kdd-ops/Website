@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -116,11 +115,11 @@ export function UsersManager() {
     const Icon = roleInfo?.icon || Users;
     
     switch(role) {
-      case 'admin': return <Badge className="bg-red-500/10 text-red-600 border-none px-3 py-1 rounded-lg font-bold text-[9px]"><Icon size={10} className="mr-1" /> Admin</Badge>;
-      case 'guru': return <Badge className="bg-amber-500/10 text-amber-600 border-none px-3 py-1 rounded-lg font-bold text-[9px]"><Icon size={10} className="mr-1" /> Guru</Badge>;
-      case 'siswa': return <Badge className="bg-blue-500/10 text-blue-600 border-none px-3 py-1 rounded-lg font-bold text-[9px]"><Icon size={10} className="mr-1" /> Siswa</Badge>;
-      case 'alumni': return <Badge className="bg-slate-500/10 text-slate-600 border-none px-3 py-1 rounded-lg font-bold text-[9px]"><Icon size={10} className="mr-1" /> Alumni</Badge>;
-      default: return <Badge variant="outline">{role}</Badge>;
+      case 'admin': return <Badge className="bg-red-500/10 text-red-700 border-none px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest"><Icon size={10} className="mr-1" /> Admin</Badge>;
+      case 'guru': return <Badge className="bg-amber-500/10 text-amber-700 border-none px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest"><Icon size={10} className="mr-1" /> Guru</Badge>;
+      case 'siswa': return <Badge className="bg-blue-500/10 text-blue-700 border-none px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest"><Icon size={10} className="mr-1" /> Siswa</Badge>;
+      case 'alumni': return <Badge className="bg-slate-500/10 text-slate-700 border-none px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest"><Icon size={10} className="mr-1" /> Alumni</Badge>;
+      default: return <Badge variant="outline" className='font-black text-[9px] uppercase tracking-widest'>{role}</Badge>;
     }
   }
   
@@ -134,7 +133,7 @@ export function UsersManager() {
                         <div className="p-3 bg-primary text-white rounded-2xl shadow-lg"><ShieldCheck size={24} /></div>
                         <div>
                             <CardTitle className="text-xl font-bold">Akses administrator</CardTitle>
-                            <CardDescription>Aktifkan akses penuh ke sistem manajemen sekolah.</CardDescription>
+                            <CardDescription className='font-bold text-muted-foreground/80'>Aktifkan akses penuh ke sistem manajemen sekolah.</CardDescription>
                         </div>
                     </div>
                 </CardHeader>
@@ -142,7 +141,7 @@ export function UsersManager() {
                     <Alert className="bg-white/50 dark:bg-black/20 border-none">
                         <Sparkles className="h-4 w-4 text-primary" />
                         <AlertTitle className='font-bold text-sm'>Sistem baru terdeteksi</AlertTitle>
-                        <AlertDescription className='text-xs'>
+                        <AlertDescription className='text-xs font-bold opacity-80'>
                             Sebagai pendaftar pertama, Anda berhak mempromosikan akun Anda menjadi Administrator utama.
                         </AlertDescription>
                     </Alert>
@@ -159,17 +158,17 @@ export function UsersManager() {
                     <CardTitle className="text-xl font-bold italic uppercase flex items-center gap-3 font-headline">
                       <Users size={24} className="text-primary" /> Manajemen pengguna
                     </CardTitle>
-                    <CardDescription className="text-[10px] mt-1 uppercase font-bold tracking-widest opacity-60">Kontrol hak akses, sesi, dan sinkronisasi data profil.</CardDescription>
+                    <CardDescription className="text-[10px] mt-1 uppercase font-black tracking-widest text-muted-foreground/80">Kontrol hak akses, sesi, dan sinkronisasi data profil.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="overflow-x-auto">
                         <Table>
                         <TableHeader className="bg-muted/30">
                             <TableRow className="border-border">
-                            <TableHead className="px-8 font-bold text-[10px] uppercase opacity-40">Nama & identitas</TableHead>
-                            <TableHead className="font-bold text-[10px] uppercase opacity-40">Email akses</TableHead>
-                            <TableHead className="font-bold text-[10px] uppercase opacity-40">Role & Sesi</TableHead>
-                            <TableHead className="text-right px-8 font-bold text-[10px] uppercase opacity-40">Aksi</TableHead>
+                            <TableHead className="px-8 font-black text-[10px] uppercase opacity-60">Nama & identitas</TableHead>
+                            <TableHead className="font-black text-[10px] uppercase opacity-60">Email akses</TableHead>
+                            <TableHead className="font-black text-[10px] uppercase opacity-60">Role & Sesi</TableHead>
+                            <TableHead className="text-right px-8 font-black text-[10px] uppercase opacity-60">Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -178,23 +177,23 @@ export function UsersManager() {
                                 <TableRow key={u.id} className="border-border hover:bg-muted/20 group">
                                     <TableCell className="px-8 py-5">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary font-bold">{u.displayName?.charAt(0)}</div>
+                                            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary font-black">{u.displayName?.charAt(0)}</div>
                                             <div>
-                                                <p className="font-bold text-sm tracking-tight">{u.displayName || u.email?.split('@')[0] || '-'}</p>
+                                                <p className="font-black text-sm tracking-tight uppercase italic">{u.displayName || u.email?.split('@')[0] || '-'}</p>
                                                 {u.role === 'siswa' && u.nis && (
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <Badge variant="outline" className="text-[8px] font-bold border-primary/20 text-primary h-4 px-1.5"><Fingerprint size={8} className="mr-1" /> {u.nis}</Badge>
-                                                        <span className="text-[9px] font-bold text-muted-foreground">{u.className || 'Belum Sinkron'}</span>
+                                                        <Badge variant="outline" className="text-[8px] font-black border-primary/30 text-primary h-4 px-1.5"><Fingerprint size={8} className="mr-1" /> {u.nis}</Badge>
+                                                        <span className="text-[9px] font-black text-muted-foreground/80 uppercase tracking-widest">{u.className || 'Belum Sinkron'}</span>
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell><span className="text-xs font-medium text-muted-foreground">{u.email}</span></TableCell>
+                                    <TableCell><span className="text-xs font-bold text-muted-foreground">{u.email}</span></TableCell>
                                     <TableCell>
                                         <div className='flex flex-col gap-1.5'>
                                             {getRoleBadge(u.role)}
-                                            <div className='flex items-center gap-1.5 text-[9px] font-bold text-muted-foreground px-1'>
+                                            <div className='flex items-center gap-1.5 text-[9px] font-black text-muted-foreground/80 px-1 uppercase tracking-widest'>
                                                 <Clock size={10} />
                                                 Sesi {u.session || 'Pagi'}
                                             </div>
@@ -202,13 +201,13 @@ export function UsersManager() {
                                     </TableCell>
                                     <TableCell className="text-right px-8">
                                         <div className="flex justify-end gap-2">
-                                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/10 text-primary" onClick={() => handleEdit(u as UserProfile & { id: string })} disabled={u.id === currentUser?.uid}><Edit size={16} /></Button>
-                                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-destructive/10 text-destructive opacity-40 hover:opacity-100" onClick={() => handleDelete(u as UserProfile & { id: string })} disabled={u.id === currentUser?.uid}><Trash2 size={16} /></Button>
+                                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/10 text-primary shadow-sm" onClick={() => handleEdit(u as UserProfile & { id: string })} disabled={u.id === currentUser?.uid}><Edit size={16} /></Button>
+                                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-destructive/10 text-destructive shadow-sm" onClick={() => handleDelete(u as UserProfile & { id: string })} disabled={u.id === currentUser?.uid}><Trash2 size={16} /></Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>
                             ))}
-                            {!isLoading && users?.length === 0 && <TableRow><TableCell colSpan={4} className="text-center py-20 text-muted-foreground">Belum ada pengguna terdaftar.</TableCell></TableRow>}
+                            {!isLoading && users?.length === 0 && <TableRow><TableCell colSpan={4} className="text-center py-20 text-muted-foreground/60 font-bold uppercase tracking-widest text-[10px]">Belum ada pengguna terdaftar.</TableCell></TableRow>}
                         </TableBody>
                         </Table>
                     </div>
@@ -220,19 +219,19 @@ export function UsersManager() {
             <DialogContent className="sm:max-w-[425px] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-3xl">
                 <DialogHeader className="p-8 bg-primary/5 border-b border-border">
                     <DialogTitle className="text-xl font-bold italic uppercase font-headline">Ubah profil akses</DialogTitle>
-                    <DialogDescription className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Akun: {editingUser?.email}</DialogDescription>
+                    <DialogDescription className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Akun: {editingUser?.email}</DialogDescription>
                 </DialogHeader>
                 {editingUser && (
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="p-8 space-y-6">
                             <FormField control={form.control} name="role" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[10px] font-bold uppercase tracking-widest opacity-60">Pilih tingkat akses</FormLabel>
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest opacity-60">Pilih tingkat akses</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl><SelectTrigger className="h-12 rounded-xl bg-muted/50 border-border"><SelectValue /></SelectTrigger></FormControl>
+                                        <FormControl><SelectTrigger className="h-12 rounded-xl bg-muted/50 border-border font-bold"><SelectValue /></SelectTrigger></FormControl>
                                         <SelectContent className="rounded-xl border-border bg-card/95 backdrop-blur-xl">
                                             {USER_ROLES.map(role => (
-                                              <SelectItem key={role.value} value={role.value} className="py-3 font-bold text-[10px] uppercase">
+                                              <SelectItem key={role.value} value={role.value} className="py-3 font-black text-[10px] uppercase tracking-widest">
                                                 <div className="flex items-center gap-3"><role.icon size={14} className="text-primary" /><span>{role.label}</span></div>
                                               </SelectItem>
                                             ))}
@@ -244,19 +243,19 @@ export function UsersManager() {
 
                             <FormField control={form.control} name="session" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[10px] font-bold uppercase tracking-widest opacity-60">Penetapan sesi (Shift)</FormLabel>
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest opacity-60">Penetapan sesi (Shift)</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl><SelectTrigger className="h-12 rounded-xl bg-muted/50 border-border"><SelectValue /></SelectTrigger></FormControl>
+                                        <FormControl><SelectTrigger className="h-12 rounded-xl bg-muted/50 border-border font-bold"><SelectValue /></SelectTrigger></FormControl>
                                         <SelectContent className="rounded-xl border-border bg-card/95 backdrop-blur-xl">
-                                            <SelectItem value="Pagi" className="py-3 font-bold text-[10px] uppercase">SESI PAGI (07:00 - 13:00)</SelectItem>
-                                            <SelectItem value="Siang" className="py-3 font-bold text-[10px] uppercase">SESI SIANG (13:00 - 18:00)</SelectItem>
+                                            <SelectItem value="Pagi" className="py-3 font-black text-[10px] uppercase tracking-widest">SESI PAGI (07:00 - 13:00)</SelectItem>
+                                            <SelectItem value="Siang" className="py-3 font-black text-[10px] uppercase tracking-widest">SESI SIANG (13:00 - 18:00)</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}/>
 
-                            <Button type="submit" className="w-full h-14 rounded-xl font-bold shadow-xl shadow-primary/20">Simpan perubahan</Button>
+                            <Button type="submit" className="w-full h-14 rounded-xl font-black uppercase tracking-[0.2em] shadow-xl glow-primary">Simpan perubahan</Button>
                         </form>
                     </Form>
                 )}

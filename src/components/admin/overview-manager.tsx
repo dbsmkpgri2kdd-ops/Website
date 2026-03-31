@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -81,15 +80,15 @@ export function OverviewManager() {
     <div className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
-            <h2 className='text-3xl font-bold tracking-tight text-foreground'>Ringkasan Sistem</h2>
-            <p className='text-sm font-medium text-muted-foreground mt-1'>Pusat kendali operasional digital sekolah.</p>
+            <h2 className='text-3xl font-bold tracking-tight text-foreground font-headline'>Ringkasan Sistem</h2>
+            <p className='text-sm font-bold text-muted-foreground mt-1 uppercase tracking-widest opacity-80'>Pusat kendali operasional digital sekolah.</p>
         </div>
-        <div className='flex items-center gap-3 bg-card p-3 rounded-2xl border border-border shadow-sm'>
+        <div className='flex items-center gap-3 bg-card p-3 rounded-2xl border border-border shadow-md'>
             <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary'>
                 <Clock size={20} />
             </div>
             <div>
-                <p className='text-[10px] font-bold text-muted-foreground uppercase tracking-widest'>Waktu Sistem</p>
+                <p className='text-[10px] font-black text-muted-foreground uppercase tracking-widest'>Waktu Sistem</p>
                 <p className='text-xs font-bold text-foreground'>{mounted ? (currentTime || '--:--') : '--:--'} WIB</p>
             </div>
         </div>
@@ -97,7 +96,7 @@ export function OverviewManager() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-            <Card className="border-primary/10 bg-primary/5 rounded-[2rem] overflow-hidden relative shadow-sm">
+            <Card className="border-primary/10 bg-primary/5 rounded-[2rem] overflow-hidden relative shadow-md">
                 <CardHeader className="p-8 flex flex-row items-center justify-between border-b border-primary/5">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-primary text-white rounded-2xl shadow-md">
@@ -105,25 +104,25 @@ export function OverviewManager() {
                         </div>
                         <div>
                             <CardTitle className="text-lg font-bold text-foreground">Absensi Hari Ini</CardTitle>
-                            <CardDescription className="text-xs font-medium text-muted-foreground">Monitoring kehadiran biometrik real-time.</CardDescription>
+                            <CardDescription className="text-xs font-bold text-muted-foreground/80">Monitoring kehadiran biometrik real-time.</CardDescription>
                         </div>
                     </div>
-                    <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-none px-4 py-1 rounded-full font-bold text-[10px]">Real-time</Badge>
+                    <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-700 border-none px-4 py-1 rounded-full font-black text-[10px]">REAL-TIME</Badge>
                 </CardHeader>
                 <CardContent className="p-8">
                     <div className="grid grid-cols-2 gap-6">
-                        <div className="flex items-center gap-4 bg-card p-6 rounded-2xl border border-border">
+                        <div className="flex items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-sm">
                             <div className="p-3 bg-blue-500/10 text-blue-600 rounded-xl"><LogIn size={20} /></div>
                             <div>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Siswa Masuk</p>
-                                <p className="text-2xl font-black">{attendanceStats.masuk} <span className="text-[10px] text-muted-foreground font-medium">Siswa</span></p>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Siswa Masuk</p>
+                                <p className="text-2xl font-black">{attendanceStats.masuk} <span className="text-[10px] text-muted-foreground font-bold">Siswa</span></p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-4 bg-card p-6 rounded-2xl border border-border">
+                        <div className="flex items-center gap-4 bg-card p-6 rounded-2xl border border-border shadow-sm">
                             <div className="p-3 bg-emerald-500/10 text-emerald-600 rounded-xl"><LogOut size={20} /></div>
                             <div>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Siswa Pulang</p>
-                                <p className="text-2xl font-black">{attendanceStats.pulang} <span className="text-[10px] text-muted-foreground font-medium">Siswa</span></p>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Siswa Pulang</p>
+                                <p className="text-2xl font-black">{attendanceStats.pulang} <span className="text-[10px] text-muted-foreground font-bold">Siswa</span></p>
                             </div>
                         </div>
                     </div>
@@ -132,15 +131,15 @@ export function OverviewManager() {
 
             <div className="grid grid-cols-2 gap-6">
                 {stats.map((s, i) => (
-                <Card key={i} className="border-border bg-card rounded-[2rem] group hover:border-primary/30 transition-all duration-300 shadow-sm">
+                <Card key={i} className="border-border bg-card rounded-[2rem] group hover:border-primary/30 transition-all duration-300 shadow-md">
                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 p-6">
-                    <CardTitle className="text-[11px] font-bold text-muted-foreground">{s.title}</CardTitle>
+                    <CardTitle className="text-[11px] font-black text-muted-foreground uppercase tracking-widest">{s.title}</CardTitle>
                     <div className={cn("p-2.5 rounded-xl transition-all group-hover:scale-110", s.bg)}>
                         <s.icon size={14} className={s.color} />
                     </div>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
-                    <div className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                    <div className="text-3xl font-black tracking-tight text-foreground flex items-center gap-2">
                         {mounted ? s.count : '0'}
                         <ArrowUpRight size={16} className='text-primary opacity-0 group-hover:opacity-100 transition-opacity' />
                     </div>
@@ -151,34 +150,34 @@ export function OverviewManager() {
         </div>
 
         <div className="space-y-6">
-            <Card className="border-primary/10 bg-card rounded-[2.5rem] shadow-sm overflow-hidden relative group h-full">
+            <Card className="border-primary/10 bg-card rounded-[2.5rem] shadow-md overflow-hidden relative group h-full">
                 <CardHeader className='p-8'>
-                    <CardTitle className='text-sm font-bold flex items-center gap-2 text-foreground'>
+                    <CardTitle className='text-sm font-black flex items-center gap-2 text-foreground uppercase tracking-widest'>
                         <Sparkles size={16} className='text-primary' /> Analisis AI
                     </CardTitle>
-                    <CardDescription className='text-xs font-medium text-muted-foreground'>Wawasan cerdas v1.0</CardDescription>
+                    <CardDescription className='text-xs font-bold text-muted-foreground/80'>Wawasan cerdas v1.0</CardDescription>
                 </CardHeader>
                 <CardContent className='px-8 space-y-4'>
                     {aiReport ? (
                         <div className='space-y-4 animate-reveal'>
-                            <p className='text-xs font-medium leading-relaxed italic text-foreground/80'>"{aiReport.summary}"</p>
+                            <p className='text-xs font-bold leading-relaxed italic text-foreground/90'>"{aiReport.summary}"</p>
                             <div className='space-y-2'>
                                 {aiReport.insights.map((insight, idx) => (
                                     <div key={idx} className='flex gap-2 items-start'>
                                         <div className='w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0'></div>
-                                        <p className='text-xs font-semibold text-muted-foreground leading-tight'>{insight}</p>
+                                        <p className='text-xs font-bold text-muted-foreground leading-tight'>{insight}</p>
                                     </div>
                                 ))}
                             </div>
-                            <Button onClick={() => setAiReport(null)} variant="ghost" className="w-full text-[10px] font-bold text-muted-foreground hover:text-primary">Reset analisis</Button>
+                            <Button onClick={() => setAiReport(null)} variant="ghost" className="w-full text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary">Reset analisis</Button>
                         </div>
                     ) : (
                         <div className='text-center space-y-6 py-4'>
-                            <p className='text-xs font-medium text-muted-foreground leading-relaxed'>Gunakan kecerdasan buatan untuk menganalisis tren pendaftaran dan aktivitas terbaru.</p>
+                            <p className='text-xs font-bold text-muted-foreground/80 leading-relaxed'>Gunakan kecerdasan buatan untuk menganalisis tren pendaftaran dan aktivitas terbaru.</p>
                             <Button 
                                 onClick={handleGenerateAiReport} 
                                 disabled={isGeneratingAi}
-                                className='w-full h-12 rounded-xl font-bold text-xs shadow-sm'
+                                className='w-full h-12 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg glow-primary'
                             >
                                 {isGeneratingAi ? <LoaderCircle className='animate-spin mr-2' size={14}/> : <BrainCircuit className='mr-2' size={14}/>}
                                 {isGeneratingAi ? 'Menganalisis...' : 'Mulai analisis'}
@@ -191,9 +190,9 @@ export function OverviewManager() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 border-border bg-card rounded-[2.5rem] shadow-sm">
+        <Card className="lg:col-span-2 border-border bg-card rounded-[2.5rem] shadow-md">
           <CardHeader className="p-8 border-b border-border">
-            <CardTitle className="text-sm font-bold flex items-center gap-3 text-foreground">
+            <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-muted-foreground">
                 <UserPlus size={18} className="text-primary" /> Pendaftaran Terbaru
             </CardTitle>
           </CardHeader>
@@ -205,30 +204,30 @@ export function OverviewManager() {
                 recentPpdb && recentPpdb.length > 0 ? recentPpdb.map(app => (
                   <div key={app.id} className="flex items-center justify-between p-5 rounded-2xl hover:bg-muted transition-all">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-black">
                         {app.studentName.charAt(0)}
                       </div>
                       <div>
-                        <p className="font-bold text-sm text-foreground">{app.studentName}</p>
-                        <p className="text-xs font-medium text-muted-foreground mt-0.5">{app.chosenMajor}</p>
+                        <p className="font-black text-sm text-foreground uppercase italic tracking-tighter">{app.studentName}</p>
+                        <p className="text-[10px] font-bold text-muted-foreground/80 mt-0.5 uppercase tracking-widest">{app.chosenMajor}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] font-bold text-muted-foreground">
+                      <p className="text-[10px] font-black text-muted-foreground uppercase">
                         {app.submissionDate?.toDate ? format(app.submissionDate.toDate(), 'd MMM', { locale: idLocale }) : 'Baru'}
                       </p>
-                      <Badge variant="secondary" className="text-[9px] font-bold mt-1.5 px-2.5 py-0.5 rounded-full bg-muted text-muted-foreground border-none">{app.status || 'Pending'}</Badge>
+                      <Badge variant="secondary" className="text-[9px] font-black mt-1.5 px-2.5 py-0.5 rounded-full bg-muted text-muted-foreground border-none uppercase tracking-widest">{app.status || 'Pending'}</Badge>
                     </div>
                   </div>
-                )) : <div className="text-center py-16 opacity-40"><UserPlus size={40} className="mx-auto mb-3" /><p className="text-xs font-bold text-muted-foreground">Belum ada pendaftar baru</p></div>
+                )) : <div className="text-center py-16 opacity-20"><UserPlus size={40} className="mx-auto mb-3" /><p className="text-[10px] font-black uppercase tracking-widest">Belum ada pendaftar baru</p></div>
               )}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card rounded-[2.5rem] shadow-sm">
+        <Card className="border-border bg-card rounded-[2.5rem] shadow-md">
           <CardHeader className="p-8 border-b border-border">
-            <CardTitle className="text-sm font-bold text-foreground">Infrastruktur Sistem</CardTitle>
+            <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground">Infrastruktur Sistem</CardTitle>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             {[
@@ -242,7 +241,7 @@ export function OverviewManager() {
                         <infra.icon size={20} />
                     </div>
                     <div>
-                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{infra.label}</p>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-wider opacity-60">{infra.label}</p>
                         <p className="text-sm font-bold text-foreground">{infra.status}</p>
                     </div>
                 </div>

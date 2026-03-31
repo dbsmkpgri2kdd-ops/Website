@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -51,7 +50,7 @@ function SiswaDashboard() {
             <Icon size={16} />
         </div>
         <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground opacity-60">{label}</p>
+            <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground/80">{label}</p>
             <p className="text-xs font-bold text-foreground mt-0.5 truncate">{value || '-'}</p>
         </div>
     </div>
@@ -66,7 +65,7 @@ function SiswaDashboard() {
             </div>
             <h1 className="text-xl sm:text-2xl font-bold font-headline tracking-tight">Siswa <span className='text-primary'>Portal</span></h1>
         </div>
-        <Button onClick={handleLogout} variant="outline" className="rounded-xl h-10 px-4 font-bold text-xs border-border bg-card">
+        <Button onClick={handleLogout} variant="outline" className="rounded-xl h-10 px-4 font-bold text-xs border-border bg-card shadow-sm">
           <LogOut className="mr-2 h-4 w-4" />
           <span className="hidden sm:inline">Keluar sistem</span>
           <span className="sm:hidden">Keluar</span>
@@ -75,15 +74,15 @@ function SiswaDashboard() {
       
       <main className="max-w-7xl mx-auto space-y-8 animate-reveal">
           {profile?.role === 'siswa' && !profile.lastSyncedAt && (
-            <Alert className="bg-amber-500/10 border-amber-500/20 p-6 rounded-[2rem] shadow-sm relative overflow-hidden group">
+            <Alert className="bg-amber-500/10 border-amber-500/20 p-6 rounded-[2rem] shadow-md relative overflow-hidden group">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 w-full relative z-10">
                 <div className='flex items-start gap-4'>
                   <div className='p-3 bg-amber-500 text-white rounded-2xl animate-pulse shrink-0'>
                     <RefreshCcw className="h-6 w-6" />
                   </div>
                   <div>
-                    <AlertTitle className="text-lg font-bold text-amber-600 tracking-tight mb-1">Menunggu sinkronisasi data</AlertTitle>
-                    <AlertDescription className="text-xs font-medium text-muted-foreground leading-relaxed">
+                    <AlertTitle className="text-lg font-bold text-amber-700 tracking-tight mb-1">Menunggu sinkronisasi data</AlertTitle>
+                    <AlertDescription className="text-xs font-bold text-amber-800/80 leading-relaxed">
                       Sistem sedang mencari biodata lengkap Anda berdasarkan NIS {profile.nis} di database sekolah.
                     </AlertDescription>
                   </div>
@@ -95,7 +94,7 @@ function SiswaDashboard() {
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1 space-y-8">
                 {/* KARTU IDENTITAS DIGITAL */}
-                <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden relative shadow-sm group">
+                <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden relative shadow-md group">
                     <div className='absolute top-0 left-0 w-full h-2 bg-primary'></div>
                     <CardHeader className="p-8 text-center sm:text-left space-y-6">
                         <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -106,10 +105,10 @@ function SiswaDashboard() {
                             </Avatar>
                             <div className='flex-1 min-w-0'>
                                 <h3 className="text-2xl font-bold font-headline tracking-tight text-foreground truncate">{profile?.displayName || 'Siswa'}</h3>
-                                <p className="text-primary font-bold text-xs uppercase tracking-widest mt-1">{profile?.className || 'Belum Sinkron'}</p>
+                                <p className="text-primary font-black text-xs uppercase tracking-widest mt-1">{profile?.className || 'Belum Sinkron'}</p>
                                 <div className='flex gap-2 mt-4'>
-                                    <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-600 border-none px-3 py-1 rounded-lg text-[10px] font-bold'>Status Aktif</Badge>
-                                    <Badge variant="outline" className='border-primary/20 text-primary px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest'>Shift {profile?.session || 'Pagi'}</Badge>
+                                    <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-700 border-none px-3 py-1 rounded-lg text-[10px] font-bold'>Status Aktif</Badge>
+                                    <Badge variant="outline" className='border-primary/30 text-primary px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest'>Shift {profile?.session || 'Pagi'}</Badge>
                                 </div>
                             </div>
                         </div>
@@ -125,18 +124,18 @@ function SiswaDashboard() {
                         <div className="pt-4 border-t border-border/50">
                             <p className='text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4'>Personalia Akademik</p>
                             <div className="grid grid-cols-1 gap-3">
-                                <InfoRow icon={UserCog} label="Wali Kelas" value={profile?.homeroomTeacher} color="bg-indigo-500/10 text-indigo-600" />
-                                <InfoRow icon={HeartPulse} label="Guru BK" value={profile?.bkTeacher} color="bg-rose-500/10 text-rose-600" />
-                                <InfoRow icon={UserCheck} label="Guru Wali" value={profile?.guardianTeacher} color="bg-emerald-500/10 text-emerald-600" />
-                                <InfoRow icon={ShieldCheck} label="Kesiswaan" value={profile?.studentAffairs} color="bg-amber-500/10 text-amber-600" />
+                                <InfoRow icon={UserCog} label="Wali Kelas" value={profile?.homeroomTeacher} color="bg-indigo-500/10 text-indigo-700" />
+                                <InfoRow icon={HeartPulse} label="Guru BK" value={profile?.bkTeacher} color="bg-rose-500/10 text-rose-700" />
+                                <InfoRow icon={UserCheck} label="Guru Wali" value={profile?.guardianTeacher} color="bg-emerald-500/10 text-emerald-700" />
+                                <InfoRow icon={ShieldCheck} label="Kesiswaan" value={profile?.studentAffairs} color="bg-amber-500/10 text-amber-700" />
                             </div>
                         </div>
 
                         <div className="pt-4 border-t border-border/50">
                             <p className='text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4'>Kontak Orang Tua</p>
                             <div className="grid grid-cols-1 gap-3">
-                                <InfoRow icon={User} label="Nama Orang Tua" value={profile?.parentName} color="bg-blue-500/10 text-blue-600" />
-                                <InfoRow icon={Phone} label="WA Orang Tua" value={profile?.parentPhone} color="bg-emerald-500/10 text-emerald-600" />
+                                <InfoRow icon={User} label="Nama Orang Tua" value={profile?.parentName} color="bg-blue-500/10 text-blue-700" />
+                                <InfoRow icon={Phone} label="WA Orang Tua" value={profile?.parentPhone} color="bg-emerald-500/10 text-emerald-700" />
                             </div>
                         </div>
                     </CardContent>
@@ -149,11 +148,11 @@ function SiswaDashboard() {
             <div className="lg:col-span-2 space-y-8">
                 <Tabs defaultValue="overview" className="w-full">
                     <div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-                        <TabsList className="flex w-fit sm:grid sm:w-full grid-cols-4 h-14 bg-muted/50 p-1 rounded-2xl border border-border/50 gap-1">
-                            <TabsTrigger value="overview" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Dashboard</TabsTrigger>
-                            <TabsTrigger value="exams" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Ujian Online</TabsTrigger>
-                            <TabsTrigger value="academic" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Akademik</TabsTrigger>
-                            <TabsTrigger value="portfolio" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-sm">Karya Digital</TabsTrigger>
+                        <TabsList className="flex w-fit sm:grid sm:w-full grid-cols-4 h-14 bg-muted/50 p-1 rounded-2xl border border-border/50 gap-1 shadow-sm">
+                            <TabsTrigger value="overview" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-md">Dashboard</TabsTrigger>
+                            <TabsTrigger value="exams" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-md">Ujian Online</TabsTrigger>
+                            <TabsTrigger value="academic" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-md">Akademik</TabsTrigger>
+                            <TabsTrigger value="portfolio" className="rounded-xl font-bold text-xs transition-all px-8 sm:px-0 data-[state=active]:bg-card data-[state=active]:shadow-md">Karya Digital</TabsTrigger>
                         </TabsList>
                     </div>
 

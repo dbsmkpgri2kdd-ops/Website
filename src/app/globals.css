@@ -16,7 +16,8 @@
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Darkened muted-foreground for better contrast on white backgrounds */
+    --muted-foreground: 215.4 25% 35%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
@@ -65,11 +66,11 @@
 
 @layer utilities {
   .glass-premium {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-sm;
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-md;
   }
 
   .fresh-card {
-    @apply bg-card border border-border/60 shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-card border border-border/60 shadow-md hover:shadow-lg transition-all duration-300;
   }
   
   .tech-mesh {

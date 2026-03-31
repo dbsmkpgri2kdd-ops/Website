@@ -65,10 +65,10 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
       <div className="mb-12 text-center md:text-left space-y-3">
         <div className='flex items-center gap-2 text-primary justify-center md:justify-start'>
             <Sparkles size={14} className='animate-pulse' />
-            <span className="text-xs font-bold uppercase tracking-widest">Digital hub</span>
+            <span className="text-xs font-black uppercase tracking-widest">Digital hub</span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">{title}</h2>
-        <p className="text-muted-foreground text-sm max-w-2xl font-medium">{description}</p>
+        <h2 className="text-3xl md:text-4xl font-black text-foreground leading-tight tracking-tighter uppercase italic">{title}</h2>
+        <p className="text-muted-foreground text-sm max-w-2xl font-bold opacity-80">{description}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -86,18 +86,18 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <Card className="h-full rounded-2xl shadow-sm border-border bg-card hover:border-primary/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden border">
+                <Card className="h-full rounded-2xl shadow-md border-border bg-card hover:border-primary/30 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden border">
                   <CardHeader className="flex flex-row items-center gap-4 p-6 pb-3">
                     {renderIcon(link.icon)}
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-base font-bold text-foreground truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
-                      <div className="flex items-center text-[10px] text-muted-foreground font-medium mt-1 opacity-60">
+                      <CardTitle className="text-base font-black text-foreground truncate group-hover:text-primary transition-colors uppercase italic tracking-tight">{link.title}</CardTitle>
+                      <div className="flex items-center text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1 opacity-60">
                         Buka aplikasi <ExternalLink size={10} className="ml-1" />
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="px-6 pb-6">
-                    <p className="text-xs text-muted-foreground leading-relaxed font-medium line-clamp-2">{link.description}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed font-bold opacity-80 line-clamp-2 uppercase tracking-wide">{link.description}</p>
                   </CardContent>
                 </Card>
               </a>
