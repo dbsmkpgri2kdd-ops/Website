@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Users, UserCheck, BookOpen, GraduationCap, Factory } from 'lucide-react';
+import { Users, UserCheck, BookOpen, GraduationCap, Factory, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type StatisticsSectionProps = {
@@ -26,8 +25,8 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
             value: studentCount,
             icon: GraduationCap,
             color: 'text-primary',
-            bg: 'bg-blue-50',
-            border: 'border-blue-100'
+            bg: 'bg-primary/5',
+            border: 'border-primary/10'
         },
         {
             title: 'Tenaga Pendidik',
@@ -42,8 +41,8 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
             value: majorCount,
             icon: BookOpen,
             color: 'text-primary',
-            bg: 'bg-blue-50',
-            border: 'border-blue-100'
+            bg: 'bg-primary/5',
+            border: 'border-primary/10'
         },
         {
             title: 'Mitra Industri',
@@ -56,24 +55,37 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
     ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-        {stats.map((stat, index) => (
-            <div key={index} className="flex flex-col items-center sm:items-start p-8 rounded-[2rem] bg-white border border-slate-100 shadow-sm group hover:border-primary/20 hover:shadow-xl transition-all duration-500">
-                <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} ${stat.border} border flex items-center justify-center mb-6 transition-transform group-hover:scale-110 shadow-sm`}>
-                    <stat.icon size={28} />
-                </div>
-                <div className="space-y-1 text-center sm:text-left">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{stat.title}</p>
-                    {isLoading || !mounted ? (
-                        <Skeleton className='h-10 w-24' />
-                    ) : (
-                        <div className="text-4xl font-black text-slate-900 tracking-tighter" suppressHydrationWarning>
-                          {stat.value > 0 ? stat.value.toLocaleString('id-ID') : '0'}
-                        </div>
-                    )}
-                </div>
+    <div className="space-y-16">
+        <div className="text-center space-y-3">
+            <div className='flex items-center gap-3 text-primary justify-center'>
+                <div className='h-px w-8 bg-primary/20'></div>
+                <span className="text-[10px] font-black uppercase tracking-[0.4em]">Data Capaian</span>
+                <div className='h-px w-8 bg-primary/20'></div>
             </div>
-        ))}
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight uppercase italic">Statistik <span className='text-primary not-italic'>Kampus.</span></h2>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+                <div key={index} className="flex flex-col items-center sm:items-start p-10 rounded-[3rem] bg-white border border-slate-100 shadow-sm group hover:border-primary/20 hover:shadow-2xl transition-all duration-700 hover:-translate-y-2 relative overflow-hidden">
+                    <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} opacity-20 -mr-12 -mt-12 rounded-full transition-all group-hover:scale-150`}></div>
+                    <div className={`w-16 h-16 rounded-2xl ${stat.bg} ${stat.color} ${stat.border} border-2 flex items-center justify-center mb-8 transition-transform group-hover:scale-110 shadow-inner`}>
+                        <stat.icon size={32} />
+                    </div>
+                    <div className="space-y-2 text-center sm:text-left relative z-10">
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-primary transition-colors">{stat.title}</p>
+                        {isLoading || !mounted ? (
+                            <Skeleton className='h-12 w-24 rounded-xl' />
+                        ) : (
+                            <div className="text-5xl font-black text-slate-900 tracking-tighter font-headline" suppressHydrationWarning>
+                            {stat.value > 0 ? stat.value.toLocaleString('id-ID') : '0'}
+                            <span className='text-primary text-xl ml-1'>+</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
     </div>
   );
 };
