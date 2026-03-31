@@ -1,10 +1,11 @@
+
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type QuickLink } from '@/lib/data';
-import { Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users, ExternalLink, Sparkles } from 'lucide-react';
+import { Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users, ArrowUpRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -19,42 +20,37 @@ type QuickLinksGridProps = {
 };
 
 /**
- * Komponen Grid Layanan Digital v3.8 (Mobile-App style)
- * Dioptimalkan untuk mode PWA (3-4 kolom pada perangkat seluler).
- * Menonjolkan konsep Clean White, Royal Blue, dan Vibrant Yellow.
+ * QuickLinksGrid v4.0 - Ultra Minimalist App Grid
+ * Dioptimalkan untuk 3-4 kolom pada mobile PWA.
+ * Fokus pada font kecil, ikon compact, dan desain bersih.
  */
-export function QuickLinksGrid({ audience, title = "Layanan Digital", description = "Akses satu pintu untuk seluruh kebutuhan administratif dan akademik civitas." }: QuickLinksGridProps) {
+export function QuickLinksGrid({ audience, title, description }: QuickLinksGridProps) {
   const firestore = useFirestore();
 
   const linksQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     try {
       const ref = collection(firestore, `schools/${SCHOOL_DATA_ID}/quickLinks`);
-      return query(
-        ref, 
-        where('audience', 'in', ['all', audience])
-      );
+      return query(ref, where('audience', 'in', ['all', audience]));
     } catch (e) {
-      console.warn("QuickLinks query inactive.");
       return null;
     }
   }, [firestore, audience]);
 
   const { data: links, isLoading, error } = useCollection<QuickLink>(linksQuery);
 
-  if (error) return null;
-  if (!isLoading && (!links || links.length === 0)) return null;
+  if (error || (!isLoading && (!links || links.length === 0))) return null;
 
   const renderIcon = (iconStr: string) => {
     const isFontAwesome = iconStr.includes('fa-');
     return (
-      <div className="p-3 md:p-4 rounded-2xl bg-primary text-white shadow-xl glow-primary w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-500">
+      <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 border border-slate-100 group-hover:border-primary">
         {isFontAwesome ? (
-          <i className={cn(iconStr, "text-xl md:text-2xl")} />
+          <i className={cn(iconStr, "text-sm md:text-base")} />
         ) : (
           (() => {
             const IconComp = iconMap[iconStr] || Globe;
-            return <IconComp className="w-6 h-6 md:w-8 md:h-8" />;
+            return <IconComp className="w-4 h-4 md:w-5 md:h-5" />;
           })()
         )}
       </div>
@@ -63,51 +59,29 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
 
   return (
     <div className="animate-reveal">
-      <div className="mb-10 md:mb-16 text-center md:text-left space-y-3">
-        <div className='flex items-center gap-3 text-primary justify-center md:justify-start'>
-            <Sparkles size={14} className='animate-pulse text-accent' />
-            <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-primary">Academic Hub Services</span>
+      {(title || description) && (
+        <div className="mb-8 space-y-1">
+          {title && <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 italic">{title}</h2>}
+          {description && <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{description}</p>}
         </div>
-        <h2 className="text-3xl md:text-5xl font-black text-slate-900 leading-tight tracking-tighter uppercase italic font-headline">{title}</h2>
-        <p className="text-slate-600 text-[10px] md:text-sm max-w-2xl font-bold opacity-80 uppercase tracking-widest leading-relaxed">{description}</p>
-      </div>
+      )}
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-10">
+      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-32 md:h-56 rounded-[2rem] md:rounded-[3rem]" />
+            <Skeleton key={i} className="aspect-square rounded-2xl" />
           ))
         ) : (
-          links?.map((link) => {
-            return (
-              <a 
-                key={link.id} 
-                href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="group block"
-              >
-                <Card className="h-full rounded-[2rem] md:rounded-[3.5rem] shadow-xl md:shadow-2xl border-slate-100 bg-white hover:border-primary/20 hover:shadow-primary/10 transition-all duration-700 hover:-translate-y-2 overflow-hidden border-2">
-                  <CardHeader className="flex flex-col items-center gap-4 md:gap-6 p-4 md:p-10 pb-3 md:pb-6 text-center">
-                    {renderIcon(link.icon)}
-                    <div className="w-full">
-                      <CardTitle className="text-[9px] md:text-base font-black text-slate-900 leading-tight group-hover:text-primary transition-colors uppercase italic tracking-tighter line-clamp-2 min-h-[2em] flex items-center justify-center font-headline">
-                        {link.title}
-                      </CardTitle>
-                      <div className="hidden md:flex items-center justify-center text-[9px] text-muted-foreground font-black uppercase tracking-widest mt-3 opacity-40 group-hover:opacity-100 transition-opacity">
-                        Launch App <ExternalLink size={10} className="ml-1.5" />
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="px-10 pb-10 hidden lg:block">
-                    <p className="text-[11px] text-slate-500 leading-relaxed font-bold uppercase tracking-wider text-center line-clamp-2 opacity-80">
-                      {link.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </a>
-            )
-          })
+          links?.map((link) => (
+            <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="group block">
+              <Card className="h-full rounded-2xl border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 shadow-sm hover:shadow-lg flex flex-col items-center justify-center p-4 text-center">
+                {renderIcon(link.icon)}
+                <CardTitle className="mt-3 text-[9px] md:text-[10.5px] font-bold text-slate-600 group-hover:text-primary transition-colors tracking-tight leading-tight uppercase line-clamp-2">
+                  {link.title}
+                </CardTitle>
+              </Card>
+            </a>
+          ))
         )}
       </div>
     </div>
