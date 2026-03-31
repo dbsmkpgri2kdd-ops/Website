@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
@@ -22,7 +22,6 @@ const SectionSkeleton = () => (
   </div>
 );
 
-// Performance Optimization: Lighter initial load
 const ProfileSection = dynamic(() => import('@/components/sections/profile'), { loading: () => <SectionSkeleton /> });
 const NewsSection = dynamic(() => import('@/components/sections/news'), { loading: () => <SectionSkeleton /> });
 const PpdbSection = dynamic(() => import('@/components/sections/ppdb'), { loading: () => <SectionSkeleton /> });
@@ -217,9 +216,7 @@ export default function Home() {
         isSchoolDataLoading={isSchoolDataLoading}
       />
       <main className="flex-grow pb-24 md:pb-0" role="main">
-        <Suspense fallback={<SectionSkeleton />}>
-            {renderSection()}
-        </Suspense>
+        {renderSection()}
       </main>
       <Footer setActiveTab={handleSetTab} schoolData={schoolData} isSchoolDataLoading={isSchoolDataLoading} />
       <BottomNav

@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
 import { AIAssistant } from '@/components/ai/ai-assistant';
 import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
+import Script from 'next/script';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -45,7 +46,6 @@ export const metadata: Metadata = {
   keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "STM", "STM Kedondong", "PPDB 2026"],
   authors: [{ name: "SMKS PGRI 2 Kedondong" }],
   creator: "Digital Excellence Team",
-  manifest: '/manifest.webmanifest',
   metadataBase: new URL('https://studio-128676595-62275.web.app'),
 };
 
@@ -56,30 +56,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <head>
-        <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').then(function(reg) {
-                  reg.onupdatefound = () => {
-                    const installingWorker = reg.installing;
-                    if (installingWorker) {
-                      installingWorker.onstatechange = () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                          window.location.reload();
-                        }
-                      };
-                    }
-                  };
-                });
-              });
-            }
-          `
-        }} />
-      </head>
       <body 
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
@@ -102,6 +78,29 @@ export default function RootLayout({
             </FirebaseClientProvider>
             <Toaster />
           </ThemeProvider>
+          
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+          
+          <Script id="register-sw" strategy="afterInteractive">
+            {`
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                    reg.onupdatefound = () => {
+                      const installingWorker = reg.installing;
+                      if (installingWorker) {
+                        installingWorker.onstatechange = () => {
+                          if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload();
+                          }
+                        };
+                      }
+                    };
+                  });
+                });
+              }
+            `}
+          </Script>
       </body>
     </html>
   );
