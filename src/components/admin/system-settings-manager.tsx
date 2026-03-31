@@ -177,7 +177,6 @@ export function SystemSettingsManager() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid lg:grid-cols-2 gap-8">
-            
             <div className="space-y-8">
               <Card className="shadow-2xl border-slate-100 rounded-[3rem] bg-white overflow-hidden">
                 <CardHeader className='p-8 border-b border-slate-100'>
@@ -235,7 +234,9 @@ export function SystemSettingsManager() {
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel className="text-[9px] font-black uppercase text-slate-400">{mapping.label}</FormLabel>
-                                  <FormControl><Input {...field} className='h-9 text-[10px] font-bold rounded-lg bg-white border-slate-100' placeholder="Nama Header CSV" /></FormControl>
+                                  <FormControl>
+                                    <Input {...field} className='h-9 text-[10px] font-bold rounded-lg bg-white border-slate-100' placeholder="Nama Header CSV" />
+                                  </FormControl>
                                 </FormItem>
                               )}
                             />

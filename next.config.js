@@ -12,7 +12,13 @@ const nextConfig = {
       { protocol: 'https', hostname: 'drive.google.com' },
     ],
   },
-  // Hapus blok experimental jika menyebabkan masalah build pada mode export statis
+  // Mengizinkan asal dev khusus Cloud Workstations untuk menstabilkan koneksi
+  experimental: {
+    allowedDevOrigins: [
+      '*.cloudworkstations.dev',
+      'localhost:9002'
+    ]
+  }
 };
 
 export default nextConfig;
