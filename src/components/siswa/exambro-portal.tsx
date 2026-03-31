@@ -10,13 +10,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type Exam } from '@/lib/data';
-import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Smartphone, MonitorCheck } from 'lucide-react';
+import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Smartphone, MonitorCheck, Zap, Wifi } from 'lucide-react';
 import { ExamBroSession } from './exambro-session';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
+/**
+ * Portal Utama ExamBro v5.5.
+ * Antarmuka pemilihan ujian dengan sistem pre-check kesiapan perangkat.
+ */
 export function ExamBroPortal() {
   const firestore = useFirestore();
   const [activeTab, setActiveTab] = useState<string>('scheduled');
@@ -45,11 +49,11 @@ export function ExamBroPortal() {
   const handleStartExam = (url: string, token: string, requiredToken?: string, camRequired: boolean = false, duration: number = 60) => {
     setError(null);
     if (requiredToken && token !== requiredToken) {
-      setError('Token ujian tidak valid. Silakan hubungi pengawas.');
+      setError('Token ujian tidak valid. Silakan hubungi pengawas ruangan.');
       return;
     }
     if (!url) {
-      setError('Tautan ujian tidak ditemukan.');
+      setError('Tautan soal ujian tidak ditemukan dalam database.');
       return;
     }
     setSelectedExamUrl(url);
@@ -70,7 +74,7 @@ export function ExamBroPortal() {
   const handleScheduledStart = () => {
     const exam = exams?.find(e => e.id === selectedExamId);
     if (!exam) {
-      setError('Pilih ujian terlebih dahulu.');
+      setError('Pilih mata pelajaran ujian terlebih dahulu.');
       return;
     }
     handleStartExam(exam.url, inputToken, exam.token, exam.isCameraRequired, exam.durationMinutes || 60);
@@ -95,91 +99,97 @@ export function ExamBroPortal() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10 animate-fade-in pb-20">
+    <div className="max-w-4xl mx-auto space-y-10 animate-reveal pb-20">
       <div className="text-center space-y-3">
         <div className='flex items-center gap-3 text-primary justify-center'>
             <ShieldCheck size={24} className='animate-pulse' />
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Sesi ujian aman v5.5</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Secure Exam Session v5.5</span>
         </div>
-        <h2 className="text-4xl font-bold font-headline tracking-tighter text-foreground leading-none">Portal ExamBro</h2>
-        <p className="text-muted-foreground text-sm font-medium uppercase tracking-widest opacity-60">Sistem proteksi ujian digital terintegrasi.</p>
+        <h2 className="text-4xl font-black font-headline tracking-tighter text-foreground leading-none uppercase italic">Portal <span className='text-primary not-italic'>ExamBro.</span></h2>
+        <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest opacity-60">Sistem Proteksi Ujian Digital Berstandar Nasional.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="fresh-card p-8 rounded-[2.5rem] flex flex-col items-center text-center space-y-4 border-2 border-primary/5">
-            <MonitorCheck className="text-primary" size={40} />
+        <Card className="rounded-[2.5rem] bg-white border-slate-100 shadow-xl flex flex-col items-center text-center p-8 space-y-4 border-2 group hover:border-primary/20 transition-all">
+            <div className='p-4 bg-primary/5 text-primary rounded-2xl shadow-inner group-hover:bg-primary group-hover:text-white transition-all'>
+                <MonitorCheck size={32} />
+            </div>
             <div>
-                <h4 className="font-bold text-sm">Uji kesiapan</h4>
-                <p className="text-[10px] text-muted-foreground font-medium mt-1 leading-relaxed">Validasi sensor dan keamanan perangkat.</p>
+                <h4 className="font-black text-xs uppercase tracking-tight">Cek Kesiapan</h4>
+                <p className="text-[9px] text-muted-foreground font-bold mt-1 leading-relaxed uppercase tracking-widest opacity-60">Validasi sensor keamanan perangkat.</p>
             </div>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-10 rounded-xl font-bold text-xs border-primary/20 text-primary hover:bg-primary/5 px-6">Mulai simulasi</Button>
+                    <Button variant="outline" size="sm" className="h-10 rounded-xl font-black text-[9px] uppercase tracking-widest border-primary/20 text-primary hover:bg-primary/5 px-6">Uji Sistem</Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px] rounded-[3rem] bg-card border-border shadow-3xl p-10">
+                <DialogContent className="sm:max-w-[500px] rounded-[3rem] bg-white border-none shadow-3xl p-10">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold font-headline tracking-tight">Pemeriksaan sistem</DialogTitle>
-                        <DialogDescription className="text-xs font-medium text-muted-foreground">Validasi kompatibilitas perangkat sebelum ujian.</DialogDescription>
+                        <DialogTitle className="text-2xl font-black font-headline tracking-tight uppercase italic">Pre-Exam Check</DialogTitle>
+                        <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Memastikan kompatibilitas perangkat Anda.</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 pt-8 text-left">
                         {[
-                            { label: 'Kamera biometrik', status: 'Mengecek...', icon: Camera },
-                            { label: 'Mode layar penuh', status: 'Siap', icon: Monitor },
-                            { label: 'Logika anti-gesture', status: 'Aktif', icon: ShieldCheck },
-                            { label: 'Secure sandbox', status: 'Stabil', icon: Smartphone },
+                            { label: 'Sensor Biometrik', status: 'Mengecek...', icon: Camera },
+                            { label: 'Screen Lock Mode', status: 'Siap', icon: Monitor },
+                            { label: 'Anti-Multitasking', status: 'Aktif', icon: ShieldCheck },
+                            { label: 'Koneksi Gateway', status: 'Stabil', icon: Wifi },
                         ].map((test, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-muted border border-border">
+                            <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100">
                                 <div className="flex items-center gap-4">
-                                    <test.icon size={18} className="text-primary opacity-60" />
-                                    <span className="text-xs font-semibold text-foreground">{test.label}</span>
+                                    <test.icon size={18} className="text-primary opacity-40" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">{test.label}</span>
                                 </div>
-                                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest animate-pulse">{test.status}</span>
+                                <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest animate-pulse">{test.status}</span>
                             </div>
                         ))}
-                        <Button onClick={() => handleStartExam('https://www.google.com', '', undefined, true, 5)} className="w-full h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 mt-4">
-                            Mulai sesi simulasi
+                        <Button onClick={() => handleStartExam('https://www.google.com', '', undefined, true, 5)} className="w-full h-14 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl glow-primary mt-4">
+                            Mulai Sesi Simulasi
                         </Button>
                     </div>
                 </DialogContent>
             </Dialog>
         </Card>
         
-        <div className="p-8 rounded-[2.5rem] bg-card border border-border flex flex-col items-center text-center space-y-4 shadow-sm">
-          <Camera className="text-primary" size={40} />
+        <div className="p-8 rounded-[2.5rem] bg-white border-2 border-slate-100 flex flex-col items-center text-center space-y-4 shadow-xl">
+          <div className='p-4 bg-primary/5 text-primary rounded-2xl'>
+            <Camera size={32} />
+          </div>
           <div>
-            <h4 className="font-bold text-sm">Face tracking</h4>
-            <p className="text-[10px] text-muted-foreground font-medium mt-1 leading-relaxed">Audit integritas real-time via pengawasan biometrik.</p>
+            <h4 className="font-black text-xs uppercase tracking-tight">Face Tracking</h4>
+            <p className="text-[9px] text-muted-foreground font-bold mt-1 leading-relaxed uppercase tracking-widest opacity-60">Audit integritas real-time via pengawasan biometrik.</p>
           </div>
         </div>
 
-        <div className="p-8 rounded-[2.5rem] bg-card border border-border flex flex-col items-center text-center space-y-4 shadow-sm">
-          <Smartphone className="text-primary" size={40} />
+        <div className="p-8 rounded-[2.5rem] bg-white border-2 border-slate-100 flex flex-col items-center text-center space-y-4 shadow-xl">
+          <div className='p-4 bg-primary/5 text-primary rounded-2xl'>
+            <Smartphone size={32} />
+          </div>
           <div>
-            <h4 className="font-bold text-sm">App lockdown</h4>
-            <p className="text-[10px] text-muted-foreground font-medium mt-1 leading-relaxed">Proteksi navigasi sistem dan deteksi split-screen.</p>
+            <h4 className="font-black text-xs uppercase tracking-tight">App Lockdown</h4>
+            <p className="text-[9px] text-muted-foreground font-bold mt-1 leading-relaxed uppercase tracking-widest opacity-60">Proteksi navigasi sistem dan deteksi split-screen.</p>
           </div>
         </div>
       </div>
 
       {error && (
-        <Alert variant="destructive" className="bg-destructive/5 border-destructive/20 rounded-[2rem] p-6 animate-reveal">
+        <Alert variant="destructive" className="bg-red-500/5 border-red-500/20 rounded-[2rem] p-6 animate-reveal">
           <AlertCircle className="h-5 w-5" />
-          <AlertTitle className='font-bold text-sm ml-2'>Akses ditolak</AlertTitle>
-          <AlertDescription className='text-xs font-medium ml-2 mt-1'>{error}</AlertDescription>
+          <AlertTitle className='font-black text-[10px] uppercase tracking-widest ml-2'>Akses Ditolak</AlertTitle>
+          <AlertDescription className='text-[10px] font-bold uppercase tracking-widest ml-2 mt-1'>{error}</AlertDescription>
         </Alert>
       )}
 
-      <Card className="bg-card border-border rounded-[3rem] overflow-hidden shadow-xl">
+      <Card className="bg-white border-2 border-slate-100 rounded-[3rem] overflow-hidden shadow-2xl">
         <CardContent className="p-10">
           <Tabs defaultValue="scheduled" onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 h-14 rounded-2xl bg-muted p-1 mb-10">
-              <TabsTrigger value="scheduled" className="rounded-xl font-bold text-xs transition-all">
+            <TabsList className="grid w-full grid-cols-3 h-14 rounded-2xl bg-slate-50 p-1 mb-10 shadow-inner">
+              <TabsTrigger value="scheduled" className="rounded-xl font-black text-[9px] uppercase tracking-widest transition-all data-[state=active]:bg-white data-[state=active]:shadow-xl">
                 <Calendar className="mr-2 h-4 w-4" /> Terjadwal
               </TabsTrigger>
-              <TabsTrigger value="scan" className="rounded-xl font-bold text-xs transition-all">
+              <TabsTrigger value="scan" className="rounded-xl font-black text-[9px] uppercase tracking-widest transition-all data-[state=active]:bg-white data-[state=active]:shadow-xl">
                 <QrCode className="mr-2 h-4 w-4" /> Scan QR
               </TabsTrigger>
-              <TabsTrigger value="manual" className="rounded-xl font-bold text-xs transition-all">
+              <TabsTrigger value="manual" className="rounded-xl font-black text-[9px] uppercase tracking-widest transition-all data-[state=active]:bg-white data-[state=active]:shadow-xl">
                 <Link className="mr-2 h-4 w-4" /> Manual
               </TabsTrigger>
             </TabsList>
@@ -187,14 +197,14 @@ export function ExamBroPortal() {
             <TabsContent value="scheduled" className="space-y-8 animate-fade-in text-left">
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-2">Pilih sesi ujian</Label>
+                  <Label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2">Pilih Sesi Ujian</Label>
                   <Select onValueChange={setSelectedExamId} value={selectedExamId}>
-                    <SelectTrigger className="h-14 rounded-2xl bg-background border-border px-6 font-semibold">
-                      <SelectValue placeholder={isLoading ? "Menghubungkan..." : "Pilih mapel & kelas"} />
+                    <SelectTrigger className="h-14 rounded-2xl bg-slate-50 border-slate-100 px-6 font-bold text-xs uppercase">
+                      <SelectValue placeholder={isLoading ? "Menghubungkan..." : "Pilih Mapel & Kelas"} />
                     </SelectTrigger>
-                    <SelectContent className='rounded-2xl'>
+                    <SelectContent className='rounded-2xl border-slate-100'>
                       {exams?.map(exam => (
-                        <SelectItem key={exam.id} value={exam.id} className="py-3 font-semibold text-xs">
+                        <SelectItem key={exam.id} value={exam.id} className="py-3 font-black text-[9px] uppercase tracking-widest">
                           [{formatDateLabel(exam.date)}] {exam.subject} - {exam.class}
                         </SelectItem>
                       ))}
@@ -202,61 +212,62 @@ export function ExamBroPortal() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-2">Token keamanan</Label>
+                  <Label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2">Token Keamanan</Label>
                   <div className="relative">
                     <Input 
-                      placeholder="Masukkan token" 
+                      placeholder="Masukkan Token" 
                       value={inputToken}
                       onChange={(e) => setInputToken(e.target.value.toUpperCase())}
-                      className="h-14 rounded-2xl bg-background border-border pl-12 font-bold uppercase tracking-widest"
+                      className="h-14 rounded-2xl bg-slate-50 border-slate-100 pl-12 font-black uppercase tracking-[0.4em] text-primary"
                     />
-                    <Lock className="absolute left-4 top-4 text-primary opacity-40" size={20} />
+                    <Lock className="absolute left-4 top-4 text-primary opacity-30" size={20} />
                   </div>
                 </div>
               </div>
               <Button 
                 onClick={handleScheduledStart} 
-                className="w-full h-16 rounded-[2rem] font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all"
+                className="w-full h-16 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] shadow-xl glow-primary hover:scale-[1.01] transition-all"
                 disabled={isLoading}
               >
-                Autentikasi & mulai ujian
+                Autentikasi & Mulai Ujian
               </Button>
             </TabsContent>
 
             <TabsContent value="scan" className="py-12 text-center space-y-8 animate-fade-in">
-              <div className="w-56 h-56 mx-auto border-2 border-dashed border-primary/20 rounded-[3rem] flex items-center justify-center bg-primary/5 shadow-inner">
-                <QrCode size={80} className="text-primary opacity-20 animate-pulse" />
+              <div className="w-56 h-56 mx-auto border-4 border-dashed border-primary/10 rounded-[3rem] flex items-center justify-center bg-primary/5 shadow-inner relative overflow-hidden">
+                <div className='absolute inset-0 bg-primary/5 animate-pulse'></div>
+                <QrCode size={80} className="text-primary opacity-20 relative z-10" />
               </div>
               <div className="space-y-2">
-                <p className="font-bold text-sm">Scanner QR v2.0</p>
-                <p className="text-xs text-muted-foreground font-medium max-w-xs mx-auto">Arahkan kamera ke kode akses yang diberikan pengawas.</p>
+                <p className="font-black text-xs uppercase tracking-widest">Scanner QR v2.5</p>
+                <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest max-w-xs mx-auto opacity-60">Arahkan kamera ke kode akses yang diberikan pengawas ruangan.</p>
               </div>
-              <Button variant="outline" className="rounded-2xl border-border h-14 px-10 font-bold text-xs hover:bg-muted transition-all">Buka kamera scanner</Button>
+              <Button variant="outline" className="rounded-2xl border-slate-200 h-14 px-10 font-black text-[10px] uppercase tracking-[0.3em] hover:bg-slate-50 transition-all">Buka Kamera Scanner</Button>
             </TabsContent>
 
             <TabsContent value="manual" className="space-y-8 animate-fade-in text-left">
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-2">Tautan ujian (direct access)</Label>
+                <Label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2">Tautan Ujian (Direct Access)</Label>
                 <Input 
-                  placeholder="https://forms.gle/..." 
+                  placeholder="https://exam.smkprida.id/..." 
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
-                  className="h-14 rounded-2xl bg-background border-border px-6 font-medium text-primary"
+                  className="h-14 rounded-2xl bg-slate-50 border-slate-100 px-6 font-bold text-xs text-primary"
                 />
               </div>
               <Button 
                 onClick={handleManualStart} 
-                className="w-full h-16 rounded-[2rem] font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.01] transition-all"
+                className="w-full h-16 rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] shadow-xl glow-primary hover:scale-[1.01] transition-all"
               >
-                Mulai sesi secure
+                Mulai Sesi Secure
               </Button>
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
       
-      <p className='text-center text-[10px] font-semibold text-muted-foreground/40 uppercase tracking-widest'>
-        Digital hub enterprise v7.5 • SMKS PGRI 2 KEDONDONG
+      <p className='text-center text-[8px] font-black text-slate-300 uppercase tracking-[0.5em]'>
+        &copy; 2025 SMKS PGRI 2 KEDONDONG • OFFICIAL SECURE GATEWAY
       </p>
     </div>
   );
