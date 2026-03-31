@@ -45,16 +45,17 @@ function GuruDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-8 pb-32 sm:pb-8">
-      <header className="max-w-7xl mx-auto flex justify-between items-center mb-12">
-        <h1 className="text-2xl sm:text-3xl font-black font-headline text-primary tracking-tighter uppercase italic">Panel <span className='text-foreground'>Guru</span></h1>
+    <div className="min-h-screen bg-background p-4 sm:p-8 pb-32 sm:pb-8 tech-mesh">
+      <header className="max-w-7xl mx-auto flex justify-between items-center mb-8 sm:mb-12">
+        <h1 className="text-xl sm:text-3xl font-black font-headline text-primary tracking-tighter uppercase italic">GURU <span className='text-foreground'>PANEL</span></h1>
         <Button onClick={handleLogout} variant="outline" className="rounded-xl glass-premium border-primary/20 hover:bg-primary/10 font-black uppercase text-[9px] tracking-widest h-10 px-4">
           <LogOut className="mr-2 h-4 w-4" />
           <span className="hidden sm:inline">Logout Sistem</span>
           <span className="sm:hidden">Keluar</span>
         </Button>
       </header>
-      <main className="max-w-7xl mx-auto space-y-12 animate-fade-in">
+      
+      <main className="max-w-7xl mx-auto space-y-8 sm:space-y-12 animate-fade-in">
           <Card className="glass-premium border-primary/10 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden relative shadow-3xl">
           <div className="absolute top-0 right-0 p-8 opacity-5 hidden sm:block">
               <UserIcon size={120} />
@@ -73,21 +74,21 @@ function GuruDashboard() {
               </div>
           </CardHeader>
           <CardContent className="relative z-10 p-6 sm:p-8 pt-0 sm:pt-0">
-              <p className="text-muted-foreground text-xs sm:text-sm max-w-2xl font-medium uppercase tracking-wide">Pusat Manajemen Akademik & Evaluasi Pembelajaran Digital SMKS PGRI 2 Kedondong.</p>
+              <p className="text-muted-foreground text-[10px] sm:text-sm max-w-2xl font-medium uppercase tracking-widest opacity-60">Pusat Manajemen Akademik & Evaluasi Pembelajaran Digital SMKS PGRI 2 Kedondong.</p>
           </CardContent>
           </Card>
 
           <Tabs defaultValue="akademik" className="w-full">
             <div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
                 <TabsList className="flex w-fit sm:grid sm:w-full grid-cols-4 glass-premium p-1.5 h-14 sm:h-16 rounded-2xl border-white/5 mb-8 sm:mb-12 gap-2">
-                    <TabsTrigger value="akademik" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all px-6 sm:px-0">E-Rapor</TabsTrigger>
-                    <TabsTrigger value="ujian" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all px-6 sm:px-0">Ujian Online</TabsTrigger>
-                    <TabsTrigger value="kesiswaan" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all px-6 sm:px-0">Kesiswaan</TabsTrigger>
-                    <TabsTrigger value="hubin" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all px-6 sm:px-0">Industri</TabsTrigger>
+                    <TabsTrigger value="akademik" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all px-8 sm:px-0">E-RAPOR</TabsTrigger>
+                    <TabsTrigger value="ujian" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all px-8 sm:px-0">UJIAN ONLINE</TabsTrigger>
+                    <TabsTrigger value="kesiswaan" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all px-8 sm:px-0">KESISWAAN</TabsTrigger>
+                    <TabsTrigger value="hubin" className="rounded-xl font-black uppercase text-[10px] tracking-widest transition-all px-8 sm:px-0">INDUSTRI</TabsTrigger>
                 </TabsList>
             </div>
 
-            <TabsContent value="akademik" className="space-y-12 animate-fade-in">
+            <TabsContent value="akademik" className="space-y-8 sm:space-y-12 animate-fade-in">
                 <ERaporManager />
                 <ManajemenAbsensi />
                 <JadwalPelajaran />
@@ -98,7 +99,7 @@ function GuruDashboard() {
                 <ExamManager />
             </TabsContent>
 
-            <TabsContent value="kesiswaan" className="space-y-12 animate-fade-in">
+            <TabsContent value="kesiswaan" className="space-y-8 sm:space-y-12 animate-fade-in">
                 <AchievementsManager />
                 <PembinaanEskul />
             </TabsContent>
