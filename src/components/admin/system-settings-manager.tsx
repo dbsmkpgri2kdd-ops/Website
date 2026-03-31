@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, ShieldAlert, Layout, Database, Settings2, MapPin, Link as LinkIcon, Search, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
+import { LoaderCircle, Save, ShieldAlert, Layout, Database, Settings2, MapPin, Link as LinkIcon, Search, CheckCircle2, XCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -195,7 +195,9 @@ export function SystemSettingsManager() {
                       <FormItem>
                         <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">Link CSV Database</FormLabel>
                         <div className="flex gap-2">
-                          <FormControl><Input {...field} placeholder="https://docs.google.com/spreadsheets/.../pub?output=csv" className='h-12 rounded-xl bg-slate-50 border-slate-100 focus:border-primary'/></FormControl>
+                          <FormControl>
+                            <Input {...field} placeholder="https://docs.google.com/spreadsheets/.../pub?output=csv" className='h-12 rounded-xl bg-slate-50 border-slate-100 focus:border-primary'/>
+                          </FormControl>
                           <Button type="button" onClick={testCsvConnection} variant="outline" className="h-12 rounded-xl px-6 border-slate-200" disabled={isTestingCsv}>
                             {isTestingCsv ? <LoaderCircle className='animate-spin' /> : <Search size={18} />}
                           </Button>
@@ -323,7 +325,9 @@ export function SystemSettingsManager() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">Latitude</FormLabel>
-                          <FormControl><Input {...field} type="number" step="any" placeholder="-5.4000" className='h-12 rounded-xl bg-slate-50 border-slate-100 font-mono'/></FormItem>
+                          <FormControl>
+                            <Input {...field} type="number" step="any" placeholder="-5.4000" className='h-12 rounded-xl bg-slate-50 border-slate-100 font-mono'/>
+                          </FormControl>
                         </FormItem>
                       )}
                     />
@@ -333,7 +337,9 @@ export function SystemSettingsManager() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">Longitude</FormLabel>
-                          <FormControl><Input {...field} type="number" step="any" placeholder="105.1000" className='h-12 rounded-xl bg-slate-50 border-slate-100 font-mono'/></FormItem>
+                          <FormControl>
+                            <Input {...field} type="number" step="any" placeholder="105.1000" className='h-12 rounded-xl bg-slate-50 border-slate-100 font-mono'/>
+                          </FormControl>
                         </FormItem>
                       )}
                     />
