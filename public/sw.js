@@ -1,29 +1,38 @@
-
 /**
- * SMKS PGRI 2 KEDONDONG - PWA Service Worker v1.0
- * Essential for Android Install Notification (A2HS).
+ * PRIDA PWA Service Worker v1.0
+ * Handles auto-updates and basic caching for static assets.
  */
 
 const CACHE_NAME = 'prida-cache-v1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/manifest.webmanifest',
-  'https://picsum.photos/seed/logo/192/192',
-  'https://picsum.photos/seed/logo/512/512'
-];
 
 self.addEventListener('install', (event) => {
+  // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  // Ensure that updates to the service worker take effect immediately
+  event.waitUntil(clients.claim());
+  
+  // Clean up old caches if any
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
+          }
+        })
+      );
     })
   );
 });
 
 self.addEventListener('fetch', (event) => {
+  // Network first, fallback to cache for static export readiness
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
     })
   );
 });

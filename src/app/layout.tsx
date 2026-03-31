@@ -1,4 +1,3 @@
-
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -60,6 +59,26 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+        {/* Force PWA Service Worker Registration on Load */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                  console.log('PRIDA PWA: Service worker registered.');
+                  reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                      if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        window.location.reload(); // Refresh to get the latest version automatically
+                      }
+                    };
+                  };
+                });
+              });
+            }
+          `
+        }} />
       </head>
       <body 
         className={cn(
