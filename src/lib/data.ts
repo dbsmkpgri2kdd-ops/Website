@@ -68,7 +68,6 @@ export const NAV_MENU_DEFAULT: NavItem[] = [
             { id: 'cek-pendaftaran-ppdb', label: 'Cek Status PPDB' },
             { id: 'cek-status-kelulusan', label: 'Cek Kelulusan' },
             { id: 'dokumen-download', label: 'Pusat Unduhan' },
-            { id: 'exambro', label: 'Ujian Online (ExamBro)' },
         ],
     },
     { id: 'kontak', label: 'Kontak' },

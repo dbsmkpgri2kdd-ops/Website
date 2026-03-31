@@ -243,7 +243,7 @@ function AdminDashboard() {
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        <header className="h-16 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 shrink-0 z-30">
+        <header className="h-16 border-b border-white/5 bg-background/50 backdrop-blur-xl flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" className="lg:hidden rounded-lg h-9 w-9 bg-white/5" onClick={() => setIsSidebarOpen(true)}>
               <Menu size={20} />
@@ -253,16 +253,16 @@ function AdminDashboard() {
             </h1>
           </div>
           
-          <div className='flex items-center gap-4'>
+          <div className='flex items-center gap-2 sm:gap-4'>
             <ThemeToggle />
-            <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 relative border border-white/5 bg-white/5">
+            <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9 sm:h-10 sm:w-10 relative border border-white/5 bg-white/5">
                 <Bell size={18} />
-                <span className="absolute top-3 right-3 w-1.5 h-1.5 bg-primary rounded-full" />
+                <span className="absolute top-2.5 sm:top-3 right-2.5 sm:right-3 w-1.5 h-1.5 bg-primary rounded-full" />
             </Button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6 md:p-10 bg-slate-50/5 dark:bg-transparent">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-10 bg-slate-50/5 dark:bg-transparent">
           <div className="max-w-6xl mx-auto">
             <div className='animate-reveal'>
                 {renderContent()}
