@@ -38,8 +38,10 @@ const Header = ({
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -56,7 +58,7 @@ const Header = ({
   };
 
   const AuthButton = ({ className, showLabel = true }: { className?: string, showLabel?: boolean }) => {
-    if (isUserLoading) return <Skeleton className={cn('h-10 w-10 sm:w-24 rounded-lg', className)} />;
+    if (isUserLoading || !mounted) return <Skeleton className={cn('h-10 w-10 sm:w-24 rounded-lg', className)} />;
 
     return (
       <Button
@@ -134,7 +136,7 @@ const Header = ({
             className="flex items-center gap-3 group"
           >
             <div className="relative w-10 h-10 overflow-hidden rounded-lg bg-primary/5 p-1.5 transition-transform group-hover:scale-105">
-              {isSchoolDataLoading ? (
+              {isSchoolDataLoading || !mounted ? (
                 <Skeleton className="w-full h-full rounded-md" />
               ) : (
                 <Image
@@ -150,7 +152,7 @@ const Header = ({
             </div>
             <div className="flex flex-col items-start leading-tight hidden sm:flex text-left">
                 <span className="font-bold text-sm text-foreground tracking-tight">
-                {schoolData?.shortName || "SMKS PGRI 2"}
+                {mounted ? (schoolData?.shortName || "SMKS PGRI 2") : "SMKS PGRI 2"}
                 </span>
                 <span className='text-[10px] font-semibold text-muted-foreground'>Portal Digital</span>
             </div>

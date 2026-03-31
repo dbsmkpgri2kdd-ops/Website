@@ -22,9 +22,11 @@ const TiktokIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) => {
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number>(2024);
 
   useEffect(() => {
+    setMounted(true);
     setCurrentYear(new Date().getFullYear());
   }, []);
   
@@ -79,7 +81,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                   )}
                </div>
               <div className="font-bold text-lg tracking-tight text-foreground">
-                {isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
+                {isSchoolDataLoading || !mounted ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
               </div>
             </div>
             
@@ -87,7 +89,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 <div className="flex items-start gap-3">
                     <MapPin size={16} className="text-primary mt-1 shrink-0" />
                     <div className="text-xs leading-relaxed flex-1">
-                      {isSchoolDataLoading ? (
+                      {isSchoolDataLoading || !mounted ? (
                         <Skeleton className="h-3 w-full" />
                       ) : (
                         <div className="whitespace-pre-wrap text-foreground">{schoolData?.address}</div>
@@ -97,13 +99,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 <div className="flex items-center gap-3">
                     <Phone size={14} className="text-primary shrink-0" />
                     <div className="text-xs text-foreground">
-                      {isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
+                      {isSchoolDataLoading || !mounted ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Mail size={14} className="text-primary shrink-0" />
                     <div className="text-xs text-foreground">
-                      {isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
+                      {isSchoolDataLoading || !mounted ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
                     </div>
                 </div>
             </div>
@@ -149,7 +151,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[10px] font-medium">
           <div className="text-center md:text-left">
-            <span>© {currentYear || '2024'} {schoolData?.name || "SMKS PGRI 2 Kedondong"}.</span>
+            <span>© {mounted ? currentYear : '2024'} {mounted ? (schoolData?.name || "SMKS PGRI 2 Kedondong") : "SMKS PGRI 2 Kedondong"}.</span>
           </div>
           <div className="flex gap-6">
             <span className="hover:text-primary cursor-pointer transition-colors">Privacy Policy</span>

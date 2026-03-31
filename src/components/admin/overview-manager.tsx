@@ -17,11 +17,13 @@ import { generateAdminAnalysis, type AdminAnalysisOutput } from '@/ai/flows/admi
 export function OverviewManager() {
   const firestore = useFirestore();
   const { user } = useUser();
+  const [mounted, setMounted] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
   const [aiReport, setAiReport] = useState<AdminAnalysisOutput | null>(null);
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const updateClock = () => {
       setCurrentTime(new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
     };
@@ -68,7 +70,7 @@ export function OverviewManager() {
             </div>
             <div>
                 <p className='text-[10px] font-bold text-muted-foreground uppercase tracking-widest'>Waktu sistem</p>
-                <p className='text-xs font-bold text-foreground'>{currentTime || '--:--'} WIB</p>
+                <p className='text-xs font-bold text-foreground'>{mounted ? (currentTime || '--:--') : '--:--'} WIB</p>
             </div>
         </div>
       </div>
@@ -111,7 +113,7 @@ export function OverviewManager() {
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
                     <div className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-                        {s.count}
+                        {mounted ? s.count : '0'}
                         <ArrowUpRight size={16} className='text-primary opacity-0 group-hover:opacity-100 transition-opacity' />
                     </div>
                     </CardContent>
@@ -169,7 +171,7 @@ export function OverviewManager() {
           </CardHeader>
           <CardContent className="p-4">
             <div className="space-y-1">
-              {isPpdbLoading ? (
+              {isPpdbLoading || !mounted ? (
                 Array.from({length: 3}).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-2xl mb-2" />)
               ) : (
                 recentPpdb && recentPpdb.length > 0 ? recentPpdb.map(app => (
