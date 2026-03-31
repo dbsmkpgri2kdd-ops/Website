@@ -44,7 +44,8 @@
         "layoutSettings": { "type": "object" },
         "studentCount": { "type": "number" },
         "teacherCount": { "type": "number" },
-        "industryPartnerCount": { "type": "number" }
+        "industryPartnerCount": { "type": "number" },
+        "studentDatabaseUrl": { "type": "string", "description": "Link CSV database data lengkap siswa." }
       }
     },
     "UserProfile": {
@@ -54,7 +55,9 @@
       "properties": {
         "email": { "type": "string" },
         "displayName": { "type": "string" },
-        "role": { "type": "string", "enum": ["admin", "guru", "siswa", "alumni"] }
+        "role": { "type": "string", "enum": ["admin", "guru", "siswa", "alumni"] },
+        "nis": { "type": "string", "description": "Nomor Induk Siswa" },
+        "className": { "type": "string", "description": "Kelas Siswa" }
       }
     },
     "PortfolioItem": {

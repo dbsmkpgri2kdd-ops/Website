@@ -1,21 +1,24 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { useAuth, useUser } from '@/firebase'; 
+import { useAuth, useUser, useFirestore } from '@/firebase'; 
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, KeyRound, Mail, LogIn, UserPlus, ShieldAlert, LoaderCircle, Sparkles, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, KeyRound, Mail, LogIn, UserPlus, ShieldAlert, LoaderCircle, ArrowLeft, ShieldCheck, Fingerprint } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { getDashboardByRole } from '@/lib/utils';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [nis, setNis] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -23,6 +26,7 @@ export default function LoginPage() {
     const router = useRouter();
     const { toast } = useToast();
     const auth = useAuth();
+    const firestore = useFirestore();
     const { user, profile } = useUser();
 
     useEffect(() => {
@@ -34,7 +38,7 @@ export default function LoginPage() {
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!auth) {
+        if (!auth || !firestore) {
             toast({ title: "Sistem Offline", description: "Koneksi database tidak tersedia.", variant: "destructive" });
             return;
         }
@@ -43,8 +47,24 @@ export default function LoginPage() {
 
         try {
             if (isRegisterMode) {
-                await createUserWithEmailAndPassword(auth, email, password);
-                toast({ title: "Pendaftaran Berhasil", description: "Mengarahkan ke dashboard Anda..." });
+                if (nis.length < 5) {
+                    toast({ title: "NIS Tidak Valid", description: "Masukkan Nomor Induk Siswa yang benar.", variant: "destructive" });
+                    setIsSubmitting(false);
+                    return;
+                }
+
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // Simpan NIS awal di dokumen user untuk ditrigger sinkronisasi data oleh provider
+                await setDoc(doc(firestore, 'users', userCredential.user.uid), {
+                    email: email,
+                    nis: nis,
+                    role: 'siswa',
+                    createdAt: serverTimestamp(),
+                    displayName: email.split('@')[0]
+                }, { merge: true });
+
+                toast({ title: "Pendaftaran Berhasil", description: "Akun Anda telah dibuat. Melakukan sinkronisasi data..." });
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
                 toast({ title: "Berhasil Masuk", description: "Selamat datang kembali." });
@@ -94,6 +114,25 @@ export default function LoginPage() {
                         )}
 
                         <form onSubmit={handleAuth} className="space-y-4">
+                            {isRegisterMode && (
+                                <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+                                    <Label className="text-xs font-bold text-foreground ml-1">Nomor Induk Siswa (NIS)</Label>
+                                    <div className='relative'>
+                                        <Input 
+                                            type="text" 
+                                            placeholder="Masukkan NIS Anda" 
+                                            required 
+                                            value={nis}
+                                            onChange={(e) => setNis(e.target.value)}
+                                            className="h-11 rounded-xl bg-background border-border focus:border-primary pl-10 font-mono tracking-widest"
+                                            disabled={isSubmitting}
+                                        />
+                                        <Fingerprint className='absolute left-3.5 top-3 text-muted-foreground' size={16} />
+                                    </div>
+                                    <p className='text-[9px] text-muted-foreground ml-1'>NIS digunakan untuk memuat data profil otomatis dari sekolah.</p>
+                                </div>
+                            )}
+
                             <div className="space-y-1.5">
                                 <Label className="text-xs font-bold text-foreground ml-1">Alamat email</Label>
                                 <div className='relative'>

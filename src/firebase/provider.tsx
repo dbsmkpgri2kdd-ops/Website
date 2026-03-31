@@ -3,10 +3,10 @@
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
-import { Firestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { Firestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
-import type { UserProfile } from '@/lib/data';
+import { SCHOOL_DATA_ID, type UserProfile, type School } from '@/lib/data';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -34,6 +34,19 @@ export interface FirebaseContextState extends UserAuthState {
 
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
 
+// Utility untuk parsing CSV sederhana
+const parseCSV = (csv: string) => {
+  const lines = csv.split('\n');
+  const headers = lines[0].split(',').map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const values = line.split(',').map(v => v.trim());
+    return headers.reduce((obj: any, header, i) => {
+      obj[header] = values[i];
+      return obj;
+    }, {});
+  });
+};
+
 export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   children,
   firebaseApp,
@@ -59,13 +72,10 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         try {
           const userSnap = await getDoc(userDocRef);
           
-          // JIKA USER BARU (PROFIL BELUM ADA)
           if (!userSnap.exists()) {
-            // Cek apakah sistem sudah pernah diinisialisasi
+            // Cek inisialisasi sistem untuk admin pertama
             const initRef = doc(firestore, 'app_roles/initialized/init', 'system');
             const initSnap = await getDoc(initRef);
-            
-            // Pengguna pertama otomatis jadi Admin
             const isFirstUser = !initSnap.exists();
             const role = isFirstUser ? 'admin' : 'siswa';
 
@@ -76,13 +86,44 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               createdAt: serverTimestamp(),
             }, { merge: true });
 
-            // Jika dia admin pertama, tandai sistem sudah inisialisasi secara permanen
             if (isFirstUser) {
-              await setDoc(initRef, {
-                initialized: true,
-                initializedBy: firebaseUser.email,
-                at: serverTimestamp()
-              });
+              await setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
+            }
+          } else {
+            // LOGIKA SINKRONISASI DATA SISWA VIA CSV (Hanya untuk role siswa)
+            const userData = userSnap.data() as UserProfile;
+            
+            if (userData.role === 'siswa' && userData.nis && !userData.displayName?.includes(' ')) {
+              // Jika nama masih default/email dan ada NIS, coba sinkronisasi dari CSV
+              const schoolSnap = await getDoc(doc(firestore, 'schools', SCHOOL_DATA_ID));
+              const schoolData = schoolSnap.data() as School;
+              
+              if (schoolData?.studentDatabaseUrl) {
+                try {
+                  const response = await fetch(schoolData.studentDatabaseUrl);
+                  const csvText = await response.text();
+                  const studentData = parseCSV(csvText);
+                  
+                  // Cari baris yang cocok dengan NIS
+                  // Asumsi kolom di CSV bernama 'NIS', 'Nama', 'Kelas'
+                  const match = studentData.find(s => String(s.NIS) === String(userData.nis) || String(s.nis) === String(userData.nis));
+                  
+                  if (match) {
+                    const fullName = match.Nama || match.nama || match.NAME || match.name;
+                    const className = match.Kelas || match.kelas || match.CLASS || match.class;
+                    
+                    if (fullName) {
+                      await updateDoc(userDocRef, {
+                        displayName: fullName,
+                        className: className || 'Umum',
+                        lastSyncedAt: serverTimestamp()
+                      });
+                    }
+                  }
+                } catch (csvError) {
+                  console.error("CSV Sync Error:", csvError);
+                }
+              }
             }
           }
         } catch (e) {

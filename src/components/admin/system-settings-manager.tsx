@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -12,12 +13,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Hammer } from 'lucide-react';
+import { LoaderCircle, Save, ShieldAlert, Layout, Palette, Hammer, Database } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
   isMaintenanceMode: z.boolean().default(false),
+  studentDatabaseUrl: z.string().url('URL CSV tidak valid.').optional().or(z.literal('')),
   primaryColor: z.string().optional(),
   accentColor: z.string().optional(),
   layoutSettings: z.object({
@@ -42,6 +44,7 @@ export function SystemSettingsManager() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       isMaintenanceMode: false,
+      studentDatabaseUrl: '',
       primaryColor: '221 83% 53%',
       accentColor: '262 83% 58%',
       layoutSettings: {
@@ -60,6 +63,7 @@ export function SystemSettingsManager() {
     if (schoolData) {
       form.reset({
         isMaintenanceMode: schoolData.isMaintenanceMode || false,
+        studentDatabaseUrl: schoolData.studentDatabaseUrl || '',
         primaryColor: schoolData.primaryColor || '221 83% 53%',
         accentColor: schoolData.accentColor || '262 83% 58%',
         layoutSettings: {
@@ -93,6 +97,31 @@ export function SystemSettingsManager() {
           <div className="grid lg:grid-cols-2 gap-8">
             
             <div className="space-y-8">
+              {/* Data & Core Settings */}
+              <Card className="shadow-2xl border-none rounded-[2rem]">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className='p-2 bg-blue-500/10 text-blue-500 rounded-xl'><Database size={20} /></div>
+                    <CardTitle className='text-xl font-headline font-black uppercase italic'>Data Integration</CardTitle>
+                  </div>
+                  <CardDescription>Integrasikan database eksternal untuk sinkronisasi profil otomatis.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="studentDatabaseUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Link CSV Database Siswa</FormLabel>
+                        <FormControl><Input {...field} placeholder="https://docs.google.com/spreadsheets/.../pub?output=csv" className='h-12 rounded-xl'/></FormControl>
+                        <FormDescription className="text-[9px]">Sistem akan mencari kolom 'NIS', 'Nama', dan 'Kelas' pada file ini.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+
               {/* Appearance Settings */}
               <Card className="shadow-2xl border-none rounded-[2rem]">
                 <CardHeader>

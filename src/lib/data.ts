@@ -121,6 +121,7 @@ export interface School {
     heroSubtitle?: string;
     welcomeTitle?: string;
     ctaTitle?: string;
+    studentDatabaseUrl?: string;
     layoutSettings?: {
       showHero?: boolean;
       showPartners?: boolean;
@@ -355,6 +356,8 @@ export interface UserProfile {
     email: string;
     displayName?: string;
     role: 'admin' | 'guru' | 'siswa' | 'alumni';
+    nis?: string;
+    className?: string;
 }
 
 export interface LspCertification {
