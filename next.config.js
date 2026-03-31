@@ -12,11 +12,11 @@ const nextConfig = {
       { protocol: 'https', hostname: 'drive.google.com' },
     ],
   },
-  // Mengizinkan asal dev khusus Cloud Workstations untuk menstabilkan koneksi
   experimental: {
     allowedDevOrigins: [
       '*.cloudworkstations.dev',
-      'localhost:9002'
+      'localhost:9002',
+      'localhost:3000'
     ]
   }
 };

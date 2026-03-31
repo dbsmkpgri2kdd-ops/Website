@@ -52,7 +52,7 @@
 @layer base {
   * {
     @apply border-border selection:bg-primary/10 selection:text-primary;
-    font-style: normal !important; /* Global No-Italics Policy */
+    font-style: normal !important;
   }
   body {
     @apply bg-background text-foreground antialiased font-sans;
