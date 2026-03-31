@@ -1,20 +1,19 @@
 
 'use client';
 
-import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Camera, LoaderCircle, CheckCircle2, ShieldCheck, 
-  ScanFace, UserPlus, Users, Search, Filter, Fingerprint,
-  Smartphone, MapPin, Zap, MonitorCheck, Volume2, History,
+  ScanFace, UserPlus, Users, Search, Volume2, MonitorCheck,
   LogIn, LogOut, Info, Clock
 } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase, updateDocumentNonBlocking, addDocumentNonBlocking, useDoc } from '@/firebase';
-import { collection, query, where, orderBy, doc, serverTimestamp, getDocs, limit, Timestamp } from 'firebase/firestore';
-import { SCHOOL_DATA_ID, type UserProfile, type School, type AttendanceRecord } from '@/lib/data';
+import { collection, query, where, orderBy, doc, serverTimestamp } from 'firebase/firestore';
+import { SCHOOL_DATA_ID, type UserProfile, type School } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -37,7 +36,6 @@ export function BiometricManager() {
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const scanIntervalRef = useRef<any>(null);
 
   // Sound Feedback
   const playSuccessSound = () => {
@@ -54,7 +52,7 @@ export function BiometricManager() {
     }
   };
 
-  // 1. Fetch Users (Students & Teachers)
+  // 1. Fetch Users
   const usersQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'users'), where('role', 'in', ['siswa', 'guru']), orderBy('email'));
@@ -82,10 +80,7 @@ export function BiometricManager() {
   }, [users, selectedClass, searchQuery]);
 
   useEffect(() => {
-    return () => {
-      stopCamera();
-      if (scanIntervalRef.current) clearInterval(scanIntervalRef.current);
-    };
+    return () => stopCamera();
   }, []);
 
   const stopCamera = () => {
@@ -109,7 +104,7 @@ export function BiometricManager() {
 
   const handleEnrollment = async () => {
     if (!selectedStudentId) {
-      toast({ variant: 'destructive', title: 'Pilih Pengguna', description: 'Pilih siswa atau guru yang akan didaftarkan wajahnya.' });
+      toast({ variant: 'destructive', title: 'Pilih Pengguna', description: 'Pilih siswa atau guru yang akan didaftarkan.' });
       return;
     }
 
@@ -148,6 +143,7 @@ export function BiometricManager() {
   };
 
   const generateHash = (dataUrl: string) => {
+    // Simulasi ekstraksi biometrik sederhana menjadi hash teks
     const base = btoa(dataUrl.substring(100, 200)).substring(0, 12);
     return `ENR-${base}`;
   };
@@ -171,11 +167,11 @@ export function BiometricManager() {
         const userRef = doc(firestore, 'users', selectedStudentId);
         updateDocumentNonBlocking(userRef, { biometricSignature: currentSignature });
         playSuccessSound();
-        toast({ title: 'Registrasi Berhasil', description: `Identitas biometrik telah diperbarui.` });
+        toast({ title: 'Registrasi Berhasil', description: `Identitas biometrik telah disimpan.` });
         setStatus('SUCCESS');
         setTimeout(() => setStatus('IDLE'), 3000);
       } else {
-        // AI AUTO RECOGNITION ACROSS SESSIONS
+        // AI AUTO RECOGNITION
         const matchedUser = users?.find(u => u.biometricSignature && u.biometricSignature.substring(0, 8) === currentSignature.substring(0, 8));
 
         if (!matchedUser) {
@@ -187,16 +183,14 @@ export function BiometricManager() {
 
         setRecognizedStudent(matchedUser);
 
-        // SMART SESSION DIRECTION LOGIC
+        // SMART SHIFT LOGIC
         const now = new Date();
         const currentHour = now.getHours();
         let type: 'Masuk' | 'Pulang' = 'Masuk';
 
         if (matchedUser.session === 'Siang') {
-            // Sesi Siang: Masuk 11:00-14:59, Pulang >= 15:00
             type = currentHour >= 15 ? 'Pulang' : 'Masuk';
         } else {
-            // Sesi Pagi (Default): Masuk < 11:00, Pulang >= 11:00
             type = currentHour >= 11 ? 'Pulang' : 'Masuk';
         }
         
@@ -207,13 +201,13 @@ export function BiometricManager() {
           studentId: matchedUser.id,
           studentName: matchedUser.displayName || matchedUser.email,
           studentNis: matchedUser.nis || 'N/A',
-          studentClass: matchedUser.className || 'Staff',
+          studentClass: matchedUser.className || 'Staf',
           date: serverTimestamp(),
           status: 'Hadir',
           notes: `Absensi ${type} via Terminal (Shift ${matchedUser.session || 'Pagi'})`,
           biometricCode: currentSignature,
           metadata: { 
-            type: 'TERMINAL_SESSION_AUTO',
+            type: 'TERMINAL_AI_AUTO',
             direction: type,
             session: matchedUser.session || 'Pagi'
           }
@@ -235,7 +229,7 @@ export function BiometricManager() {
         setTimeout(() => {
           setRecognizedStudent(null);
           setAttendanceType(null);
-          activateTerminal();
+          activateTerminal(); // Reset loop terminal
         }, 4000);
       }
     } catch (e) {
@@ -249,8 +243,8 @@ export function BiometricManager() {
     <div className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
-            <h2 className='text-3xl font-black italic tracking-tighter text-foreground font-headline uppercase'>Pusat <span className='text-primary'>Biometrik v3.5</span></h2>
-            <p className='text-sm font-medium text-muted-foreground mt-1'>Terminal pengenalan wajah cerdas dengan dukungan shift pagi/siang.</p>
+            <h2 className='text-3xl font-black italic tracking-tighter text-foreground font-headline uppercase'>Pusat <span className='text-primary'>Biometrik v3.8</span></h2>
+            <p className='text-sm font-medium text-muted-foreground mt-1'>Terminal pengenalan wajah cerdas dengan dukungan shift otomatis.</p>
         </div>
         <div className='flex items-center gap-3 bg-emerald-500/10 text-emerald-600 p-3 rounded-2xl border border-emerald-500/20'>
             <div className='w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_emerald]'></div>
@@ -318,7 +312,7 @@ export function BiometricManager() {
                             <p className="text-xs font-bold truncate max-w-[120px]">{u.displayName || u.email}</p>
                             <div className='flex items-center gap-2 mt-0.5'>
                                 <p className={cn("text-[8px] font-black uppercase", selectedStudentId === u.id ? "text-white/60" : "text-muted-foreground")}>
-                                    {u.className || 'STAFF'}
+                                    {u.className || 'STAF'}
                                 </p>
                                 <Badge variant="outline" className={cn("h-3.5 text-[7px] font-black px-1.5", selectedStudentId === u.id ? "border-white/20 text-white" : "border-primary/20 text-primary")}>
                                     SHIFT {u.session || 'PAGI'}
@@ -377,8 +371,8 @@ function EnrollmentCard({ status, student, onStart, progress, videoRef, canvasRe
             <UserPlus size={24} />
           </div>
           <div>
-            <CardTitle className="text-xl font-bold italic uppercase font-headline">Pendaftaran <span className="text-primary">Identitas</span></CardTitle>
-            <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Registrasi wajah untuk shift {student?.session || 'Pagi'}.</CardDescription>
+            <CardTitle className="text-xl font-bold italic uppercase font-headline">Pendaftaran <span className="text-primary">Wajah</span></CardTitle>
+            <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Registrasi identitas biometrik untuk shift {student?.session || 'Pagi'}.</CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -393,7 +387,7 @@ function EnrollmentCard({ status, student, onStart, progress, videoRef, canvasRe
             <div className="space-y-2">
               <h3 className="text-2xl font-black italic uppercase tracking-tighter">Ekstraksi Digital</h3>
               <p className="text-xs text-muted-foreground font-medium max-w-sm mx-auto leading-relaxed">
-                {student ? `Mendaftarkan wajah ${student.displayName}. Pastikan pencahayaan cukup untuk akurasi shift ${student.session || 'Pagi'}.` : 'Pilih pengguna dari daftar sebelah kiri untuk memulai registrasi.'}
+                {student ? `Mendaftarkan wajah ${student.displayName}. Pastikan pencahayaan cukup untuk akurasi sinkronisasi.` : 'Pilih pengguna dari daftar sebelah kiri untuk mendaftarkan wajah.'}
               </p>
             </div>
             <Button onClick={onStart} disabled={!student} className="h-16 px-12 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all">
@@ -430,7 +424,7 @@ function EnrollmentCard({ status, student, onStart, progress, videoRef, canvasRe
               <CheckCircle2 size={48} className='relative z-10' />
             </div>
             <h3 className="text-2xl font-black italic uppercase">Registrasi Berhasil</h3>
-            <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Wajah Telah Terikat Ke Sesi {student?.session || 'Pagi'}</p>
+            <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Wajah Telah Terdaftar Ke Sesi {student?.session || 'Pagi'}</p>
           </div>
         )}
       </CardContent>
@@ -448,13 +442,13 @@ function TerminalCard({ status, recognizedStudent, attendanceType, onStart, prog
               <MonitorCheck size={24} />
             </div>
             <div>
-              <CardTitle className="text-xl font-bold italic uppercase font-headline">Pusat <span className="text-emerald-600">Terminal</span></CardTitle>
-              <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Sistem deteksi shift otomatis.</CardDescription>
+              <CardTitle className="text-xl font-bold italic uppercase font-headline">Terminal <span className="text-emerald-600">Otomatis</span></CardTitle>
+              <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Sistem deteksi wajah & shift cerdas.</CardDescription>
             </div>
           </div>
           <div className='flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg'>
             <Volume2 size={14} className='text-emerald-600' />
-            <span className='text-[9px] font-black uppercase text-emerald-600'>Audio Active</span>
+            <span className='text-[9px] font-black uppercase text-emerald-600'>Audio Aktif</span>
           </div>
         </div>
       </CardHeader>
@@ -467,9 +461,9 @@ function TerminalCard({ status, recognizedStudent, attendanceType, onStart, prog
               <ScanFace size={64} className="text-emerald-500/40 animate-pulse" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter font-headline leading-none">Aktifkan Sensor</h3>
+              <h3 className="text-2xl font-black italic uppercase tracking-tighter font-headline leading-none">Aktifkan Terminal</h3>
               <p className="text-xs text-muted-foreground font-medium max-w-sm mx-auto leading-relaxed">
-                Terminal mengenali civitas dan mendeteksi arah Masuk/Pulang sesuai sesi Pagi atau Siang secara otomatis.
+                Terminal mengenali wajah secara otomatis dan mencatat arah Masuk/Pulang sesuai sesi operasional.
               </p>
             </div>
             <Button onClick={onStart} className="h-16 px-12 rounded-2xl font-bold shadow-xl shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700 hover:scale-[1.02] transition-all">
@@ -495,7 +489,7 @@ function TerminalCard({ status, recognizedStudent, attendanceType, onStart, prog
             </div>
             <div className="space-y-4 max-w-xs mx-auto">
               <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-emerald-600">
-                <span>Memindai Database...</span>
+                <span>Memindai Wajah...</span>
                 <span>{progress}%</span>
               </div>
               <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
@@ -516,7 +510,7 @@ function TerminalCard({ status, recognizedStudent, attendanceType, onStart, prog
                 <h3 className="text-3xl font-black italic uppercase tracking-tighter font-headline leading-none">{recognizedStudent.displayName}</h3>
                 <div className='flex items-center justify-center gap-2'>
                     <Badge variant="outline" className='bg-white/5 border-emerald-500/20 text-emerald-600 px-3 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest'>
-                        SESI {recognizedStudent.session || 'PAGI'}
+                        {recognizedStudent.className || 'STAF'} - SESI {recognizedStudent.session || 'PAGI'}
                     </Badge>
                 </div>
               </div>
@@ -526,7 +520,7 @@ function TerminalCard({ status, recognizedStudent, attendanceType, onStart, prog
                   Absensi {attendanceType} Berhasil
                 </Badge>
               </div>
-              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mt-4">Sinkronisasi Cloud & Sheets Selesai</p>
+              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mt-4">Sinkronisasi Cloud Selesai</p>
             </div>
           </div>
         )}
@@ -538,7 +532,7 @@ function TerminalCard({ status, recognizedStudent, attendanceType, onStart, prog
             </div>
             <div className='space-y-2'>
               <h3 className="text-3xl font-black italic uppercase tracking-tighter text-red-500 font-headline">Wajah Tidak Terdaftar</h3>
-              <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest max-w-xs mx-auto">Pengguna belum terdaftar di sistem. Harap hubungi Admin untuk registrasi wajah.</p>
+              <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest max-w-xs mx-auto">Pengguna belum terdaftar di sistem. Harap hubungi Admin untuk registrasi biometrik.</p>
             </div>
             <div className='pt-4'>
                 <Button variant="ghost" onClick={onStart} className='text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground'>Scan Ulang</Button>

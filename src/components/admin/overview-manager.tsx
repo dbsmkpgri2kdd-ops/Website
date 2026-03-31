@@ -1,13 +1,14 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
-import { collection, query, limit, orderBy } from 'firebase/firestore';
-import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication } from '@/lib/data';
-import { Newspaper, UserPlus, ShieldCheck, Activity, Clock, ArrowUpRight, Rocket, BrainCircuit, Sparkles, LoaderCircle, Database, HardDrive, BarChart3 } from 'lucide-react';
+import { collection, query, limit, orderBy, where } from 'firebase/firestore';
+import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication, type AttendanceRecord } from '@/lib/data';
+import { Newspaper, UserPlus, ShieldCheck, Activity, Clock, ArrowUpRight, Rocket, BrainCircuit, Sparkles, LoaderCircle, Database, HardDrive, BarChart3, UserCheck, LogIn, LogOut } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { format } from 'date-fns';
+import { format, startOfDay } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,9 +35,28 @@ export function OverviewManager() {
 
   const newsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, `schools/${SCHOOL_DATA_ID}/newsArticles`), limit(5), orderBy('datePublished', 'desc')) : null, [firestore]);
   const ppdbQuery = useMemoFirebase(() => firestore ? query(collection(firestore, `schools/${SCHOOL_DATA_ID}/studentApplications`), limit(5), orderBy('submissionDate', 'desc')) : null, [firestore]);
+  
+  // Today's Attendance Tracking
+  const todayAttendanceQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(
+        collection(firestore, `schools/${SCHOOL_DATA_ID}/attendance`),
+        where('date', '>=', startOfDay(new Date())),
+        orderBy('date', 'desc')
+    );
+  }, [firestore]);
 
   const { data: recentNews, isLoading: isNewsLoading } = useCollection<NewsArticle>(newsQuery);
   const { data: recentPpdb, isLoading: isPpdbLoading } = useCollection<StudentApplication>(ppdbQuery);
+  const { data: todayAttendance, isLoading: isAttendanceLoading } = useCollection<AttendanceRecord>(todayAttendanceQuery);
+
+  const attendanceStats = useMemo(() => {
+    if (!todayAttendance) return { masuk: 0, pulang: 0 };
+    return {
+        masuk: todayAttendance.filter(a => a.notes?.includes('Masuk') || a.metadata?.direction === 'Masuk').length,
+        pulang: todayAttendance.filter(a => a.notes?.includes('Pulang') || a.metadata?.direction === 'Pulang').length,
+    };
+  }, [todayAttendance]);
 
   const handleGenerateAiReport = async () => {
     setIsGeneratingAi(true);
@@ -51,17 +71,17 @@ export function OverviewManager() {
   };
 
   const stats = [
-    { title: 'Publikasi aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-blue-600', bg: 'bg-blue-500/10' },
-    { title: 'Pendaftar baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-indigo-600', bg: 'bg-indigo-500/10' },
-    { title: 'Status keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
-    { title: 'Koneksi jaringan', count: 'Stabil', icon: Activity, color: 'text-amber-600', bg: 'bg-amber-500/10' },
+    { title: 'Publikasi Aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-blue-600', bg: 'bg-blue-500/10' },
+    { title: 'Pendaftar Baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-indigo-600', bg: 'bg-indigo-500/10' },
+    { title: 'Status Keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
+    { title: 'Koneksi Jaringan', count: 'Stabil', icon: Activity, color: 'text-amber-600', bg: 'bg-amber-500/10' },
   ];
 
   return (
     <div className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
-            <h2 className='text-3xl font-bold tracking-tight text-foreground'>Ringkasan sistem</h2>
+            <h2 className='text-3xl font-bold tracking-tight text-foreground'>Ringkasan Sistem</h2>
             <p className='text-sm font-medium text-muted-foreground mt-1'>Pusat kendali operasional digital sekolah.</p>
         </div>
         <div className='flex items-center gap-3 bg-card p-3 rounded-2xl border border-border shadow-sm'>
@@ -69,7 +89,7 @@ export function OverviewManager() {
                 <Clock size={20} />
             </div>
             <div>
-                <p className='text-[10px] font-bold text-muted-foreground uppercase tracking-widest'>Waktu sistem</p>
+                <p className='text-[10px] font-bold text-muted-foreground uppercase tracking-widest'>Waktu Sistem</p>
                 <p className='text-xs font-bold text-foreground'>{mounted ? (currentTime || '--:--') : '--:--'} WIB</p>
             </div>
         </div>
@@ -77,27 +97,35 @@ export function OverviewManager() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-            <Card className="border-emerald-500/20 bg-emerald-500/5 rounded-[2rem] overflow-hidden relative shadow-sm">
-                <CardHeader className="p-8 flex flex-row items-center justify-between">
+            <Card className="border-primary/10 bg-primary/5 rounded-[2rem] overflow-hidden relative shadow-sm">
+                <CardHeader className="p-8 flex flex-row items-center justify-between border-b border-primary/5">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-emerald-500 text-white rounded-2xl shadow-md">
-                            <Rocket size={20} />
+                        <div className="p-3 bg-primary text-white rounded-2xl shadow-md">
+                            <UserCheck size={20} />
                         </div>
                         <div>
-                            <CardTitle className="text-lg font-bold text-foreground">Portal siap digunakan</CardTitle>
-                            <CardDescription className="text-xs font-medium text-emerald-600">Semua layanan berjalan dengan optimal.</CardDescription>
+                            <CardTitle className="text-lg font-bold text-foreground">Absensi Hari Ini</CardTitle>
+                            <CardDescription className="text-xs font-medium text-muted-foreground">Monitoring kehadiran biometrik real-time.</CardDescription>
                         </div>
                     </div>
-                    <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-none px-4 py-1 rounded-full font-bold text-[10px]">Optimal</Badge>
+                    <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-none px-4 py-1 rounded-full font-bold text-[10px]">Real-time</Badge>
                 </CardHeader>
-                <CardContent className="px-8 pb-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {['Framework', 'Security', 'Database', 'Assets'].map((item) => (
-                            <div key={item} className="flex items-center gap-2 p-3 rounded-xl bg-card border border-border shadow-sm">
-                                <ShieldCheck size={14} className="text-emerald-500" />
-                                <span className="text-[11px] font-bold text-foreground">{item}</span>
+                <CardContent className="p-8">
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="flex items-center gap-4 bg-card p-6 rounded-2xl border border-border">
+                            <div className="p-3 bg-blue-500/10 text-blue-600 rounded-xl"><LogIn size={20} /></div>
+                            <div>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Siswa Masuk</p>
+                                <p className="text-2xl font-black">{attendanceStats.masuk} <span className="text-[10px] text-muted-foreground font-medium">Siswa</span></p>
                             </div>
-                        ))}
+                        </div>
+                        <div className="flex items-center gap-4 bg-card p-6 rounded-2xl border border-border">
+                            <div className="p-3 bg-emerald-500/10 text-emerald-600 rounded-xl"><LogOut size={20} /></div>
+                            <div>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Siswa Pulang</p>
+                                <p className="text-2xl font-black">{attendanceStats.pulang} <span className="text-[10px] text-muted-foreground font-medium">Siswa</span></p>
+                            </div>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -166,7 +194,7 @@ export function OverviewManager() {
         <Card className="lg:col-span-2 border-border bg-card rounded-[2.5rem] shadow-sm">
           <CardHeader className="p-8 border-b border-border">
             <CardTitle className="text-sm font-bold flex items-center gap-3 text-foreground">
-                <UserPlus size={18} className="text-primary" /> Pendaftaran terbaru
+                <UserPlus size={18} className="text-primary" /> Pendaftaran Terbaru
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4">
@@ -200,14 +228,14 @@ export function OverviewManager() {
 
         <Card className="border-border bg-card rounded-[2.5rem] shadow-sm">
           <CardHeader className="p-8 border-b border-border">
-            <CardTitle className="text-sm font-bold text-foreground">Infrastruktur sistem</CardTitle>
+            <CardTitle className="text-sm font-bold text-foreground">Infrastruktur Sistem</CardTitle>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             {[
-                { icon: Database, label: 'Basis data', status: 'Sinkronisasi', color: 'text-blue-600', bg: 'bg-blue-500/10' },
+                { icon: Database, label: 'Basis Data', status: 'Sinkronisasi', color: 'text-blue-600', bg: 'bg-blue-500/10' },
                 { icon: ShieldCheck, label: 'Keamanan', status: 'Terenkripsi', color: 'text-indigo-600', bg: 'bg-indigo-500/10' },
                 { icon: HardDrive, label: 'Penyimpanan', status: 'Optimal', color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
-                { icon: BarChart3, label: 'Lalu lintas', status: 'Normal', color: 'text-amber-600', bg: 'bg-amber-500/10' },
+                { icon: BarChart3, label: 'Lalu Lintas', status: 'Normal', color: 'text-amber-600', bg: 'bg-amber-500/10' },
             ].map((infra, idx) => (
                 <div key={idx} className="flex items-center gap-4 group">
                     <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform", infra.bg, infra.color)}>

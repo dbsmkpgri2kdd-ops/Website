@@ -3,7 +3,7 @@
 
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles, Fingerprint, MapPin, Venus, Mars, Calendar, CreditCard, RefreshCcw, Clock, UserCog, HeartPulse, User } from 'lucide-react';
+import { LogOut, Sparkles, Fingerprint, MapPin, Calendar, RefreshCcw, UserCog, HeartPulse, User, Phone, ShieldCheck, GraduationCap, BookOpen, UserCheck } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -114,16 +114,29 @@ function SiswaDashboard() {
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent className="px-8 pb-8 space-y-3">
-                        <InfoRow icon={Fingerprint} label="Nomor Induk Siswa (NIS)" value={profile?.nis} />
-                        <InfoRow icon={MapPin} label="Alamat terdaftar" value={profile?.address} />
+                    <CardContent className="px-8 pb-8 space-y-6">
+                        <div className='space-y-3'>
+                            <p className='text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-2'>Identitas Utama</p>
+                            <InfoRow icon={Fingerprint} label="Nomor Induk Siswa (NIS)" value={profile?.nis} />
+                            <InfoRow icon={MapPin} label="Alamat Terdaftar" value={profile?.address} />
+                            <InfoRow icon={Phone} label="Nomor Handphone" value={profile?.phone} />
+                        </div>
                         
-                        <div className="pt-4 mt-2 border-t border-border/50">
-                            <p className='text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4'>Informasi Akademik</p>
+                        <div className="pt-4 border-t border-border/50">
+                            <p className='text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4'>Personalia Akademik</p>
                             <div className="grid grid-cols-1 gap-3">
                                 <InfoRow icon={UserCog} label="Wali Kelas" value={profile?.homeroomTeacher} color="bg-indigo-500/10 text-indigo-600" />
                                 <InfoRow icon={HeartPulse} label="Guru BK" value={profile?.bkTeacher} color="bg-rose-500/10 text-rose-600" />
-                                <InfoRow icon={User} label="Orang Tua" value={profile?.parentName} color="bg-amber-500/10 text-amber-600" />
+                                <InfoRow icon={UserCheck} label="Guru Wali" value={profile?.guardianTeacher} color="bg-emerald-500/10 text-emerald-600" />
+                                <InfoRow icon={ShieldCheck} label="Kesiswaan" value={profile?.studentAffairs} color="bg-amber-500/10 text-amber-600" />
+                            </div>
+                        </div>
+
+                        <div className="pt-4 border-t border-border/50">
+                            <p className='text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4'>Kontak Orang Tua</p>
+                            <div className="grid grid-cols-1 gap-3">
+                                <InfoRow icon={User} label="Nama Orang Tua" value={profile?.parentName} color="bg-blue-500/10 text-blue-600" />
+                                <InfoRow icon={Phone} label="WA Orang Tua" value={profile?.parentPhone} color="bg-emerald-500/10 text-emerald-600" />
                             </div>
                         </div>
                     </CardContent>
