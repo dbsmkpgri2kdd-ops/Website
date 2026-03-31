@@ -69,18 +69,18 @@ export function OverviewManager() {
   };
 
   const stats = [
-    { title: 'Publikasi Aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-blue-600', bg: 'bg-blue-500/10' },
-    { title: 'Pendaftar Baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-indigo-600', bg: 'bg-indigo-500/10' },
+    { title: 'Publikasi Aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-primary', bg: 'bg-primary/5' },
+    { title: 'Pendaftar Baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-primary', bg: 'bg-primary/5' },
     { title: 'Status Keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
-    { title: 'Koneksi Jaringan', count: 'Stabil', icon: Activity, color: 'text-amber-600', bg: 'bg-amber-500/10' },
+    { title: 'Koneksi Jaringan', count: 'Stabil', icon: Activity, color: 'text-accent', bg: 'bg-accent/10' },
   ];
 
   return (
     <div className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
-            <h2 className='text-3xl font-bold tracking-tight text-slate-900 font-headline uppercase'>Ringkasan <span className="text-primary">Sistem.</span></h2>
-            <p className='text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest opacity-80'>Pusat kendali operasional digital sekolah.</p>
+            <h2 className='text-3xl font-bold tracking-tight text-slate-900 font-headline uppercase'>Ringkasan Sistem</h2>
+            <p className='text-xs font-bold text-slate-500 mt-1 uppercase tracking-widest opacity-80'>Pusat kendali operasional digital sekolah.</p>
         </div>
         <div className='flex items-center gap-3 bg-card p-3 rounded-2xl border border-slate-100 shadow-md'>
             <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary'>
@@ -111,7 +111,7 @@ export function OverviewManager() {
                 <CardContent className="p-8">
                     <div className="grid grid-cols-2 gap-6">
                         <div className="flex items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                            <div className="p-3 bg-blue-500/10 text-blue-600 rounded-xl"><LogIn size={20} /></div>
+                            <div className="p-3 bg-primary/5 text-primary rounded-xl"><LogIn size={20} /></div>
                             <div>
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Siswa Masuk</p>
                                 <p className="text-2xl font-black text-slate-900">{attendanceStats.masuk} <span className="text-[10px] text-slate-400 font-bold">Siswa</span></p>
@@ -176,7 +176,8 @@ export function OverviewManager() {
                             <Button 
                                 onClick={handleGenerateAiReport} 
                                 disabled={isGeneratingAi}
-                                className='w-full h-12 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg glow-primary'
+                                variant="accent"
+                                className='w-full h-12 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg glow-accent'
                             >
                                 {isGeneratingAi ? <LoaderCircle className='animate-spin mr-2' size={14}/> : <BrainCircuit className='mr-2' size={14}/>}
                                 {isGeneratingAi ? 'Menganalisis...' : 'Mulai analisis'}
@@ -230,10 +231,10 @@ export function OverviewManager() {
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             {[
-                { icon: Database, label: 'Basis Data', status: 'Sinkronisasi', color: 'text-blue-600', bg: 'bg-blue-500/10' },
-                { icon: ShieldCheck, label: 'Keamanan', status: 'Terenkripsi', color: 'text-indigo-600', bg: 'bg-indigo-500/10' },
+                { icon: Database, label: 'Basis Data', status: 'Sinkronisasi', color: 'text-primary', bg: 'bg-primary/5' },
+                { icon: ShieldCheck, label: 'Keamanan', status: 'Terenkripsi', color: 'text-primary', bg: 'bg-primary/5' },
                 { icon: HardDrive, label: 'Penyimpanan', status: 'Optimal', color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
-                { icon: BarChart3, label: 'Lalu Lintas', status: 'Normal', color: 'text-amber-600', bg: 'bg-amber-500/10' },
+                { icon: BarChart3, label: 'Lalu Lintas', status: 'Normal', color: 'text-accent', bg: 'bg-accent/10' },
             ].map((infra, idx) => (
                 <div key={idx} className="flex items-center gap-4 group">
                     <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform", infra.bg, infra.color)}>
