@@ -79,61 +79,58 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen bg-white flex items-center justify-center p-6 relative overflow-hidden tech-mesh">
-            <div className='absolute top-0 left-0 w-full h-full bg-primary/5 opacity-40 pointer-events-none'></div>
-            
             <div className="max-w-md w-full space-y-6 animate-reveal relative z-10">
                 <button 
                     onClick={() => router.push('/')}
-                    className="flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors mb-4 group"
+                    className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors mb-4 group uppercase tracking-widest"
                 >
-                    <ArrowLeft size={16} className='group-hover:-translate-x-1 transition-transform'/> Kembali ke beranda
+                    <ArrowLeft size={14} className='group-hover:-translate-x-1 transition-transform'/> Kembali ke beranda
                 </button>
 
-                <Card className="border-slate-100 shadow-2xl rounded-[3rem] overflow-hidden bg-white/90 backdrop-blur-md border-2">
-                    <CardHeader className="text-center pt-12 pb-6">
-                        <div className="mb-6 mx-auto w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shadow-inner relative">
-                            <ShieldCheck size={32} />
-                            <Sparkles size={14} className='absolute -top-1 -right-1 text-accent animate-pulse' />
+                <Card className="border-slate-100 shadow-xl rounded-[2.5rem] overflow-hidden bg-white/95 backdrop-blur-md border-2">
+                    <CardHeader className="text-center pt-10 pb-6">
+                        <div className="mb-6 mx-auto w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shadow-inner relative">
+                            <ShieldCheck size={28} />
+                            <Sparkles size={12} className='absolute -top-1 -right-1 text-accent' />
                         </div>
-                        <CardTitle className="text-3xl font-black tracking-tight text-slate-900 uppercase italic">
-                            {isRegisterMode ? 'Buat Akun' : 'Masuk Portal'}
+                        <CardTitle className="text-2xl font-bold tracking-tighter text-slate-900 uppercase">
+                            {isRegisterMode ? 'Buat Akun' : 'Portal Masuk'}
                         </CardTitle>
-                        <CardDescription className="text-sm font-medium text-slate-500 uppercase tracking-widest mt-2">
+                        <CardDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
                             SMKS PGRI 2 KEDONDONG
                         </CardDescription>
                     </CardHeader>
                     
-                    <CardContent className="px-10 pb-12">
+                    <CardContent className="px-8 pb-10">
                         {!auth && (
-                            <Alert variant="destructive" className="mb-6 rounded-2xl">
+                            <Alert variant="destructive" className="mb-6 rounded-xl">
                                 <ShieldAlert className="h-4 w-4" />
-                                <AlertTitle className='font-bold text-xs'>Kesalahan konfigurasi</AlertTitle>
-                                <AlertDescription className="text-[11px]">Layanan autentikasi belum siap.</AlertDescription>
+                                <AlertTitle className='font-bold text-[10px] uppercase'>Konfigurasi</AlertTitle>
+                                <AlertDescription className="text-[10px]">Layanan autentikasi belum siap.</AlertDescription>
                             </Alert>
                         )}
 
-                        <form onSubmit={handleAuth} className="space-y-5">
+                        <form onSubmit={handleAuth} className="space-y-4">
                             {isRegisterMode && (
-                                <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Nomor Induk Siswa (NIS)</Label>
+                                <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+                                    <Label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Nomor Induk Siswa (NIS)</Label>
                                     <div className='relative'>
                                         <Input 
                                             type="text" 
-                                            placeholder="Masukkan NIS Anda" 
+                                            placeholder="NIS Anda" 
                                             required 
                                             value={nis}
                                             onChange={(e) => setNis(e.target.value)}
-                                            className="h-12 rounded-2xl bg-slate-50 border-slate-100 focus:border-primary pl-12 font-mono tracking-widest"
+                                            className="h-11 rounded-xl bg-slate-50 border-slate-100 focus:border-primary pl-10 text-xs font-mono tracking-widest"
                                             disabled={isSubmitting}
                                         />
-                                        <Fingerprint className='absolute left-4 top-3.5 text-primary opacity-40' size={20} />
+                                        <Fingerprint className='absolute left-3.5 top-3 text-primary opacity-30' size={18} />
                                     </div>
-                                    <p className='text-[9px] text-muted-foreground ml-1 italic font-medium'>*NIS diperlukan untuk sinkronisasi profil otomatis.</p>
                                 </div>
                             )}
 
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Alamat Email</Label>
+                            <div className="space-y-1.5">
+                                <Label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Alamat Email</Label>
                                 <div className='relative'>
                                     <Input 
                                         type="email" 
@@ -141,33 +138,33 @@ export default function LoginPage() {
                                         required 
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="h-12 rounded-2xl bg-slate-50 border-slate-100 focus:border-primary pl-12"
+                                        className="h-11 rounded-xl bg-slate-50 border-slate-100 focus:border-primary pl-10 text-xs"
                                         disabled={isSubmitting}
                                     />
-                                    <Mail className='absolute left-4 top-3.5 text-primary opacity-40' size={20} />
+                                    <Mail className='absolute left-3.5 top-3 text-primary opacity-30' size={18} />
                                 </div>
                             </div>
                             
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Kata Sandi</Label>
+                            <div className="space-y-1.5">
+                                <Label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Kata Sandi</Label>
                                 <div className="relative">
                                     <Input 
                                         type={showPassword ? "text" : "password"} 
                                         required 
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="h-12 rounded-2xl bg-slate-50 border-slate-100 focus:border-primary pl-12 pr-12"
-                                        placeholder='Minimal 6 karakter'
+                                        className="h-11 rounded-xl bg-slate-50 border-slate-100 focus:border-primary pl-10 pr-10 text-xs"
+                                        placeholder='Min. 6 karakter'
                                         disabled={isSubmitting}
                                     />
-                                    <KeyRound className='absolute left-4 top-3.5 text-primary opacity-40' size={20} />
+                                    <KeyRound className='absolute left-3.5 top-3 text-primary opacity-30' size={18} />
                                     <button 
                                         type="button" 
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute inset-y-0 right-4 text-slate-400 hover:text-primary transition-colors"
+                                        className="absolute inset-y-0 right-3 text-slate-400 hover:text-primary transition-colors"
                                         disabled={isSubmitting}
                                     >
-                                        {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
+                                        {showPassword ? <EyeOff size={16}/> : <Eye size={16}/>}
                                     </button>
                                 </div>
                             </div>
@@ -175,32 +172,32 @@ export default function LoginPage() {
                             <Button 
                                 type="submit" 
                                 disabled={isSubmitting || !auth} 
-                                className="w-full font-black text-xs h-14 rounded-2xl shadow-xl glow-accent uppercase tracking-[0.3em] mt-4 bg-accent text-accent-foreground hover:bg-accent/90 border-none"
+                                className="w-full font-bold text-[10px] h-12 rounded-xl shadow-md glow-accent uppercase tracking-[0.3em] mt-4 bg-accent text-accent-foreground border-none hover:scale-[1.01] transition-transform"
                             >
                                 {isSubmitting ? (
-                                    <LoaderCircle className="animate-spin mr-2 h-5 w-5" />
+                                    <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
                                 ) : (
-                                    isRegisterMode ? <UserPlus className="mr-2 h-5 w-5"/> : <LogIn className="mr-2 h-5 w-5"/>
+                                    isRegisterMode ? <UserPlus className="mr-2 h-4 w-4"/> : <LogIn className="mr-2 h-4 w-4"/>
                                 )}
-                                {isSubmitting ? 'MEMVERIFIKASI...' : (isRegisterMode ? 'DAFTAR SEKARANG' : 'MASUK KE PORTAL')}
+                                {isSubmitting ? 'MEMPROSES...' : (isRegisterMode ? 'DAFTAR' : 'MASUK')}
                             </Button>
 
-                            <div className="pt-8 text-center border-t border-slate-100 mt-6">
+                            <div className="pt-6 text-center border-t border-slate-50 mt-6">
                                 <button 
                                     type="button" 
                                     onClick={() => setIsRegisterMode(!isRegisterMode)}
-                                    className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
+                                    className="text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
                                     disabled={isSubmitting}
                                 >
-                                    {isRegisterMode ? 'Sudah memiliki akun? Masuk' : 'Belum punya akun? Daftar gratis'}
+                                    {isRegisterMode ? 'Sudah punya akun? Login' : 'Belum punya akun? Daftar'}
                                 </button>
                             </div>
                         </form>
                     </CardContent>
                 </Card>
                 
-                <p className='text-center text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 opacity-60'>
-                    &copy; 2025 SMKS PGRI 2 KEDONDONG • DIGITAL HUB
+                <p className='text-center text-[8px] font-bold uppercase tracking-[0.4em] text-slate-300'>
+                    &copy; 2025 SMKS PGRI 2 KEDONDONG
                 </p>
             </div>
         </div>

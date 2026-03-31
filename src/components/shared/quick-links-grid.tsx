@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,9 +19,8 @@ type QuickLinksGridProps = {
 };
 
 /**
- * QuickLinksGrid v4.0 - Ultra Minimalist App Grid
- * Dioptimalkan untuk 3-4 kolom pada mobile PWA.
- * Fokus pada font kecil, ikon compact, dan desain bersih.
+ * QuickLinksGrid v5.0 - Ultra Minimalist Grid
+ * No italics, tight tracking, small fonts.
  */
 export function QuickLinksGrid({ audience, title, description }: QuickLinksGridProps) {
   const firestore = useFirestore();
@@ -44,13 +42,13 @@ export function QuickLinksGrid({ audience, title, description }: QuickLinksGridP
   const renderIcon = (iconStr: string) => {
     const isFontAwesome = iconStr.includes('fa-');
     return (
-      <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 border border-slate-100 group-hover:border-primary">
+      <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 border border-slate-100 group-hover:border-primary shadow-sm">
         {isFontAwesome ? (
-          <i className={cn(iconStr, "text-sm md:text-base")} />
+          <i className={cn(iconStr, "text-xs")} />
         ) : (
           (() => {
             const IconComp = iconMap[iconStr] || Globe;
-            return <IconComp className="w-4 h-4 md:w-5 md:h-5" />;
+            return <IconComp className="w-4 h-4" />;
           })()
         )}
       </div>
@@ -60,23 +58,23 @@ export function QuickLinksGrid({ audience, title, description }: QuickLinksGridP
   return (
     <div className="animate-reveal">
       {(title || description) && (
-        <div className="mb-8 space-y-1">
-          {title && <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 italic">{title}</h2>}
-          {description && <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{description}</p>}
+        <div className="mb-6 space-y-1">
+          {title && <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 opacity-40">{title}</h2>}
+          {description && <p className="text-[11px] font-bold text-slate-600 uppercase tracking-widest">{description}</p>}
         </div>
       )}
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-square rounded-2xl" />
+            <Skeleton key={i} className="aspect-square rounded-xl" />
           ))
         ) : (
           links?.map((link) => (
             <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="group block">
-              <Card className="h-full rounded-2xl border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 shadow-sm hover:shadow-lg flex flex-col items-center justify-center p-4 text-center">
+              <Card className="h-full rounded-2xl border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 shadow-sm flex flex-col items-center justify-center p-3 text-center">
                 {renderIcon(link.icon)}
-                <CardTitle className="mt-3 text-[9px] md:text-[10.5px] font-bold text-slate-600 group-hover:text-primary transition-colors tracking-tight leading-tight uppercase line-clamp-2">
+                <CardTitle className="mt-2.5 text-[9px] font-bold text-slate-600 group-hover:text-primary transition-colors tracking-tight leading-tight uppercase line-clamp-2">
                   {link.title}
                 </CardTitle>
               </Card>

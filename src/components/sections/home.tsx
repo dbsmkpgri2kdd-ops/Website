@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -78,26 +77,25 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'hero':
         if (settings?.showHero === false) return null;
         return (
-          <section key="hero" className="relative pt-20 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-white border-b border-slate-50">
+          <section key="hero" className="relative pt-16 pb-12 md:pt-24 md:pb-20 overflow-hidden bg-white border-b border-slate-50 tech-mesh">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="max-w-2xl space-y-6 animate-reveal">
+                <div className="max-w-xl space-y-5 animate-reveal">
                   <div className='inline-flex items-center gap-2 text-primary'>
-                    <div className='h-px w-6 bg-primary/30'></div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em]">Official Portal</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">School Profile</span>
                   </div>
-                  <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 leading-[1.1] uppercase italic">
+                  <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-slate-900 leading-[1.1] uppercase">
                     {schoolData?.heroTitle || "Membangun Masa Depan"} <br/>
-                    <span className="text-primary not-italic">Ahli & Kompeten.</span>
+                    <span className="text-primary">Ahli & Kompeten.</span>
                   </h1>
-                  <p className="text-sm md:text-base text-slate-500 max-w-lg font-bold uppercase tracking-widest leading-relaxed opacity-70">
+                  <p className="text-[11px] md:text-xs text-slate-500 max-w-md font-bold uppercase tracking-widest leading-relaxed opacity-60">
                     {schoolData?.heroSubtitle || "Pendidikan vokasi berstandar industri dengan kurikulum terintegrasi untuk mencetak lulusan siap kerja."}
                   </p>
-                  <div className="flex flex-wrap gap-3 pt-4">
-                    <Button onClick={() => setActiveTab('ppdb-online')} className="h-11 px-8 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl glow-accent bg-accent text-accent-foreground border-none">
-                        Daftar PPDB <ArrowRight className='ml-2 h-4 w-4' />
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <Button onClick={() => setActiveTab('ppdb-online')} className="h-10 px-6 rounded-lg font-bold text-[10px] uppercase tracking-widest shadow-sm bg-accent text-accent-foreground border-none">
+                        Daftar PPDB <ArrowRight className='ml-2 h-3.5 w-3.5' />
                     </Button>
-                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" className="h-11 px-8 rounded-xl font-bold text-[10px] uppercase tracking-widest border-slate-200 text-slate-600 hover:bg-slate-50">
-                        Profil Sekolah
+                    <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" className="h-10 px-6 rounded-lg font-bold text-[10px] uppercase tracking-widest border-slate-200 text-slate-600 hover:bg-slate-50">
+                        Tentang Kami
                     </Button>
                   </div>
                 </div>
@@ -108,7 +106,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'partners':
         if (settings?.showPartners === false) return null;
         return (
-          <section key="partners" className="py-8 border-b border-slate-100 bg-slate-50/20">
+          <section key="partners" className="py-6 border-b border-slate-100 bg-white">
             <div className="max-w-7xl mx-auto px-6">
                 <PartnersSlider partners={partners || []} />
             </div>
@@ -117,11 +115,11 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
 
       case 'apps':
         return (
-          <section key="apps" className="max-w-7xl mx-auto px-6 py-16 md:py-24 border-b border-slate-50">
+          <section key="apps" className="max-w-7xl mx-auto px-6 py-12 md:py-16 border-b border-slate-50">
             <QuickLinksGrid 
               audience="public" 
               title="Layanan Digital" 
-              description="Akses terintegrasi satu pintu civitas." 
+              description="Akses terintegrasi untuk seluruh civitas." 
             />
           </section>
         );
@@ -129,7 +127,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'stats':
         if (settings?.showStats === false) return null;
         return (
-          <section key="stats" className="max-w-7xl mx-auto px-6 py-16 md:py-24 border-b border-slate-50">
+          <section key="stats" className="max-w-7xl mx-auto px-6 py-12 md:py-16 border-b border-slate-50">
             <StatisticsSection 
               studentCount={schoolData?.studentCount || 0}
               teacherCount={schoolData?.teacherCount || 0}
@@ -143,25 +141,25 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'majors':
         if (settings?.showMajors === false) return null;
         return (
-          <section key="majors" className="max-w-7xl mx-auto px-6 py-16 md:py-24 border-b border-slate-50">
-              <div className="mb-12 space-y-1">
-                  <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 italic">Program Unggulan</h2>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kompetensi keahlian berstandar industri.</p>
+          <section key="majors" className="max-w-7xl mx-auto px-6 py-12 md:py-16 border-b border-slate-50">
+              <div className="mb-8 space-y-1">
+                  <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 opacity-40">Program Keahlian</h2>
+                  <p className="text-[11px] font-bold text-slate-600 uppercase tracking-widest">Kompetensi Berstandar Industri.</p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {(areMajorsLoading ? Array(3).fill({}) : (majors || [])).slice(0, 3).map((major: any, i: number) => {
                     const Icon = iconMap[major.icon] || BookOpen;
                     return (
-                         <Card key={major.id || i} className="p-8 rounded-[2rem] border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 flex flex-col h-full shadow-sm hover:shadow-xl group">
-                              <div className="w-10 h-10 bg-primary/5 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                  <Icon size={20} />
+                         <Card key={major.id || i} className="p-6 rounded-2xl border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 flex flex-col h-full shadow-sm">
+                              <div className="w-8 h-8 bg-primary/5 text-primary rounded-lg flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                                  <Icon size={16} />
                               </div>
-                              <h3 className="text-base font-black mb-2 text-slate-900 uppercase italic tracking-tight">{major.name || 'Bidang Studi'}</h3>
-                              <p className="text-slate-500 text-[10px] leading-relaxed mb-6 flex-grow font-bold uppercase tracking-widest opacity-60">
+                              <h3 className="text-sm font-bold mb-1.5 text-slate-900 uppercase tracking-tight">{major.name || 'Bidang Studi'}</h3>
+                              <p className="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow font-bold uppercase tracking-widest opacity-50">
                                 {major.description || 'Deskripsi program studi tersedia segera.'}
                               </p>
-                              <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-primary font-black text-[9px] uppercase tracking-widest hover:bg-transparent flex justify-start items-center">
-                                Detail <ChevronRight size={14} className="ml-1" />
+                              <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-primary font-bold text-[9px] uppercase tracking-widest hover:bg-transparent flex justify-start items-center">
+                                Detail <ChevronRight size={12} className="ml-1" />
                               </Button>
                          </Card>
                     )
@@ -173,20 +171,20 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'news':
         if (settings?.showNews === false) return null;
         return (
-          <section key="news" className="max-w-7xl mx-auto px-6 py-16 md:py-24 border-b border-slate-50">
-              <div className="flex justify-between items-end mb-12">
+          <section key="news" className="max-w-7xl mx-auto px-6 py-12 md:py-16 border-b border-slate-50">
+              <div className="flex justify-between items-end mb-8">
                   <div className="space-y-1">
-                      <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 italic">Informasi Terbaru</h2>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Warta dan agenda harian sekolah.</p>
+                      <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 opacity-40">Update Sekolah</h2>
+                      <p className="text-[11px] font-bold text-slate-600 uppercase tracking-widest">Warta & Informasi Terkini.</p>
                   </div>
                   <Button onClick={() => setActiveTab('berita-pengumuman')} variant="ghost" className="text-[9px] font-black uppercase tracking-widest text-primary p-0">
                       Lihat Semua
                   </Button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {(areNewsLoading ? Array(3).fill({}) : (newsArticles || [])).slice(0, 3).map((news: any, i: number) => (
-                    <div key={news.id || i} className="group cursor-pointer space-y-4" onClick={() => news.id && onSelectArticle(news.id)}>
-                      <div className="aspect-[16/9] relative rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm group-hover:shadow-md transition-all">
+                    <div key={news.id || i} className="group cursor-pointer space-y-3" onClick={() => news.id && onSelectArticle(news.id)}>
+                      <div className="aspect-[16/9] relative rounded-xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm">
                         {areNewsLoading ? <Skeleton className="w-full h-full" /> : (
                           <Image 
                             src={convertGoogleDriveLink(news.imageUrl || "https://picsum.photos/seed/news/800/500")} 
@@ -196,12 +194,12 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                           />
                         )}
                       </div>
-                      <div className="space-y-2 px-1">
+                      <div className="space-y-1.5 px-1">
                         <div className="flex items-center gap-3 text-[8px] font-black text-slate-400 uppercase tracking-widest">
                             <span className="text-primary">{news.category || 'News'}</span>
                             <span>{formatDateLabel(news.datePublished)}</span>
                         </div>
-                        <h3 className="text-sm font-black leading-tight text-slate-900 line-clamp-2 uppercase italic tracking-tight group-hover:text-primary transition-colors">{news.title || 'Informasi Akademik'}</h3>
+                        <h3 className="text-xs font-bold leading-tight text-slate-900 line-clamp-2 uppercase tracking-tight group-hover:text-primary transition-colors">{news.title || 'Informasi Akademik'}</h3>
                       </div>
                     </div>
                 ))}
@@ -212,17 +210,17 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
       case 'cta':
         if (settings?.showCta === false) return null;
         return (
-          <section key="cta" className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-            <div className="rounded-[2.5rem] p-10 md:p-16 text-center bg-slate-900 shadow-2xl relative overflow-hidden">
-              <div className="relative z-10 space-y-6">
-                <h2 className="text-2xl md:text-4xl font-black text-white max-w-2xl mx-auto leading-tight tracking-tighter italic uppercase">
+          <section key="cta" className="max-w-7xl mx-auto px-6 py-12 md:py-16">
+            <div className="rounded-3xl p-8 md:p-12 text-center bg-slate-900 shadow-xl relative overflow-hidden border border-slate-800">
+              <div className="relative z-10 space-y-5">
+                <h2 className="text-xl md:text-2xl font-bold text-white max-w-xl mx-auto leading-tight tracking-tighter uppercase">
                   {schoolData?.ctaTitle || "Siap Menjadi Ahli Berkompetensi?"}
                 </h2>
                 <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] max-w-md mx-auto leading-relaxed">
-                  Pendaftaran tahun ajaran 2025/2026 telah dibuka.
+                  Pendaftaran Tahun Ajaran 2025/2026 Dibuka.
                 </p>
-                <div className="flex justify-center pt-4">
-                  <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-12 px-10 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl bg-accent text-accent-foreground border-none">
+                <div className="flex justify-center pt-2">
+                  <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-10 px-8 rounded-lg font-bold text-[10px] uppercase tracking-widest shadow-sm bg-accent text-accent-foreground border-none">
                       Daftar Sekarang
                   </Button>
                 </div>
@@ -237,7 +235,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
   };
 
   return (
-      <div className="pb-20 animate-reveal bg-white">
+      <div className="pb-16 animate-reveal bg-white">
         {sectionOrder.map(sectionId => renderSection(sectionId))}
       </div>
   );

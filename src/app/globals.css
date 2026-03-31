@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    /* Clean White with Professional Royal Blue & Vibrant Yellow */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -19,7 +18,7 @@
     --secondary-foreground: 222.2 47.4% 11.2%;
     
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 30%; /* Darker for 100% contrast on white */
+    --muted-foreground: 215.4 16.3% 30%;
     
     --accent: 47.9 95.8% 53.1%; /* Vibrant Yellow */
     --accent-foreground: 222.2 47.4% 11.2%;
@@ -30,7 +29,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
-    --radius: 1.5rem;
+    --radius: 1rem;
   }
 
   .dark {
@@ -64,30 +63,22 @@
     @apply bg-background text-foreground antialiased font-sans;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-headline tracking-tight font-bold text-foreground;
+    @apply font-headline tracking-tighter font-bold text-foreground;
   }
 }
 
 @layer utilities {
-  .glass-premium {
-    @apply bg-card/80 backdrop-blur-2xl border border-border/50 shadow-2xl;
-  }
-
-  .fresh-card {
-    @apply bg-card border border-border/40 shadow-xl hover:shadow-2xl transition-all duration-500;
-  }
-  
   .tech-mesh {
-    background-image: radial-gradient(circle at 2px 2px, hsl(var(--foreground) / 0.03) 1px, transparent 0);
-    background-size: 40px 40px;
+    background-image: radial-gradient(circle at 2px 2px, hsl(var(--foreground) / 0.02) 1px, transparent 0);
+    background-size: 32px 32px;
   }
 
   .animate-reveal {
-    animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes reveal {
-    from { opacity: 0; transform: translateY(20px); filter: blur(8px); }
+    from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
     to { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
 
@@ -100,19 +91,15 @@
   }
 
   .glow-primary {
-    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.4);
+    box-shadow: 0 8px 24px -8px hsl(var(--primary) / 0.3);
   }
 
   .glow-accent {
-    box-shadow: 0 10px 30px -10px hsl(var(--accent) / 0.5);
-  }
-
-  .shadow-3xl {
-    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px -8px hsl(var(--accent) / 0.4);
   }
 
   .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
     @apply bg-transparent;
