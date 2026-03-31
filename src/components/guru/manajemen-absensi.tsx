@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -54,7 +53,8 @@ export function ManajemenAbsensi() {
 
   const classes = useMemo(() => {
     if (!students) return [];
-    const classSet = new Set(students.map(s => s.className).filter(Boolean));
+    // Explicit type guard to ensure c is string
+    const classSet = new Set(students.map(s => s.className).filter((c): c is string => !!c));
     return Array.from(classSet).sort();
   }, [students]);
 
@@ -136,7 +136,7 @@ export function ManajemenAbsensi() {
     <Card className="shadow-lg border-none rounded-[2rem] bg-card/50 backdrop-blur-md overflow-hidden">
         <CardHeader className="p-8 border-b border-border flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-                <CardTitle className="text-xl font-bold italic uppercase flex items-center gap-3 font-headline">
+                <CardTitle className="text-xl font-bold uppercase flex items-center gap-3 font-headline">
                   <UserCheck size={24} className="text-primary" /> Manajemen absensi
                 </CardTitle>
                 <CardDescription className="text-[10px] mt-1 uppercase font-bold tracking-widest opacity-60">Monitor kehadiran siswa secara real-time.</CardDescription>
@@ -190,7 +190,7 @@ export function ManajemenAbsensi() {
                         return (
                             <TableRow key={item.id} className="border-border hover:bg-muted/20 group">
                                 <TableCell className="px-8 py-5">
-                                    <p className="font-bold text-sm tracking-tight">{item.studentName}</p>
+                                    <p className="font-bold text-sm tracking-tight uppercase">{item.studentName}</p>
                                     <p className="text-[9px] font-bold text-muted-foreground uppercase mt-0.5">{studentProfile?.className || 'Umum'}</p>
                                 </TableCell>
                                 <TableCell><span className="text-xs font-medium">{formatDate(item.date)}</span></TableCell>
@@ -214,7 +214,7 @@ export function ManajemenAbsensi() {
                             </TableRow>
                         )
                     })
-                    ) : ( !areRecordsLoading && <TableRow><TableCell colSpan={4} className="text-center py-20 text-muted-foreground opacity-40"><UserCheck size={40} className="mx-auto mb-3" /><p className="text-xs font-bold">Tidak ada data absensi ditemukan</p></TableCell></TableRow> )}
+                    ) : ( !areRecordsLoading && <TableRow><TableCell colSpan={4} className="text-center py-20 text-muted-foreground opacity-40"><UserCheck size={40} className="mx-auto mb-3" /><p className="text-xs font-bold uppercase">Tidak ada data absensi ditemukan</p></TableCell></TableRow> )}
                 </TableBody>
                 </Table>
             </div>
@@ -222,7 +222,7 @@ export function ManajemenAbsensi() {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="sm:max-w-[625px] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-3xl">
                 <DialogHeader className="p-8 bg-primary/5 border-b border-border">
-                    <DialogTitle className="text-xl font-bold italic uppercase font-headline">{editingItem ? 'Ubah' : 'Input'} kehadiran</DialogTitle>
+                    <DialogTitle className="text-xl font-bold uppercase font-headline">{editingItem ? 'Ubah' : 'Input'} kehadiran</DialogTitle>
                     <DialogDescription className="text-[10px] font-bold text-muted-foreground uppercase mt-1">Formulir Pencatatan Harian Siswa</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -278,11 +278,11 @@ export function ManajemenAbsensi() {
                         <FormField control={form.control} name="notes" render={({ field }) => (
                             <FormItem>
                                 <FormLabel className="text-[10px] font-bold uppercase tracking-widest opacity-60">Catatan khusus (opsional)</FormLabel>
-                                <FormControl><Textarea rows={3} {...field} placeholder="e.g. Terlambat 15 menit karena kendaraan rusak" className="rounded-2xl bg-muted/50 border-border" /></FormControl>
+                                <FormControl><Textarea rows={3} {...field} placeholder="e.g. Terlambat 15 menit karena kendaraan rusak" className="rounded-2xl bg-muted/50 border-border font-bold uppercase text-[10px]" /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}/>
-                        <Button type="submit" className="w-full h-14 rounded-xl font-bold shadow-xl shadow-primary/20" disabled={form.formState.isSubmitting}>
+                        <Button type="submit" className="w-full h-14 rounded-xl font-bold shadow-xl shadow-primary/20 uppercase text-xs tracking-widest" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting ? <LoaderCircle className="animate-spin mr-2"/> : null} Simpan kehadiran
                         </Button>
                     </form>
