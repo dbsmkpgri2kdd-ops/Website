@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -210,7 +209,7 @@ function AdminDashboard() {
               <DatabaseZap size={18} />
             </div>
             <div className='flex flex-col'>
-                <span className="font-black text-sm tracking-tighter text-slate-900 uppercase italic">hPanel <span className='text-primary'>v7.5</span></span>
+                <span className="font-black text-sm tracking-tighter text-slate-900 uppercase">hPanel <span className='text-primary'>v7.5</span></span>
             </div>
           </div>
           <Button variant="ghost" size="icon" className="lg:hidden rounded-xl h-9 w-9 bg-slate-50" onClick={() => setIsSidebarOpen(false)}>
@@ -235,7 +234,7 @@ function AdminDashboard() {
               <AvatarFallback className="bg-primary/5 text-primary text-[10px] font-black uppercase">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-[11px] font-black text-slate-900 truncate uppercase italic tracking-tight">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
+              <p className="text-[11px] font-black text-slate-900 truncate uppercase tracking-tight">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
               <div className='flex items-center gap-1.5'>
                 <div className='w-1 h-1 rounded-full bg-emerald-500'></div>
                 <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Active Admin</p>

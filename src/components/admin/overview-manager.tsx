@@ -79,7 +79,7 @@ export function OverviewManager() {
     <div className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
-            <h2 className='text-3xl font-bold tracking-tight text-slate-900 font-headline uppercase italic'>Ringkasan <span className="text-primary not-italic">Sistem.</span></h2>
+            <h2 className='text-3xl font-bold tracking-tight text-slate-900 font-headline uppercase'>Ringkasan <span className="text-primary">Sistem.</span></h2>
             <p className='text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest opacity-80'>Pusat kendali operasional digital sekolah.</p>
         </div>
         <div className='flex items-center gap-3 bg-card p-3 rounded-2xl border border-slate-100 shadow-md'>
@@ -102,7 +102,7 @@ export function OverviewManager() {
                             <UserCheck size={20} />
                         </div>
                         <div>
-                            <CardTitle className="text-lg font-bold text-slate-900 uppercase italic">Absensi Hari Ini</CardTitle>
+                            <CardTitle className="text-lg font-bold text-slate-900 uppercase">Absensi Hari Ini</CardTitle>
                             <CardDescription className="text-xs font-bold text-slate-500">Monitoring kehadiran biometrik real-time.</CardDescription>
                         </div>
                     </div>
@@ -138,7 +138,7 @@ export function OverviewManager() {
                     </div>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
-                    <div className="text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2 italic">
+                    <div className="text-3xl font-black tracking-tight text-slate-900 flex items-center gap-2">
                         {mounted ? s.count : '0'}
                         <ArrowUpRight size={16} className='text-primary opacity-0 group-hover:opacity-100 transition-opacity' />
                     </div>
@@ -159,7 +159,7 @@ export function OverviewManager() {
                 <CardContent className='px-8 space-y-4'>
                     {aiReport ? (
                         <div className='space-y-4 animate-reveal'>
-                            <p className='text-xs font-bold leading-relaxed italic text-slate-700'>"{aiReport.summary}"</p>
+                            <p className='text-xs font-bold leading-relaxed text-slate-700'>"{aiReport.summary}"</p>
                             <div className='space-y-2'>
                                 {aiReport.insights.map((insight, idx) => (
                                     <div key={idx} className='flex gap-2 items-start'>
@@ -168,7 +168,7 @@ export function OverviewManager() {
                                     </div>
                                 ))}
                             </div>
-                            <Button onClick={() => setAiReport(null)} variant="ghost" className="w-full text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary">Reset analisis</Button>
+                            <button onClick={() => setAiReport(null)} className="w-full text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary py-2">Reset analisis</button>
                         </div>
                     ) : (
                         <div className='text-center space-y-6 py-4'>
@@ -207,7 +207,7 @@ export function OverviewManager() {
                         {app.studentName.charAt(0)}
                       </div>
                       <div>
-                        <p className="font-black text-sm text-slate-900 uppercase italic tracking-tighter group-hover:text-primary transition-colors">{app.studentName}</p>
+                        <p className="font-black text-sm text-slate-900 uppercase tracking-tighter group-hover:text-primary transition-colors">{app.studentName}</p>
                         <p className="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest">{app.chosenMajor}</p>
                       </div>
                     </div>

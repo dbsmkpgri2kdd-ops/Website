@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -72,10 +71,8 @@ export function BiometricAttendance() {
         let type: 'Masuk' | 'Pulang' = 'Masuk';
 
         if (profile?.session === 'Siang') {
-            // Sesi Siang: Masuk jam 11:00-14:59, Pulang jam >= 15:00
             type = currentHour >= 15 ? 'Pulang' : 'Masuk';
         } else {
-            // Sesi Pagi (Default): Masuk jam < 11:00, Pulang jam >= 11:00
             type = currentHour >= 11 ? 'Pulang' : 'Masuk';
         }
         
@@ -179,15 +176,15 @@ export function BiometricAttendance() {
   };
 
   return (
-    <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white/5 backdrop-blur-md overflow-hidden border">
-      <CardHeader className="p-8 border-b border-white/5">
+    <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden border">
+      <CardHeader className="p-8 border-b border-slate-100">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-primary/10 text-primary rounded-xl">
                     <ShieldCheck size={20} />
                 </div>
                 <div>
-                    <CardTitle className="text-xl font-bold italic uppercase font-headline">Absensi <span className="text-primary">Biometrik</span></CardTitle>
+                    <CardTitle className="text-xl font-bold uppercase font-headline">Absensi <span className="text-primary">Biometrik</span></CardTitle>
                     <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">
                         Shift {profile?.session || 'Pagi'} v3.8
                     </CardDescription>
@@ -212,7 +209,7 @@ export function BiometricAttendance() {
                     <Navigation size={40} className="text-primary group-hover:scale-110 transition-transform" />
                 </div>
                 <div className="space-y-3">
-                    <h4 className="text-lg font-black uppercase italic tracking-tighter">Validasi Identitas Digital</h4>
+                    <h4 className="text-lg font-black uppercase tracking-tighter">Validasi Identitas Digital</h4>
                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
                         Sistem mendeteksi shift Anda sebagai <span className='text-primary'>Sesi {profile?.session || 'Pagi'}</span>. Pastikan Anda berada di lingkungan sekolah.
                     </p>
@@ -227,7 +224,7 @@ export function BiometricAttendance() {
             <div className="text-center py-16 space-y-6">
                 <LoaderCircle className="h-16 w-16 animate-spin mx-auto text-primary" />
                 <div className="space-y-1">
-                    <p className="text-sm font-black uppercase italic tracking-widest">Validasi GPS...</p>
+                    <p className="text-sm font-black uppercase tracking-widest">Validasi GPS...</p>
                     <p className="text-[9px] font-bold text-muted-foreground uppercase">Memeriksa Radius Geofence</p>
                 </div>
             </div>
@@ -240,10 +237,6 @@ export function BiometricAttendance() {
                     <div className="absolute inset-0 pointer-events-none">
                         <div className="w-full h-1 bg-primary/50 absolute top-0 animate-[scan_2s_infinite] shadow-[0_0_15px_primary]"></div>
                         <div className="absolute inset-0 border-[20px] border-black/20"></div>
-                        <div className="absolute top-6 left-6 border-t-4 border-l-4 border-primary w-8 h-8 rounded-tl-xl"></div>
-                        <div className="absolute top-6 right-6 border-t-4 border-r-4 border-primary w-8 h-8 rounded-tr-xl"></div>
-                        <div className="absolute bottom-6 left-6 border-b-4 border-l-4 border-primary w-8 h-8 rounded-bl-xl"></div>
-                        <div className="absolute bottom-6 right-6 border-b-4 border-r-4 border-primary w-8 h-8 rounded-br-xl"></div>
                     </div>
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
                         <span className="text-[8px] font-black text-white uppercase tracking-widest flex items-center gap-2">
@@ -257,7 +250,7 @@ export function BiometricAttendance() {
                         <span className="text-primary">{status === 'SCANNING' ? 'Menganalisis Wajah...' : 'Inisialisasi Sensor...'}</span>
                         <span className="opacity-40">{scanProgress}%</span>
                     </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                         <div className="h-full bg-primary transition-all duration-300 shadow-[0_0_10px_primary]" style={{ width: `${scanProgress}%` }}></div>
                     </div>
                 </div>
@@ -271,10 +264,9 @@ export function BiometricAttendance() {
                     <CheckCircle2 size={48} className="relative z-10" />
                 </div>
                 <div className="space-y-3">
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter">Absensi Berhasil</h3>
+                    <h3 className="text-2xl font-black uppercase tracking-tighter">Absensi Berhasil</h3>
                     <div className='flex items-center justify-center gap-2'>
                         <Badge className='bg-emerald-500 text-white font-black px-4 py-1 rounded-lg text-[10px] uppercase tracking-widest'>
-                            {direction === 'Masuk' ? <LogIn size={12} className='mr-2' /> : <LogOut size={12} className='mr-2' />}
                             {direction} Terverifikasi
                         </Badge>
                     </div>
@@ -282,7 +274,7 @@ export function BiometricAttendance() {
                         Data kehadiran Anda telah diamankan di database pusat untuk sesi {profile?.session || 'Pagi'}.
                     </p>
                 </div>
-                <Button variant="outline" onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-bold text-[11px] uppercase border-white/5 hover:bg-white/5">
+                <Button variant="outline" onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-bold text-[11px] uppercase border-slate-100 hover:bg-slate-50">
                     Selesai & Tutup
                 </Button>
             </div>
@@ -294,7 +286,7 @@ export function BiometricAttendance() {
                     <AlertCircle size={48} />
                 </div>
                 <div className="space-y-3">
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-red-500">Akses Ditolak</h3>
+                    <h3 className="text-2xl font-black uppercase tracking-tighter text-red-500">Akses Ditolak</h3>
                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
                         {errorMsg}
                     </p>

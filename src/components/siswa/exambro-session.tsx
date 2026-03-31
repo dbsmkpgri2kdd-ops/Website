@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -21,7 +20,6 @@ type ExamBroSessionProps = {
 
 /**
  * ExamBro Session v5.5 - Super Strict App Mode
- * Implementasi fitur Lockdown pada pelanggaran ke-3.
  */
 export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
@@ -260,7 +258,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     return (
         <div className="fixed inset-0 z-[110] bg-background flex flex-col items-center justify-center text-center p-10">
             <LoaderCircle className="h-16 w-16 animate-spin text-primary mb-8" />
-            <h3 className="text-2xl font-bold uppercase italic tracking-widest text-foreground font-headline">Security initializing...</h3>
+            <h3 className="text-2xl font-bold uppercase tracking-widest text-foreground font-headline">Security initializing...</h3>
         </div>
     );
   }
@@ -317,7 +315,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         ) : !isTimeUp && (
             <div className="w-full h-full bg-background flex flex-col items-center justify-center text-center p-10">
                 <CameraOff size={100} className="text-red-500 mb-8 opacity-20" />
-                <h3 className="text-3xl font-bold text-foreground uppercase italic mb-4 tracking-tighter font-headline">Biometric required</h3>
+                <h3 className="text-3xl font-bold text-foreground uppercase mb-4 tracking-tighter font-headline">Biometric required</h3>
                 <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-bold text-xs tracking-widest shadow-xl">Reload & izinkan</Button>
             </div>
         )}
@@ -325,7 +323,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         {showAlarm && !isTimeUp && !isLocked && (
           <div className="absolute inset-0 bg-destructive/95 backdrop-blur-3xl flex flex-col items-center justify-center z-50 p-10 text-center text-white">
             <AlertTriangle size={64} className="mb-10 animate-bounce" />
-            <h2 className="text-5xl font-black uppercase italic tracking-tighter mb-6 font-headline">Security breach!</h2>
+            <h2 className="text-5xl font-black uppercase tracking-tighter mb-6 font-headline">Security breach!</h2>
             <Button size="lg" variant="secondary" onClick={() => { setShowAlarm(false); enterFullScreen(); }} className="h-20 px-16 rounded-[2.5rem] font-bold text-xl uppercase tracking-widest shadow-2xl">Saya mengerti</Button>
           </div>
         )}
@@ -336,7 +334,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
                 <Lock size={48} />
             </div>
             <div className="space-y-3">
-                <h2 className="text-4xl font-bold italic uppercase tracking-tighter font-headline">Exam lockdown</h2>
+                <h2 className="text-4xl font-bold uppercase tracking-tighter font-headline">Exam lockdown</h2>
                 <p className="text-muted-foreground text-[11px] font-bold uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
                     Sesi Anda terkunci karena pelanggaran berulang. Silakan hubungi pengawas untuk mendapatkan token pembuka.
                 </p>
@@ -359,7 +357,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         {isTimeUp && (
             <div className="absolute inset-0 bg-background/98 backdrop-blur-3xl flex flex-col items-center justify-center z-[60] p-10 text-center">
                 <Clock size={120} className="text-primary mb-10 animate-pulse opacity-20" />
-                <h2 className="text-6xl font-bold text-foreground uppercase italic tracking-tighter mb-6 font-headline">Time over</h2>
+                <h2 className="text-6xl font-bold text-foreground uppercase tracking-tighter mb-6 font-headline">Time over</h2>
                 <Button size="lg" onClick={onExit} className="h-20 px-16 rounded-[2.5rem] font-bold text-2xl uppercase tracking-widest shadow-xl">Keluar ruang ujian</Button>
             </div>
         )}

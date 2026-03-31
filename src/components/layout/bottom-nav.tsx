@@ -1,4 +1,3 @@
-
 'use client';
 import { Home, Newspaper, UserPlus, LayoutGrid } from 'lucide-react';
 import type { NavLink } from '@/lib/data';
@@ -12,6 +11,7 @@ type BottomNavProps = {
 
 /**
  * Bilah navigasi bawah khusus mobile.
+ * Disederhanakan untuk estetika ultra-minimalis.
  */
 export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: BottomNavProps) {
   const navItems = [
@@ -26,7 +26,7 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
   };
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 z-50 w-full bg-background/95 backdrop-blur-2xl border-t border-white/10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.3)]">
+    <div className="md:hidden fixed bottom-0 left-0 z-50 w-full bg-background/95 backdrop-blur-2xl border-t border-slate-100 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
       <div className="h-16 flex items-center justify-around px-2">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
@@ -37,11 +37,11 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
               onClick={() => handleNavClick(item.id as NavLink)}
               className={cn(
                 "flex flex-col items-center justify-center flex-1 transition-all duration-300",
-                isActive ? "text-primary scale-110" : "text-muted-foreground opacity-60"
+                isActive ? "text-primary scale-105" : "text-muted-foreground opacity-60"
               )}
             >
               <item.icon className={cn("w-5 h-5 mb-1", isActive ? "stroke-[2.5px]" : "stroke-2")} />
-              <span className="text-[10px] font-bold tracking-tight">
+              <span className="text-[9px] font-black uppercase tracking-widest">
                 {item.label}
               </span>
             </button>
@@ -55,7 +55,7 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
           className="flex flex-col items-center justify-center flex-1 text-muted-foreground opacity-60 hover:opacity-100 active:scale-95"
         >
           <LayoutGrid className="w-5 h-5 mb-1" />
-          <span className="text-[10px] font-bold tracking-tight">Menu</span>
+          <span className="text-[9px] font-black uppercase tracking-widest">Menu</span>
         </button>
       </div>
     </div>

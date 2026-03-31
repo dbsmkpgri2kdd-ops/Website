@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type QuickLink } from '@/lib/data';
-import { Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users, ArrowUpRight } from 'lucide-react';
+import { Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -19,8 +19,8 @@ type QuickLinksGridProps = {
 };
 
 /**
- * QuickLinksGrid v5.0 - Ultra Minimalist Grid
- * No italics, tight tracking, small fonts.
+ * QuickLinksGrid v6.0 - Optimized for PWA & Minimalist Aesthetic
+ * 3 columns on mobile, 4 on small screens, up to 6 on desktop.
  */
 export function QuickLinksGrid({ audience, title, description }: QuickLinksGridProps) {
   const firestore = useFirestore();
@@ -42,13 +42,13 @@ export function QuickLinksGrid({ audience, title, description }: QuickLinksGridP
   const renderIcon = (iconStr: string) => {
     const isFontAwesome = iconStr.includes('fa-');
     return (
-      <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 border border-slate-100 group-hover:border-primary shadow-sm">
+      <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 border border-slate-100 group-hover:border-primary shadow-sm">
         {isFontAwesome ? (
           <i className={cn(iconStr, "text-xs")} />
         ) : (
           (() => {
             const IconComp = iconMap[iconStr] || Globe;
-            return <IconComp className="w-4 h-4" />;
+            return <IconComp className="w-5 h-5" />;
           })()
         )}
       </div>
@@ -64,17 +64,17 @@ export function QuickLinksGrid({ audience, title, description }: QuickLinksGridP
         </div>
       )}
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-square rounded-xl" />
+            <Skeleton key={i} className="aspect-square rounded-2xl" />
           ))
         ) : (
           links?.map((link) => (
             <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="group block">
-              <Card className="h-full rounded-2xl border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 shadow-sm flex flex-col items-center justify-center p-3 text-center">
+              <Card className="h-full rounded-[1.5rem] border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 shadow-sm flex flex-col items-center justify-center p-4 text-center">
                 {renderIcon(link.icon)}
-                <CardTitle className="mt-2.5 text-[9px] font-bold text-slate-600 group-hover:text-primary transition-colors tracking-tight leading-tight uppercase line-clamp-2">
+                <CardTitle className="mt-3 text-[9px] font-bold text-slate-600 group-hover:text-primary transition-colors tracking-tight leading-tight uppercase line-clamp-2">
                   {link.title}
                 </CardTitle>
               </Card>

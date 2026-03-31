@@ -87,7 +87,7 @@ export default function LoginPage() {
                     <ArrowLeft size={14} className='group-hover:-translate-x-1 transition-transform'/> Kembali ke beranda
                 </button>
 
-                <Card className="border-slate-100 shadow-xl rounded-[2.5rem] overflow-hidden bg-white/95 backdrop-blur-md border-2">
+                <Card className="border-slate-100 shadow-2xl rounded-[2.5rem] overflow-hidden bg-white border-2">
                     <CardHeader className="text-center pt-10 pb-6">
                         <div className="mb-6 mx-auto w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shadow-inner relative">
                             <ShieldCheck size={28} />

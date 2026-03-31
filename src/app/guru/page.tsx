@@ -52,7 +52,7 @@ function GuruDashboard() {
                 <Sparkles size={24} />
             </div>
             <div className='flex flex-col'>
-                <h1 className="text-xl sm:text-3xl font-black font-headline text-slate-900 tracking-tighter uppercase italic leading-none">Guru <span className='text-primary not-italic'>Portal.</span></h1>
+                <h1 className="text-xl sm:text-3xl font-black font-headline text-slate-900 tracking-tighter uppercase leading-none">Guru <span className='text-primary'>Portal.</span></h1>
                 <span className='text-[9px] font-black uppercase tracking-[0.4em] text-primary opacity-40 mt-1'>Academic Management Hub</span>
             </div>
         </div>
@@ -71,7 +71,7 @@ function GuruDashboard() {
           <CardHeader className='p-8 md:p-14'>
               <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-10 relative z-10 text-center md:text-left">
               <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-primary/10 shadow-2xl scale-100 hover:scale-105 transition-transform duration-500">
-                  <AvatarFallback className="bg-primary/5 text-primary text-4xl md:text-5xl font-black italic">
+                  <AvatarFallback className="bg-primary/5 text-primary text-4xl md:text-5xl font-black">
                   {user?.profile?.displayName?.charAt(0) || 'G'}
                   </AvatarFallback>
               </Avatar>
@@ -80,7 +80,7 @@ function GuruDashboard() {
                     <ShieldCheck size={18} className='animate-pulse' />
                     <span className='text-[11px] font-black uppercase tracking-[0.4em]'>Akses Terverifikasi v7.5</span>
                   </div>
-                  <CardTitle className="text-3xl md:text-5xl font-black font-headline tracking-tighter uppercase italic text-slate-900 leading-none">Bapak/Ibu {user?.profile?.displayName || 'Guru'}</CardTitle>
+                  <CardTitle className="text-3xl md:text-5xl font-black font-headline tracking-tighter uppercase text-slate-900 leading-none">Bapak/Ibu {user?.profile?.displayName || 'Guru'}</CardTitle>
                   <p className="text-slate-500 font-bold text-xs uppercase tracking-[0.2em] mt-4 opacity-80">{user?.email}</p>
                   
                   <div className='flex flex-wrap justify-center md:justify-start gap-3 mt-8'>

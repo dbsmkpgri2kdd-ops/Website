@@ -16,7 +16,6 @@ export function FirebaseErrorListener() {
 
   useEffect(() => {
     const handleError = (err: FirestorePermissionError) => {
-      // Set error ke state untuk ditampilkan di UI
       setError(err);
     };
 
@@ -29,14 +28,13 @@ export function FirebaseErrorListener() {
 
   if (!error) return null;
 
-  // Render overlay error yang bisa ditutup (bukan throw error)
   return (
     <div className="fixed bottom-20 left-4 right-4 z-[100] md:left-auto md:bottom-24 md:w-96 animate-in slide-in-from-left-10 duration-500">
       <Alert variant="destructive" className="shadow-2xl border-2 bg-destructive/95 text-destructive-foreground backdrop-blur-md rounded-2xl p-5">
         <ShieldAlert className="h-5 w-5 text-white" />
         <div className="flex items-center justify-between w-full">
           <AlertTitle className='font-black text-xs uppercase tracking-widest text-white'>
-            Firebase Permission Notice
+            Firebase Notice
           </AlertTitle>
           <Button 
             variant="ghost" 

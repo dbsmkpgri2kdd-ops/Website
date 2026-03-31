@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -65,7 +64,7 @@ function SiswaDashboard() {
                 <Sparkles size={24} />
             </div>
             <div className='flex flex-col'>
-                <h1 className="text-xl sm:text-3xl font-black font-headline text-slate-900 tracking-tighter uppercase italic leading-none">Siswa <span className='text-primary not-italic'>Portal.</span></h1>
+                <h1 className="text-xl sm:text-3xl font-black font-headline text-slate-900 tracking-tighter uppercase leading-none">Siswa <span className='text-primary'>Portal.</span></h1>
                 <span className='text-[9px] font-black uppercase tracking-[0.4em] text-primary opacity-60 mt-1'>Digital Identity Center</span>
             </div>
         </div>
@@ -85,7 +84,7 @@ function SiswaDashboard() {
                     <RefreshCcw className="h-8 w-8" />
                   </div>
                   <div>
-                    <AlertTitle className="text-xl font-black uppercase italic tracking-tighter text-slate-900 mb-1">Sinkronisasi Identitas Digital</AlertTitle>
+                    <AlertTitle className="text-xl font-black uppercase tracking-tighter text-slate-900 mb-1">Sinkronisasi Identitas Digital</AlertTitle>
                     <AlertDescription className="text-[11px] font-bold text-slate-600 uppercase tracking-widest leading-relaxed">
                       Sistem sedang memverifikasi NIS <span className='text-primary'>{profile.nis}</span> di database pusat sekolah. Harap tunggu sebentar.
                     </AlertDescription>
@@ -103,12 +102,12 @@ function SiswaDashboard() {
                     <CardHeader className="p-10 text-center sm:text-left space-y-8">
                         <div className="flex flex-col sm:flex-row items-center gap-8">
                             <Avatar className="h-28 w-28 border-4 border-primary/10 shadow-2xl group-hover:scale-105 transition-transform duration-700">
-                                <AvatarFallback className="bg-primary/5 text-primary text-5xl font-black italic">
+                                <AvatarFallback className="bg-primary/5 text-primary text-5xl font-black">
                                     {profile?.displayName?.charAt(0) || 'S'}
                                 </AvatarFallback>
                             </Avatar>
                             <div className='flex-1 min-w-0'>
-                                <h3 className="text-3xl font-black font-headline tracking-tighter text-slate-900 uppercase italic leading-none truncate">{profile?.displayName || 'Siswa'}</h3>
+                                <h3 className="text-3xl font-black font-headline tracking-tighter text-slate-900 uppercase leading-none truncate">{profile?.displayName || 'Siswa'}</h3>
                                 <p className="text-primary font-black text-xs uppercase tracking-[0.3em] mt-3">{profile?.className || 'Belum Sinkron'}</p>
                                 <div className='flex flex-wrap gap-2 mt-6 justify-center sm:justify-start'>
                                     <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-700 border-none px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest'>STATUS AKTIF</Badge>

@@ -85,7 +85,7 @@ const Header = ({
         return (
           <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 px-3 py-2 text-[10px] font-bold text-slate-600 hover:text-primary transition-all focus:outline-none tracking-tight">
+              <button className="flex items-center gap-1 px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all focus:outline-none tracking-tight">
                 {item.label}
                 <ChevronDown className="h-3 w-3 opacity-40" />
               </button>
@@ -95,7 +95,7 @@ const Header = ({
                 <DropdownMenuItem
                   key={cIdx}
                   onClick={() => child.id && setActiveTab(child.id)}
-                  className='font-bold text-[9.5px] cursor-pointer rounded-lg py-2 px-3 focus:bg-primary/5 focus:text-primary transition-all tracking-tight'
+                  className='font-bold text-[10px] cursor-pointer rounded-lg py-2 px-3 focus:bg-primary/5 focus:text-primary transition-all tracking-tight'
                 >
                   {child.label}
                 </DropdownMenuItem>
@@ -108,7 +108,7 @@ const Header = ({
           <button
             key={idx}
             onClick={() => item.id && setActiveTab(item.id)}
-            className='px-3 py-2 text-[10px] font-bold text-slate-600 hover:text-primary transition-all tracking-tight'
+            className='px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all tracking-tight'
           >
             {item.label}
           </button>

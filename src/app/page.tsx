@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
@@ -56,11 +55,15 @@ const PrakerinSection = dynamic(() => import('@/components/sections/prakerin'), 
 const ShowcaseSection = dynamic(() => import('@/components/sections/showcase'), { loading: () => <SectionLoader />, ssr: false });
 
 export default function Home() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<NavLink>('home');
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [selectedLiteracyArticleId, setSelectedLiteracyArticleId] = useState<string | null>(null);
   const [selectedOsisPostId, setSelectedOsisPostId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const firestore = useFirestore();
   const { user } = useUser();
@@ -129,6 +132,8 @@ export default function Home() {
   }
 
   const renderSection = () => {
+    if (!mounted) return <SectionLoader />;
+
     if (schoolData?.isMaintenanceMode && !isAdmin) {
         return (
             <PlaceholderSection 
@@ -215,8 +220,8 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
+        isMenuOpen={false}
+        setIsMenuOpen={() => {}}
         setActiveTab={handleSetTab}
         schoolData={schoolData}
         isSchoolDataLoading={isSchoolDataLoading}
@@ -230,7 +235,7 @@ export default function Home() {
       <BottomNav
         activeTab={activeTab}
         setActiveTab={handleSetTab}
-        setIsMenuOpen={setIsMenuOpen}
+        setIsMenuOpen={() => {}}
       />
     </div>
   );

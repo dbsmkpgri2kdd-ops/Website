@@ -80,9 +80,6 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
           <section key="hero" className="relative pt-16 pb-12 md:pt-24 md:pb-20 overflow-hidden bg-white border-b border-slate-50 tech-mesh">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="max-w-xl space-y-5 animate-reveal">
-                  <div className='inline-flex items-center gap-2 text-primary'>
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">School Profile</span>
-                  </div>
                   <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-slate-900 leading-[1.1] uppercase">
                     {schoolData?.heroTitle || "Membangun Masa Depan"} <br/>
                     <span className="text-primary">Ahli & Kompeten.</span>
@@ -150,7 +147,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                   {(areMajorsLoading ? Array(3).fill({}) : (majors || [])).slice(0, 3).map((major: any, i: number) => {
                     const Icon = iconMap[major.icon] || BookOpen;
                     return (
-                         <Card key={major.id || i} className="p-6 rounded-2xl border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 flex flex-col h-full shadow-sm">
+                         <Card key={major.id || i} className="p-6 rounded-2xl border-slate-100 bg-white hover:border-primary/20 transition-all duration-300 flex flex-col h-full shadow-sm group">
                               <div className="w-8 h-8 bg-primary/5 text-primary rounded-lg flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                                   <Icon size={16} />
                               </div>
@@ -191,6 +188,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                             alt={news.title} 
                             fill 
                             className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                            unoptimized
                           />
                         )}
                       </div>
