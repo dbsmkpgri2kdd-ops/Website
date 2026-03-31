@@ -75,7 +75,7 @@ export default {
         },
         'reveal': {
           from: { opacity: '0', transform: 'translateY(20px)', filter: 'blur(10px)' },
-          to: { opacity: '1', transform: 'translateY(0)', filter: 'blur(0)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         }
       },
       animation: {
