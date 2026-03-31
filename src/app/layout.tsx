@@ -1,3 +1,4 @@
+
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -30,12 +31,19 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
+const logoUrl = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
+
 export const metadata: Metadata = {
   title: {
     default: 'SMKS PGRI 2 Kedondong | Digital Hub Enterprise',
     template: '%s | SmartSchool'
   },
   description: "Official Website SMKS PGRI 2 Kedondong. Pusat Pendidikan Vokasi Berstandar Industri Masa Depan dengan Ekosistem Digital Terpadu.",
+  icons: {
+    icon: logoUrl,
+    shortcut: logoUrl,
+    apple: logoUrl,
+  },
   keywords: ["SMK", "PGRI 2 Kedondong", "Vokasi", "Pendidikan", "PPDB 2025"],
   authors: [{ name: "SMKS PGRI 2 Kedondong" }],
   creator: "Digital Excellence Team",

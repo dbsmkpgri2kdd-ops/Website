@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -61,6 +62,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
   ];
 
   const schoolName = mounted && schoolData?.name ? schoolData.name : "SMKS PGRI 2 Kedondong";
+  const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
 
   return (
     <footer className="bg-background border-t border-border pt-12 pb-8 overflow-hidden relative tech-mesh">
@@ -69,15 +71,15 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
         
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
-               <div className="w-10 h-10 bg-primary/5 p-1.5 rounded-lg relative overflow-hidden">
+               <div className="w-12 h-12 bg-primary/5 p-1.5 rounded-lg relative overflow-hidden shadow-inner border border-primary/10">
                   {!mounted || isSchoolDataLoading ? (
                       <Skeleton className="w-full h-full" />
                   ) : (
                       <Image
-                      src={convertGoogleDriveLink(schoolData?.logoUrl || "https://picsum.photos/seed/logo/40/40")}
+                      src={convertGoogleDriveLink(schoolData?.logoUrl || defaultLogo)}
                       alt="Logo"
                       fill
-                      className='object-contain'
+                      className='object-contain p-1'
                       unoptimized
                       />
                   )}

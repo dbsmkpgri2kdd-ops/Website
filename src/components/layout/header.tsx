@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -84,6 +85,7 @@ const Header = ({
   };
   
   const currentMenu = (schoolData?.customMenu || NAV_MENU_DEFAULT).filter(item => item.id !== 'exambro');
+  const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
 
   const renderNavItems = (items: NavItem[]) => {
     return items.map((item, idx) => {
@@ -135,12 +137,12 @@ const Header = ({
             onClick={() => setActiveTab('home')}
             className="flex items-center gap-4 group"
           >
-            <div className="relative w-12 h-12 overflow-hidden rounded-2xl bg-primary/5 p-2 transition-all duration-500 group-hover:scale-110 shadow-sm border border-primary/10">
+            <div className="relative w-12 h-12 overflow-hidden rounded-2xl bg-primary/5 p-1.5 transition-all duration-500 group-hover:scale-110 shadow-sm border border-primary/10">
               {!mounted || isSchoolDataLoading ? (
                 <Skeleton className="w-full h-full rounded-md" />
               ) : (
                 <Image
-                  src={convertGoogleDriveLink(schoolData?.logoUrl || "https://picsum.photos/seed/logo/40/40")}
+                  src={convertGoogleDriveLink(schoolData?.logoUrl || defaultLogo)}
                   alt="Logo"
                   width={48}
                   height={48}

@@ -60,6 +60,8 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     userError: null,
   });
 
+  const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
+
   useEffect(() => {
     if (!auth || !firestore) {
       setUserState(prev => ({ ...prev, isUserLoading: false }));
@@ -71,8 +73,33 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         const userDocRef = doc(firestore, 'users', firebaseUser.uid);
         
         try {
+          // Initialize School Profile with Default Logo if needed
+          const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
+          const schoolSnap = await getDoc(schoolRef);
+          if (!schoolSnap.exists()) {
+            await setDoc(schoolRef, {
+              name: "SMKS PGRI 2 KEDONDONG",
+              shortName: "SMK PRIDA",
+              logoUrl: defaultLogo,
+              address: "Jl. Raya Kedondong No. 2, Pesawaran, Lampung",
+              email: "info@smkpgri2kedondong.sch.id",
+              phone: "0812-3456-7890",
+              vision: "Mewujudkan lulusan yang kompeten, berakhlak mulia, dan siap kerja.",
+              mission: ["Menerapkan kurikulum berbasis industri", "Menanamkan nilai-nilai karakter bangsa", "Meningkatkan kualitas SDM dan sarpras"],
+              layoutSettings: {
+                showHero: true,
+                showPartners: true,
+                showStats: true,
+                showMajors: true,
+                showNews: true,
+                showCta: true,
+                showShowcase: true,
+                sectionOrder: ['hero', 'partners', 'apps', 'stats', 'majors', 'showcase', 'news', 'cta']
+              }
+            });
+          }
+
           const userSnap = await getDoc(userDocRef);
-          
           if (!userSnap.exists()) {
             const initRef = doc(firestore, 'app_roles/initialized/init', 'system');
             const initSnap = await getDoc(initRef);
@@ -91,20 +118,16 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             }
           } else {
             const userData = userSnap.data() as UserProfile;
-            
             if (userData.role === 'siswa' && userData.nis && !userData.lastSyncedAt) {
-              const schoolSnap = await getDoc(doc(firestore, 'schools', SCHOOL_DATA_ID));
-              const schoolData = schoolSnap.data() as School;
-              
+              const currentSchoolSnap = await getDoc(schoolRef);
+              const schoolData = currentSchoolSnap.data() as School;
               if (schoolData?.studentDatabaseUrl && schoolData.csvMappings) {
                 try {
                   const response = await fetch(schoolData.studentDatabaseUrl);
                   const csvText = await response.text();
                   const studentData = parseCSV(csvText);
-                  
                   const mappings = schoolData.csvMappings;
                   const match = studentData.find(s => String(s[mappings.nis]).trim() === String(userData.nis).trim());
-                  
                   if (match) {
                     const updates: any = {
                       displayName: match[mappings.name] || userData.displayName,
@@ -120,7 +143,6 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
                       studentAffairs: match[mappings.studentAffairs] || '',
                       lastSyncedAt: serverTimestamp()
                     };
-                    
                     await updateDoc(userDocRef, updates);
                   }
                 } catch (csvError) {

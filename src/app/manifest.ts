@@ -2,23 +2,25 @@
 import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
+  const logoUrl = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
+  
   return {
     name: 'SMKS PGRI 2 KEDONDONG',
     short_name: 'SMK PRIDA',
     description: 'Portal Digital Hub Enterprise SMKS PGRI 2 Kedondong',
     start_url: '/',
     display: 'standalone',
-    background_color: '#0a0c1b',
-    theme_color: '#10b981',
+    background_color: '#ffffff',
+    theme_color: '#221.2 83.2% 53.3%',
     icons: [
       {
-        src: 'https://picsum.photos/seed/logo/192/192',
+        src: logoUrl,
         sizes: '192x192',
         type: 'image/png',
         purpose: 'maskable',
       },
       {
-        src: 'https://picsum.photos/seed/logo/512/512',
+        src: logoUrl,
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
