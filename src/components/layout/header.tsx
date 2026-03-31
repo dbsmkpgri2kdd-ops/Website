@@ -86,17 +86,17 @@ const Header = ({
         return (
           <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1.5 px-4 py-2 text-[11px] font-black text-slate-700 hover:text-primary transition-colors focus:outline-none uppercase tracking-widest">
+              <button className="flex items-center gap-1 px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all focus:outline-none tracking-tight">
                 {item.label}
                 <ChevronDown className="h-3 w-3 opacity-40" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 p-2 rounded-2xl shadow-3xl border-slate-100 bg-white mt-4 animate-reveal">
+            <DropdownMenuContent align="start" className="w-52 p-2 rounded-2xl shadow-3xl border-slate-100 bg-white mt-4 animate-reveal">
               {item.children.map((child, cIdx) => (
                 <DropdownMenuItem
                   key={cIdx}
                   onClick={() => child.id && setActiveTab(child.id)}
-                  className='font-bold text-[10px] cursor-pointer rounded-xl py-3.5 px-4 focus:bg-primary/5 focus:text-primary transition-all uppercase tracking-widest'
+                  className='font-bold text-[10px] cursor-pointer rounded-xl py-3 px-4 focus:bg-primary/5 focus:text-primary transition-all tracking-tight'
                 >
                   {child.label}
                 </DropdownMenuItem>
@@ -109,7 +109,7 @@ const Header = ({
           <button
             key={idx}
             onClick={() => item.id && setActiveTab(item.id)}
-            className='px-4 py-2 text-[11px] font-black text-slate-700 hover:text-primary transition-colors uppercase tracking-widest'
+            className='px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all tracking-tight'
           >
             {item.label}
           </button>
@@ -128,24 +128,24 @@ const Header = ({
           {/* Logo */}
           <button
             onClick={() => setActiveTab('home')}
-            className="flex items-center gap-4 group"
+            className="flex items-center gap-3 group"
           >
-            <div className="relative w-12 h-12 overflow-hidden rounded-2xl bg-primary/5 p-1.5 transition-all duration-500 group-hover:scale-110 shadow-sm border border-primary/10">
+            <div className="relative w-11 h-11 overflow-hidden rounded-2xl bg-primary/5 p-1 transition-all duration-500 group-hover:scale-110 shadow-sm border border-primary/10">
               {!mounted || isSchoolDataLoading ? (
                 <Skeleton className="w-full h-full rounded-md" />
               ) : (
                 <Image
                   src={convertGoogleDriveLink(schoolData?.logoUrl || defaultLogo)}
                   alt="Logo"
-                  width={48}
-                  height={48}
+                  width={44}
+                  height={44}
                   className="object-contain"
                   priority
                   unoptimized
                 />
               )}
             </div>
-            <div className="flex flex-col items-start leading-tight hidden sm:flex text-left">
+            <div className="flex flex-col items-start leading-tight text-left">
                 <span className="font-black text-base text-slate-900 tracking-tighter uppercase italic">
                 {!mounted ? "SMKS PGRI 2" : (schoolData?.shortName || "SMKS PGRI 2")}
                 </span>
@@ -153,7 +153,7 @@ const Header = ({
           </button>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-0.5">
              {mounted && renderNavItems(currentMenu)}
           </nav>
 
