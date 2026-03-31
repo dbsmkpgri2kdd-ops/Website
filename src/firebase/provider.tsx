@@ -68,37 +68,45 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       return;
     }
 
+    // Optimization: Run non-critical initializations asynchronously
+    const initSchoolData = async () => {
+      try {
+        const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
+        const schoolSnap = await getDoc(schoolRef);
+        if (!schoolSnap.exists()) {
+          await setDoc(schoolRef, {
+            name: "SMKS PGRI 2 KEDONDONG",
+            shortName: "SMK PRIDA",
+            logoUrl: defaultLogo,
+            address: "Jl. Raya Kedondong No. 2, Pesawaran, Lampung",
+            email: "info@smkpgri2kedondong.sch.id",
+            phone: "0812-3456-7890",
+            vision: "Mewujudkan lulusan yang kompeten, berakhlak mulia, dan siap kerja.",
+            mission: ["Menerapkan kurikulum berbasis industri", "Menanamkan nilai-nilai karakter bangsa", "Meningkatkan kualitas SDM dan sarpras"],
+            layoutSettings: {
+              showHero: true,
+              showPartners: true,
+              showStats: true,
+              showMajors: true,
+              showNews: true,
+              showCta: true,
+              showShowcase: true,
+              sectionOrder: ['hero', 'partners', 'apps', 'stats', 'majors', 'showcase', 'news', 'cta']
+            }
+          });
+        }
+      } catch (e) {
+        console.warn("School initialization skipped or already handled.");
+      }
+    };
+
+    initSchoolData();
+
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const userDocRef = doc(firestore, 'users', firebaseUser.uid);
         
         try {
-          // Initialize School Profile with Default Logo if needed
-          const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
-          const schoolSnap = await getDoc(schoolRef);
-          if (!schoolSnap.exists()) {
-            await setDoc(schoolRef, {
-              name: "SMKS PGRI 2 KEDONDONG",
-              shortName: "SMK PRIDA",
-              logoUrl: defaultLogo,
-              address: "Jl. Raya Kedondong No. 2, Pesawaran, Lampung",
-              email: "info@smkpgri2kedondong.sch.id",
-              phone: "0812-3456-7890",
-              vision: "Mewujudkan lulusan yang kompeten, berakhlak mulia, dan siap kerja.",
-              mission: ["Menerapkan kurikulum berbasis industri", "Menanamkan nilai-nilai karakter bangsa", "Meningkatkan kualitas SDM dan sarpras"],
-              layoutSettings: {
-                showHero: true,
-                showPartners: true,
-                showStats: true,
-                showMajors: true,
-                showNews: true,
-                showCta: true,
-                showShowcase: true,
-                sectionOrder: ['hero', 'partners', 'apps', 'stats', 'majors', 'showcase', 'news', 'cta']
-              }
-            });
-          }
-
           const userSnap = await getDoc(userDocRef);
           if (!userSnap.exists()) {
             const initRef = doc(firestore, 'app_roles/initialized/init', 'system');
@@ -118,41 +126,40 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             }
           } else {
             const userData = userSnap.data() as UserProfile;
+            // Sync CSV data in the background if needed
             if (userData.role === 'siswa' && userData.nis && !userData.lastSyncedAt) {
+              const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
               const currentSchoolSnap = await getDoc(schoolRef);
               const schoolData = currentSchoolSnap.data() as School;
               if (schoolData?.studentDatabaseUrl && schoolData.csvMappings) {
-                try {
-                  const response = await fetch(schoolData.studentDatabaseUrl);
-                  const csvText = await response.text();
-                  const studentData = parseCSV(csvText);
-                  const mappings = schoolData.csvMappings;
-                  const match = studentData.find(s => String(s[mappings.nis]).trim() === String(userData.nis).trim());
-                  if (match) {
-                    const updates: any = {
-                      displayName: match[mappings.name] || userData.displayName,
-                      className: match[mappings.class] || 'X',
-                      session: (match[mappings.session] === 'Siang' ? 'Siang' : 'Pagi'),
-                      address: match[mappings.address] || '',
-                      phone: match[mappings.phone] || '',
-                      parentName: match[mappings.parentName] || '',
-                      parentPhone: match[mappings.parentPhone] || '',
-                      bkTeacher: match[mappings.bkTeacher] || '',
-                      homeroomTeacher: match[mappings.homeroomTeacher] || '',
-                      guardianTeacher: match[mappings.guardianTeacher] || '',
-                      studentAffairs: match[mappings.studentAffairs] || '',
-                      lastSyncedAt: serverTimestamp()
-                    };
-                    await updateDoc(userDocRef, updates);
-                  }
-                } catch (csvError) {
-                  console.error("CSV Sync Error:", csvError);
-                }
+                fetch(schoolData.studentDatabaseUrl)
+                  .then(res => res.text())
+                  .then(csvText => {
+                    const studentData = parseCSV(csvText);
+                    const mappings = schoolData.csvMappings!;
+                    const match = studentData.find(s => String(s[mappings.nis]).trim() === String(userData.nis).trim());
+                    if (match) {
+                      updateDoc(userDocRef, {
+                        displayName: match[mappings.name] || userData.displayName,
+                        className: match[mappings.class] || 'X',
+                        session: (match[mappings.session] === 'Siang' ? 'Siang' : 'Pagi'),
+                        address: match[mappings.address] || '',
+                        phone: match[mappings.phone] || '',
+                        parentName: match[mappings.parentName] || '',
+                        parentPhone: match[mappings.parentPhone] || '',
+                        bkTeacher: match[mappings.bkTeacher] || '',
+                        homeroomTeacher: match[mappings.homeroomTeacher] || '',
+                        guardianTeacher: match[mappings.guardianTeacher] || '',
+                        studentAffairs: match[mappings.studentAffairs] || '',
+                        lastSyncedAt: serverTimestamp()
+                      });
+                    }
+                  }).catch(err => console.error("CSV Sync Background Error:", err));
               }
             }
           }
         } catch (e) {
-          console.warn("Profile check/creation pending...");
+          console.warn("User profile setup error:", e);
         }
 
         const unsubscribeProfile = onSnapshot(userDocRef, (docSnap) => {
@@ -166,7 +173,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           setUserState({
             user: { ...firebaseUser, profile: null } as AppUser,
             isUserLoading: false,
-            userError: null
+            userError: err
           });
         });
 

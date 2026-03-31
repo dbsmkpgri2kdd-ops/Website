@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -68,8 +69,6 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
     return schoolData?.layoutSettings?.sectionOrder || ['hero', 'partners', 'apps', 'stats', 'majors', 'news', 'cta'];
   }, [schoolData]);
 
-  if (!mounted) return null;
-
   const renderSection = (id: string) => {
     const settings = schoolData?.layoutSettings;
     
@@ -80,13 +79,22 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
           <section key="hero" className="relative pt-12 pb-10 md:pt-20 md:pb-16 overflow-hidden bg-background border-b border-border/50 tech-mesh">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="max-w-3xl space-y-6 animate-reveal">
-                  <h1 className="text-3xl md:text-5xl font-bold tracking-tighter text-foreground leading-[1.1] uppercase">
-                    {schoolData?.heroTitle || "Membangun Masa Depan"} <br/>
-                    <span className="text-primary">Ahli & Kompeten.</span>
-                  </h1>
-                  <p className="text-[10px] md:text-[11px] text-muted-foreground max-w-md font-bold uppercase tracking-widest leading-relaxed">
-                    {schoolData?.heroSubtitle || "Pendidikan vokasi berstandar industri dengan kurikulum terintegrasi untuk mencetak lulusan siap kerja."}
-                  </p>
+                  {isSchoolLoading ? (
+                    <div className="space-y-4">
+                      <Skeleton className="h-12 w-3/4" />
+                      <Skeleton className="h-6 w-1/2" />
+                    </div>
+                  ) : (
+                    <>
+                      <h1 className="text-3xl md:text-5xl font-bold tracking-tighter text-foreground leading-[1.1] uppercase">
+                        {schoolData?.heroTitle || "Membangun Masa Depan"} <br/>
+                        <span className="text-primary">Ahli & Kompeten.</span>
+                      </h1>
+                      <p className="text-[10px] md:text-[11px] text-muted-foreground max-w-md font-bold uppercase tracking-widest leading-relaxed">
+                        {schoolData?.heroSubtitle || "Pendidikan vokasi berstandar industri dengan kurikulum terintegrasi untuk mencetak lulusan siap kerja."}
+                      </p>
+                    </>
+                  )}
                   <div className="flex flex-wrap gap-3 pt-2">
                     <Button onClick={() => setActiveTab('ppdb-online')} variant="accent" size="xl" className="font-bold text-[10px] uppercase tracking-widest glow-accent">
                         Daftar Calon Siswa <ArrowRight size={14} className="ml-2" />
@@ -148,16 +156,22 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                     const IconComp = iconMap[major.icon] || BookOpen;
                     return (
                          <Card key={major.id || i} className="p-6 rounded-2xl border-border/50 bg-card hover:border-primary/20 transition-all duration-300 flex flex-col h-full shadow-sm group border-2">
-                              <div className="w-10 h-10 bg-primary/5 text-primary rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all">
-                                  <IconComp size={20} />
-                              </div>
-                              <h3 className="text-sm font-bold mb-1 text-foreground uppercase tracking-tight">{major.name || 'Bidang Studi'}</h3>
-                              <p className="text-muted-foreground text-[10px] leading-relaxed mb-4 flex-grow font-bold uppercase tracking-widest opacity-70">
-                                {major.description || 'Program keahlian unggulan.'}
-                              </p>
-                              <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-primary font-bold text-[9px] uppercase tracking-widest hover:bg-transparent flex justify-start items-center">
-                                Detail <ChevronRight size={12} className="ml-1" />
-                              </Button>
+                              {areMajorsLoading ? (
+                                <Skeleton className="h-40 w-full rounded-xl" />
+                              ) : (
+                                <>
+                                  <div className="w-10 h-10 bg-primary/5 text-primary rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all">
+                                      <IconComp size={20} />
+                                  </div>
+                                  <h3 className="text-sm font-bold mb-1 text-foreground uppercase tracking-tight">{major.name || 'Bidang Studi'}</h3>
+                                  <p className="text-muted-foreground text-[10px] leading-relaxed mb-4 flex-grow font-bold uppercase tracking-widest opacity-70">
+                                    {major.description || 'Program keahlian unggulan.'}
+                                  </p>
+                                  <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-primary font-bold text-[9px] uppercase tracking-widest hover:bg-transparent flex justify-start items-center">
+                                    Detail <ChevronRight size={12} className="ml-1" />
+                                  </Button>
+                                </>
+                              )}
                          </Card>
                     )
                   })}
@@ -193,12 +207,18 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                         )}
                       </div>
                       <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 text-[8px] font-black text-muted-foreground opacity-60 uppercase tracking-widest">
-                            <span className="text-primary">{news.category || 'INFO'}</span>
-                            <span>•</span>
-                            <span>{formatDateLabel(news.datePublished)}</span>
-                        </div>
-                        <h3 className="text-xs font-bold leading-snug text-foreground line-clamp-2 uppercase tracking-tight group-hover:text-primary transition-colors">{news.title || 'Judul Berita'}</h3>
+                        {areNewsLoading ? (
+                          <Skeleton className="h-4 w-full" />
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2 text-[8px] font-black text-muted-foreground opacity-60 uppercase tracking-widest">
+                                <span className="text-primary">{news.category || 'INFO'}</span>
+                                <span>•</span>
+                                <span>{formatDateLabel(news.datePublished)}</span>
+                            </div>
+                            <h3 className="text-xs font-bold leading-snug text-foreground line-clamp-2 uppercase tracking-tight group-hover:text-primary transition-colors">{news.title || 'Judul Berita'}</h3>
+                          </>
+                        )}
                       </div>
                     </div>
                 ))}
@@ -232,6 +252,8 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
         return null;
     }
   };
+
+  if (!mounted) return null;
 
   return (
       <div className="pb-12 animate-reveal bg-background">

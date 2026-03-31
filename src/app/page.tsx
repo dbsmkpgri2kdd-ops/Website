@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, Suspense, useEffect } from 'react';
@@ -9,50 +10,52 @@ import { type NewsArticle, SCHOOL_DATA_ID, type School, type LiteracyArticle, ty
 import { useDoc, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import BottomNav from '@/components/layout/bottom-nav';
-import { LoaderCircle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const SectionLoader = () => (
-  <div className="flex items-center justify-center h-[80vh] bg-background">
-    <div className='flex flex-col items-center gap-4'>
-        <LoaderCircle className="w-12 h-12 animate-spin text-primary" />
-        <p className='text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground'>Syncing school data...</p>
+const SectionSkeleton = () => (
+  <div className="max-w-7xl mx-auto px-6 py-12 space-y-8">
+    <Skeleton className="h-10 w-48" />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Skeleton className="h-64 rounded-2xl" />
+      <Skeleton className="h-64 rounded-2xl" />
+      <Skeleton className="h-64 rounded-2xl" />
     </div>
   </div>
 );
 
-// Performance Optimization: Dynamic imports
-const ProfileSection = dynamic(() => import('@/components/sections/profile'), { loading: () => <SectionLoader />, ssr: true });
-const NewsSection = dynamic(() => import('@/components/sections/news'), { loading: () => <SectionLoader />, ssr: false });
-const PpdbSection = dynamic(() => import('@/components/sections/ppdb'), { loading: () => <SectionLoader />, ssr: false });
-const ContactSection = dynamic(() => import('@/components/sections/contact'), { loading: () => <SectionLoader />, ssr: false });
-const MajorsSection = dynamic(() => import('@/components/sections/majors'), { loading: () => <SectionLoader />, ssr: false });
-const FacilitiesSection = dynamic(() => import('@/components/sections/facilities'), { loading: () => <SectionLoader />, ssr: false });
-const GallerySection = dynamic(() => import('@/components/sections/gallery'), { loading: () => <SectionLoader />, ssr: false });
-const AchievementsSection = dynamic(() => import('@/components/sections/achievements'), { loading: () => <SectionLoader />, ssr: false });
-const NewsDetailSection = dynamic(() => import('@/components/sections/news-detail'), { loading: () => <SectionLoader />, ssr: false });
-const TestimonialsSection = dynamic(() => import('@/components/sections/testimonials'), { loading: () => <SectionLoader />, ssr: false });
-const ExtracurricularsSection = dynamic(() => import('@/components/sections/extracurriculars'), { loading: () => <SectionLoader />, ssr: false });
-const AgendaSection = dynamic(() => import('@/components/sections/agenda'), { loading: () => <SectionLoader />, ssr: false });
-const DownloadsSection = dynamic(() => import('@/components/sections/downloads'), { loading: () => <SectionLoader />, ssr: false });
-const ScheduleSection = dynamic(() => import('@/components/shared/schedule-section'), { loading: () => <SectionLoader />, ssr: false });
-const LibrarySection = dynamic(() => import('@/components/sections/library'), { loading: () => <SectionLoader />, ssr: false });
-const LiteracySection = dynamic(() => import('@/components/sections/literacy-section'), { loading: () => <SectionLoader />, ssr: false });
-const LiteracyDetailSection = dynamic(() => import('@/components/sections/literacy-detail-section'), { loading: () => <SectionLoader />, ssr: false });
-const OsisCornerSection = dynamic(() => import('@/components/sections/osis-corner'), { loading: () => <SectionLoader />, ssr: false });
-const OsisCornerDetailSection = dynamic(() => import('@/components/sections/osis-corner-detail'), { loading: () => <SectionLoader />, ssr: false });
-const IndustryPartnersSection = dynamic(() => import('@/components/sections/industry-partners'), { loading: () => <SectionLoader />, ssr: false });
-const BkkSection = dynamic(() => import('@/components/sections/bkk'), { loading: () => <SectionLoader />, ssr: false });
-const TeachingFactorySection = dynamic(() => import('@/components/sections/teaching-factory'), { loading: () => <SectionLoader />, ssr: false });
-const LspSection = dynamic(() => import('@/components/sections/lsp'), { loading: () => <SectionLoader />, ssr: false });
-const TracerStudySection = dynamic(() => import('@/components/sections/tracer-study'), { loading: () => <SectionLoader />, ssr: false });
-const CheckGraduationSection = dynamic(() => import('@/components/sections/check-graduation'), { loading: () => <SectionLoader />, ssr: false });
-const PpdbStatusCheckSection = dynamic(() => import('@/components/sections/ppdb-status-check'), { loading: () => <SectionLoader />, ssr: false });
-const TeachersSection = dynamic(() => import('@/components/sections/teachers'), { loading: () => <SectionLoader />, ssr: false });
-const PlaceholderSection = dynamic(() => import('@/components/sections/placeholder-section'), { loading: () => <SectionLoader />, ssr: false });
-const AlumniSection = dynamic(() => import('@/components/sections/alumni'), { loading: () => <SectionLoader />, ssr: false });
-const GuestbookSection = dynamic(() => import('@/components/sections/guestbook'), { loading: () => <SectionLoader />, ssr: false });
-const PrakerinSection = dynamic(() => import('@/components/sections/prakerin'), { loading: () => <SectionLoader />, ssr: false });
-const ShowcaseSection = dynamic(() => import('@/components/sections/showcase'), { loading: () => <SectionLoader />, ssr: false });
+// Performance Optimization: Strategic Dynamic imports
+const ProfileSection = dynamic(() => import('@/components/sections/profile'), { loading: () => <SectionSkeleton />, ssr: true });
+const NewsSection = dynamic(() => import('@/components/sections/news'), { loading: () => <SectionSkeleton />, ssr: false });
+const PpdbSection = dynamic(() => import('@/components/sections/ppdb'), { loading: () => <SectionSkeleton />, ssr: false });
+const ContactSection = dynamic(() => import('@/components/sections/contact'), { loading: () => <SectionSkeleton />, ssr: false });
+const MajorsSection = dynamic(() => import('@/components/sections/majors'), { loading: () => <SectionSkeleton />, ssr: false });
+const FacilitiesSection = dynamic(() => import('@/components/sections/facilities'), { loading: () => <SectionSkeleton />, ssr: false });
+const GallerySection = dynamic(() => import('@/components/sections/gallery'), { loading: () => <SectionSkeleton />, ssr: false });
+const AchievementsSection = dynamic(() => import('@/components/sections/achievements'), { loading: () => <SectionSkeleton />, ssr: false });
+const NewsDetailSection = dynamic(() => import('@/components/sections/news-detail'), { loading: () => <SectionSkeleton />, ssr: false });
+const TestimonialsSection = dynamic(() => import('@/components/sections/testimonials'), { loading: () => <SectionSkeleton />, ssr: false });
+const ExtracurricularsSection = dynamic(() => import('@/components/sections/extracurriculars'), { loading: () => <SectionSkeleton />, ssr: false });
+const AgendaSection = dynamic(() => import('@/components/sections/agenda'), { loading: () => <SectionSkeleton />, ssr: false });
+const DownloadsSection = dynamic(() => import('@/components/sections/downloads'), { loading: () => <SectionSkeleton />, ssr: false });
+const ScheduleSection = dynamic(() => import('@/components/shared/schedule-section'), { loading: () => <SectionSkeleton />, ssr: false });
+const LibrarySection = dynamic(() => import('@/components/sections/library'), { loading: () => <SectionSkeleton />, ssr: false });
+const LiteracySection = dynamic(() => import('@/components/sections/literacy-section'), { loading: () => <SectionSkeleton />, ssr: false });
+const LiteracyDetailSection = dynamic(() => import('@/components/sections/literacy-detail-section'), { loading: () => <SectionSkeleton />, ssr: false });
+const OsisCornerSection = dynamic(() => import('@/components/sections/osis-corner'), { loading: () => <SectionSkeleton />, ssr: false });
+const OsisCornerDetailSection = dynamic(() => import('@/components/sections/osis-corner-detail'), { loading: () => <SectionSkeleton />, ssr: false });
+const IndustryPartnersSection = dynamic(() => import('@/components/sections/industry-partners'), { loading: () => <SectionSkeleton />, ssr: false });
+const BkkSection = dynamic(() => import('@/components/sections/bkk'), { loading: () => <SectionSkeleton />, ssr: false });
+const TeachingFactorySection = dynamic(() => import('@/components/sections/teaching-factory'), { loading: () => <SectionSkeleton />, ssr: false });
+const LspSection = dynamic(() => import('@/components/sections/lsp'), { loading: () => <SectionSkeleton />, ssr: false });
+const TracerStudySection = dynamic(() => import('@/components/sections/tracer-study'), { loading: () => <SectionSkeleton />, ssr: false });
+const CheckGraduationSection = dynamic(() => import('@/components/sections/check-graduation'), { loading: () => <SectionSkeleton />, ssr: false });
+const PpdbStatusCheckSection = dynamic(() => import('@/components/sections/ppdb-status-check'), { loading: () => <SectionSkeleton />, ssr: false });
+const TeachersSection = dynamic(() => import('@/components/sections/teachers'), { loading: () => <SectionSkeleton />, ssr: false });
+const PlaceholderSection = dynamic(() => import('@/components/sections/placeholder-section'), { loading: () => <SectionSkeleton />, ssr: false });
+const AlumniSection = dynamic(() => import('@/components/sections/alumni'), { loading: () => <SectionSkeleton />, ssr: false });
+const GuestbookSection = dynamic(() => import('@/components/sections/guestbook'), { loading: () => <SectionSkeleton />, ssr: false });
+const PrakerinSection = dynamic(() => import('@/components/sections/prakerin'), { loading: () => <SectionSkeleton />, ssr: false });
+const ShowcaseSection = dynamic(() => import('@/components/sections/showcase'), { loading: () => <SectionSkeleton />, ssr: false });
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<NavLink>('home');
@@ -132,7 +135,7 @@ export default function Home() {
   }
 
   const renderSection = () => {
-    if (!mounted) return <SectionLoader />;
+    if (!mounted) return <SectionSkeleton />;
 
     if (schoolData?.isMaintenanceMode && !isAdmin) {
         return (
@@ -227,7 +230,7 @@ export default function Home() {
         isSchoolDataLoading={isSchoolDataLoading}
       />
       <main className="flex-grow pb-24 md:pb-0">
-        <Suspense fallback={<SectionLoader />}>
+        <Suspense fallback={<SectionSkeleton />}>
             {renderSection()}
         </Suspense>
       </main>
