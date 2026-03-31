@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -20,7 +19,7 @@ const PpdbSection = ({ setActiveTab }: PpdbSectionProps) => {
       <div className='space-y-8'>
         <div className='space-y-4'>
             <div className='flex items-center gap-2 text-primary'>
-                <Sparkles size={14} className='animate-pulse' />
+                <Sparkles size={14} className='animate-pulse text-accent' />
                 <span className="text-xs font-bold uppercase tracking-widest">PPDB Online 2025</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight">Mulai Masa Depan Anda di Sini.</h2>
@@ -31,14 +30,14 @@ const PpdbSection = ({ setActiveTab }: PpdbSectionProps) => {
 
         <div className="space-y-6">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-primary/10 text-primary rounded-xl shrink-0"><BookOpen size={20}/></div>
+            <div className="p-3 bg-blue-50 text-primary rounded-xl shrink-0 border border-blue-100"><BookOpen size={20}/></div>
             <div>
               <h4 className="font-bold text-slate-900 text-sm">Kurikulum Industri</h4>
               <p className="text-xs text-muted-foreground mt-1 font-medium leading-relaxed">Materi pembelajaran yang disinkronkan dengan kebutuhan pasar kerja saat ini.</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-primary/10 text-primary rounded-xl shrink-0"><CheckCircle size={20}/></div>
+            <div className="p-3 bg-blue-50 text-primary rounded-xl shrink-0 border border-blue-100"><CheckCircle size={20}/></div>
             <div>
               <h4 className="font-bold text-slate-900 text-sm">Fasilitas Modern</h4>
               <p className="text-xs text-muted-foreground mt-1 font-medium leading-relaxed">Laboratorium dan bengkel kerja berstandar nasional untuk praktik nyata.</p>
@@ -49,16 +48,16 @@ const PpdbSection = ({ setActiveTab }: PpdbSectionProps) => {
         <div className='pt-8 border-t border-border'>
             <p className='text-xs font-bold text-muted-foreground mb-4'>Sudah melakukan pendaftaran online sebelumnya?</p>
             <Button onClick={() => setActiveTab?.('cek-pendaftaran-ppdb')} variant="outline" className="rounded-lg h-11 px-6 font-bold text-xs border-primary/20 text-primary hover:bg-primary/5">
-                <Search size={14} className='mr-2' /> Cek Status Kelulusan
+                <Search size={14} className='mr-2' /> Cek Status Pendaftaran
             </Button>
         </div>
       </div>
 
-      <Card className="rounded-2xl border-border bg-white shadow-xl overflow-hidden border-t-4 border-t-primary">
+      <Card className="rounded-[2.5rem] border-border bg-white shadow-2xl overflow-hidden border-t-8 border-t-accent">
         <CardContent className="p-8 md:p-10">
           {isSubmitted ? (
             <div className="text-center py-16 animate-reveal flex flex-col items-center justify-center">
-              <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+              <div className="w-20 h-20 bg-blue-50 text-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
                 <CheckCircle size={40} />
               </div>
               <h3 className="text-2xl font-bold text-slate-900">Berkas Terkirim!</h3>

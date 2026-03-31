@@ -25,45 +25,49 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
             title: 'Siswa Aktif',
             value: studentCount,
             icon: GraduationCap,
-            color: 'text-blue-600',
-            bg: 'bg-blue-50'
+            color: 'text-primary',
+            bg: 'bg-blue-50',
+            border: 'border-blue-100'
         },
         {
             title: 'Tenaga Pendidik',
             value: teacherCount,
             icon: UserCheck,
-            color: 'text-amber-600',
-            bg: 'bg-amber-50'
+            color: 'text-accent',
+            bg: 'bg-accent/5',
+            border: 'border-accent/10'
         },
         {
             title: 'Program Studi',
             value: majorCount,
             icon: BookOpen,
-            color: 'text-emerald-600',
-            bg: 'bg-emerald-50'
+            color: 'text-primary',
+            bg: 'bg-blue-50',
+            border: 'border-blue-100'
         },
         {
             title: 'Mitra Industri',
             value: partnerCount,
             icon: Factory,
-            color: 'text-indigo-600',
-            bg: 'bg-indigo-50'
+            color: 'text-accent',
+            bg: 'bg-accent/5',
+            border: 'border-accent/10'
         },
     ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
         {stats.map((stat, index) => (
-            <div key={index} className="flex flex-col items-center sm:items-start p-6 rounded-2xl bg-white border border-border shadow-sm group hover:border-primary/30 transition-all">
-                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center mb-4 transition-transform group-hover:scale-110 shadow-sm`}>
-                    <stat.icon size={24} />
+            <div key={index} className="flex flex-col items-center sm:items-start p-8 rounded-[2rem] bg-white border border-slate-100 shadow-sm group hover:border-primary/20 hover:shadow-xl transition-all duration-500">
+                <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} ${stat.border} border flex items-center justify-center mb-6 transition-transform group-hover:scale-110 shadow-sm`}>
+                    <stat.icon size={28} />
                 </div>
                 <div className="space-y-1 text-center sm:text-left">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{stat.title}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{stat.title}</p>
                     {isLoading || !mounted ? (
-                        <Skeleton className='h-8 w-20' />
+                        <Skeleton className='h-10 w-24' />
                     ) : (
-                        <div className="text-3xl font-bold text-slate-900" suppressHydrationWarning>
+                        <div className="text-4xl font-black text-slate-900 tracking-tighter" suppressHydrationWarning>
                           {stat.value > 0 ? stat.value.toLocaleString('id-ID') : '0'}
                         </div>
                     )}

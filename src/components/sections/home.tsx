@@ -95,22 +95,22 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                 sizes="100vw"
                 data-ai-hint="bright university"
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-white via-white/95 to-slate-100/50"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-white via-white/95 to-blue-50/20"></div>
             </div>
             <div className="relative z-10 max-w-7xl mx-auto px-6 w-full py-20">
                 <div className="max-w-3xl space-y-8 animate-reveal">
-                  <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 text-slate-900 text-[11px] font-bold tracking-wider border border-slate-200'>
-                    <Sparkles size={14} className="text-blue-600 animate-pulse" />
+                  <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-blue-700 text-[11px] font-bold tracking-wider border border-blue-100'>
+                    <Sparkles size={14} className="text-accent animate-pulse" />
                     <span>Pusat Keunggulan Vokasi 2025</span>
                   </div>
                   <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-[1.1]">
-                    {schoolData?.heroTitle || "Membangun Masa Depan"} <br/><span className="text-blue-600">Generasi Ahli & Kompeten.</span>
+                    {schoolData?.heroTitle || "Membangun Masa Depan"} <br/><span className="text-primary">Generasi Ahli & Kompeten.</span>
                   </h1>
                   <p className="text-base md:text-xl text-slate-600 max-w-xl font-medium leading-relaxed">
                     {schoolData?.heroSubtitle || "Persiapkan diri Anda untuk karier profesional melalui pendidikan berkualitas berbasis industri di SMKS PGRI 2 Kedondong."}
                   </p>
                   <div className="flex flex-wrap gap-4 pt-4">
-                    <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-14 px-10 rounded-2xl font-bold shadow-xl shadow-slate-200 hover:scale-[1.02] transition-all">
+                    <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-14 px-10 rounded-2xl font-bold shadow-xl shadow-blue-100 hover:scale-[1.02] transition-all bg-primary text-white">
                         Daftar Calon Siswa <ArrowRight className='ml-2 h-5 w-5' />
                     </Button>
                     <Button onClick={() => setActiveTab('profil-sejarah')} variant="outline" size="lg" className="h-14 px-10 rounded-2xl font-bold border-slate-200 text-slate-900 bg-white hover:bg-slate-50">
@@ -168,8 +168,8 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
         return (
           <section key="majors" className="max-w-7xl mx-auto px-6 py-24">
               <div className="mb-16 text-center md:text-left space-y-3">
-                  <div className='flex items-center gap-2 text-blue-600 justify-center md:justify-start'>
-                    <div className='h-px w-8 bg-blue-600/30'></div>
+                  <div className='flex items-center gap-2 text-primary justify-center md:justify-start'>
+                    <div className='h-px w-8 bg-primary/30'></div>
                     <span className="text-xs font-bold uppercase tracking-widest">Akademik</span>
                   </div>
                   <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">Program Unggulan</h2>
@@ -179,15 +179,16 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                   {(areMajorsLoading ? Array(3).fill({}) : (majors || [])).slice(0, 3).map((major: any, i: number) => {
                     const Icon = iconMap[major.icon] || BookOpen;
                     return (
-                         <Card key={major.id || i} className="p-10 rounded-[2.5rem] border-slate-100 bg-white hover:border-blue-100 transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-xl group">
-                              <div className="w-14 h-14 bg-slate-50 text-slate-900 rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110 border border-slate-100">
-                                  <Icon size={28} className="text-blue-600" />
+                         <Card key={major.id || i} className="p-10 rounded-[2.5rem] border-slate-100 bg-white hover:border-blue-100 transition-all duration-500 flex flex-col h-full shadow-sm hover:shadow-xl group relative overflow-hidden">
+                              <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 -mr-12 -mt-12 rounded-full transition-all group-hover:scale-150"></div>
+                              <div className="w-14 h-14 bg-blue-50 text-primary rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110 border border-blue-100">
+                                  <Icon size={28} />
                               </div>
                               <h3 className="text-xl font-bold mb-4 text-slate-900">{major.name || 'Bidang Studi'}</h3>
                               <p className="text-slate-500 text-sm leading-relaxed mb-8 flex-grow font-medium">
                                 {major.description || 'Deskripsi mendalam mengenai kompetensi keahlian akan segera tersedia untuk publik.'}
                               </p>
-                              <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-blue-600 font-bold text-sm hover:bg-transparent flex justify-start items-center group/btn">
+                              <Button variant="ghost" onClick={() => setActiveTab('jurusan-kompetensi')} className="p-0 h-auto text-primary font-bold text-sm hover:bg-transparent flex justify-start items-center group/btn">
                                 Pelajari Detail <ChevronRight size={16} className="ml-1 transition-transform group-hover/btn:translate-x-1" />
                               </Button>
                          </Card>
@@ -211,8 +212,8 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
           <section key="news" className="max-w-7xl mx-auto px-6 py-24">
               <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                   <div className="space-y-3 text-center md:text-left">
-                      <div className='flex items-center gap-2 text-blue-600 justify-center md:justify-start'>
-                        <div className='h-px w-8 bg-blue-600/30'></div>
+                      <div className='flex items-center gap-2 text-primary justify-center md:justify-start'>
+                        <div className='h-px w-8 bg-primary/30'></div>
                         <span className="text-xs font-bold uppercase tracking-widest">Informasi</span>
                       </div>
                       <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">Warta Kampus</h2>
@@ -236,11 +237,11 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                         )}
                       </div>
                       <div className="space-y-3 px-2">
-                        <div className="flex items-center gap-3 text-[11px] font-bold text-blue-600">
+                        <div className="flex items-center gap-3 text-[11px] font-bold text-primary">
                             <span className='bg-blue-50 px-3 py-1 rounded-full border border-blue-100'>{news.category || 'Berita'}</span>
                             <span className="text-slate-400 font-medium">{formatDateLabel(news.datePublished)}</span>
                         </div>
-                        <h3 className="text-xl font-bold leading-tight group-hover:text-blue-600 transition-colors text-slate-900 line-clamp-2">{news.title || 'Informasi Akademik Penting'}</h3>
+                        <h3 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors text-slate-900 line-clamp-2">{news.title || 'Informasi Akademik Penting'}</h3>
                         <p className='text-slate-500 text-sm line-clamp-2 leading-relaxed font-medium'>{news.content}</p>
                       </div>
                     </div>
@@ -253,20 +254,20 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
         if (settings?.showCta === false) return null;
         return (
           <section key="cta" className="max-w-7xl mx-auto px-6 py-24">
-            <div className="rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden bg-slate-900 shadow-2xl">
-              <div className="absolute inset-0 bg-blue-500/5 opacity-20 pointer-events-none"></div>
+            <div className="rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden bg-primary shadow-2xl">
+              <div className="absolute inset-0 bg-accent/10 opacity-20 pointer-events-none"></div>
               <div className="relative z-10 space-y-10">
                 <h2 className="text-3xl md:text-5xl font-black text-white max-w-3xl mx-auto leading-[1.1] tracking-tight italic">
                   {schoolData?.ctaTitle || "SIAP MENJADI AHLI PROFESIONAL DI BIDANGNYA?"}
                 </h2>
-                <p className="text-slate-400 text-base md:text-lg max-w-xl mx-auto font-medium leading-relaxed">
+                <p className="text-blue-100 text-base md:text-lg max-w-xl mx-auto font-medium leading-relaxed">
                   Gabunglah dengan ribuan siswa sukses lainnya. Pendaftaran tahun ajaran baru 2025/2026 telah dibuka secara resmi.
                 </p>
                 <div className="flex flex-wrap gap-5 justify-center">
-                  <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl bg-white text-slate-900 hover:bg-slate-100 transition-all">
+                  <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all">
                       Daftar Sekarang
                   </Button>
-                  <Button variant="secondary" onClick={() => setActiveTab('kontak')} className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl bg-slate-800 text-white hover:bg-slate-700">
+                  <Button variant="outline" onClick={() => setActiveTab('kontak')} className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.2em] border-white/20 text-white hover:bg-white/5">
                       Hubungi Bantuan
                   </Button>
                 </div>
