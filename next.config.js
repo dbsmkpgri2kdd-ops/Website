@@ -12,13 +12,6 @@ const nextConfig = {
       { protocol: 'https', hostname: 'drive.google.com' },
     ],
   },
-  experimental: {
-    allowedDevOrigins: [
-      '*.cloudworkstations.dev',
-      'localhost:9002',
-      'localhost:3000'
-    ]
-  }
 };
 
 export default nextConfig;

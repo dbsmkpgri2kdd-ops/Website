@@ -78,7 +78,8 @@ export function BiometricManager() {
 
   const classes = useMemo(() => {
     if (!users) return [];
-    const classSet = new Set(users.map(s => s.className).filter(Boolean));
+    // Strictly filter for strings to satisfy TypeScript
+    const classSet = new Set(users.map(s => s.className).filter((c): c is string => !!c));
     return Array.from(classSet).sort();
   }, [users]);
 
@@ -266,7 +267,7 @@ export function BiometricManager() {
       </div>
 
       <Tabs defaultValue="terminal" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-14 rounded-2xl bg-slate-50 p-1 mb-8">
+        <TabsList className="grid w-full grid-cols-2 h-14 rounded-2xl bg-slate-50 p-1 mb-8 shadow-inner">
           <TabsTrigger value="terminal" className="rounded-xl font-bold text-xs">
             <MonitorCheck className="mr-2 h-4 w-4" /> Terminal Otomatis
           </TabsTrigger>
