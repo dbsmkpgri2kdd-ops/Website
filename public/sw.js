@@ -1,38 +1,49 @@
 /**
- * PRIDA PWA Service Worker v1.0
- * Handles auto-updates and basic caching for static assets.
+ * PRIDA PWA SERVICE WORKER v2.5
+ * Strategi: Network-First dengan Fallback Cache & Auto-Update
  */
 
-const CACHE_NAME = 'prida-cache-v1';
+const CACHE_NAME = 'prida-portal-v2.5';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/manifest.webmanifest',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css'
+];
 
 self.addEventListener('install', (event) => {
-  // Force the waiting service worker to become the active service worker
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  // Ensure that updates to the service worker take effect immediately
-  event.waitUntil(clients.claim());
-  
-  // Clean up old caches if any
+  self.skipWaiting(); // Langsung aktifkan versi baru
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
-      );
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
     })
   );
 });
 
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    Promise.all([
+      self.clients.claim(), // Ambil alih kontrol klien segera
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+    ])
+  );
+});
+
 self.addEventListener('fetch', (event) => {
-  // Network first, fallback to cache for static export readiness
+  // Hanya tangani GET requests
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
+    fetch(event.request)
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });
