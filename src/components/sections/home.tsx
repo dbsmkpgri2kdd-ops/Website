@@ -267,7 +267,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
                   <Button onClick={() => setActiveTab('ppdb-online')} size="lg" className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl bg-accent text-accent-foreground hover:bg-accent/90 transition-all border-none">
                       Daftar Sekarang
                   </Button>
-                  <Button variant="outline" onClick={() => setActiveTab('kontak')} className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.2em] border-white/20 text-white hover:bg-white/5">
+                  <Button variant="secondary" onClick={() => setActiveTab('kontak')} className="h-16 px-12 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl">
                       Hubungi Bantuan
                   </Button>
                 </div>
