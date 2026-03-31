@@ -10,7 +10,7 @@ import { SCHOOL_DATA_ID, type QuickLink } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
@@ -23,18 +23,9 @@ const formSchema = z.object({
   title: z.string().min(3, 'Judul minimal 3 karakter.'),
   description: z.string().min(5, 'Deskripsi minimal 5 karakter.'),
   url: z.string().url('URL tidak valid.'),
-  icon: z.string({ required_error: 'Pilih ikon.' }),
+  icon: z.string().min(1, 'Ikon harus diisi.'),
   audience: z.enum(['all', 'public', 'guru', 'siswa'], { required_error: 'Pilih audiens.' }),
 });
-
-const ICONS = [
-  { name: 'Globe', component: Globe },
-  { name: 'Laptop', component: Laptop },
-  { name: 'AppWindow', component: AppWindow },
-  { name: 'BookOpen', component: BookOpen },
-  { name: 'GraduationCap', component: GraduationCap },
-  { name: 'Users', component: Users },
-];
 
 const iconMap: { [key: string]: any } = {
   Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users
@@ -56,13 +47,13 @@ export function QuickLinksManager() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { title: '', description: '', url: '', icon: 'Globe', audience: 'all' },
+    defaultValues: { title: '', description: '', url: '', icon: 'fa-solid fa-globe', audience: 'all' },
   });
 
   useEffect(() => {
     if (!isDialogOpen) {
       setEditingItem(null);
-      form.reset({ title: '', description: '', url: '', icon: 'Globe', audience: 'all' });
+      form.reset({ title: '', description: '', url: '', icon: 'fa-solid fa-globe', audience: 'all' });
     }
   }, [isDialogOpen, form]);
 
@@ -103,6 +94,14 @@ export function QuickLinksManager() {
     }
   }
 
+  const renderTableIcon = (iconStr: string) => {
+    if (iconStr.includes('fa-')) {
+      return <i className={`${iconStr} text-primary w-4 h-4 flex items-center justify-center`} />;
+    }
+    const Icon = iconMap[iconStr] || Globe;
+    return <Icon size={16} className="text-primary"/>;
+  };
+
   return (
     <Card className="shadow-lg rounded-2xl">
         <CardHeader>
@@ -130,17 +129,9 @@ export function QuickLinksManager() {
                     <div className="grid grid-cols-2 gap-4">
                       <FormField control={form.control} name="icon" render={({ field }) => (
                           <FormItem>
-                              <FormLabel>Ikon</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl><SelectTrigger><SelectValue placeholder="Pilih ikon" /></SelectTrigger></FormControl>
-                                  <SelectContent>
-                                      {ICONS.map(icon => (
-                                          <SelectItem key={icon.name} value={icon.name}>
-                                              <div className="flex items-center gap-2"><icon.component size={16}/> {icon.name}</div>
-                                          </SelectItem>
-                                      ))}
-                                  </SelectContent>
-                              </Select>
+                              <FormLabel>Kode Ikon (Font Awesome)</FormLabel>
+                              <FormControl><Input {...field} placeholder="fa-solid fa-globe" /></FormControl>
+                              <FormDescription className="text-[10px]">Gunakan class Font Awesome (e.g. fa-solid fa-user)</FormDescription>
                               <FormMessage />
                           </FormItem>
                       )}/>
@@ -188,12 +179,13 @@ export function QuickLinksManager() {
                     )}
                     {links && links.length > 0 ? (
                     links.map((item) => {
-                        const Icon = iconMap[item.icon] || Globe;
                         return (
                           <TableRow key={item.id}>
-                              <TableCell className="font-medium flex items-center gap-2">
-                                <Icon size={16} className="text-primary"/>
-                                {item.title}
+                              <TableCell className="font-medium">
+                                <div className="flex items-center gap-2">
+                                  {renderTableIcon(item.icon)}
+                                  {item.title}
+                                </div>
                               </TableCell>
                               <TableCell><Badge variant="outline" className="capitalize">{item.audience}</Badge></TableCell>
                               <TableCell className="text-right">

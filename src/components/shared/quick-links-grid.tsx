@@ -6,6 +6,7 @@ import { collection, query, where } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type QuickLink } from '@/lib/data';
 import { Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users, ExternalLink, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 const iconMap: { [key: string]: any } = {
   Globe, Laptop, AppWindow, BookOpen, GraduationCap, Users
@@ -19,7 +20,7 @@ type QuickLinksGridProps = {
 
 /**
  * Komponen Grid untuk menampilkan Tautan Aplikasi berdasarkan audiens.
- * Dioptimalkan untuk kerapian tampilan PWA (Android) dengan gaya Fresh Light.
+ * Mendukung ikon Lucide (internal) dan Font Awesome (manual input).
  */
 export function QuickLinksGrid({ audience, title = "Layanan Digital", description = "Akses satu pintu untuk seluruh kebutuhan administratif dan akademik civitas." }: QuickLinksGridProps) {
   const firestore = useFirestore();
@@ -43,6 +44,22 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
   if (error) return null;
   if (!isLoading && (!links || links.length === 0)) return null;
 
+  const renderIcon = (iconStr: string) => {
+    if (iconStr.includes('fa-')) {
+      return (
+        <div className="p-3 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm w-12 h-12 flex items-center justify-center">
+          <i className={cn(iconStr, "text-xl")} />
+        </div>
+      );
+    }
+    const IconComp = iconMap[iconStr] || Globe;
+    return (
+      <div className="p-3 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
+        <IconComp size={24} />
+      </div>
+    );
+  };
+
   return (
     <div className="animate-fade-in">
       <div className="mb-12 text-center md:text-left space-y-3">
@@ -61,7 +78,6 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
           ))
         ) : (
           links?.map((link) => {
-            const Icon = iconMap[link.icon] || Globe;
             return (
               <a 
                 key={link.id} 
@@ -72,9 +88,7 @@ export function QuickLinksGrid({ audience, title = "Layanan Digital", descriptio
               >
                 <Card className="h-full rounded-2xl shadow-sm border-border bg-white hover:border-primary/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden border">
                   <CardHeader className="flex flex-row items-center gap-4 p-6 pb-3">
-                    <div className="p-3 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
-                      <Icon size={24} />
-                    </div>
+                    {renderIcon(link.icon)}
                     <div className="flex-1 min-w-0">
                       <CardTitle className="text-base font-bold text-slate-900 truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
                       <div className="flex items-center text-[10px] text-muted-foreground font-medium mt-1 opacity-60">
