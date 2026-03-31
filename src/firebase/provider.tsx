@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
@@ -6,7 +5,7 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
-import { SCHOOL_DATA_ID, type UserProfile, type School, type CsvMappings } from '@/lib/data';
+import { SCHOOL_DATA_ID, type UserProfile, type School } from '@/lib/data';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -68,13 +67,13 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       return;
     }
 
-    // Optimization: Run non-critical initializations asynchronously
+    // Background Initalization (Non-blocking)
     const initSchoolData = async () => {
       try {
         const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
         const schoolSnap = await getDoc(schoolRef);
         if (!schoolSnap.exists()) {
-          await setDoc(schoolRef, {
+          setDoc(schoolRef, {
             name: "SMKS PGRI 2 KEDONDONG",
             shortName: "SMK PRIDA",
             logoUrl: defaultLogo,
@@ -96,7 +95,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           });
         }
       } catch (e) {
-        console.warn("School initialization skipped or already handled.");
+        console.warn("School initialization handle skipped.");
       }
     };
 
@@ -114,7 +113,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             const isFirstUser = !initSnap.exists();
             const role = isFirstUser ? 'admin' : 'siswa';
 
-            await setDoc(userDocRef, {
+            setDoc(userDocRef, {
               email: firebaseUser.email || '',
               displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User Baru',
               role: role,
@@ -122,40 +121,41 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             }, { merge: true });
 
             if (isFirstUser) {
-              await setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
+              setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
             }
           } else {
             const userData = userSnap.data() as UserProfile;
-            // Sync CSV data in the background if needed
+            // Sync CSV data in background if needed
             if (userData.role === 'siswa' && userData.nis && !userData.lastSyncedAt) {
               const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
-              const currentSchoolSnap = await getDoc(schoolRef);
-              const schoolData = currentSchoolSnap.data() as School;
-              if (schoolData?.studentDatabaseUrl && schoolData.csvMappings) {
-                fetch(schoolData.studentDatabaseUrl)
-                  .then(res => res.text())
-                  .then(csvText => {
-                    const studentData = parseCSV(csvText);
-                    const mappings = schoolData.csvMappings!;
-                    const match = studentData.find(s => String(s[mappings.nis]).trim() === String(userData.nis).trim());
-                    if (match) {
-                      updateDoc(userDocRef, {
-                        displayName: match[mappings.name] || userData.displayName,
-                        className: match[mappings.class] || 'X',
-                        session: (match[mappings.session] === 'Siang' ? 'Siang' : 'Pagi'),
-                        address: match[mappings.address] || '',
-                        phone: match[mappings.phone] || '',
-                        parentName: match[mappings.parentName] || '',
-                        parentPhone: match[mappings.parentPhone] || '',
-                        bkTeacher: match[mappings.bkTeacher] || '',
-                        homeroomTeacher: match[mappings.homeroomTeacher] || '',
-                        guardianTeacher: match[mappings.guardianTeacher] || '',
-                        studentAffairs: match[mappings.studentAffairs] || '',
-                        lastSyncedAt: serverTimestamp()
-                      });
-                    }
-                  }).catch(err => console.error("CSV Sync Background Error:", err));
-              }
+              getDoc(schoolRef).then(currentSchoolSnap => {
+                const schoolData = currentSchoolSnap.data() as School;
+                if (schoolData?.studentDatabaseUrl && schoolData.csvMappings) {
+                  fetch(schoolData.studentDatabaseUrl)
+                    .then(res => res.text())
+                    .then(csvText => {
+                      const studentData = parseCSV(csvText);
+                      const mappings = schoolData.csvMappings!;
+                      const match = studentData.find(s => String(s[mappings.nis]).trim() === String(userData.nis).trim());
+                      if (match) {
+                        updateDoc(userDocRef, {
+                          displayName: match[mappings.name] || userData.displayName,
+                          className: match[mappings.class] || 'X',
+                          session: (match[mappings.session] === 'Siang' ? 'Siang' : 'Pagi'),
+                          address: match[mappings.address] || '',
+                          phone: match[mappings.phone] || '',
+                          parentName: match[mappings.parentName] || '',
+                          parentPhone: match[mappings.parentPhone] || '',
+                          bkTeacher: match[mappings.bkTeacher] || '',
+                          homeroomTeacher: match[mappings.homeroomTeacher] || '',
+                          guardianTeacher: match[mappings.guardianTeacher] || '',
+                          studentAffairs: match[mappings.studentAffairs] || '',
+                          lastSyncedAt: serverTimestamp()
+                        });
+                      }
+                    }).catch(err => console.error("CSV Sync Error:", err));
+                }
+              });
             }
           }
         } catch (e) {
