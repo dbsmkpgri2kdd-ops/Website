@@ -380,6 +380,7 @@ export interface UserProfile {
     address?: string;
     lastSyncedAt?: any;
     biometricSignature?: string;
+    session?: 'Pagi' | 'Siang';
 }
 
 export interface LspCertification {

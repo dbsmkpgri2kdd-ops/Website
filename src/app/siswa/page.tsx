@@ -3,7 +3,7 @@
 
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles, Fingerprint, MapPin, Venus, Mars, Calendar, CreditCard, RefreshCcw } from 'lucide-react';
+import { LogOut, User as UserIcon, ShieldAlert, ArrowRight, Sparkles, Fingerprint, MapPin, Venus, Mars, Calendar, CreditCard, RefreshCcw, Clock } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -109,13 +109,14 @@ function SiswaDashboard() {
                                 <p className="text-primary font-bold text-xs uppercase tracking-widest mt-1">{profile?.className || 'Belum sinkron'}</p>
                                 <div className='flex gap-2 mt-4'>
                                     <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-600 border-none px-3 py-1 rounded-lg text-[10px] font-bold'>Aktif</Badge>
+                                    <Badge variant="outline" className='border-primary/20 text-primary px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest'>Shift {profile?.session || 'Pagi'}</Badge>
                                 </div>
                             </div>
                         </div>
                     </CardHeader>
                     <CardContent className="px-8 pb-8 space-y-3">
                         <InfoRow icon={Fingerprint} label="Nomor Induk Siswa (NIS)" value={profile?.nis} />
-                        <InfoRow icon={CreditCard} label="Nomor Induk Nasional (NISN)" value={profile?.nisn} />
+                        <InfoRow icon={Clock} label="Sesi Terdaftar" value={`Sesi ${profile?.session || 'Pagi'}`} />
                         <div className="grid grid-cols-2 gap-3">
                             <InfoRow icon={profile?.gender === 'Perempuan' ? Venus : Mars} label="Gender" value={profile?.gender} />
                             <InfoRow icon={Calendar} label="Kelahiran" value={profile?.birthPlace ? `${profile.birthPlace}, ${profile.birthDate}` : '-'} />

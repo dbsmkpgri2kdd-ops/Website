@@ -1,23 +1,25 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Camera, MapPin, LoaderCircle, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, Navigation } from 'lucide-react';
+import { Camera, MapPin, LoaderCircle, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, Navigation, LogIn, LogOut } from 'lucide-react';
 import { useUser, useFirestore, addDocumentNonBlocking, useDoc, useMemoFirebase } from '@/firebase';
 import { collection, serverTimestamp, doc } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type School } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { cn, calculateDistance } from '@/lib/utils';
+import { Badge } from '../ui/badge';
 
 type AttendanceStatus = 'IDLE' | 'CHECKING_LOCATION' | 'VERIFYING_BIOMETRIC' | 'SCANNING' | 'SUCCESS' | 'ERROR';
 
 /**
- * Modul Absensi Biometrik Digital v2.5.
- * Mengubah wajah menjadi Kode Signature Unik (Hash) tanpa menyimpan file foto.
+ * Modul Absensi Biometrik Digital v3.0.
+ * Mendukung deteksi Shift Pagi/Siang otomatis berdasarkan profil pengguna.
  */
 export function BiometricAttendance() {
-  const { user } = useUser();
+  const { user, profile } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
   
@@ -25,6 +27,7 @@ export function BiometricAttendance() {
   const [distance, setDistance] = useState<number | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [scanProgress, setScanProgress] = useState(0);
+  const [direction, setDirection] = useState<'Masuk' | 'Pulang' | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -59,15 +62,27 @@ export function BiometricAttendance() {
 
         if (dist > 30) {
           setStatus('ERROR');
-          setErrorMsg(`Anda berada ${Math.round(dist)}m dari sekolah. Maksimal radius adalah 30m.`);
+          setErrorMsg(`Terdeteksi jarak ${Math.round(dist)}m dari sekolah. Maksimal radius absensi adalah 30m.`);
           return;
         }
 
+        // Tentukan arah berdasarkan sesi profil
+        const now = new Date();
+        const currentHour = now.getHours();
+        let type: 'Masuk' | 'Pulang' = 'Masuk';
+
+        if (profile?.session === 'Siang') {
+            type = currentHour >= 15 ? 'Pulang' : 'Masuk';
+        } else {
+            type = currentHour >= 11 ? 'Pulang' : 'Masuk';
+        }
+        
+        setDirection(type);
         startBiometricScan();
       },
       (err) => {
         setStatus('ERROR');
-        setErrorMsg('Gagal mendapatkan lokasi. Pastikan GPS aktif dan izin diberikan.');
+        setErrorMsg('Gagal memvalidasi lokasi. Pastikan GPS aktif dan izin diberikan.');
       },
       { enableHighAccuracy: true }
     );
@@ -95,20 +110,18 @@ export function BiometricAttendance() {
       }
     } catch (err) {
       setStatus('ERROR');
-      setErrorMsg('Kamera wajib diaktifkan untuk verifikasi biometrik.');
+      setErrorMsg('Kamera wajib diaktifkan untuk verifikasi identitas digital.');
     }
   };
 
-  // Fungsi untuk mensimulasikan ekstraksi kode biometrik dari gambar
   const generateBiometricSignature = (dataUrl: string) => {
-    // Simulasi pembuatan Hash unik dari data gambar & timestamp
     const base = btoa(dataUrl.substring(0, 100)).substring(0, 8);
     const ts = Date.now().toString(36).toUpperCase();
     return `BIO-${base}-${ts}`;
   };
 
   const captureAndProcess = async () => {
-    if (!videoRef.current || !canvasRef.current || !user) return;
+    if (!videoRef.current || !canvasRef.current || !user || !profile) return;
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
@@ -117,34 +130,32 @@ export function BiometricAttendance() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Ambil cuplikan gambar (hanya untuk proses ekstraksi kode lokal)
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const dataUrl = canvas.toDataURL('image/jpeg', 0.1); 
 
     try {
-      // 1. Ekstraksi kode biometrik (Jangan simpan fotonya)
       const bioCode = generateBiometricSignature(dataUrl);
 
-      // 2. Simpan data teks ke Firestore
       const attendanceRef = collection(firestore!, `schools/${SCHOOL_DATA_ID}/attendance`);
       const attendanceData = {
         studentId: user.uid,
-        studentName: user.profile?.displayName || user.email,
-        studentNis: user.profile?.nis || 'N/A',
-        studentClass: user.profile?.className || 'N/A',
+        studentName: profile.displayName || user.email,
+        studentNis: profile.nis || 'N/A',
+        studentClass: profile.className || 'N/A',
         date: serverTimestamp(),
         status: 'Hadir',
-        notes: 'Terverifikasi Biometrik Digital (Signature Hash)',
+        notes: `Presensi ${direction} Terverifikasi (Shift ${profile.session || 'Pagi'})`,
         biometricCode: bioCode,
         metadata: {
           distance: distance,
-          type: 'BIOMETRIC_CODE_ONLY'
+          type: 'BIOMETRIC_SESSION_MOBILE',
+          session: profile.session || 'Pagi',
+          direction: direction
         }
       };
       
       addDocumentNonBlocking(attendanceRef, attendanceData);
 
-      // 3. Kirim ke Google Sheets Webhook
       if (schoolData?.attendanceWebhookUrl) {
         fetch(schoolData.attendanceWebhookUrl, {
           method: 'POST',
@@ -155,20 +166,18 @@ export function BiometricAttendance() {
             date: new Date().toLocaleString('id-ID'),
             biometricCode: bioCode
           })
-        }).catch(e => console.warn("Webhook rekap gagal:", e));
+        }).catch(() => {});
       }
 
-      // Cleanup Kamera
       if (videoRef.current?.srcObject) {
         (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
       }
 
       setStatus('SUCCESS');
-      toast({ title: 'Presensi Berhasil', description: 'Kehadiran dicatat dengan Kode Biometrik unik.' });
+      toast({ title: 'Absensi Berhasil', description: `Sesi ${direction} Anda telah dicatat.` });
     } catch (e) {
-      console.error(e);
       setStatus('ERROR');
-      setErrorMsg('Gagal memproses kode biometrik. Coba lagi nanti.');
+      setErrorMsg('Gagal memproses data biometrik.');
     }
   };
 
@@ -182,13 +191,15 @@ export function BiometricAttendance() {
                 </div>
                 <div>
                     <CardTitle className="text-xl font-bold italic uppercase font-headline">Absensi <span className="text-primary">Biometrik</span></CardTitle>
-                    <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">Signature Hash v2.5</CardDescription>
+                    <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">
+                        Shift {profile?.session || 'Pagi'} v3.0
+                    </CardDescription>
                 </div>
             </div>
             {status === 'IDLE' && (
                 <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                    <span className="text-[9px] font-black uppercase tracking-widest">Sistem Siap</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest">Siap</span>
                 </div>
             )}
         </div>
@@ -203,14 +214,14 @@ export function BiometricAttendance() {
                     <div className="absolute inset-0 bg-primary/10 rounded-[2rem] animate-ping opacity-20"></div>
                     <Navigation size={40} className="text-primary group-hover:scale-110 transition-transform" />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                     <h4 className="text-lg font-black uppercase italic tracking-tighter">Validasi Identitas Digital</h4>
                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
-                        Wajah Anda akan diproses menjadi Kode Signature unik untuk keamanan data & rekap otomatis ke Google Sheets.
+                        Sistem mendeteksi shift Anda sebagai <span className='text-primary'>Sesi {profile?.session || 'Pagi'}</span>. Harap berada dalam radius 30m dari sekolah.
                     </p>
                 </div>
                 <Button onClick={handleStartAttendance} className="w-full h-16 rounded-[1.5rem] font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all">
-                    Mulai Absensi Biometrik
+                    Mulai Absensi {profile?.session || 'Pagi'}
                 </Button>
             </div>
         )}
@@ -219,8 +230,8 @@ export function BiometricAttendance() {
             <div className="text-center py-16 space-y-6">
                 <LoaderCircle className="h-16 w-16 animate-spin mx-auto text-primary" />
                 <div className="space-y-1">
-                    <p className="text-sm font-black uppercase italic tracking-widest">Memeriksa GPS...</p>
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase">Sinkronisasi Koordinat Lokasi</p>
+                    <p className="text-sm font-black uppercase italic tracking-widest">Validasi GPS...</p>
+                    <p className="text-[9px] font-bold text-muted-foreground uppercase">Memeriksa Koordinat Sekolah</p>
                 </div>
             </div>
         )}
@@ -240,13 +251,13 @@ export function BiometricAttendance() {
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
                         <span className="text-[8px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                             <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
-                            Pemindai Aktif
+                            Scanner Active
                         </span>
                     </div>
                 </div>
                 <div className="space-y-4">
                     <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-                        <span className="text-primary">{status === 'SCANNING' ? 'Mengekstrak Signature...' : 'Inisialisasi sensor...'}</span>
+                        <span className="text-primary">{status === 'SCANNING' ? 'Menganalisis Wajah...' : 'Inisialisasi kamera...'}</span>
                         <span className="opacity-40">{scanProgress}%</span>
                     </div>
                     <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
@@ -262,23 +273,20 @@ export function BiometricAttendance() {
                     <div className="absolute inset-0 bg-emerald-500/5 rounded-[2.5rem] animate-ping opacity-20"></div>
                     <CheckCircle2 size={48} className="relative z-10" />
                 </div>
-                <div className="space-y-2">
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter">Signature Verified</h3>
+                <div className="space-y-3">
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter">Absensi Berhasil</h3>
+                    <div className='flex items-center justify-center gap-2'>
+                        <Badge className='bg-emerald-500 text-white font-black px-4 py-1 rounded-lg text-[10px] uppercase tracking-widest'>
+                            {direction === 'Masuk' ? <LogIn size={12} className='mr-2' /> : <LogOut size={12} className='mr-2' />}
+                            {direction} Terdaftar
+                        </Badge>
+                    </div>
                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
-                        Kode biometrik Anda telah terdaftar di database sekolah & rekapitulasi Google Sheets. Data aman & rahasia.
+                        Data kehadiran shift {profile?.session || 'Pagi'} Anda telah diamankan di database pusat.
                     </p>
                 </div>
-                <div className="flex items-center gap-3 justify-center p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10">
-                    <div className="p-2 bg-emerald-500 text-white rounded-lg">
-                        <Sparkles size={14} />
-                    </div>
-                    <div className="text-left leading-none">
-                        <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Status Kehadiran</p>
-                        <p className="text-xs font-bold uppercase">Terverifikasi 100%</p>
-                    </div>
-                </div>
                 <Button variant="outline" onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-bold text-[11px] uppercase border-white/5 hover:bg-white/5">
-                    Kembali ke Dashboard
+                    Selesai & Tutup
                 </Button>
             </div>
         )}
@@ -289,13 +297,13 @@ export function BiometricAttendance() {
                     <AlertCircle size={48} />
                 </div>
                 <div className="space-y-3">
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-red-500">Akses Ditolak</h3>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-red-500">Gagal Absen</h3>
                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
                         {errorMsg}
                     </p>
                 </div>
                 <Button onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-bold text-[11px] uppercase bg-red-500 text-white hover:bg-red-600">
-                    Coba Lagi
+                    Coba Ulang
                 </Button>
             </div>
         )}

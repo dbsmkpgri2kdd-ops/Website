@@ -20,7 +20,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, LoaderCircle, Users, ShieldCheck, UserCog, GraduationCap, Briefcase, Trash2, Key, Sparkles, Fingerprint } from 'lucide-react';
+import { Edit, LoaderCircle, Users, ShieldCheck, UserCog, GraduationCap, Briefcase, Trash2, Key, Sparkles, Fingerprint, Clock } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
@@ -28,6 +28,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
   role: z.enum(['admin', 'guru', 'siswa', 'alumni']),
+  session: z.enum(['Pagi', 'Siang']).optional(),
 });
 
 const USER_ROLES: { value: UserProfile['role']; label: string; icon: any }[] = [
@@ -59,7 +60,10 @@ export function UsersManager() {
 
   useEffect(() => {
     if (editingUser) {
-      form.reset({ role: editingUser.role });
+      form.reset({ 
+        role: editingUser.role,
+        session: editingUser.session || 'Pagi'
+      });
     }
   }, [editingUser, form]);
 
@@ -103,7 +107,7 @@ export function UsersManager() {
     if (!firestore || !editingUser) return;
     const docRef = doc(firestore, 'users', editingUser.id);
     updateDocumentNonBlocking(docRef, values);
-    toast({ title: 'Peran diperbarui', description: `Hak akses telah diubah.` });
+    toast({ title: 'Profil diperbarui', description: `Hak akses dan sesi telah diubah.` });
     setIsDialogOpen(false);
   }
 
@@ -155,7 +159,7 @@ export function UsersManager() {
                     <CardTitle className="text-xl font-bold italic uppercase flex items-center gap-3 font-headline">
                       <Users size={24} className="text-primary" /> Manajemen pengguna
                     </CardTitle>
-                    <CardDescription className="text-[10px] mt-1 uppercase font-bold tracking-widest opacity-60">Kontrol hak akses dan sinkronisasi data profil.</CardDescription>
+                    <CardDescription className="text-[10px] mt-1 uppercase font-bold tracking-widest opacity-60">Kontrol hak akses, sesi, dan sinkronisasi data profil.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="overflow-x-auto">
@@ -164,7 +168,7 @@ export function UsersManager() {
                             <TableRow className="border-border">
                             <TableHead className="px-8 font-bold text-[10px] uppercase opacity-40">Nama & identitas</TableHead>
                             <TableHead className="font-bold text-[10px] uppercase opacity-40">Email akses</TableHead>
-                            <TableHead className="font-bold text-[10px] uppercase opacity-40">Tingkat peran</TableHead>
+                            <TableHead className="font-bold text-[10px] uppercase opacity-40">Role & Sesi</TableHead>
                             <TableHead className="text-right px-8 font-bold text-[10px] uppercase opacity-40">Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -187,7 +191,15 @@ export function UsersManager() {
                                         </div>
                                     </TableCell>
                                     <TableCell><span className="text-xs font-medium text-muted-foreground">{u.email}</span></TableCell>
-                                    <TableCell>{getRoleBadge(u.role)}</TableCell>
+                                    <TableCell>
+                                        <div className='flex flex-col gap-1.5'>
+                                            {getRoleBadge(u.role)}
+                                            <div className='flex items-center gap-1.5 text-[9px] font-bold text-muted-foreground px-1'>
+                                                <Clock size={10} />
+                                                Sesi {u.session || 'Pagi'}
+                                            </div>
+                                        </div>
+                                    </TableCell>
                                     <TableCell className="text-right px-8">
                                         <div className="flex justify-end gap-2">
                                             <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/10 text-primary" onClick={() => handleEdit(u as UserProfile & { id: string })} disabled={u.id === currentUser?.uid}><Edit size={16} /></Button>
@@ -207,7 +219,7 @@ export function UsersManager() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent className="sm:max-w-[425px] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-3xl">
                 <DialogHeader className="p-8 bg-primary/5 border-b border-border">
-                    <DialogTitle className="text-xl font-bold italic uppercase font-headline">Ubah hak akses</DialogTitle>
+                    <DialogTitle className="text-xl font-bold italic uppercase font-headline">Ubah profil akses</DialogTitle>
                     <DialogDescription className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Akun: {editingUser?.email}</DialogDescription>
                 </DialogHeader>
                 {editingUser && (
@@ -215,7 +227,7 @@ export function UsersManager() {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="p-8 space-y-6">
                             <FormField control={form.control} name="role" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[10px] font-bold uppercase tracking-widest opacity-60">Pilih peran baru</FormLabel>
+                                    <FormLabel className="text-[10px] font-bold uppercase tracking-widest opacity-60">Pilih tingkat akses</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl><SelectTrigger className="h-12 rounded-xl bg-muted/50 border-border"><SelectValue /></SelectTrigger></FormControl>
                                         <SelectContent className="rounded-xl border-border bg-card/95 backdrop-blur-xl">
@@ -229,6 +241,21 @@ export function UsersManager() {
                                     <FormMessage />
                                 </FormItem>
                             )}/>
+
+                            <FormField control={form.control} name="session" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-[10px] font-bold uppercase tracking-widest opacity-60">Penetapan sesi (Shift)</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl><SelectTrigger className="h-12 rounded-xl bg-muted/50 border-border"><SelectValue /></SelectTrigger></FormControl>
+                                        <SelectContent className="rounded-xl border-border bg-card/95 backdrop-blur-xl">
+                                            <SelectItem value="Pagi" className="py-3 font-bold text-[10px] uppercase">SESI PAGI (07:00 - 13:00)</SelectItem>
+                                            <SelectItem value="Siang" className="py-3 font-bold text-[10px] uppercase">SESI SIANG (13:00 - 18:00)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
+
                             <Button type="submit" className="w-full h-14 rounded-xl font-bold shadow-xl shadow-primary/20">Simpan perubahan</Button>
                         </form>
                     </Form>
