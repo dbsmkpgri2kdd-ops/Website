@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, KeyRound, Mail, LogIn, UserPlus, ShieldAlert, LoaderCircle, Sparkles, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, KeyRound, Mail, LogIn, UserPlus, ShieldAlert, LoaderCircle, Sparkles, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { getDashboardByRole } from '@/lib/utils';
 
@@ -35,7 +35,7 @@ export default function LoginPage() {
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!auth) {
-            toast({ title: "Sistem Luring", description: "Koneksi database gagal.", variant: "destructive" });
+            toast({ title: "Sistem Offline", description: "Koneksi database tidak tersedia.", variant: "destructive" });
             return;
         }
         
@@ -44,16 +44,15 @@ export default function LoginPage() {
         try {
             if (isRegisterMode) {
                 await createUserWithEmailAndPassword(auth, email, password);
-                toast({ title: "Akun Berhasil Dibuat", description: "Menyiapkan ruang kerja digital Anda..." });
+                toast({ title: "Pendaftaran Berhasil", description: "Mengarahkan ke dashboard Anda..." });
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
-                toast({ title: "Selamat Datang Kembali", description: "Autentikasi berhasil." });
+                toast({ title: "Berhasil Masuk", description: "Selamat datang kembali." });
             }
         } catch (error: any) {
-            console.error("Auth error:", error);
-            let message = "Kredensial tidak valid. Silakan coba lagi.";
-            if (error.code === 'auth/weak-password') message = "Kata sandi minimal harus 6 karakter.";
-            if (error.code === 'auth/email-already-in-use') message = "Email ini sudah terdaftar.";
+            let message = "Email atau kata sandi tidak valid.";
+            if (error.code === 'auth/weak-password') message = "Kata sandi minimal 6 karakter.";
+            if (error.code === 'auth/email-already-in-use') message = "Email sudah terdaftar.";
             
             toast({ title: "Akses Ditolak", description: message, variant: "destructive" });
             setIsSubmitting(false);
@@ -61,72 +60,69 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-6 relative overflow-hidden tech-mesh">
-            {/* Background Zen Elements */}
-            <div className='absolute top-0 left-0 w-full h-full bg-primary/5 opacity-30 pointer-events-none'></div>
-            <div className='absolute -top-48 -right-48 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] animate-pulse'></div>
-            <div className='absolute -bottom-48 -left-48 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px] animate-pulse' style={{ animationDelay: '2s' }}></div>
-
-            <div className="max-w-md w-full space-y-8 animate-reveal">
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden tech-mesh">
+            <div className='absolute top-0 left-0 w-full h-full bg-primary/5 opacity-40 pointer-events-none'></div>
+            
+            <div className="max-w-md w-full space-y-6 animate-reveal relative z-10">
                 <button 
                     onClick={() => router.push('/')}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors mb-4"
+                    className="flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors mb-4"
                 >
-                    <ArrowLeft size={14} /> Kembali ke Portal
+                    <ArrowLeft size={16} /> Kembali ke Beranda
                 </button>
 
-                <Card className="glass-premium border-white/5 rounded-[2rem] overflow-hidden">
-                    <CardHeader className="text-center pt-12 pb-6">
-                        <div className="mb-6 mx-auto w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center border border-primary/20">
-                            <Sparkles size={32} />
+                <Card className="border-slate-200 shadow-2xl rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-md">
+                    <CardHeader className="text-center pt-10 pb-4">
+                        <div className="mb-4 mx-auto w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center">
+                            <ShieldCheck size={28} />
                         </div>
-                        <CardTitle className="text-3xl font-black tracking-tight uppercase">
-                            {isRegisterMode ? 'Daftar Akun' : 'Identitas Digital'}
+                        <CardTitle className="text-2xl font-bold tracking-tight text-slate-900">
+                            {isRegisterMode ? 'Buat Akun Baru' : 'Identitas Digital'}
                         </CardTitle>
-                        <CardDescription className="uppercase text-[9px] font-bold tracking-[0.4em] text-muted-foreground pt-2">
-                            Autentikasi Kampus Digital
+                        <CardDescription className="text-sm font-medium text-muted-foreground">
+                            Akses Portal Terpadu SMKS PGRI 2 Kedondong
                         </CardDescription>
                     </CardHeader>
                     
-                    <CardContent className="px-8 pb-12">
+                    <CardContent className="px-8 pb-10">
                         {!auth && (
-                            <Alert variant="destructive" className="mb-6 bg-destructive/10 border-destructive/20 rounded-xl">
+                            <Alert variant="destructive" className="mb-6 rounded-xl">
                                 <ShieldAlert className="h-4 w-4" />
-                                <AlertTitle className='font-bold uppercase text-[10px] tracking-widest'>Kesalahan Kritis</AlertTitle>
-                                <AlertDescription className="text-[10px]">Konfigurasi Firebase tidak terdeteksi.</AlertDescription>
+                                <AlertTitle className='font-bold text-xs'>Kesalahan Konfigurasi</AlertTitle>
+                                <AlertDescription className="text-[11px]">Layanan autentikasi belum siap.</AlertDescription>
                             </Alert>
                         )}
 
-                        <form onSubmit={handleAuth} className="space-y-5">
-                            <div className="space-y-2">
-                                <Label className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground ml-1">Alamat Email</Label>
+                        <form onSubmit={handleAuth} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <Label className="text-xs font-bold text-slate-700 ml-1">Alamat Email</Label>
                                 <div className='relative'>
                                     <Input 
                                         type="email" 
-                                        placeholder="nama@kampus.id" 
+                                        placeholder="nama@siswa.sch.id" 
                                         required 
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="h-12 rounded-xl bg-white/5 border-white/5 focus:border-primary/50 text-white pl-10"
+                                        className="h-11 rounded-xl bg-white border-slate-200 focus:border-primary pl-10"
                                         disabled={isSubmitting}
                                     />
-                                    <Mail className='absolute left-3.5 top-3.5 text-muted-foreground' size={16} />
+                                    <Mail className='absolute left-3.5 top-3 text-muted-foreground' size={16} />
                                 </div>
                             </div>
                             
-                            <div className="space-y-2">
-                                <Label className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground ml-1">Kata Sandi</Label>
+                            <div className="space-y-1.5">
+                                <Label className="text-xs font-bold text-slate-700 ml-1">Kata Sandi</Label>
                                 <div className="relative">
                                     <Input 
                                         type={showPassword ? "text" : "password"} 
                                         required 
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="h-12 rounded-xl bg-white/5 border-white/5 focus:border-primary/50 text-white pl-10 pr-12"
-                                        placeholder='••••••••'
+                                        className="h-11 rounded-xl bg-white border-slate-200 focus:border-primary pl-10 pr-12"
+                                        placeholder='Min. 6 karakter'
                                         disabled={isSubmitting}
                                     />
-                                    <KeyRound className='absolute left-3.5 top-3.5 text-muted-foreground' size={16} />
+                                    <KeyRound className='absolute left-3.5 top-3 text-muted-foreground' size={16} />
                                     <button 
                                         type="button" 
                                         onClick={() => setShowPassword(!showPassword)}
@@ -141,32 +137,32 @@ export default function LoginPage() {
                             <Button 
                                 type="submit" 
                                 disabled={isSubmitting || !auth} 
-                                className="w-full font-black text-xs h-14 rounded-xl shadow-2xl transition-all hover:scale-[1.02] uppercase tracking-[0.3em]"
+                                className="w-full font-bold text-sm h-12 rounded-xl shadow-lg transition-all hover:scale-[1.01] mt-2"
                             >
                                 {isSubmitting ? (
                                     <LoaderCircle className="animate-spin mr-2 h-4 w-4" />
                                 ) : (
                                     isRegisterMode ? <UserPlus className="mr-2 h-4 w-4"/> : <LogIn className="mr-2 h-4 w-4"/>
                                 )}
-                                {isSubmitting ? 'Memverifikasi...' : (isRegisterMode ? 'Buat Profil' : 'Masuk Sekarang')}
+                                {isSubmitting ? 'Memverifikasi...' : (isRegisterMode ? 'Daftar Sekarang' : 'Masuk ke Portal')}
                             </Button>
 
-                            <div className="pt-6 text-center border-t border-white/5 mt-6">
+                            <div className="pt-6 text-center border-t border-slate-100 mt-4">
                                 <button 
                                     type="button" 
                                     onClick={() => setIsRegisterMode(!isRegisterMode)}
-                                    className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors"
+                                    className="text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
                                     disabled={isSubmitting}
                                 >
-                                    {isRegisterMode ? 'Sudah Punya Akun? Masuk' : 'Pengguna Baru? Daftar Akses'}
+                                    {isRegisterMode ? 'Sudah memiliki akun? Masuk' : 'Belum punya akun? Daftar gratis'}
                                 </button>
                             </div>
                         </form>
                     </CardContent>
                 </Card>
                 
-                <p className='text-center text-[8px] font-medium text-muted-foreground/40 uppercase tracking-[0.5em]'>
-                    Diamankan oleh Enkripsi SMKS PGRI 2 Kedondong
+                <p className='text-center text-[10px] font-semibold text-muted-foreground/60'>
+                    &copy; 2025 SMKS PGRI 2 Kedondong - Tim IT Digital Excellence
                 </p>
             </div>
         </div>
