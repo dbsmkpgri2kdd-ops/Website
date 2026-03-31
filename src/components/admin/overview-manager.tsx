@@ -51,10 +51,10 @@ export function OverviewManager() {
   };
 
   const stats = [
-    { title: 'Publikasi aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { title: 'Pendaftar baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { title: 'Status keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { title: 'Koneksi jaringan', count: 'Stabil', icon: Activity, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { title: 'Publikasi aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-blue-600', bg: 'bg-blue-500/10' },
+    { title: 'Pendaftar baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-indigo-600', bg: 'bg-indigo-500/10' },
+    { title: 'Status keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
+    { title: 'Koneksi jaringan', count: 'Stabil', icon: Activity, color: 'text-amber-600', bg: 'bg-amber-500/10' },
   ];
 
   return (
@@ -88,7 +88,7 @@ export function OverviewManager() {
                             <CardDescription className="text-xs font-medium text-emerald-600">Semua layanan berjalan dengan optimal.</CardDescription>
                         </div>
                     </div>
-                    <Badge className="bg-emerald-500/10 text-emerald-600 border-none px-4 py-1 rounded-full font-bold text-[10px]">Optimal</Badge>
+                    <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-none px-4 py-1 rounded-full font-bold text-[10px]">Optimal</Badge>
                 </CardHeader>
                 <CardContent className="px-8 pb-8">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -104,7 +104,7 @@ export function OverviewManager() {
 
             <div className="grid grid-cols-2 gap-6">
                 {stats.map((s, i) => (
-                <Card key={i} className="border-border bg-card rounded-[2rem] group hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-md">
+                <Card key={i} className="border-border bg-card rounded-[2rem] group hover:border-primary/30 transition-all duration-300 shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 p-6">
                     <CardTitle className="text-[11px] font-bold text-muted-foreground">{s.title}</CardTitle>
                     <div className={cn("p-2.5 rounded-xl transition-all group-hover:scale-110", s.bg)}>
@@ -204,10 +204,10 @@ export function OverviewManager() {
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             {[
-                { icon: Database, label: 'Basis data', status: 'Sinkronisasi', color: 'text-blue-600', bg: 'bg-blue-50' },
-                { icon: ShieldCheck, label: 'Keamanan', status: 'Terenkripsi', color: 'text-indigo-600', bg: 'bg-indigo-50' },
-                { icon: HardDrive, label: 'Penyimpanan', status: 'Optimal', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                { icon: BarChart3, label: 'Lalu lintas', status: 'Normal', color: 'text-amber-600', bg: 'bg-amber-50' },
+                { icon: Database, label: 'Basis data', status: 'Sinkronisasi', color: 'text-blue-600', bg: 'bg-blue-500/10' },
+                { icon: ShieldCheck, label: 'Keamanan', status: 'Terenkripsi', color: 'text-indigo-600', bg: 'bg-indigo-500/10' },
+                { icon: HardDrive, label: 'Penyimpanan', status: 'Optimal', color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
+                { icon: BarChart3, label: 'Lalu lintas', status: 'Normal', color: 'text-amber-600', bg: 'bg-amber-500/10' },
             ].map((infra, idx) => (
                 <div key={idx} className="flex items-center gap-4 group">
                     <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform", infra.bg, infra.color)}>

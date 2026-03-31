@@ -21,6 +21,7 @@ type ExamBroSessionProps = {
 /**
  * ExamBro Session v5.5 - Super Strict App Mode
  * Implementasi fitur Lockdown pada pelanggaran ke-3.
+ * Menggunakan warna semantik agar visibilitas terjaga di mode apa pun.
  */
 export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
@@ -125,7 +126,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       } catch (error) {
         setHasCameraPermission(false);
         setIsCameraLoading(false);
-        toast({ variant: 'destructive', title: 'AKSES DITOLAK', description: 'Kamera wajib diaktifkan untuk memulai ujian proctored.' });
+        toast({ variant: 'destructive', title: 'Akses ditolak', description: 'Kamera wajib diaktifkan untuk memulai ujian.' });
       }
     };
     getCameraPermission();
@@ -139,13 +140,13 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   useEffect(() => {
     const handleVisibilityChange = () => { 
       if (document.hidden && !isTimeUp && isFullScreen && !isLocked) {
-        handleViolation("SISTEM: TERDETEKSI PINDAH APLIKASI / MINIMIZE!");
+        handleViolation("Sistem: Terdeteksi pindah aplikasi / minimize!");
       } 
     };
     
     const handleBlur = () => { 
       if (!isTimeUp && isFullScreen && !isLocked) {
-        handleViolation("PERINGATAN: FOKUS LAYAR TERDETEKSI BERPINDAH!"); 
+        handleViolation("Peringatan: Fokus layar terdeteksi berpindah!"); 
       }
     };
 
@@ -153,7 +154,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       const isCurrentlyFull = !!document.fullscreenElement;
       setIsFullScreen(isCurrentlyFull);
       if (!isCurrentlyFull && !isTimeUp && hasCameraPermission && !isLocked) {
-        handleViolation("PELANGGARAN: MODE LAYAR PENUH DIMATIKAN!");
+        handleViolation("Pelanggaran: Mode layar penuh dimatikan!");
       }
     };
 
@@ -161,7 +162,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     const preventKeys = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'F12') {
         e.preventDefault();
-        if (!isLocked) handleViolation(`SISTEM: TOMBOL TERLARANG ${e.key} DITEKAN!`);
+        if (!isLocked) handleViolation(`Sistem: Tombol terlarang ${e.key} ditekan!`);
       }
     };
 
@@ -186,7 +187,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
     const preventBack = (e: any) => {
       window.history.pushState(null, "", window.location.href);
-      if (!isTimeUp && !isLocked) handleViolation("AKSI TERLARANG: TOMBOL BACK!");
+      if (!isTimeUp && !isLocked) handleViolation("Aksi terlarang: Tombol kembali ditekan!");
     };
     window.history.pushState(null, "", window.location.href);
     window.addEventListener('popstate', preventBack);
@@ -221,7 +222,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       navigator.vibrate([500, 200, 500, 200, 500]);
     }
 
-    toast({ variant: "destructive", title: "KEAMANAN TERPICU", description: msg });
+    toast({ variant: "destructive", title: "Keamanan terpicu", description: msg });
     
     if (typeof window !== 'undefined') {
         const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
@@ -235,22 +236,22 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       setViolationCount(0);
       setTokenInput('');
       enterFullScreen();
-      toast({ title: 'AKSES DIBUKA', description: 'Silakan lanjutkan pengerjaan ujian Anda.' });
+      toast({ title: 'Akses dibuka', description: 'Silakan lanjutkan pengerjaan ujian Anda.' });
     } else {
-      toast({ variant: 'destructive', title: 'TOKEN SALAH', description: 'Token keamanan tidak valid. Hubungi pengawas.' });
+      toast({ variant: 'destructive', title: 'Token salah', description: 'Token keamanan tidak valid. Hubungi pengawas.' });
     }
   };
 
   const enterFullScreen = () => { 
     if (containerRef.current?.requestFullscreen) {
       containerRef.current.requestFullscreen().catch(() => {
-        toast({ variant: 'destructive', title: 'GAGAL FULLSCREEN', description: 'Pastikan browser mendukung mode layar penuh.' });
+        toast({ variant: 'destructive', title: 'Gagal fullscreen', description: 'Pastikan browser mendukung mode layar penuh.' });
       });
     } 
   };
 
   const handleExitRequest = () => { 
-    if (confirm("KONFIRMASI AKHIR: Apakah Anda yakin ingin mengakhiri sesi ujian?")) {
+    if (confirm("Konfirmasi Akhir: Apakah Anda yakin ingin mengakhiri sesi ujian?")) {
       onExit(); 
     } 
   }
@@ -259,39 +260,39 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     return (
         <div className="fixed inset-0 z-[110] bg-background flex flex-col items-center justify-center text-center p-10">
             <LoaderCircle className="h-16 w-16 animate-spin text-primary mb-8" />
-            <h3 className="text-2xl font-black uppercase italic tracking-widest text-white font-headline">Security Initializing...</h3>
+            <h3 className="text-2xl font-bold uppercase italic tracking-widest text-foreground font-headline">Security initializing...</h3>
         </div>
     );
   }
 
   return (
     <div ref={containerRef} className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden select-none touch-none">
-      <header className="h-16 bg-black/90 backdrop-blur-xl border-b border-white/5 px-6 flex items-center justify-between shrink-0 z-30">
+      <header className="h-16 bg-card border-b border-border px-6 flex items-center justify-between shrink-0 z-30">
         <div className="flex items-center gap-4">
-          <div className={cn("p-2 rounded-xl", isStandalone ? "bg-emerald-500/20 text-emerald-500" : "bg-primary/20 text-primary")}>
+          <div className={cn("p-2 rounded-xl", isStandalone ? "bg-emerald-500/10 text-emerald-600" : "bg-primary/10 text-primary")}>
             {isStandalone ? <Smartphone className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">EXAMBRO v5.5 {isStandalone ? 'APP' : 'BROWSER'} MODE</span>
-            <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">PELANGGARAN: {violationCount}</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-foreground">ExamBro v5.5 {isStandalone ? 'App' : 'Browser'} Mode</span>
+            <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Pelanggaran: {violationCount}</span>
           </div>
         </div>
 
         <div className={cn(
-            "absolute left-1/2 -translate-x-1/2 flex items-center gap-4 px-8 py-2 rounded-2xl border transition-all duration-500 bg-white/5",
-            (timeLeft !== null && timeLeft < 300) ? "border-red-500 text-red-500 animate-pulse" : "border-white/10 text-white"
+            "absolute left-1/2 -translate-x-1/2 flex items-center gap-4 px-8 py-2 rounded-2xl border transition-all duration-500 bg-muted/30",
+            (timeLeft !== null && timeLeft < 300) ? "border-red-500 text-red-500 animate-pulse" : "border-border text-foreground"
         )}>
             <Timer size={20} className={(timeLeft !== null && timeLeft < 300) ? "text-red-500" : "text-primary"} />
             <div className='flex flex-col items-center leading-none'>
-                <span className="text-xl font-black font-mono tracking-tighter">{formatTime(timeLeft)}</span>
-                <span className="text-[7px] font-bold uppercase opacity-40 tracking-widest">SISA WAKTU</span>
+                <span className="text-xl font-bold font-mono tracking-tighter">{formatTime(timeLeft)}</span>
+                <span className="text-[8px] font-bold uppercase opacity-40 tracking-widest">Sisa waktu</span>
             </div>
         </div>
 
         <div className="flex items-center gap-4">
           {!isFullScreen && !isTimeUp && !isLocked && (
-            <Button variant="destructive" size="sm" onClick={enterFullScreen} className="h-9 text-[9px] font-black uppercase px-6 rounded-xl animate-pulse">
-              <Maximize size={14} className="mr-2" /> AKTIFKAN SECURE MODE
+            <Button variant="destructive" size="sm" onClick={enterFullScreen} className="h-9 text-[10px] font-bold uppercase px-6 rounded-xl animate-pulse shadow-lg">
+              <Maximize size={14} className="mr-2" /> Aktifkan secure mode
             </Button>
           )}
           <Button variant="ghost" size="icon" onClick={handleExitRequest} className="h-10 w-10 rounded-xl hover:bg-red-500/10 text-muted-foreground hover:text-red-500">
@@ -300,75 +301,75 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         </div>
       </header>
 
-      <main className="flex-1 relative bg-[#f0f0f0]">
+      <main className="flex-1 relative bg-muted/20">
         {isCameraRequired && (
-            <div className="absolute top-6 right-6 w-32 md:w-56 aspect-video rounded-2xl overflow-hidden border-2 border-primary/40 shadow-3xl z-40 pointer-events-none">
-                <video ref={videoRef} className="w-full h-full object-cover bg-black" autoPlay muted playsInline />
+            <div className="absolute top-6 right-6 w-32 md:w-56 aspect-video rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl z-40 pointer-events-none bg-black">
+                <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
                 <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 px-2.5 py-1 rounded-full">
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                    <span className="text-[8px] font-black text-white uppercase tracking-widest font-headline">PROCTORED</span>
+                    <span className="text-[8px] font-bold text-white uppercase tracking-widest font-headline">Live</span>
                 </div>
             </div>
         )}
 
         {hasCameraPermission && !isTimeUp ? (
-            <iframe src={url} className="w-full h-full border-none" title="Exam Gateway" allow="autoplay; camera"/>
+            <iframe src={url} className="w-full h-full border-none bg-white" title="Exam Gateway" allow="autoplay; camera"/>
         ) : !isTimeUp && (
-            <div className="w-full h-full bg-black flex flex-col items-center justify-center text-center p-10">
-                <CameraOff size={100} className="text-red-500 mb-8" />
-                <h3 className="text-4xl font-black text-white uppercase italic mb-4 tracking-tighter font-headline">BIOMETRIC REQUIRED</h3>
-                <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-black text-xs tracking-widest shadow-3xl glow-primary">RELOAD & IZINKAN</Button>
+            <div className="w-full h-full bg-background flex flex-col items-center justify-center text-center p-10">
+                <CameraOff size={100} className="text-red-500 mb-8 opacity-20" />
+                <h3 className="text-3xl font-bold text-foreground uppercase italic mb-4 tracking-tighter font-headline">Biometric Required</h3>
+                <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-bold text-xs tracking-widest shadow-xl">Reload & Izinkan</Button>
             </div>
         )}
 
         {showAlarm && !isTimeUp && !isLocked && (
-          <div className="absolute inset-0 bg-red-700/95 backdrop-blur-2xl flex flex-col items-center justify-center z-50 p-10 text-center">
-            <AlertTriangle size={64} className="text-white mb-10 animate-bounce" />
-            <h2 className="text-5xl font-black text-white uppercase italic tracking-tighter mb-6 font-headline">SECURITY BREACH!</h2>
-            <Button size="lg" variant="secondary" onClick={() => { setShowAlarm(false); enterFullScreen(); }} className="h-20 px-16 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest shadow-3xl">SAYA MENGERTI</Button>
+          <div className="absolute inset-0 bg-destructive/95 backdrop-blur-3xl flex flex-col items-center justify-center z-50 p-10 text-center text-white">
+            <AlertTriangle size={64} className="mb-10 animate-bounce" />
+            <h2 className="text-5xl font-black uppercase italic tracking-tighter mb-6 font-headline">Security Breach!</h2>
+            <Button size="lg" variant="secondary" onClick={() => { setShowAlarm(false); enterFullScreen(); }} className="h-20 px-16 rounded-[2.5rem] font-bold text-xl uppercase tracking-widest shadow-2xl">Saya mengerti</Button>
           </div>
         )}
 
         {isLocked && !isTimeUp && (
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center z-[55] p-10 text-center space-y-8 animate-reveal">
-            <div className="w-24 h-24 bg-red-500 text-white rounded-[2rem] flex items-center justify-center shadow-[0_0_50px_rgba(239,68,68,0.5)] animate-pulse">
+          <div className="absolute inset-0 bg-background/95 backdrop-blur-3xl flex flex-col items-center justify-center z-[55] p-10 text-center space-y-8 animate-reveal">
+            <div className="w-24 h-24 bg-destructive text-destructive-foreground rounded-[2.5rem] flex items-center justify-center shadow-2xl animate-pulse">
                 <Lock size={48} />
             </div>
-            <div className="space-y-2">
-                <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter font-headline">EXAM LOCKDOWN</h2>
-                <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.3em] max-w-sm mx-auto leading-relaxed">
-                    Sesi Anda telah dikunci karena pelanggaran berulang. Silakan hubungi pengawas untuk mendapatkan token pembuka.
+            <div className="space-y-3">
+                <h2 className="text-4xl font-bold italic uppercase tracking-tighter font-headline">Exam Lockdown</h2>
+                <p className="text-muted-foreground text-[11px] font-bold uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
+                    Sesi Anda terkunci karena pelanggaran berulang. Silakan hubungi pengawas untuk mendapatkan token pembuka.
                 </p>
             </div>
             
             <div className="w-full max-w-xs space-y-4">
                 <Input 
-                    placeholder="MASUKKAN TOKEN UNTUK MEMBUKA" 
+                    placeholder="Masukkan token keamanan" 
                     value={tokenInput}
                     onChange={(e) => setTokenInput(e.target.value.toUpperCase())}
-                    className="h-16 rounded-2xl bg-white/5 border-white/10 text-center font-black text-xl tracking-[0.5em] text-white focus-visible:ring-red-500"
+                    className="h-16 rounded-2xl bg-muted border-border text-center font-bold text-xl tracking-[0.5em] focus-visible:ring-destructive"
                 />
-                <Button onClick={handleUnlock} size="lg" className="w-full h-16 rounded-2xl font-black uppercase tracking-[0.2em] shadow-3xl glow-primary bg-red-600 hover:bg-red-700">
-                    VERIFIKASI & BUKA AKSES
+                <Button onClick={handleUnlock} size="lg" className="w-full h-16 rounded-2xl font-bold uppercase tracking-widest shadow-xl bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    Verifikasi & buka akses
                 </Button>
             </div>
           </div>
         )}
 
         {isTimeUp && (
-            <div className="absolute inset-0 bg-black/98 backdrop-blur-3xl flex flex-col items-center justify-center z-[60] p-10 text-center">
-                <Clock size={120} className="text-primary mb-10 animate-pulse" />
-                <h2 className="text-6xl font-black text-white uppercase italic tracking-tighter mb-6 font-headline">TIME OVER</h2>
-                <Button size="lg" onClick={onExit} className="h-20 px-16 rounded-[2.5rem] font-black text-2xl uppercase tracking-[0.3em] shadow-3xl glow-primary">KELUAR RUANG UJIAN</Button>
+            <div className="absolute inset-0 bg-background/98 backdrop-blur-3xl flex flex-col items-center justify-center z-[60] p-10 text-center">
+                <Clock size={120} className="text-primary mb-10 animate-pulse opacity-20" />
+                <h2 className="text-6xl font-bold text-foreground uppercase italic tracking-tighter mb-6 font-headline">Time over</h2>
+                <Button size="lg" onClick={onExit} className="h-20 px-16 rounded-[2.5rem] font-bold text-2xl uppercase tracking-widest shadow-xl">Keluar ruang ujian</Button>
             </div>
         )}
       </main>
 
-      <footer className="h-10 bg-black border-t border-white/5 px-8 flex items-center justify-between shrink-0 opacity-60">
-        <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.5em]">SMKS PGRI 2 KEDONDONG • DIGITAL HUB CORE v7.5</p>
+      <footer className="h-10 bg-card border-t border-border px-8 flex items-center justify-between shrink-0 opacity-60">
+        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Digital Hub Enterprise v7.5 • SMKS PGRI 2 Kedondong</p>
         <div className='flex items-center gap-2'>
-            <div className={cn("w-1.5 h-1.5 rounded-full shadow-[0_0_5px]", isStandalone ? "bg-emerald-500 shadow-emerald-500" : "bg-primary shadow-primary")}></div>
-            <span className="text-[8px] font-black text-white uppercase tracking-widest">INTEGRITY: {isStandalone ? 'VERIFIED' : 'WEB_MODE'}</span>
+            <div className={cn("w-1.5 h-1.5 rounded-full", isStandalone ? "bg-emerald-500" : "bg-primary")}></div>
+            <span className="text-[9px] font-bold text-foreground uppercase tracking-widest">Integrity: {isStandalone ? 'Verified' : 'Web_mode'}</span>
         </div>
       </footer>
     </div>
