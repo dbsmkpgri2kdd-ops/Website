@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,9 +19,9 @@ type QuickLinksGridProps = {
 
 /**
  * Komponen Grid untuk menampilkan Tautan Aplikasi berdasarkan audiens.
- * Dioptimalkan untuk kerapian tampilan PWA (Android).
+ * Dioptimalkan untuk kerapian tampilan PWA (Android) dengan gaya Fresh Light.
  */
-export function QuickLinksGrid({ audience, title = "Aplikasi & Layanan", description = "Akses cepat ke berbagai platform penunjang akademik dan operasional." }: QuickLinksGridProps) {
+export function QuickLinksGrid({ audience, title = "Layanan Digital", description = "Akses satu pintu untuk seluruh kebutuhan administratif dan akademik civitas." }: QuickLinksGridProps) {
   const firestore = useFirestore();
 
   const linksQuery = useMemoFirebase(() => {
@@ -45,20 +44,20 @@ export function QuickLinksGrid({ audience, title = "Aplikasi & Layanan", descrip
   if (!isLoading && (!links || links.length === 0)) return null;
 
   return (
-    <div className="space-y-8 sm:space-y-10 animate-fade-in">
-      <div className="text-center md:text-left space-y-2">
-        <div className='flex items-center gap-3 text-primary justify-center md:justify-start'>
-            <Sparkles size={12} className='animate-pulse' />
-            <span className="text-[9px] font-black uppercase tracking-[0.5em]">Digital Hub</span>
+    <div className="animate-fade-in">
+      <div className="mb-12 text-center md:text-left space-y-3">
+        <div className='flex items-center gap-2 text-primary justify-center md:justify-start'>
+            <Sparkles size={14} className='animate-pulse' />
+            <span className="text-xs font-bold uppercase tracking-widest">Digital Hub</span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-black font-headline tracking-tighter uppercase italic">{title}</h2>
-        <p className="text-muted-foreground text-[10px] sm:text-sm font-medium max-w-2xl uppercase tracking-widest opacity-60">{description}</p>
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">{title}</h2>
+        <p className="text-muted-foreground text-sm max-w-2xl font-medium">{description}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-40 rounded-[2rem]" />
+            <Skeleton key={i} className="h-40 rounded-2xl" />
           ))
         ) : (
           links?.map((link) => {
@@ -71,20 +70,20 @@ export function QuickLinksGrid({ audience, title = "Aplikasi & Layanan", descrip
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <Card className="h-full rounded-[2rem] shadow-xl border-white/5 bg-white/5 backdrop-blur-xl hover:border-primary/20 hover:bg-white/[0.08] transition-all duration-500 hover:-translate-y-1 overflow-hidden border">
+                <Card className="h-full rounded-2xl shadow-sm border-border bg-white hover:border-primary/30 hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden border">
                   <CardHeader className="flex flex-row items-center gap-4 p-6 pb-3">
-                    <div className="p-3.5 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-lg group-hover:rotate-6">
+                    <div className="p-3 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
                       <Icon size={24} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-base font-black uppercase tracking-tight truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
-                      <div className="flex items-center text-[7px] text-muted-foreground uppercase font-black tracking-widest mt-1 opacity-40">
-                        Launch <ExternalLink size={8} className="ml-1" />
+                      <CardTitle className="text-base font-bold text-slate-900 truncate group-hover:text-primary transition-colors">{link.title}</CardTitle>
+                      <div className="flex items-center text-[10px] text-muted-foreground font-medium mt-1 opacity-60">
+                        Buka Aplikasi <ExternalLink size={10} className="ml-1" />
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="px-6 pb-6">
-                    <p className="text-[10px] text-muted-foreground leading-relaxed font-medium line-clamp-2 uppercase tracking-wider opacity-50">{link.description}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed font-medium line-clamp-2">{link.description}</p>
                   </CardContent>
                 </Card>
               </a>

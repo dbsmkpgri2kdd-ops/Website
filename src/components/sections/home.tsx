@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -128,7 +127,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
         return (
           <section key="partners" className="bg-slate-50/50 py-12 border-y border-border">
             <div className="max-w-7xl mx-auto px-6 items-center grid lg:grid-cols-4 gap-10">
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 text-center md:text-left">
                     <p className="text-xs font-bold text-primary uppercase tracking-widest mb-1">Dipercaya Oleh</p>
                     <h3 className="text-xl font-bold text-slate-900">Mitra Industri Strategis</h3>
                 </div>
@@ -169,7 +168,7 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
         return (
           <section key="majors" className="max-w-7xl mx-auto px-6 py-20">
               <div className="mb-12 text-center md:text-left space-y-3">
-                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Program Keahlian</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">Program Keahlian</h2>
                   <p className="text-muted-foreground text-sm max-w-2xl font-medium">Pilihan jurusan yang dirancang khusus untuk memenuhi standar keahlian industri global.</p>
               </div>
               <div className="grid md:grid-cols-3 gap-6">
@@ -207,8 +206,8 @@ const HomeSection = ({ setActiveTab, onSelectArticle }: HomeSectionProps) => {
         return (
           <section key="news" className="max-w-7xl mx-auto px-6 py-20">
               <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                  <div className="space-y-3">
-                      <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Berita Terkini</h2>
+                  <div className="space-y-3 text-center md:text-left">
+                      <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">Berita Terkini</h2>
                       <p className="text-muted-foreground text-sm font-medium">Ikuti perkembangan terbaru dan info pengumuman resmi dari sekolah.</p>
                   </div>
                   <Button onClick={() => setActiveTab('berita-pengumuman')} variant="outline" className="rounded-lg h-10 px-6 font-bold text-xs">
