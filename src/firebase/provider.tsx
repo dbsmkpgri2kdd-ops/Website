@@ -42,7 +42,9 @@ const parseCSV = (csv: string) => {
   
   const headers = rows[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
   return rows.slice(1).map(row => {
-    const values = row.split(',').map(v => v.trim().replace(/^["']|["']$/g, ''));
+    // Handle both comma and semicolon separators
+    const separator = row.includes(';') ? ';' : ',';
+    const values = row.split(separator).map(v => v.trim().replace(/^["']|["']$/g, ''));
     return headers.reduce((obj: any, header, i) => {
       obj[header] = values[i] || '';
       return obj;
@@ -62,53 +64,11 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     userError: null,
   });
 
-  const defaultLogo = 'https://picsum.photos/seed/school/200/200';
-
   useEffect(() => {
     if (!auth || !firestore) {
       setUserState(prev => ({ ...prev, isUserLoading: false }));
       return;
     }
-
-    // Initialize School Data if not exists
-    const initSchoolData = async () => {
-      try {
-        const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
-        const schoolSnap = await getDoc(schoolRef);
-        if (!schoolSnap.exists()) {
-          await setDoc(schoolRef, {
-            name: "SMKS PGRI 2 KEDONDONG",
-            shortName: "SMK PRIDA",
-            logoUrl: defaultLogo,
-            address: "Jl. Tritura No. 7 Kedondong, Pesawaran, Lampung",
-            email: "smkpgri2kdd_pswrn@yahoo.com",
-            phone: "0729-7371134",
-            vision: "Visi: Islam Berdikari Unggul (IBU)",
-            mission: [
-              "Meningkatkan sumber daya manusia dengan mengikuti perkembangan pendidikan yang bertakwa dan berbudi pekerti",
-              "Meningkatkan kesadaran terhadap budaya tertib, disiplin, keterampilan, dan hidup yang mandiri",
-              "Memberikan prestasi yang terbaik"
-            ],
-            primaryColor: "221 100% 50%",
-            accentColor: "45 100% 50%",
-            layoutSettings: {
-              showHero: true,
-              showPartners: true,
-              showStats: true,
-              showMajors: true,
-              showNews: true,
-              showCta: true,
-              showShowcase: true,
-              sectionOrder: ['hero', 'partners', 'apps', 'stats', 'majors', 'showcase', 'news', 'cta']
-            }
-          });
-        }
-      } catch (e) {
-        console.warn("School auto-initialization failed, possibly due to permission rules.");
-      }
-    };
-
-    initSchoolData();
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -133,7 +93,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               await setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
             }
           } else {
-            // Profile Sync logic for Students
+            // Profile Sync logic for Students using NIS
             const userData = userSnap.data() as UserProfile;
             if (userData.role === 'siswa' && userData.nis && !userData.lastSyncedAt) {
               const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
@@ -143,19 +103,21 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               if (schoolData?.studentDatabaseUrl && schoolData.csvMappings) {
                 try {
                   const res = await fetch(schoolData.studentDatabaseUrl);
+                  if (!res.ok) throw new Error("Gagal mengunduh database CSV");
                   const csvText = await res.text();
                   const studentList = parseCSV(csvText);
                   const maps = schoolData.csvMappings;
                   
+                  const cleanNis = String(userData.nis).trim();
                   const match = studentList.find(s => 
-                    String(s[maps.nis]).trim() === String(userData.nis).trim()
+                    String(s[maps.nis] || '').trim() === cleanNis
                   );
 
                   if (match) {
                     await updateDoc(userDocRef, {
                       displayName: match[maps.name] || userData.displayName,
-                      className: match[maps.class] || 'X',
-                      session: (match[maps.session] === 'Siang' ? 'Siang' : 'Pagi'),
+                      className: match[maps.class] || 'Umum',
+                      session: (String(match[maps.session]).includes('Siang') ? 'Siang' : 'Pagi'),
                       address: match[maps.address] || '',
                       phone: match[maps.phone] || '',
                       parentName: match[maps.parentName] || '',
