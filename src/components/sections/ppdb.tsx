@@ -22,7 +22,7 @@ const PpdbSection = ({ setActiveTab }: PpdbSectionProps) => {
                 <Sparkles size={14} className='animate-pulse text-accent' />
                 <span className="text-xs font-bold uppercase tracking-widest">PPDB Online 2025</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight uppercase italic">Mulai Masa Depan <br/><span className='text-primary not-italic'>Anda di Sini.</span></h2>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight uppercase">Mulai Masa Depan <br/><span className='text-primary'>Anda di Sini.</span></h2>
             <p className="text-muted-foreground text-lg leading-relaxed font-medium">
                 Pusat pendidikan vokasi unggulan yang fokus pada penyiapan lulusan siap kerja, kompeten, dan memiliki karakter industri yang kuat.
             </p>
@@ -62,7 +62,7 @@ const PpdbSection = ({ setActiveTab }: PpdbSectionProps) => {
                 <div className='absolute inset-0 bg-primary/10 rounded-[2rem] animate-ping opacity-20'></div>
                 <CheckCircle size={48} className='relative z-10' />
               </div>
-              <h3 className="text-3xl font-black text-slate-900 uppercase italic tracking-tighter">Berkas Terkirim!</h3>
+              <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Berkas Terkirim!</h3>
               <p className="text-muted-foreground text-sm font-medium mt-4 max-w-xs mx-auto leading-relaxed">
                 Data pendaftaran Anda telah berhasil kami terima. Panitia akan segera melakukan verifikasi berkas secara menyeluruh.
               </p>

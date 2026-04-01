@@ -20,10 +20,6 @@ const formSchema = z.object({
   phone: z.string().min(10, "Nomor WhatsApp minimal 10 digit.").regex(/^\d+$/, "Hanya masukkan angka."),
 });
 
-/**
- * Modul Cek Status Pendaftaran PPDB v2.5.
- * Menggunakan arsitektur query Client-Side yang aman dan desain Premium Obsidian.
- */
 export default function PpdbStatusCheckSection() {
   const { toast } = useToast();
   const firestore = useFirestore();
@@ -144,7 +140,7 @@ export default function PpdbStatusCheckSection() {
       {result === 'not_found' && (
         <div className="mt-12 p-10 rounded-[2.5rem] bg-red-500/5 border-2 border-dashed border-red-500/20 text-red-500 animate-reveal w-full max-w-lg text-center">
             <XCircle className="h-12 w-12 mx-auto mb-4 opacity-40" />
-            <h3 className="text-lg font-bold italic">Data tidak ditemukan</h3>
+            <h3 className="text-lg font-bold">Data tidak ditemukan</h3>
             <p className="text-xs font-medium mt-2 opacity-60 leading-relaxed">
                 Nomor tersebut tidak ditemukan dalam sistem kami. Pastikan nomor yang diinput sesuai saat melakukan pendaftaran online.
             </p>
@@ -165,7 +161,7 @@ export default function PpdbStatusCheckSection() {
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-[9px] font-bold uppercase tracking-[0.4em] opacity-40">Calon siswa terdaftar</p>
-                                    <h3 className="text-3xl font-black italic uppercase tracking-tighter font-headline leading-none">{result.studentName}</h3>
+                                    <h3 className="text-3xl font-black uppercase tracking-tighter font-headline leading-none">{result.studentName}</h3>
                                     <Badge variant="outline" className="text-[9px] font-bold px-3 py-1 border-white/10 mt-2">{result.chosenMajor}</Badge>
                                 </div>
                             </div>
@@ -173,7 +169,7 @@ export default function PpdbStatusCheckSection() {
                             <div className="pt-8 border-t border-white/10 space-y-6">
                                 <div className='space-y-2'>
                                     <p className="text-[10px] font-bold uppercase tracking-widest opacity-60 text-center">Keputusan panitia seleksi:</p>
-                                    <div className={cn("text-5xl font-black italic uppercase tracking-tighter font-headline text-center drop-shadow-2xl", config.color)}>
+                                    <div className={cn("text-5xl font-black uppercase tracking-tighter font-headline text-center drop-shadow-2xl", config.color)}>
                                         {result.status}
                                     </div>
                                 </div>

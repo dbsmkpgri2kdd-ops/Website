@@ -1,26 +1,24 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 
-/**
- * Hook untuk menangani event 'beforeinstallprompt' dari browser.
- * Digunakan untuk menampilkan UI kustom saat website terdeteksi dapat diinstal (PWA).
- */
 export function usePWAInstall() {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    // Cek apakah sudah terinstal
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    // Cek status aplikasi standalone
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                        (window.navigator as any).standalone === true;
+    
+    if (isStandalone) {
       setIsInstalled(true);
     }
 
-    const handler = (e: Event) => {
-      // Mencegah browser menampilkan prompt default secara otomatis
+    const handler = (e: any) => {
+      // Cegah default prompt browser
       e.preventDefault();
-      // Simpan event untuk dipicu nanti via tombol UI kustom
+      // Simpan event agar bisa dipicu melalui tombol kustom
       setInstallPrompt(e);
     };
 
@@ -37,10 +35,10 @@ export function usePWAInstall() {
   const handleInstall = async () => {
     if (!installPrompt) return;
 
-    // Tampilkan prompt instalasi browser
+    // Tampilkan prompt bawaan browser
     installPrompt.prompt();
 
-    // Tunggu pilihan pengguna
+    // Tunggu respon pengguna
     const { outcome } = await installPrompt.userChoice;
     
     if (outcome === 'accepted') {

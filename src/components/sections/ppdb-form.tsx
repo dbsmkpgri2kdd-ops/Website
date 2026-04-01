@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -93,7 +92,7 @@ export default function PpdbForm({ setIsSubmitted }: PpdbFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-        <h3 className="text-2xl font-black font-headline tracking-tighter uppercase italic text-primary">Formulir Pendaftaran</h3>
+        <h3 className="text-2xl font-black font-headline tracking-tighter uppercase text-primary">Formulir Pendaftaran</h3>
         
         <FormField
           control={form.control}
