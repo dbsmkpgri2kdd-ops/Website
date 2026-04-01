@@ -1,11 +1,13 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { 
   LogOut, Sparkles, Fingerprint, MapPin, Phone, 
   ShieldCheck, GraduationCap, BookOpen, UserCheck, 
-  Smartphone, LayoutGrid, UserCog, HeartPulse, RefreshCcw
+  Smartphone, LayoutGrid, UserCog, HeartPulse, RefreshCcw,
+  Bell, Home, User as UserIcon, Search, Settings
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
@@ -17,19 +19,26 @@ import { JadwalPelajaran } from '@/components/shared/jadwal-pelajaran';
 import { ERaporSiswa } from '@/components/siswa/e-rapor-siswa';
 import { AbsensiSiswa } from '@/components/siswa/absensi-siswa';
 import { PortofolioDigital } from '@/components/siswa/portofolio-digital';
-import { QuickLinksGrid } from '@/components/shared/quick-links-grid';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExamBroPortal } from '@/components/siswa/exambro-portal';
 import { BiometricAttendance } from '@/components/siswa/biometric-attendance';
 import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
+type TabType = 'home' | 'ujian' | 'akademik' | 'profil';
 
 function SiswaDashboard() {
   const { user, profile } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState<TabType>('home');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     if (!auth) return;
@@ -42,146 +51,164 @@ function SiswaDashboard() {
     }
   };
 
-  const InfoRow = ({ icon: Icon, label, value, color }: { icon: any, label: string, value?: string, color?: string }) => (
-    <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-primary/20 transition-all group">
-        <div className={cn("p-2 rounded-xl bg-white text-primary border border-slate-100 shadow-sm group-hover:bg-primary group-hover:text-white transition-all", color)}>
-            <Icon size={14} />
-        </div>
-        <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold text-slate-400">{label}</p>
-            <p className="text-xs font-bold text-slate-900 mt-0.5 truncate">{value || '-'}</p>
-        </div>
-    </div>
+  const NavItem = ({ id, icon: Icon, label }: { id: TabType, icon: any, label: string }) => (
+    <button
+      onClick={() => setActiveTab(id)}
+      className={cn(
+        "flex flex-col items-center justify-center flex-1 py-2 transition-all duration-300",
+        activeTab === id ? "text-primary scale-110" : "text-slate-400"
+      )}
+    >
+      <div className={cn(
+        "p-1.5 rounded-xl transition-all",
+        activeTab === id ? "bg-primary/10" : "bg-transparent"
+      )}>
+        <Icon size={22} strokeWidth={activeTab === id ? 2.5 : 2} />
+      </div>
+      <span className={cn("text-[10px] font-bold mt-1", activeTab === id ? "opacity-100" : "opacity-60")}>{label}</span>
+    </button>
   );
 
-  return (
-    <div className="min-h-screen bg-white p-4 sm:p-8 pb-32 sm:pb-8 tech-mesh">
-      <header className="max-w-7xl mx-auto flex justify-between items-center mb-8">
-        <div className="flex items-center gap-3">
-            <div className="bg-primary text-white p-2 rounded-xl shadow-xl glow-primary">
-                <Sparkles size={20} />
-            </div>
-            <div className='flex flex-col'>
-                <h1 className="text-lg sm:text-xl font-extrabold font-headline text-slate-900 tracking-tight leading-none">Siswa Portal</h1>
-                <span className='text-[10px] font-bold text-primary opacity-60 mt-1'>Digital Identity Hub</span>
-            </div>
-        </div>
-        <Button onClick={handleLogout} variant="outline" className="rounded-xl h-10 px-4 font-bold text-xs border-slate-200 text-slate-600 hover:bg-slate-50 transition-all">
-          <LogOut className="mr-2 h-4 w-4 opacity-40" />
-          <span className="hidden sm:inline">Keluar</span>
-        </Button>
-      </header>
-      
-      <main className="max-w-7xl mx-auto space-y-6 animate-reveal">
-          {profile?.role === 'siswa' && !profile.lastSyncedAt && (
-            <Alert className="bg-primary/5 border-primary/10 p-5 rounded-3xl shadow-sm">
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'home':
+        return (
+          <div className="space-y-6 animate-reveal pb-24">
+            {/* Header Profil Ringkas */}
+            <div className="flex items-center justify-between mb-8">
               <div className='flex items-center gap-4'>
-                <div className='p-2.5 bg-primary text-white rounded-xl shrink-0'>
-                  <RefreshCcw className="h-5 w-5 animate-spin" />
-                </div>
+                <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-md">
+                  <AvatarFallback className="bg-primary/5 text-primary text-xl font-black">
+                    {profile?.displayName?.charAt(0) || 'S'}
+                  </AvatarFallback>
+                </Avatar>
                 <div>
-                  <AlertTitle className="text-sm font-bold text-slate-900">Sinkronisasi Identitas Digital</AlertTitle>
-                  <AlertDescription className="text-[11px] font-medium text-slate-500 leading-relaxed">
-                    Sistem sedang memverifikasi data Anda di server pusat. Harap tunggu sebentar.
-                  </AlertDescription>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Selamat Datang,</p>
+                  <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-tight">{profile?.displayName || 'Siswa'}</h3>
                 </div>
               </div>
-            </Alert>
-          )}
-
-          <div className="grid lg:grid-cols-12 gap-6">
-            {/* KOLOM KIRI: IDENTITAS & BIOMETRIK */}
-            <div className="lg:col-span-4 space-y-6">
-                <Card className="border-slate-100 bg-white rounded-[2rem] overflow-hidden relative shadow-xl border-2">
-                    <div className='absolute top-0 left-0 w-full h-1.5 bg-primary'></div>
-                    <CardHeader className="p-6 text-center sm:text-left space-y-4">
-                        <div className="flex flex-col sm:flex-row items-center gap-5">
-                            <Avatar className="h-20 w-20 border-4 border-primary/10 shadow-md">
-                                <AvatarFallback className="bg-primary/5 text-primary text-3xl font-extrabold">
-                                    {profile?.displayName?.charAt(0) || 'S'}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className='flex-1 min-w-0'>
-                                <h3 className="text-lg font-extrabold font-headline tracking-tight text-slate-900 leading-tight truncate">{profile?.displayName || 'Siswa'}</h3>
-                                <p className="text-primary font-bold text-[11px] mt-1">{profile?.className || 'Belum Sinkron'}</p>
-                                <div className='flex flex-wrap gap-2 mt-3 justify-center sm:justify-start'>
-                                    <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-700 border-none px-2.5 py-0.5 rounded-lg text-[10px] font-bold'>Status Aktif</Badge>
-                                    <Badge variant="outline" className='border-primary/20 text-primary px-2.5 py-0.5 rounded-lg text-[10px] font-bold'>Shift {profile?.session || 'Pagi'}</Badge>
-                                </div>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="px-6 pb-6 space-y-5">
-                        <div className='space-y-2.5'>
-                            <p className='text-[10px] font-bold text-slate-400 px-1'>Identitas Utama</p>
-                            <InfoRow icon={Fingerprint} label="Nomor Induk Siswa" value={profile?.nis} />
-                            <InfoRow icon={MapPin} label="Alamat Terdaftar" value={profile?.address} />
-                            <InfoRow icon={Phone} label="Nomor Handphone" value={profile?.phone} />
-                        </div>
-                        
-                        <div className="pt-5 border-t border-slate-100">
-                            <p className='text-[10px] font-bold text-slate-400 px-1 mb-3'>Personalia Akademik</p>
-                            <div className="grid grid-cols-1 gap-2.5">
-                                <InfoRow icon={UserCog} label="Wali Kelas" value={profile?.homeroomTeacher} />
-                                <InfoRow icon={HeartPulse} label="Guru BK" value={profile?.bkTeacher} />
-                                <InfoRow icon={UserCheck} label="Guru Wali" value={profile?.guardianTeacher} />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <BiometricAttendance />
+              <Button variant="ghost" size="icon" className="rounded-full bg-slate-50 relative">
+                <Bell size={20} className="text-slate-600" />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full border-2 border-white animate-pulse" />
+              </Button>
             </div>
 
-            {/* KOLOM KANAN: TABS & KONTEN UTAMA */}
-            <div className="lg:col-span-8 space-y-6">
-                <Tabs defaultValue="overview" className="w-full">
-                    <div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-                        <TabsList className="flex w-fit sm:grid sm:w-full grid-cols-4 h-12 bg-slate-50 p-1 rounded-2xl border border-slate-100 gap-1 shadow-inner">
-                            <TabsTrigger value="overview" className="rounded-xl font-bold text-[11px] transition-all px-6 sm:px-0 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary">
-                                <LayoutGrid className='mr-2 h-3.5 w-3.5' /> Dashboard
-                            </TabsTrigger>
-                            <TabsTrigger value="exams" className="rounded-xl font-bold text-[11px] transition-all px-6 sm:px-0 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary">
-                                <Smartphone className='mr-2 h-3.5 w-3.5' /> ExamBro
-                            </TabsTrigger>
-                            <TabsTrigger value="academic" className="rounded-xl font-bold text-[11px] transition-all px-6 sm:px-0 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary">
-                                <GraduationCap className='mr-2 h-3.5 w-3.5' /> Akademik
-                            </TabsTrigger>
-                            <TabsTrigger value="portfolio" className="rounded-xl font-bold text-[11px] transition-all px-6 sm:px-0 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary">
-                                <BookOpen className='mr-2 h-3.5 w-3.5' /> Karya
-                            </TabsTrigger>
-                        </TabsList>
-                    </div>
+            {profile?.role === 'siswa' && !profile.lastSyncedAt && (
+              <Alert className="bg-primary/5 border-primary/10 rounded-3xl">
+                <RefreshCcw className="h-4 w-4 animate-spin text-primary" />
+                <AlertTitle className="text-xs font-bold">Sinkronisasi data...</AlertTitle>
+                <AlertDescription className="text-[10px] opacity-70">Menghubungkan ke server pusat.</AlertDescription>
+              </Alert>
+            )}
 
-                    <TabsContent value="overview" className="space-y-6 pt-2">
-                        <QuickLinksGrid audience="siswa" title="Akses Cepat" description="Layanan penunjang belajar harian Anda." />
-                        <div className='grid sm:grid-cols-2 gap-6'>
-                            <AbsensiSiswa />
-                            <JadwalPelajaran />
-                        </div>
-                    </TabsContent>
+            {/* Quick Actions Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <BiometricAttendance />
+              <Card className="rounded-[2rem] border-none shadow-xl bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between h-full group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
+                <div className='p-3 bg-white/20 rounded-2xl w-fit shadow-inner'><Smartphone size={24} /></div>
+                <div>
+                  <h4 className="font-black text-sm uppercase tracking-tight">ExamBro</h4>
+                  <p className="text-[10px] opacity-60 font-bold">Ujian Aman</p>
+                </div>
+              </Card>
+            </div>
 
-                    <TabsContent value="exams" className="pt-2">
-                        <ExamBroPortal />
-                    </TabsContent>
-
-                    <TabsContent value="academic" className="pt-2">
-                        <ERaporSiswa />
-                    </TabsContent>
-
-                    <TabsContent value="portfolio" className="pt-2">
-                        <PortofolioDigital />
-                    </TabsContent>
-                </Tabs>
+            <div className="grid grid-cols-1 gap-6">
+              <AbsensiSiswa />
+              <JadwalPelajaran />
             </div>
           </div>
+        );
+      case 'ujian':
+        return <div className='animate-reveal pb-24'><ExamBroPortal /></div>;
+      case 'akademik':
+        return (
+          <div className='space-y-6 animate-reveal pb-24'>
+            <div className="mb-8">
+              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Akademik</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Layanan Hasil Belajar</p>
+            </div>
+            <ERaporSiswa />
+            <PortofolioDigital />
+          </div>
+        );
+      case 'profil':
+        return (
+          <div className='space-y-6 animate-reveal pb-24'>
+            <div className="mb-8">
+              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Profil Saya</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Detail Identitas Digital</p>
+            </div>
+            
+            <Card className="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden bg-white border-2">
+              <div className="h-24 bg-primary relative">
+                <div className="absolute -bottom-10 left-8">
+                  <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
+                    <AvatarFallback className="bg-slate-50 text-primary text-2xl font-black">
+                      {profile?.displayName?.charAt(0) || 'S'}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              </div>
+              <CardContent className="pt-14 pb-8 px-8 space-y-6">
+                <div>
+                  <h3 className="text-xl font-black text-slate-900 tracking-tight">{profile?.displayName}</h3>
+                  <p className="text-sm font-bold text-primary">{profile?.className || 'Kelas Belum Set'}</p>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                    <Fingerprint className="text-primary opacity-40" size={20} />
+                    <div>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Nomor Induk Siswa</p>
+                      <p className="text-sm font-bold">{profile?.nis || '-'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                    <MapPin className="text-primary opacity-40" size={20} />
+                    <div>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Alamat</p>
+                      <p className="text-sm font-bold truncate">{profile?.address || '-'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                    <UserCog className="text-primary opacity-40" size={20} />
+                    <div>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Wali Kelas</p>
+                      <p className="text-sm font-bold">{profile?.homeroomTeacher || '-'}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Button onClick={handleLogout} variant="outline" className="w-full h-12 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-bold text-xs uppercase tracking-widest">
+                  <LogOut className="mr-2 h-4 w-4" /> Keluar Sesi
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+    }
+  };
+
+  if (!mounted) return null;
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <main className="flex-1 px-6 pt-8 overflow-y-auto custom-scrollbar">
+        <div className="max-w-md mx-auto">
+          {renderContent()}
+        </div>
       </main>
-      
-      <footer className="max-w-7xl mx-auto mt-12 pt-6 border-t border-slate-100 text-center opacity-40">
-          <p className='text-[10px] font-bold text-slate-400'>
-              &copy; 2025 SMKS PGRI 2 Kedondong • Portal Siswa Resmi
-          </p>
-      </footer>
+
+      {/* Navigasi Bawah Gaya Android Native */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-100 px-6 pb-safe z-50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+        <div className="max-w-md mx-auto h-20 flex items-center justify-between">
+          <NavItem id="home" icon={Home} label="Beranda" />
+          <NavItem id="ujian" icon={Smartphone} label="Ujian" />
+          <NavItem id="akademik" icon={GraduationCap} label="Akademik" />
+          <NavItem id="profil" icon={UserIcon} label="Profil" />
+        </div>
+      </nav>
     </div>
   );
 }

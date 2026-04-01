@@ -1,19 +1,21 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { 
-  LogOut, User as UserIcon, ShieldCheck, Sparkles, 
-  GraduationCap, Building2, Bell, LayoutGrid, CalendarCheck 
+  LogOut, ShieldCheck, Sparkles, 
+  GraduationCap, Building2, Bell, LayoutGrid, 
+  UserCheck, ClipboardList, BookMarked, Home,
+  User as UserIcon, MonitorCheck, Settings, Users
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useUser, useAuth } from '@/firebase';
 import { PembinaanEskul } from '@/components/guru/pembinaan-ekskul';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { JadwalPelajaran } from '@/components/shared/jadwal-pelajaran';
 import { DownloadManager } from '@/components/shared/download-manager';
 import { ManajemenPrakerin } from '@/components/shared/manajemen-prakerin';
@@ -21,109 +23,167 @@ import { AchievementsManager } from '@/components/admin/achievements-manager';
 import { ERaporManager } from '@/components/shared/e-rapor-manager';
 import { ManajemenAbsensi } from '@/components/guru/manajemen-absensi';
 import { ExamManager } from '@/components/guru/exam-manager';
-import { QuickLinksGrid } from '@/components/shared/quick-links-grid';
+import { cn } from '@/lib/utils';
+
+type TabType = 'home' | 'absensi' | 'ujian' | 'profil';
 
 function GuruDashboard() {
-  const { user } = useUser();
+  const { user, profile } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState<TabType>('home');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     if (!auth) return;
     try {
       await signOut(auth);
       router.replace('/');
-      toast({ title: 'Logout Berhasil', description: 'Kembali ke beranda...' });
+      toast({ title: 'Logout Berhasil', description: 'Sesi pengajar telah diakhiri.' });
     } catch (error) {
       toast({ variant: 'destructive', title: 'Logout Gagal' });
     }
   };
 
-  return (
-    <div className="min-h-screen bg-white p-4 sm:p-8 pb-32 sm:pb-8 tech-mesh">
-      <header className="max-w-7xl mx-auto flex justify-between items-center mb-10">
-        <div className="flex items-center gap-4">
-            <div className="bg-primary text-white p-2.5 rounded-2xl shadow-xl glow-primary">
-                <Sparkles size={24} />
+  const NavItem = ({ id, icon: Icon, label }: { id: TabType, icon: any, label: string }) => (
+    <button
+      onClick={() => setActiveTab(id)}
+      className={cn(
+        "flex flex-col items-center justify-center flex-1 py-2 transition-all duration-300",
+        activeTab === id ? "text-primary scale-110" : "text-slate-400"
+      )}
+    >
+      <div className={cn(
+        "p-1.5 rounded-xl transition-all",
+        activeTab === id ? "bg-primary/10" : "bg-transparent"
+      )}>
+        <Icon size={22} strokeWidth={activeTab === id ? 2.5 : 2} />
+      </div>
+      <span className={cn("text-[10px] font-bold mt-1", activeTab === id ? "opacity-100" : "opacity-60")}>{label}</span>
+    </button>
+  );
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'home':
+        return (
+          <div className="space-y-6 animate-reveal pb-24">
+            <div className="flex items-center justify-between mb-8">
+              <div className='flex items-center gap-4'>
+                <div className='p-3 bg-primary text-white rounded-2xl shadow-xl glow-primary'>
+                  <Sparkles size={24} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Portal Pengajar,</p>
+                  <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-tight">Halo, Bapak/Ibu</h3>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="rounded-full bg-slate-50">
+                <Bell size={20} className="text-slate-600" />
+              </Button>
             </div>
-            <div className='flex flex-col'>
-                <h1 className="text-xl sm:text-2xl font-extrabold font-headline text-slate-900 tracking-tight leading-none">Guru Portal</h1>
-                <span className='text-[9px] font-bold uppercase tracking-[0.2em] text-primary opacity-60 mt-1'>Academic Management Hub</span>
-            </div>
-        </div>
-        <Button onClick={handleLogout} variant="outline" className="rounded-xl h-11 px-6 font-bold text-xs border-slate-200 text-slate-600 hover:bg-slate-50 transition-all">
-          <LogOut className="mr-2 h-4 w-4 opacity-40" />
-          <span className="hidden sm:inline">Logout</span>
-        </Button>
-      </header>
-      
-      <main className="max-w-7xl mx-auto space-y-10 animate-reveal">
-          <Card className="border-slate-100 bg-white rounded-[2.5rem] overflow-hidden relative shadow-xl border-2">
-            <CardHeader className='p-8 md:p-12'>
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10 text-center md:text-left">
-                <Avatar className="h-24 w-24 md:h-28 md:w-28 border-4 border-primary/10 shadow-lg">
-                    <AvatarFallback className="bg-primary/5 text-primary text-4xl font-extrabold">
-                    {user?.profile?.displayName?.charAt(0) || 'G'}
-                    </AvatarFallback>
+
+            <Card className="rounded-[2.5rem] bg-white border-2 border-slate-100 shadow-xl overflow-hidden">
+              <CardContent className="p-8 flex items-center gap-6">
+                <Avatar className="h-16 w-16 border-2 border-primary/10">
+                  <AvatarFallback className="bg-primary/5 text-primary text-xl font-black">{profile?.displayName?.charAt(0) || 'G'}</AvatarFallback>
                 </Avatar>
-                <div className='flex-1'>
-                    <div className='flex items-center justify-center md:justify-start gap-2 text-primary mb-3'>
-                      <ShieldCheck size={16} className='animate-pulse' />
-                      <span className='text-[10px] font-bold uppercase tracking-widest'>Akses Terverifikasi v7.5</span>
-                    </div>
-                    <CardTitle className="text-2xl md:text-3xl font-extrabold font-headline tracking-tight text-slate-900 leading-none">Bapak/Ibu {user?.profile?.displayName || 'Guru'}</CardTitle>
-                    <p className="text-slate-500 font-medium text-xs mt-3 opacity-80">{user?.email}</p>
-                    
-                    <div className='flex flex-wrap justify-center md:justify-start gap-3 mt-6'>
-                        <Badge variant="secondary" className="bg-slate-50 text-slate-600 border-slate-100 px-4 py-1.5 rounded-xl text-[9px] font-bold uppercase">Sesi: {user?.profile?.session || 'Pagi'}</Badge>
-                        <Badge variant="outline" className="border-primary/20 text-primary px-4 py-1.5 rounded-xl text-[9px] font-bold uppercase">Role: Guru Pengajar</Badge>
-                    </div>
+                <div>
+                  <h4 className="text-lg font-black text-slate-900 leading-tight">{profile?.displayName}</h4>
+                  <div className='flex items-center gap-2 mt-1 text-primary'>
+                    <ShieldCheck size={14} />
+                    <span className='text-[10px] font-bold uppercase tracking-widest'>Status: Pengajar Aktif</span>
+                  </div>
                 </div>
-                </div>
-            </CardHeader>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Tabs defaultValue="akademik" className="w-full">
-            <div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 mb-8">
-                <TabsList className="flex w-fit sm:grid sm:w-full grid-cols-4 bg-slate-50 p-1 h-14 rounded-2xl border border-slate-100 gap-1 shadow-inner">
-                    <TabsTrigger value="akademik" className="rounded-xl font-bold text-[10px] uppercase transition-all px-8 sm:px-0 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-primary">
-                        <GraduationCap className='mr-2 h-4 w-4' /> Akademik
-                    </TabsTrigger>
-                    <TabsTrigger value="ujian" className="rounded-xl font-bold text-[10px] uppercase transition-all px-8 sm:px-0 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-primary">
-                        <ShieldCheck className='mr-2 h-4 w-4' /> ExamBro
-                    </TabsTrigger>
-                    <TabsTrigger value="kesiswaan" className="rounded-xl font-bold text-[10px] uppercase transition-all px-8 sm:px-0 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-primary">
-                        <Bell className='mr-2 h-4 w-4' /> Kesiswaan
-                    </TabsTrigger>
-                    <TabsTrigger value="hubin" className="rounded-xl font-bold text-[10px] uppercase transition-all px-8 sm:px-0 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-primary">
-                        <Building2 className='mr-2 h-4 w-4' /> Hubin
-                    </TabsTrigger>
-                </TabsList>
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="rounded-[2rem] bg-primary text-white p-6 flex flex-col justify-between h-36 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('absensi')}>
+                <div className='p-3 bg-white/20 rounded-2xl w-fit'><UserCheck size={24} /></div>
+                <h4 className="font-black text-sm uppercase tracking-tight">Presensi</h4>
+              </Card>
+              <Card className="rounded-[2rem] bg-accent text-accent-foreground p-6 flex flex-col justify-between h-36 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
+                <div className='p-3 bg-black/5 rounded-2xl w-fit'><MonitorCheck size={24} /></div>
+                <h4 className="font-black text-sm uppercase tracking-tight">ExamBro</h4>
+              </Card>
             </div>
 
-            <TabsContent value="akademik" className="space-y-10 pt-4">
-                <QuickLinksGrid audience="guru" title="Dashboard Akademik" description="Layanan pendukung administrasi harian bapak/ibu guru." />
-                <ERaporManager />
-                <ManajemenAbsensi />
-                <JadwalPelajaran />
-                <DownloadManager />
-            </TabsContent>
+            <div className="space-y-6">
+              <div className="mb-4">
+                <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Jadwal & Agenda</h4>
+              </div>
+              <JadwalPelajaran />
+              <DownloadManager />
+            </div>
+          </div>
+        );
+      case 'absensi':
+        return (
+          <div className='space-y-6 animate-reveal pb-24'>
+            <div className="mb-8">
+              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Presensi</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Manajemen Kehadiran Siswa</p>
+            </div>
+            <ManajemenAbsensi />
+          </div>
+        );
+      case 'ujian':
+        return (
+          <div className='space-y-6 animate-reveal pb-24'>
+            <div className="mb-8">
+              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">ExamBro Portal</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Pengawasan & Jadwal Ujian</p>
+            </div>
+            <ExamManager />
+          </div>
+        );
+      case 'profil':
+        return (
+          <div className='space-y-6 animate-reveal pb-24'>
+            <div className="mb-8">
+              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Akademik & Sistem</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Panel Kontrol Pengajar</p>
+            </div>
+            
+            <div className="space-y-6">
+              <ERaporManager />
+              <ManajemenPrakerin />
+              <AchievementsManager />
+              <PembinaanEskul />
+              
+              <Button onClick={handleLogout} variant="outline" className="w-full h-14 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-bold text-xs uppercase tracking-widest mt-10 shadow-sm">
+                <LogOut className="mr-2 h-4 w-4" /> Keluar Sesi Guru
+              </Button>
+            </div>
+          </div>
+        );
+    }
+  };
 
-            <TabsContent value="ujian" className="pt-4">
-                <ExamManager />
-            </TabsContent>
+  if (!mounted) return null;
 
-            <TabsContent value="kesiswaan" className="space-y-10 pt-4">
-                <AchievementsManager />
-                <PembinaanEskul />
-            </TabsContent>
-
-             <TabsContent value="hubin" className="pt-4">
-                <ManajemenPrakerin />
-            </TabsContent>
-        </Tabs>
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <main className="flex-1 px-6 pt-8 overflow-y-auto custom-scrollbar">
+        <div className="max-w-md mx-auto">
+          {renderContent()}
+        </div>
       </main>
+
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-100 px-6 pb-safe z-50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+        <div className="max-w-md mx-auto h-20 flex items-center justify-between">
+          <NavItem id="home" icon={Home} label="Beranda" />
+          <NavItem id="absensi" icon={ClipboardList} label="Presensi" />
+          <NavItem id="ujian" icon={MonitorCheck} label="ExamBro" />
+          <NavItem id="profil" icon={BookMarked} label="Akademik" />
+        </div>
+      </nav>
     </div>
   );
 }
