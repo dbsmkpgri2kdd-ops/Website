@@ -52,7 +52,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
     {
         title: "Layanan",
         links: [
-            { id: 'ppdb-online', label: 'Ppdb Online' },
+            { id: 'ppdb-online', label: 'PPDB Online' },
             { id: 'bkk', label: 'Bursa Kerja' },
             { id: 'prakerin-pkl', label: 'Program Prakerin' },
             { id: 'cek-status-kelulusan', label: 'Status Kelulusan' },
@@ -63,13 +63,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
   const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
 
   return (
-    <footer className="bg-white border-t border-slate-100 pt-20 pb-32 md:pb-16 tech-mesh relative">
+    <footer className="bg-white border-t border-slate-100 pt-16 pb-32 md:pb-16 tech-mesh relative">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
         
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-4">
-               <div className="w-14 h-14 bg-primary/5 p-2 rounded-2xl relative overflow-hidden shadow-inner border border-primary/5">
+               <div className="w-12 h-12 bg-primary/5 p-2 rounded-xl relative overflow-hidden shadow-inner border border-primary/5">
                   {isSchoolDataLoading ? (
                       <Skeleton className="w-full h-full" />
                   ) : (
@@ -82,15 +82,15 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                       />
                   )}
                </div>
-              <div className="font-extrabold text-xl tracking-tight text-slate-900 leading-none">
-                {isSchoolDataLoading ? <Skeleton className="h-6 w-40" /> : (schoolData?.name || "SMKS PGRI 2 Kedondong")}
+              <div className="font-extrabold text-lg tracking-tight text-slate-900 leading-none">
+                {isSchoolDataLoading ? <Skeleton className="h-5 w-40" /> : (schoolData?.name || "SMKS PGRI 2 Kedondong")}
               </div>
             </div>
             
-            <div className="space-y-5 text-slate-500">
-                <div className="flex items-start gap-4">
-                    <div className='p-2 bg-primary/5 text-primary rounded-xl shrink-0 mt-0.5'><MapPin size={18} /></div>
-                    <div className="text-[14px] leading-relaxed flex-1 font-medium">
+            <div className="space-y-4 text-slate-500">
+                <div className="flex items-start gap-3">
+                    <div className='p-2 bg-primary/5 text-primary rounded-lg shrink-0 mt-0.5'><MapPin size={16} /></div>
+                    <div className="text-[13px] leading-relaxed flex-1 font-medium">
                       {isSchoolDataLoading ? (
                         <Skeleton className="h-4 w-full" />
                       ) : (
@@ -98,21 +98,21 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                       )}
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <div className='p-2 bg-primary/5 text-primary rounded-xl shrink-0'><Phone size={16} /></div>
-                    <div className="text-[14px] text-slate-600 font-bold">
+                <div className="flex items-center gap-3">
+                    <div className='p-2 bg-primary/5 text-primary rounded-lg shrink-0'><Phone size={14} /></div>
+                    <div className="text-[13px] text-slate-600 font-bold">
                       {isSchoolDataLoading ? <Skeleton className="h-4 w-32" /> : schoolData?.phone}
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <div className='p-2 bg-primary/5 text-primary rounded-xl shrink-0'><Mail size={16} /></div>
-                    <div className="text-[14px] text-slate-600 font-bold">
+                <div className="flex items-center gap-3">
+                    <div className='p-2 bg-primary/5 text-primary rounded-lg shrink-0'><Mail size={14} /></div>
+                    <div className="text-[13px] text-slate-600 font-bold">
                       {isSchoolDataLoading ? <Skeleton className="h-4 w-48" /> : schoolData?.email}
                     </div>
                 </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-2.5 pt-2">
               {[
                 { icon: Facebook, url: schoolData?.facebookUrl },
                 { icon: Instagram, url: schoolData?.instagramUrl },
@@ -120,9 +120,9 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 { icon: Youtube, url: schoolData?.youtubeUrl }
               ].map((social, i) => (
                 social.url && (
-                  <Button key={i} asChild variant="outline" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">
+                  <Button key={i} asChild variant="outline" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">
                     <a href={social.url} target='_blank' rel='noopener noreferrer' aria-label={`Media Sosial ${i}`}>
-                      {social.isSvg ? <social.icon className="w-4 h-4 fill-current" /> : <social.icon size={18}/>}
+                      {social.isSvg ? <social.icon className="w-3.5 h-3.5 fill-current" /> : <social.icon size={16}/>}
                     </a>
                   </Button>
                 )
@@ -130,16 +130,16 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
             </div>
           </div>
           
-          <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-12">
+          <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-8">
             {columns.map((col, idx) => (
-              <div key={idx} className="space-y-6">
-                  <h5 className="font-extrabold text-[15px] text-slate-900 tracking-tight">{col.title}</h5>
-                  <ul className="space-y-4">
+              <div key={idx} className="space-y-5">
+                  <h5 className="font-extrabold text-[14px] text-slate-900 tracking-tight">{col.title}</h5>
+                  <ul className="space-y-3">
                       {col.links.map(link => (
                           <li key={link.label}>
                               <button 
                                   onClick={() => setActiveTab(link.id as NavLink)} 
-                                  className="text-slate-500 hover:text-primary text-[14px] transition-colors duration-300 flex items-center font-medium"
+                                  className="text-slate-500 hover:text-primary text-[13px] transition-colors duration-300 flex items-center font-medium"
                               >
                                   {link.label}
                               </button>
@@ -151,11 +151,11 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           </div>
         </div>
 
-        <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 text-[12px] font-bold">
+        <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-[11px] font-bold">
           <div className="text-center md:text-left opacity-60">
-            <span>&copy; {mounted ? currentYear : '2026'} {schoolData?.shortName || "SMK PRIDA"}. Official Digital Hub.</span>
+            <span>&copy; {mounted ? currentYear : '2025'} {schoolData?.shortName || "SMK PRIDA"}. Official Digital Hub.</span>
           </div>
-          <div className="flex gap-10 opacity-60">
+          <div className="flex gap-8 opacity-60">
             <span className="hover:text-primary cursor-pointer transition-colors">Kebijakan Privasi</span>
             <span className="hover:text-primary cursor-pointer transition-colors">Syarat & Ketentuan</span>
           </div>
