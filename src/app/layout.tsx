@@ -3,22 +3,22 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
-import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
+import { Poppins, Open_Sans } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
 import { ClientLayout } from '@/components/layout/client-layout';
 import type { Metadata, Viewport } from 'next';
 
-const jakarta = Plus_Jakarta_Sans({
+const poppins = Poppins({
   subsets: ['latin'],
-  variable: '--font-headline',
+  variable: '--font-poppins',
   display: 'swap',
   weight: ['400', '500', '600', '700', '800'],
 });
 
-const inter = Inter({
+const openSans = Open_Sans({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-open-sans',
   display: 'swap',
 });
 
@@ -51,8 +51,8 @@ export default function RootLayout({
       <body 
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          jakarta.variable, 
-          inter.variable
+          poppins.variable, 
+          openSans.variable
         )}
       >
           <ThemeProvider

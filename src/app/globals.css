@@ -23,7 +23,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 221 100% 50%;
-    --radius: 1rem;
+    --radius: 1.25rem;
   }
 
   .dark {
@@ -52,7 +52,7 @@
 @layer base {
   * {
     @apply border-border selection:bg-primary/10 selection:text-primary;
-    font-style: normal !important; /* Lockdown Zero Italics */
+    font-style: normal !important; /* Absolute Zero Italics */
   }
   body {
     @apply bg-background text-foreground antialiased font-sans overflow-x-hidden;
@@ -61,7 +61,7 @@
     @apply font-headline tracking-tight font-extrabold text-slate-900;
   }
   /* Force all standard elements to be non-italic */
-  em, i, cite, dfn {
+  em, i, cite, dfn, span, p, a, button {
     font-style: normal !important;
   }
 }

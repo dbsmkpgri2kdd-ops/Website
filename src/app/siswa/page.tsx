@@ -75,13 +75,13 @@ function SiswaDashboard() {
             <div className="flex items-center justify-between mb-8">
               <div className='flex items-center gap-4'>
                 <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-md">
-                  <AvatarFallback className="bg-primary/5 text-primary text-xl font-black">
+                  <AvatarFallback className="bg-primary/5 text-primary text-xl font-bold">
                     {profile?.displayName?.charAt(0) || 'S'}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Selamat datang,</p>
-                  <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-tight">{profile?.displayName || 'Siswa'}</h3>
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-tight font-headline">{profile?.displayName || 'Siswa'}</h3>
                 </div>
               </div>
               <Button variant="ghost" size="icon" className="rounded-full bg-slate-50 relative">
@@ -90,30 +90,22 @@ function SiswaDashboard() {
               </Button>
             </div>
 
-            {profile?.role === 'siswa' && !profile.lastSyncedAt && (
-              <Alert className="bg-primary/5 border-primary/10 rounded-3xl">
-                <RefreshCcw className="h-4 w-4 animate-spin text-primary" />
-                <AlertTitle className="text-xs font-bold">Sinkronisasi data...</AlertTitle>
-                <AlertDescription className="text-[10px] opacity-70">Menghubungkan ke server pusat sekolah.</AlertDescription>
-              </Alert>
-            )}
-
             <div className="grid grid-cols-2 gap-4">
               <div className='contents'>
                 <BiometricAttendance />
               </div>
-              <Card className="rounded-[2rem] border-none shadow-xl bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between h-48 group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
+              <Card className="rounded-[2.5rem] border-none shadow-xl bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between h-48 group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
                 <div className='p-3 bg-white/20 rounded-2xl w-fit shadow-inner'><Smartphone size={24} /></div>
                 <div>
-                  <h4 className="font-black text-sm uppercase tracking-tight">ExamBro</h4>
-                  <p className="text-[10px] opacity-60 font-bold">Sesi Ujian Aman</p>
+                  <h4 className="font-extrabold text-sm uppercase tracking-tight font-headline">ExamBro</h4>
+                  <p className="text-[10px] opacity-60 font-bold">Sesi ujian aman</p>
                 </div>
               </Card>
             </div>
 
             <div className="space-y-6">
               <div className="mb-2">
-                <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Aktivitas & Jadwal</h4>
+                <h4 className="text-[11px] font-extrabold uppercase tracking-[0.3em] text-slate-400 font-headline">Aktivitas & jadwal</h4>
               </div>
               <AbsensiSiswa />
               <JadwalPelajaran />
@@ -124,8 +116,8 @@ function SiswaDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Portal Ujian</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Sistem Pengawasan ExamBro</p>
+              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Portal ujian</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Sistem pengawasan exambro</p>
             </div>
             <ExamBroPortal />
           </div>
@@ -134,8 +126,8 @@ function SiswaDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Layanan Akademik</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Hasil Belajar & Portofolio</p>
+              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Layanan akademik</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Hasil belajar & portofolio</p>
             </div>
             <ERaporSiswa />
             <PortofolioDigital />
@@ -145,15 +137,15 @@ function SiswaDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Profil Saya</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Identitas Digital Siswa</p>
+              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Profil saya</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Identitas digital siswa</p>
             </div>
             
             <Card className="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden bg-white border-2">
               <div className="h-24 bg-primary relative">
                 <div className="absolute -bottom-10 left-8">
                   <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
-                    <AvatarFallback className="bg-slate-50 text-primary text-2xl font-black">
+                    <AvatarFallback className="bg-slate-50 text-primary text-2xl font-extrabold font-headline">
                       {profile?.displayName?.charAt(0) || 'S'}
                     </AvatarFallback>
                   </Avatar>
@@ -161,36 +153,36 @@ function SiswaDashboard() {
               </div>
               <CardContent className="pt-14 pb-8 px-8 space-y-6">
                 <div>
-                  <h3 className="text-xl font-black text-slate-900 tracking-tight">{profile?.displayName}</h3>
-                  <p className="text-sm font-bold text-primary">{profile?.className || 'Kelas Belum Sinkron'}</p>
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight font-headline">{profile?.displayName}</h3>
+                  <p className="text-sm font-bold text-primary">{profile?.className || 'Kelas belum sinkron'}</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
                     <Fingerprint className="text-primary opacity-40" size={20} />
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Nomor Induk Siswa</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nomor induk siswa</p>
                       <p className="text-sm font-bold">{profile?.nis || '-'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
                     <MapPin className="text-primary opacity-40" size={20} />
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Alamat Terdaftar</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Alamat terdaftar</p>
                       <p className="text-sm font-bold truncate max-w-[200px]">{profile?.address || '-'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
                     <UserCog className="text-primary opacity-40" size={20} />
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Wali Kelas</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Wali kelas</p>
                       <p className="text-sm font-bold">{profile?.homeroomTeacher || '-'}</p>
                     </div>
                   </div>
                 </div>
 
                 <Button onClick={handleLogout} variant="outline" className="w-full h-12 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-bold text-xs uppercase tracking-widest">
-                  <LogOut className="mr-2 h-4 w-4" /> Keluar Sesi
+                  <LogOut className="mr-2 h-4 w-4" /> Keluar sesi
                 </Button>
               </CardContent>
             </Card>
