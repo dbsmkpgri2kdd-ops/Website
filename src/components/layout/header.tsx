@@ -162,7 +162,6 @@ const Header = ({
                 <span className="font-extrabold text-[16px] text-slate-900 tracking-tight">
                 {!mounted ? "SMKS PGRI 2" : (schoolData?.shortName || "SMKS PGRI 2")}
                 </span>
-                <span className="text-[9px] font-bold text-slate-400 mt-1 opacity-60">Digital Hub Portal</span>
             </div>
           </button>
 
@@ -188,7 +187,7 @@ const Header = ({
                     <ScrollArea className='h-[calc(100vh-200px)] py-8'>
                         {mounted && currentMenu.map((mainItem, mIdx) => (
                           <div key={mIdx} className="px-10 mb-10">
-                            <h3 className="px-4 text-[10px] font-black tracking-widest text-primary mb-5 opacity-40 uppercase">{mainItem.label}</h3>
+                            <h3 className="px-4 text-[10px] font-black tracking-widest text-primary mb-5 opacity-40">{mainItem.label}</h3>
                             {mainItem.children ? (
                               <div className="grid grid-cols-1 gap-1.5">
                                 {mainItem.children.map((child, cIdx) => (

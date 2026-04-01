@@ -153,7 +153,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
 
         <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 text-[12px] font-bold">
           <div className="text-center md:text-left opacity-60">
-            <span>&copy; {mounted ? currentYear : '2025'} {schoolData?.shortName || "SMK PRIDA"}. Official Digital Hub.</span>
+            <span>&copy; {mounted ? currentYear : '2026'} {schoolData?.shortName || "SMK PRIDA"}. Official Digital Hub.</span>
           </div>
           <div className="flex gap-10 opacity-60">
             <span className="hover:text-primary cursor-pointer transition-colors">Kebijakan Privasi</span>
