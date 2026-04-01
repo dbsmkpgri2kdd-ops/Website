@@ -7,20 +7,24 @@ import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, Camera, ShieldCheck, ShieldAlert, Wifi, Zap, 
   User, Clock, AlertTriangle, MonitorPlay, MonitorCheck,
-  Smartphone, Globe, Lock
+  Smartphone, Globe, Lock, ImageIcon
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID } from '@/lib/data';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 interface ActiveSession {
   id: string;
   studentName: string;
+  examId: string;
+  examTitle: string;
   lastHeartbeat: any;
   violationCount: number;
   isCameraActive: boolean;
+  lastSnapshot: string | null;
   minutesRemaining: number;
   isAppMode: boolean;
   isLocked: boolean;
@@ -28,26 +32,37 @@ interface ActiveSession {
 }
 
 type ProctoringCenterProps = {
-  examId: string;
-  examTitle: string;
-  onBack: () => void;
+  examId?: string | null;
+  examTitle?: string;
+  onBack?: () => void;
 };
 
 /**
- * Antarmuka Pengawasan Ujian (Proctoring Center) v5.5 untuk Guru.
- * Memantau status kehadiran, kamera, dan tingkat kecurangan peserta secara real-time.
+ * Antarmuka Pengawasan Ujian (Proctoring Center) v6.0.
+ * Mendukung tampilan Live Camera Snapshot untuk audit integritas visual.
  */
 export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenterProps) {
   const firestore = useFirestore();
 
   const sessionsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
+    const baseQuery = collection(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`);
+    
+    if (examId) {
+        return query(
+            baseQuery,
+            where('status', '==', 'ACTIVE'),
+            where('examId', '==', examId),
+            orderBy('lastHeartbeat', 'desc')
+        );
+    }
+
     return query(
-      collection(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`),
+      baseQuery,
       where('status', '==', 'ACTIVE'),
       orderBy('lastHeartbeat', 'desc')
     );
-  }, [firestore]);
+  }, [firestore, examId]);
 
   const { data: sessions, isLoading } = useCollection<ActiveSession>(sessionsQuery);
 
@@ -63,15 +78,19 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
   }, [sessions]);
 
   return (
-    <div className="space-y-8 animate-reveal pb-20">
+    <div className="space-y-8 animate-reveal pb-20 font-sans">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white border border-slate-100 hover:bg-slate-50 shadow-sm" onClick={onBack}>
-                <ArrowLeft size={24} />
-            </Button>
+            {onBack && (
+                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white border border-slate-100 hover:bg-slate-50 shadow-sm" onClick={onBack}>
+                    <ArrowLeft size={24} />
+                </Button>
+            )}
             <div>
                 <h2 className="text-3xl font-black italic uppercase tracking-tighter font-headline leading-none">Proctoring <span className="text-primary">Center.</span></h2>
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mt-1.5 opacity-60">Monitoring Integritas: {examTitle}</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mt-1.5 opacity-60">
+                    {examId ? `Monitoring Integritas: ${examTitle}` : 'Monitoring Seluruh Aktivitas Ujian'}
+                </p>
             </div>
         </div>
         <div className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 shadow-sm">
@@ -113,9 +132,15 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                 session.violationCount > 0 ? "border-amber-500/40" : "border-slate-100"
             )}>
                 <div className="relative aspect-video bg-slate-900 group">
-                    {session.isCameraActive ? (
-                        <div className="w-full h-full flex items-center justify-center text-primary/20 italic font-black text-xs">
-                            <MonitorPlay size={40} className="mb-2 opacity-10" />
+                    {session.isCameraActive && session.lastSnapshot ? (
+                        <div className="w-full h-full relative">
+                            <Image 
+                                src={session.lastSnapshot} 
+                                alt={session.studentName} 
+                                fill 
+                                className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                unoptimized
+                            />
                             <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/60 px-3 py-1 rounded-full border border-white/10">
                                 <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
                                 <span className="text-[8px] font-black text-white uppercase tracking-widest">LIVE BIOMETRIC</span>
@@ -123,8 +148,10 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                         </div>
                     ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center text-red-500/40 bg-red-500/5">
-                            <ShieldAlert size={40} className="mb-2" />
-                            <span className="text-[8px] font-black uppercase tracking-widest">NO VIDEO FEED</span>
+                            {session.isCameraActive ? <LoaderCircle className='animate-spin mb-2' /> : <ShieldAlert size={40} className="mb-2" />}
+                            <span className="text-[8px] font-black uppercase tracking-widest">
+                                {session.isCameraActive ? 'WAITING FEED...' : 'NO VIDEO FEED'}
+                            </span>
                         </div>
                     )}
                     
@@ -152,6 +179,7 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-black uppercase tracking-tight truncate italic font-headline text-slate-900">{session.studentName}</p>
+                            <p className="text-[8px] font-bold text-primary uppercase tracking-widest truncate">{session.examTitle || 'Ujian Aktif'}</p>
                             <div className="flex items-center gap-3 mt-1">
                                 <div className="flex items-center gap-1">
                                     <Wifi size={10} className="text-emerald-500"/>

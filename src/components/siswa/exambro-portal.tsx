@@ -29,6 +29,8 @@ export function ExamBroPortal() {
   const [isCameraRequired, setIsCameraRequired] = useState(false);
   const [examDuration, setExamDuration] = useState(60);
   const [examToken, setExamToken] = useState<string>('');
+  const [examId, setExamId] = useState<string>('');
+  const [examTitle, setExamTitle] = useState<string>('');
   
   const [selectedExamId, setSelectedExamId] = useState<string>('');
   const [inputToken, setInputToken] = useState<string>('');
@@ -46,7 +48,7 @@ export function ExamBroPortal() {
 
   const { data: exams, isLoading } = useCollection<Exam>(examsQuery);
 
-  const handleStartExam = (url: string, token: string, requiredToken?: string, camRequired: boolean = false, duration: number = 60) => {
+  const handleStartExam = (id: string, title: string, url: string, token: string, requiredToken?: string, camRequired: boolean = false, duration: number = 60) => {
     setError(null);
     if (requiredToken && token !== requiredToken) {
       setError('Token ujian tidak valid. Silakan hubungi pengawas ruangan.');
@@ -56,6 +58,8 @@ export function ExamBroPortal() {
       setError('Tautan soal ujian tidak ditemukan dalam database.');
       return;
     }
+    setExamId(id);
+    setExamTitle(title);
     setSelectedExamUrl(url);
     setIsCameraRequired(camRequired);
     setExamDuration(duration);
@@ -68,7 +72,7 @@ export function ExamBroPortal() {
       setError('Masukkan URL yang valid (harus diawali http/https).');
       return;
     }
-    handleStartExam(inputUrl, '', undefined, false, 60);
+    handleStartExam('MANUAL', 'Ujian Manual', inputUrl, '', undefined, false, 60);
   };
 
   const handleScheduledStart = () => {
@@ -77,7 +81,7 @@ export function ExamBroPortal() {
       setError('Pilih mata pelajaran ujian terlebih dahulu.');
       return;
     }
-    handleStartExam(exam.url, inputToken, exam.token, exam.isCameraRequired, exam.durationMinutes || 60);
+    handleStartExam(exam.id, exam.subject, exam.url, inputToken, exam.token, exam.isCameraRequired, exam.durationMinutes || 60);
   };
 
   const formatDateLabel = (date: any) => {
@@ -89,6 +93,8 @@ export function ExamBroPortal() {
   if (isExamActive) {
     return (
       <ExamBroSession 
+        examId={examId}
+        examTitle={examTitle}
         url={selectedExamUrl} 
         isCameraRequired={isCameraRequired} 
         durationMinutes={examDuration}
@@ -142,7 +148,7 @@ export function ExamBroPortal() {
                                 <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest animate-pulse">{test.status}</span>
                             </div>
                         ))}
-                        <Button onClick={() => handleStartExam('https://www.google.com', '', undefined, true, 5)} className="w-full h-14 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl glow-primary mt-4">
+                        <Button onClick={() => handleStartExam('SIMULASI', 'Simulasi', 'https://www.google.com', '', undefined, true, 5)} className="w-full h-14 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl glow-primary mt-4">
                             Mulai Sesi Simulasi
                         </Button>
                     </div>

@@ -9,7 +9,7 @@ import {
   PenSquare, ShieldAlert, 
   LoaderCircle, Mail, Award, Library, MessageSquare, Quote, 
   DatabaseZap, Palette, Layout, MousePointer2, BriefcaseIcon, Factory, SearchCode,
-  UserPlus, ShieldCheck, ScanFace, Sparkles
+  UserPlus, ShieldCheck, ScanFace, Sparkles, MonitorPlay
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -58,13 +58,14 @@ import { NavigationManager } from '@/components/admin/navigation-manager';
 import { LayoutBuilderManager } from '@/components/admin/layout-builder-manager';
 import { ExamManager } from '@/components/guru/exam-manager';
 import { BiometricManager } from '@/components/admin/biometric-manager';
+import { ProctoringCenter } from '@/components/guru/proctoring-center';
 
 type AdminTab = 
   | 'overview' | 'school-profile' | 'majors' | 'teachers' | 'facilities' | 'gallery'
   | 'news' | 'agenda' | 'osis' | 'literacy' | 'schedule' | 'rapor' | 'attendance'
   | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings' | 'quick-links' | 'contact-messages'
   | 'achievements' | 'extracurriculars' | 'library' | 'tefa' | 'lsp' | 'graduation' | 'testimonials' | 'alumni' | 'guestbook' | 'downloads' | 'tracer' | 'appearance'
-  | 'navigation' | 'layout-builder' | 'exams' | 'biometric-admin';
+  | 'navigation' | 'layout-builder' | 'exams' | 'biometric-admin' | 'live-proctoring';
 
 function AdminDashboard() {
   const { user, isUserLoading } = useUser();
@@ -94,6 +95,7 @@ function AdminDashboard() {
     { label: 'Tampilan Website', value: 'appearance', icon: Palette, group: 'Editor Visual' },
     
     { label: 'Ujian Online', value: 'exams', icon: ShieldCheck, group: 'Akademik' },
+    { label: 'Live Proctoring', value: 'live-proctoring', icon: MonitorPlay, group: 'Akademik' },
     { label: 'Biometrik Siswa', value: 'biometric-admin', icon: ScanFace, group: 'Akademik' },
     { label: 'Pesan Masuk', value: 'contact-messages', icon: Mail, group: 'Konten' },
     { label: 'Berita Sekolah', value: 'news', icon: Newspaper, group: 'Konten' },
@@ -145,6 +147,7 @@ function AdminDashboard() {
       case 'navigation': return <NavigationManager />;
       case 'appearance': return <DesignTemplateManager />;
       case 'exams': return <ExamManager />;
+      case 'live-proctoring': return <ProctoringCenter />;
       case 'biometric-admin': return <BiometricManager />;
       case 'contact-messages': return <ContactMessagesManager />;
       case 'school-profile': return <ProfileManager />;

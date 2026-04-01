@@ -11,6 +11,8 @@ import { doc, serverTimestamp } from 'firebase/firestore';
 import { SCHOOL_DATA_ID } from '@/lib/data';
 
 type ExamBroSessionProps = {
+  examId: string;
+  examTitle: string;
   url: string;
   isCameraRequired?: boolean;
   durationMinutes?: number;
@@ -21,8 +23,9 @@ type ExamBroSessionProps = {
 /**
  * ExamBro Session v5.5 - Super Strict Secure Mode
  * Melindungi sesi ujian dari multitasking, navigasi ilegal, dan memantau status siswa secara real-time.
+ * Mendukung Live Camera Snapshots untuk pengawasan proctoring.
  */
-export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
+export function ExamBroSession({ examId, examTitle, url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
   const { user } = useUser();
@@ -34,12 +37,14 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
   const [isCameraLoading, setIsCameraLoading] = useState(isCameraRequired);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [lastSnapshot, setLastSnapshot] = useState<string | null>(null);
   
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isTimeUp, setIsTimeUp] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const wakeLockRef = useRef<any>(null);
 
   useEffect(() => {
@@ -70,31 +75,49 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     };
   }, [isFullScreen]);
 
-  // Heartbeat & Proctoring Sync
+  // Periodic Snapshot & Heartbeat
   useEffect(() => {
     if (!firestore || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
 
     const sessionRef = doc(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`, user.uid);
     
     const interval = setInterval(() => {
+        // Take snapshot if camera is active
+        let currentSnap = lastSnapshot;
+        if (hasCameraPermission && videoRef.current && canvasRef.current) {
+            const canvas = canvasRef.current;
+            const video = videoRef.current;
+            canvas.width = 320; // Low res for bandwidth
+            canvas.height = 240;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                currentSnap = canvas.toDataURL('image/jpeg', 0.3);
+                setLastSnapshot(currentSnap);
+            }
+        }
+
         setDocumentNonBlocking(sessionRef, {
+            examId,
+            examTitle,
             studentName: user.profile?.displayName || user.email,
             lastHeartbeat: serverTimestamp(),
             violationCount,
             isCameraActive: hasCameraPermission,
+            lastSnapshot: currentSnap,
             minutesRemaining: Math.floor(timeLeft / 60),
             isAppMode: isStandalone,
             isLocked,
             status: 'ACTIVE'
         }, { merge: true });
-    }, 5000);
+    }, 15000); // Every 15 seconds
 
     return () => {
         clearInterval(interval);
         // Mark session as inactive when exiting
         setDocumentNonBlocking(sessionRef, { status: 'COMPLETED', exitAt: serverTimestamp() }, { merge: true });
     };
-  }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone, isLocked]);
+  }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone, isLocked, examId, examTitle, lastSnapshot]);
 
   // Timer logic
   useEffect(() => {
@@ -117,11 +140,6 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   // Camera initialization
   useEffect(() => {
     const getCameraPermission = async () => {
-      if (!isCameraRequired) {
-        setHasCameraPermission(true);
-        setIsCameraLoading(false);
-        return;
-      }
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
         setHasCameraPermission(true);
@@ -130,7 +148,9 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       } catch (error) {
         setHasCameraPermission(false);
         setIsCameraLoading(false);
-        toast({ variant: 'destructive', title: 'Sensor Kamera Gagal', description: 'Izin kamera wajib diberikan untuk pengawasan ujian.' });
+        if (isCameraRequired) {
+            toast({ variant: 'destructive', title: 'Sensor Kamera Gagal', description: 'Izin kamera wajib diberikan untuk pengawasan ujian.' });
+        }
       }
     };
     getCameraPermission();
@@ -242,14 +262,14 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     return (
         <div className="fixed inset-0 z-[110] bg-background flex flex-col items-center justify-center text-center p-10">
             <LoaderCircle className="h-16 w-16 animate-spin text-primary mb-8" />
-            <h3 className="text-2xl font-bold uppercase tracking-widest text-foreground font-headline">Inisialisasi Shield...</h3>
+            <h3 className="text-2xl font-bold font-headline uppercase tracking-widest text-foreground">Inisialisasi Shield...</h3>
             <p className='text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em] mt-4 opacity-60'>Menghubungkan ke gateway biometrik</p>
         </div>
     );
   }
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden select-none touch-none">
+    <div ref={containerRef} className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden select-none touch-none font-sans">
       <header className="h-16 bg-card border-b border-border px-6 flex items-center justify-between shrink-0 z-30">
         <div className="flex items-center gap-4">
           <div className={cn("p-2 rounded-xl", isStandalone ? "bg-emerald-500/10 text-emerald-600" : "bg-primary/10 text-primary")}>
@@ -287,6 +307,8 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       </header>
 
       <main className="flex-1 relative bg-white">
+        <canvas ref={canvasRef} className="hidden" />
+        
         {isCameraRequired && (
             <div className="absolute top-6 right-6 w-32 md:w-56 aspect-video rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl z-40 pointer-events-none bg-black ring-4 ring-black/20">
                 <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
@@ -297,7 +319,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
             </div>
         )}
 
-        {hasCameraPermission && !isTimeUp ? (
+        {(!isCameraRequired || hasCameraPermission) && !isTimeUp ? (
             <iframe src={url} className="w-full h-full border-none" title="Exam Gateway" allow="autoplay; camera"/>
         ) : !isTimeUp && (
             <div className="w-full h-full bg-background flex flex-col items-center justify-center text-center p-10">
