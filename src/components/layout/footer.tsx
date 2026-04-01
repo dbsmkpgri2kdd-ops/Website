@@ -36,7 +36,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
         links: [
             { id: 'profil-sejarah', label: 'Sejarah' },
             { id: 'fasilitas', label: 'Fasilitas' },
-            { id: 'staf-guru', label: 'Guru & Staf' },
+            { id: 'staf-guru', label: 'Staf & Guru' },
             { id: 'kontak', label: 'Kontak Kami' },
         ]
     },
