@@ -170,7 +170,7 @@ const Header = ({
           </div>
 
           <div className="flex items-center gap-3">
-             <AuthButton showText={true} className="h-9 sm:h-10" />
+             <AuthButton className="h-9 sm:h-10" />
              <div className='h-8 w-px bg-slate-100 mx-1 hidden sm:block'></div>
              <ThemeToggle />
              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
