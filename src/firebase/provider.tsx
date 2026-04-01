@@ -33,15 +33,18 @@ export interface FirebaseContextState extends UserAuthState {
 
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
 
+/**
+ * Robust CSV Parser for student database sync.
+ */
 const parseCSV = (csv: string) => {
-  const lines = csv.split('\n').filter(line => line.trim() !== '');
-  if (lines.length === 0) return [];
+  const rows = csv.split(/\r?\n/).filter(row => row.trim() !== '');
+  if (rows.length < 2) return [];
   
-  const headers = lines[0].split(',').map(h => h.trim());
-  return lines.slice(1).map(line => {
-    const values = line.split(',').map(v => v.trim());
+  const headers = rows[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+  return rows.slice(1).map(row => {
+    const values = row.split(',').map(v => v.trim().replace(/^["']|["']$/g, ''));
     return headers.reduce((obj: any, header, i) => {
-      obj[header] = values[i];
+      obj[header] = values[i] || '';
       return obj;
     }, {});
   });
@@ -59,7 +62,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     userError: null,
   });
 
-  const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
+  const defaultLogo = 'https://picsum.photos/seed/school/200/200';
 
   useEffect(() => {
     if (!auth || !firestore) {
@@ -67,20 +70,25 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       return;
     }
 
+    // Initialize School Data if not exists
     const initSchoolData = async () => {
       try {
         const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
         const schoolSnap = await getDoc(schoolRef);
         if (!schoolSnap.exists()) {
-          setDoc(schoolRef, {
+          await setDoc(schoolRef, {
             name: "SMKS PGRI 2 KEDONDONG",
             shortName: "SMK PRIDA",
             logoUrl: defaultLogo,
-            address: "Jl. Raya Kedondong No. 2, Pesawaran, Lampung",
-            email: "info@smkpgri2kedondong.sch.id",
-            phone: "0812-3456-7890",
-            vision: "Mewujudkan lulusan yang kompeten, berakhlak mulia, dan siap kerja.",
-            mission: ["Menerapkan kurikulum berbasis industri", "Menanamkan nilai-nilai karakter bangsa", "Meningkatkan kualitas SDM dan sarpras"],
+            address: "Jl. Tritura No. 7 Kedondong, Pesawaran, Lampung",
+            email: "smkpgri2kdd_pswrn@yahoo.com",
+            phone: "0729-7371134",
+            vision: "Visi: Islam Berdikari Unggul (IBU)",
+            mission: [
+              "Meningkatkan sumber daya manusia dengan mengikuti perkembangan pendidikan yang bertakwa dan berbudi pekerti",
+              "Meningkatkan kesadaran terhadap budaya tertib, disiplin, keterampilan, dan hidup yang mandiri",
+              "Memberikan prestasi yang terbaik"
+            ],
             primaryColor: "221 100% 50%",
             accentColor: "45 100% 50%",
             layoutSettings: {
@@ -96,7 +104,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           });
         }
       } catch (e) {
-        console.warn("School initialization handle skipped.");
+        console.warn("School auto-initialization failed, possibly due to permission rules.");
       }
     };
 
@@ -114,7 +122,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             const isFirstUser = !initSnap.exists();
             const role = isFirstUser ? 'admin' : 'siswa';
 
-            setDoc(userDocRef, {
+            await setDoc(userDocRef, {
               email: firebaseUser.email || '',
               displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User Baru',
               role: role,
@@ -122,40 +130,47 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             }, { merge: true });
 
             if (isFirstUser) {
-              setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
+              await setDoc(initRef, { initialized: true, initializedBy: firebaseUser.email, at: serverTimestamp() });
             }
           } else {
+            // Profile Sync logic for Students
             const userData = userSnap.data() as UserProfile;
             if (userData.role === 'siswa' && userData.nis && !userData.lastSyncedAt) {
               const schoolRef = doc(firestore, 'schools', SCHOOL_DATA_ID);
-              getDoc(schoolRef).then(currentSchoolSnap => {
-                const schoolData = currentSchoolSnap.data() as School;
-                if (schoolData?.studentDatabaseUrl && schoolData.csvMappings) {
-                  fetch(schoolData.studentDatabaseUrl)
-                    .then(res => res.text())
-                    .then(csvText => {
-                      const studentData = parseCSV(csvText);
-                      const mappings = schoolData.csvMappings!;
-                      const match = studentData.find(s => String(s[mappings.nis]).trim() === String(userData.nis).trim());
-                      if (match) {
-                        updateDoc(userDocRef, {
-                          displayName: match[mappings.name] || userData.displayName,
-                          className: match[mappings.class] || 'X',
-                          session: (match[mappings.session] === 'Siang' ? 'Siang' : 'Pagi'),
-                          address: match[mappings.address] || '',
-                          phone: match[mappings.phone] || '',
-                          parentName: match[mappings.parentName] || '',
-                          parentPhone: match[mappings.parentPhone] || '',
-                          bkTeacher: match[mappings.bkTeacher] || '',
-                          homeroomTeacher: match[mappings.homeroomTeacher] || '',
-                          guardianTeacher: match[mappings.guardianTeacher] || '',
-                          studentAffairs: match[mappings.studentAffairs] || '',
-                          lastSyncedAt: serverTimestamp()
-                        });
-                      }
-                    }).catch(err => console.error("CSV Sync Error:", err));
+              const currentSchoolSnap = await getDoc(schoolRef);
+              const schoolData = currentSchoolSnap.data() as School;
+              
+              if (schoolData?.studentDatabaseUrl && schoolData.csvMappings) {
+                try {
+                  const res = await fetch(schoolData.studentDatabaseUrl);
+                  const csvText = await res.text();
+                  const studentList = parseCSV(csvText);
+                  const maps = schoolData.csvMappings;
+                  
+                  const match = studentList.find(s => 
+                    String(s[maps.nis]).trim() === String(userData.nis).trim()
+                  );
+
+                  if (match) {
+                    await updateDoc(userDocRef, {
+                      displayName: match[maps.name] || userData.displayName,
+                      className: match[maps.class] || 'X',
+                      session: (match[maps.session] === 'Siang' ? 'Siang' : 'Pagi'),
+                      address: match[maps.address] || '',
+                      phone: match[maps.phone] || '',
+                      parentName: match[maps.parentName] || '',
+                      parentPhone: match[maps.parentPhone] || '',
+                      bkTeacher: match[maps.bkTeacher] || '',
+                      homeroomTeacher: match[maps.homeroomTeacher] || '',
+                      guardianTeacher: match[maps.guardianTeacher] || '',
+                      studentAffairs: match[maps.studentAffairs] || '',
+                      lastSyncedAt: serverTimestamp()
+                    });
+                  }
+                } catch (err) {
+                  console.error("CSV Database Sync Error:", err);
                 }
-              });
+              }
             }
           }
         } catch (e) {

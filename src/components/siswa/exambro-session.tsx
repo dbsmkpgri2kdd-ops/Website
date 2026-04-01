@@ -19,8 +19,8 @@ type ExamBroSessionProps = {
 };
 
 /**
- * ExamBro Session v5.5 - Super Strict Native-Like Experience
- * Melindungi sesi ujian dari multitasking, screenshot, dan navigasi ilegal.
+ * ExamBro Session v5.5 - Super Strict Secure Mode
+ * Melindungi sesi ujian dari multitasking, navigasi ilegal, dan memantau status siswa secara real-time.
  */
 export function ExamBroSession({ url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
@@ -51,7 +51,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     }
   }, [durationMinutes]);
 
-  // SCREEN WAKE LOCK: Mencegah layar mati otomatis
+  // Request Wake Lock to keep screen ON
   useEffect(() => {
     const requestWakeLock = async () => {
       try {
@@ -59,7 +59,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
           wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
         }
       } catch (err) {
-        console.warn("Wake Lock failed:", err);
+        console.warn("Screen Wake Lock failed:", err);
       }
     };
 
@@ -70,7 +70,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     };
   }, [isFullScreen]);
 
-  // PROCTORING SYNC: Kirim heartbeat ke Guru
+  // Heartbeat & Proctoring Sync
   useEffect(() => {
     if (!firestore || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
 
@@ -91,11 +91,12 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
 
     return () => {
         clearInterval(interval);
+        // Mark session as inactive when exiting
         setDocumentNonBlocking(sessionRef, { status: 'COMPLETED', exitAt: serverTimestamp() }, { merge: true });
     };
   }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone, isLocked]);
 
-  // COUNTDOWN TIMER
+  // Timer logic
   useEffect(() => {
     if (timeLeft === null) return;
     if (timeLeft <= 0) {
@@ -107,13 +108,13 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
   }, [timeLeft]);
 
   const formatTime = (seconds: number | null) => {
-    if (seconds === null) return "--:--";
+    if (seconds === null) return "00:00";
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // INITIALIZE CAMERA
+  // Camera initialization
   useEffect(() => {
     const getCameraPermission = async () => {
       if (!isCameraRequired) {
@@ -122,14 +123,14 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         return;
       }
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
         setHasCameraPermission(true);
         setIsCameraLoading(false);
         if (videoRef.current) videoRef.current.srcObject = stream;
       } catch (error) {
         setHasCameraPermission(false);
         setIsCameraLoading(false);
-        toast({ variant: 'destructive', title: 'Akses ditolak', description: 'Kamera wajib diaktifkan untuk memulai ujian.' });
+        toast({ variant: 'destructive', title: 'Sensor Kamera Gagal', description: 'Izin kamera wajib diberikan untuk pengawasan ujian.' });
       }
     };
     getCameraPermission();
@@ -140,17 +141,17 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     }
   }, [isCameraRequired, toast]);
 
-  // SECURITY LISTENERS (NATIVE-LIKE PROTECTION)
+  // Security Guards
   useEffect(() => {
     const handleVisibilityChange = () => { 
       if (document.hidden && !isTimeUp && isFullScreen && !isLocked) {
-        handleViolation("Sistem: Terdeteksi pindah aplikasi atau minimize browser!");
+        handleViolation("Terdeteksi memindahkan fokus atau membuka aplikasi lain!");
       } 
     };
     
     const handleBlur = () => { 
       if (!isTimeUp && isFullScreen && !isLocked) {
-        handleViolation("Peringatan: Fokus layar terdeteksi berpindah ke jendela lain!"); 
+        handleViolation("Fokus layar terputus. Pastikan tidak ada pop-up atau jendela lain."); 
       }
     };
 
@@ -158,23 +159,15 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       const isCurrentlyFull = !!document.fullscreenElement;
       setIsFullScreen(isCurrentlyFull);
       if (!isCurrentlyFull && !isTimeUp && hasCameraPermission && !isLocked) {
-        handleViolation("Pelanggaran: Mode layar penuh (Secure Mode) dimatikan!");
+        handleViolation("Mode layar penuh (Secure Mode) dinonaktifkan secara paksa!");
       }
     };
 
     const preventContextMenu = (e: MouseEvent) => e.preventDefault();
     const preventKeys = (e: KeyboardEvent) => {
-      // Blokir screenshot, inspect, copy paste, dll
       if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'F12' || e.key === 'PrintScreen') {
         e.preventDefault();
-        if (!isLocked) handleViolation(`Sistem: Tombol terlarang ${e.key} ditekan!`);
-      }
-    };
-
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (!isTimeUp) {
-        e.preventDefault();
-        e.returnValue = '';
+        if (!isLocked) handleViolation(`Tombol terlarang (${e.key}) terdeteksi!`);
       }
     };
 
@@ -183,20 +176,10 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     document.addEventListener('fullscreenchange', handleFullScreenChange);
     document.addEventListener('contextmenu', preventContextMenu);
     document.addEventListener('keydown', preventKeys);
-    window.addEventListener('beforeunload', handleBeforeUnload);
 
     if (typeof document !== 'undefined') {
-        document.body.style.overscrollBehavior = 'none';
         document.body.style.userSelect = 'none';
     }
-
-    // Anti-Back Button
-    const preventBack = (e: any) => {
-      window.history.pushState(null, "", window.location.href);
-      if (!isTimeUp && !isLocked) handleViolation("Aksi terlarang: Tombol kembali ditekan!");
-    };
-    window.history.pushState(null, "", window.location.href);
-    window.addEventListener('popstate', preventBack);
 
     return () => {
       window.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -204,10 +187,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       document.removeEventListener('fullscreenchange', handleFullScreenChange);
       document.removeEventListener('contextmenu', preventContextMenu);
       document.removeEventListener('keydown', preventKeys);
-      window.removeEventListener('popstate', preventBack);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
       if (typeof document !== 'undefined') {
-        document.body.style.overscrollBehavior = 'auto';
         document.body.style.userSelect = 'auto';
       }
     };
@@ -217,7 +197,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     const newCount = violationCount + 1;
     setViolationCount(newCount);
     
-    // Lockdown Logic: 3x Pelanggaran = Lock
+    // Lockdown logic: 3 violations = Lock the session
     if (newCount >= 3) {
       setIsLocked(true);
       setShowAlarm(false);
@@ -225,18 +205,11 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       setShowAlarm(true);
     }
     
-    // Vibration Feedback (Native feel)
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
-      navigator.vibrate([500, 200, 500, 200, 500]);
+      navigator.vibrate([500, 200, 500]);
     }
 
-    toast({ variant: "destructive", title: "Pelanggaran Keamanan", description: msg });
-    
-    // Play Warning Sound
-    if (typeof window !== 'undefined') {
-        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-        audio.play().catch(() => {});
-    }
+    toast({ variant: "destructive", title: "Peringatan Keamanan", description: msg });
   };
 
   const handleUnlock = () => {
@@ -245,22 +218,22 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
       setViolationCount(0);
       setTokenInput('');
       enterFullScreen();
-      toast({ title: 'Akses dibuka', description: 'Silakan lanjutkan pengerjaan ujian Anda.' });
+      toast({ title: 'Sesi Dibuka', description: 'Akses pengerjaan ujian telah dipulihkan.' });
     } else {
-      toast({ variant: 'destructive', title: 'Token salah', description: 'Token keamanan tidak valid. Hubungi pengawas.' });
+      toast({ variant: 'destructive', title: 'Token Tidak Valid', description: 'Gunakan token yang diberikan oleh pengawas.' });
     }
   };
 
   const enterFullScreen = () => { 
     if (containerRef.current?.requestFullscreen) {
       containerRef.current.requestFullscreen().catch(() => {
-        toast({ variant: 'destructive', title: 'Gagal fullscreen', description: 'Pastikan browser mendukung mode layar penuh.' });
+        toast({ variant: 'destructive', title: 'Gagal Secure Mode', description: 'Harap aktifkan mode layar penuh secara manual.' });
       });
     } 
   };
 
   const handleExitRequest = () => { 
-    if (confirm("Konfirmasi akhir: Apakah Anda yakin ingin mengakhiri sesi ujian?")) {
+    if (confirm("Apakah Anda yakin ingin mengakhiri sesi ujian ini?")) {
       onExit(); 
     } 
   }
@@ -269,8 +242,8 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
     return (
         <div className="fixed inset-0 z-[110] bg-background flex flex-col items-center justify-center text-center p-10">
             <LoaderCircle className="h-16 w-16 animate-spin text-primary mb-8" />
-            <h3 className="text-2xl font-bold uppercase tracking-widest text-foreground font-headline">Inisialisasi Sistem Keamanan...</h3>
-            <p className='text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em] mt-4 opacity-60'>Menghubungkan ke sensor biometrik</p>
+            <h3 className="text-2xl font-bold uppercase tracking-widest text-foreground font-headline">Inisialisasi Shield...</h3>
+            <p className='text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em] mt-4 opacity-60'>Menghubungkan ke gateway biometrik</p>
         </div>
     );
   }
@@ -285,7 +258,7 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
           <div className="flex flex-col leading-tight">
             <span className="text-[10px] font-black uppercase tracking-widest text-foreground">ExamBro v5.5 {isStandalone ? 'App' : 'Web'} Mode</span>
             <span className={cn("text-[9px] font-black uppercase tracking-widest mt-0.5", violationCount > 0 ? "text-red-500" : "text-muted-foreground")}>
-                Pelanggaran: {violationCount} / 3
+                Integritas: {violationCount} / 3 Pelanggaran
             </span>
           </div>
         </div>
@@ -313,33 +286,33 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
         </div>
       </header>
 
-      <main className="flex-1 relative bg-muted/20">
+      <main className="flex-1 relative bg-white">
         {isCameraRequired && (
             <div className="absolute top-6 right-6 w-32 md:w-56 aspect-video rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl z-40 pointer-events-none bg-black ring-4 ring-black/20">
                 <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
                 <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 px-2.5 py-1 rounded-full border border-white/10">
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                    <span className="text-[8px] font-black text-white uppercase tracking-widest font-headline">Live Biometric</span>
+                    <span className="text-[8px] font-black text-white uppercase tracking-widest font-headline">Monitoring...</span>
                 </div>
             </div>
         )}
 
         {hasCameraPermission && !isTimeUp ? (
-            <iframe src={url} className="w-full h-full border-none bg-white" title="Exam Gateway" allow="autoplay; camera"/>
+            <iframe src={url} className="w-full h-full border-none" title="Exam Gateway" allow="autoplay; camera"/>
         ) : !isTimeUp && (
             <div className="w-full h-full bg-background flex flex-col items-center justify-center text-center p-10">
                 <CameraOff size={100} className="text-red-500 mb-8 opacity-20" />
-                <h3 className="text-3xl font-black text-foreground uppercase mb-4 tracking-tighter font-headline">Sensor Wajib Aktif</h3>
-                <p className='text-xs font-bold text-muted-foreground uppercase tracking-widest max-w-sm'>Anda harus memberikan izin kamera untuk pengawasan biometrik selama ujian berlangsung.</p>
-                <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-bold text-xs tracking-widest shadow-xl">Muat Ulang & Izinkan</Button>
+                <h3 className="text-3xl font-black text-foreground uppercase mb-4 tracking-tighter font-headline leading-none">Sensor Wajib Aktif</h3>
+                <p className='text-xs font-bold text-muted-foreground uppercase tracking-widest max-w-sm mx-auto leading-relaxed'>Anda harus mengizinkan akses kamera untuk pengawasan biometrik selama sesi ujian berlangsung.</p>
+                <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-bold text-xs tracking-widest shadow-xl">Izinkan & Mulai Ulang</Button>
             </div>
         )}
 
         {showAlarm && !isTimeUp && !isLocked && (
           <div className="absolute inset-0 bg-red-600/95 backdrop-blur-3xl flex flex-col items-center justify-center z-50 p-10 text-center text-white animate-in fade-in duration-300">
             <AlertTriangle size={80} className="mb-10 animate-bounce" />
-            <h2 className="text-5xl font-black uppercase tracking-tighter mb-6 font-headline">Pelanggaran Sistem!</h2>
-            <p className='text-lg font-bold uppercase tracking-widest opacity-80 mb-10 max-w-2xl'>Anda terdeteksi melakukan tindakan terlarang. Sesi ini telah dicatat ke server pengawas.</p>
+            <h2 className="text-5xl font-black uppercase tracking-tighter mb-6 font-headline leading-none">Pelanggaran Sistem!</h2>
+            <p className='text-lg font-bold uppercase tracking-widest opacity-80 mb-10 max-w-2xl mx-auto leading-relaxed'>Anda terdeteksi melakukan tindakan yang dilarang. Pelanggaran ini telah dicatat secara otomatis ke server pengawas.</p>
             <Button size="lg" variant="secondary" onClick={() => { setShowAlarm(false); enterFullScreen(); }} className="h-20 px-16 rounded-[2.5rem] font-black text-xl uppercase tracking-widest shadow-2xl hover:scale-105 transition-transform">Saya Mengerti</Button>
           </div>
         )}
@@ -350,21 +323,21 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
                 <Lock size={48} />
             </div>
             <div className="space-y-3">
-                <h2 className="text-4xl font-black uppercase tracking-tighter font-headline text-red-600">Sesi Terkunci</h2>
+                <h2 className="text-4xl font-black uppercase tracking-tighter font-headline text-red-600 leading-none">Sesi Terkunci</h2>
                 <p className="text-muted-foreground text-[11px] font-black uppercase tracking-widest max-w-sm mx-auto leading-relaxed opacity-80">
-                    Sesi Anda telah dibekukan karena pelanggaran keamanan berulang. Silakan hubungi pengawas di ruangan Anda untuk mendapatkan token pembuka akses.
+                    Sesi Anda telah dibekukan karena pelanggaran berulang. Harap hubungi pengawas ruangan untuk mendapatkan token pembuka akses.
                 </p>
             </div>
             
             <div className="w-full max-w-xs space-y-4">
                 <Input 
-                    placeholder="Input Token Pengawas" 
+                    placeholder="Token Pengawas" 
                     value={tokenInput}
                     onChange={(e) => setTokenInput(e.target.value.toUpperCase())}
                     className="h-16 rounded-2xl bg-muted border-border text-center font-bold text-xl tracking-[0.5em] focus-visible:ring-red-600"
                 />
                 <Button onClick={handleUnlock} size="lg" className="w-full h-16 rounded-2xl font-black uppercase tracking-widest shadow-xl bg-red-600 text-white hover:bg-red-700">
-                    Verifikasi & Buka Akses
+                    Verifikasi Token
                 </Button>
             </div>
           </div>
@@ -374,23 +347,23 @@ export function ExamBroSession({ url, isCameraRequired = false, durationMinutes 
             <div className="absolute inset-0 bg-background/98 backdrop-blur-3xl flex flex-col items-center justify-center z-[60] p-10 text-center animate-reveal">
                 <Clock size={120} className="text-primary mb-10 animate-pulse opacity-20" />
                 <h2 className="text-6xl font-black text-foreground uppercase tracking-tighter mb-6 font-headline leading-none">Waktu<br/>Habis.</h2>
-                <p className='text-xs font-bold text-muted-foreground uppercase tracking-[0.4em] mb-10'>Jawaban Anda telah tersimpan secara otomatis.</p>
-                <Button size="lg" onClick={onExit} className="h-20 px-16 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest shadow-xl glow-primary">Keluar Ruang Ujian</Button>
+                <p className='text-xs font-bold text-muted-foreground uppercase tracking-[0.4em] mb-10'>Jawaban Anda telah tersimpan secara otomatis oleh sistem.</p>
+                <Button size="lg" onClick={onExit} className="h-20 px-16 rounded-[2.5rem] font-black text-2xl uppercase tracking-widest shadow-xl glow-primary">Keluar Sesi</Button>
             </div>
         )}
       </main>
 
       <footer className="h-10 bg-card border-t border-border px-8 flex items-center justify-between shrink-0 opacity-60">
-        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Digital Hub Portal • SMKS PGRI 2 Kedondong</p>
+        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Digital Gateway • SMKS PGRI 2 Kedondong</p>
         <div className='flex items-center gap-3'>
             <div className='flex items-center gap-1.5'>
                 <Wifi size={10} className='text-emerald-500'/>
-                <span className='text-[8px] font-black text-foreground uppercase tracking-widest'>Server Connected</span>
+                <span className='text-[8px] font-black text-foreground uppercase tracking-widest'>Gateway Connected</span>
             </div>
             <div className='w-px h-3 bg-border'></div>
             <div className='flex items-center gap-1.5'>
                 <div className={cn("w-1.5 h-1.5 rounded-full", isStandalone ? "bg-emerald-500" : "bg-primary animate-pulse")}></div>
-                <span className="text-[9px] font-black text-foreground uppercase tracking-widest">Shield: {isStandalone ? 'Verified' : 'Web Guard'}</span>
+                <span className="text-[9px] font-black text-foreground uppercase tracking-widest">Shield: {isStandalone ? 'Verified' : 'Active'}</span>
             </div>
         </div>
       </footer>
