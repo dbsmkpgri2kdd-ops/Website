@@ -13,6 +13,7 @@ const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-headline',
   display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
 });
 
 const inter = Inter({
@@ -43,7 +44,7 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.Node;
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>

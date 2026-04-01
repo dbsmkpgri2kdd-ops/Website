@@ -23,7 +23,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 221 100% 50%;
-    --radius: 1rem;
+    --radius: 1.25rem;
   }
 
   .dark {
@@ -52,7 +52,7 @@
 @layer base {
   * {
     @apply border-border selection:bg-primary/10 selection:text-primary;
-    font-style: normal !important; /* Absolute Lockdown Zero Italics */
+    font-style: normal !important; /* Lockdown Zero Italics */
   }
   body {
     @apply bg-background text-foreground antialiased font-sans overflow-x-hidden;
@@ -87,16 +87,6 @@
 
   .glass-premium {
     @apply bg-background/90 backdrop-blur-2xl border border-border/20;
-  }
-
-  .marquee {
-    display: flex;
-    animation: scroll 40s linear infinite;
-  }
-
-  @keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
   }
 
   .no-scrollbar::-webkit-scrollbar {
