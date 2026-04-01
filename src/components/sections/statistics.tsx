@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -14,7 +13,7 @@ type StatisticsSectionProps = {
 };
 
 /**
- * StatisticsSection v2.0 - Clean & Minimal Horizontal Stats
+ * StatisticsSection v2.1 - Ultra Minimalist (Zero Italics)
  */
 const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCount, isLoading }: StatisticsSectionProps) => {
     const [mounted, setMounted] = useState(false);
@@ -33,7 +32,7 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
   return (
     <div className="space-y-12">
         <div className="mb-8 space-y-1">
-            <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 italic">Capaian Akademik</h2>
+            <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900">Capaian Akademik</h2>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Data statistik operasional sekolah.</p>
         </div>
 
@@ -45,10 +44,10 @@ const StatisticsSection = ({ studentCount, teacherCount, majorCount, partnerCoun
                     </div>
                     <div className="space-y-1">
                         <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-primary transition-colors">{stat.label}</p>
-                        {isLoading || !mounted ? (
+                        {!mounted || isLoading ? (
                             <Skeleton className='h-8 w-16 rounded-lg' />
                         ) : (
-                            <div className="text-3xl font-black text-slate-900 tracking-tighter italic" suppressHydrationWarning>
+                            <div className="text-3xl font-black text-slate-900 tracking-tighter">
                                 {stat.value > 0 ? stat.value.toLocaleString('id-ID') : '0'}
                                 <span className='text-primary text-base ml-0.5'>+</span>
                             </div>

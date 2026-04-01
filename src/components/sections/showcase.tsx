@@ -45,7 +45,7 @@ const ShowcaseSection = () => {
                 <span className="text-[9px] font-black uppercase tracking-[0.5em]">Inovasi Siswa</span>
                 <div className='h-px w-16 bg-primary/30'></div>
             </div>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-tight">PAMERAN.<br/><span className='text-primary not-italic'>KARYA.</span></h2>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-tight">PAMERAN.<br/><span className='text-primary'>KARYA.</span></h2>
         </div>
         <p className="text-muted-foreground max-w-xs font-medium leading-relaxed opacity-60 uppercase text-[9px] tracking-[0.2em]">Kumpulan proyek inovatif dan solusi digital unggulan yang dikembangkan oleh siswa berbakat.</p>
       </div>
@@ -77,7 +77,7 @@ const ShowcaseSection = () => {
                  <div className="flex items-center gap-2 text-[8px] font-black text-primary uppercase tracking-[0.3em]">
                     <User size={12} className='text-primary' /> {item.studentName || 'Siswa Kreator'}
                 </div>
-                <CardTitle className="text-2xl font-black tracking-tight leading-none uppercase italic text-white">{item.title}</CardTitle>
+                <CardTitle className="text-2xl font-black tracking-tight leading-none uppercase text-white">{item.title}</CardTitle>
                 
                 <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100'>
                     <p className="text-white/60 text-[10px] line-clamp-2 mb-6 font-medium leading-relaxed tracking-wide">{item.description}</p>
@@ -98,7 +98,7 @@ const ShowcaseSection = () => {
                     <Code size={36} />
                 </div>
                 <div className='space-y-2'>
-                    <h3 className='text-2xl font-black text-foreground uppercase tracking-tighter italic'>Menunggu Terobosan</h3>
+                    <h3 className='text-2xl font-black text-foreground uppercase tracking-tighter'>Menunggu Terobosan</h3>
                     <p className="text-[9px] text-muted-foreground max-w-xs mx-auto font-bold opacity-50 uppercase tracking-[0.3em] leading-loose">Karya inovasi siswa terbaik akan dipamerkan secara eksklusif di sini.</p>
                 </div>
             </div>

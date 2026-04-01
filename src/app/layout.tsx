@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
@@ -8,8 +6,8 @@ import { FirebaseClientProvider } from '@/firebase';
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeSync } from '@/components/theme-sync';
-import { AIAssistant } from '@/components/ai/ai-assistant';
-import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
+import { ClientLayout } from '@/components/layout/client-layout';
+import type { Metadata, Viewport } from 'next';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -23,43 +21,41 @@ const inter = Inter({
   display: 'swap',
 });
 
+export const metadata: Metadata = {
+  title: 'SMKS PGRI 2 KEDONDONG - Digital Hub Enterprise',
+  description: 'Portal Digital Terpadu SMKS PGRI 2 Kedondong. Akses PPDB Online, E-Rapor, dan Layanan Mandiri Siswa.',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'SMK PRIDA',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#3b82f6',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.Node;
+  children: React.ReactNode;
 }>) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    // Registrasi Service Worker PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then((reg) => {
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            if (installingWorker) {
-              installingWorker.onstatechange = () => {
-                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  window.location.reload();
-                }
-              };
-            }
-          };
-        }).catch(err => console.log('PWA: Registration failed', err));
-      });
-    }
-  }, []);
-
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+      </head>
       <body 
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
           jakarta.variable, 
           inter.variable
         )}
-        suppressHydrationWarning
       >
           <ThemeProvider
             attribute="class"
@@ -69,18 +65,12 @@ export default function RootLayout({
           >
             <FirebaseClientProvider>
               <ThemeSync />
-              {children}
-              {mounted && (
-                <>
-                  <AIAssistant />
-                  <PWAInstallPrompt />
-                </>
-              )}
+              <ClientLayout>
+                {children}
+              </ClientLayout>
             </FirebaseClientProvider>
             <Toaster />
           </ThemeProvider>
-          
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
       </body>
     </html>
   );

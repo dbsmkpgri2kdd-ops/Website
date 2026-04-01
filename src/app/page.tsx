@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import HomeSection from '@/components/sections/home';
-import { type NewsArticle, SCHOOL_DATA_ID, type School, type LiteracyArticle, type OsisPost, type NavLink } from '@/lib/data';
+import { SCHOOL_DATA_ID, type School, type NavLink } from '@/lib/data';
 import { useDoc, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import BottomNav from '@/components/layout/bottom-nav';
@@ -30,7 +30,6 @@ const MajorsSection = dynamic(() => import('@/components/sections/majors'), { lo
 const FacilitiesSection = dynamic(() => import('@/components/sections/facilities'), { loading: () => <SectionSkeleton /> });
 const GallerySection = dynamic(() => import('@/components/sections/gallery'), { loading: () => <SectionSkeleton /> });
 const AchievementsSection = dynamic(() => import('@/components/sections/achievements'), { loading: () => <SectionSkeleton /> });
-const NewsDetailSection = dynamic(() => import('@/components/sections/news-detail'), { loading: () => <SectionSkeleton /> });
 const TestimonialsSection = dynamic(() => import('@/components/sections/testimonials'), { loading: () => <SectionSkeleton /> });
 const ExtracurricularsSection = dynamic(() => import('@/components/sections/extracurriculars'), { loading: () => <SectionSkeleton /> });
 const AgendaSection = dynamic(() => import('@/components/sections/agenda'), { loading: () => <SectionSkeleton /> });
@@ -38,9 +37,6 @@ const DownloadsSection = dynamic(() => import('@/components/sections/downloads')
 const ScheduleSection = dynamic(() => import('@/components/shared/schedule-section'), { loading: () => <SectionSkeleton /> });
 const LibrarySection = dynamic(() => import('@/components/sections/library'), { loading: () => <SectionSkeleton /> });
 const LiteracySection = dynamic(() => import('@/components/sections/literacy-section'), { loading: () => <SectionSkeleton /> });
-const LiteracyDetailSection = dynamic(() => import('@/components/sections/literacy-detail-section'), { loading: () => <SectionSkeleton /> });
-const OsisCornerSection = dynamic(() => import('@/components/sections/osis-corner'), { loading: () => <SectionSkeleton /> });
-const OsisCornerDetailSection = dynamic(() => import('@/components/sections/osis-corner-detail'), { loading: () => <SectionSkeleton /> });
 const IndustryPartnersSection = dynamic(() => import('@/components/sections/industry-partners'), { loading: () => <SectionSkeleton /> });
 const BkkSection = dynamic(() => import('@/components/sections/bkk'), { loading: () => <SectionSkeleton /> });
 const TeachingFactorySection = dynamic(() => import('@/components/sections/teaching-factory'), { loading: () => <SectionSkeleton /> });
@@ -57,9 +53,6 @@ const PlaceholderSection = dynamic(() => import('@/components/sections/placehold
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<NavLink>('home');
-  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
-  const [selectedLiteracyArticleId, setSelectedLiteracyArticleId] = useState<string | null>(null);
-  const [selectedOsisPostId, setSelectedOsisPostId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -79,15 +72,6 @@ export default function Home() {
   
   const handleSetTab = (tab: NavLink) => {
     setActiveTab(tab);
-    setSelectedArticleId(null);
-    setSelectedLiteracyArticleId(null);
-    setSelectedOsisPostId(null);
-    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  const handleSelectArticle = (articleId: string) => {
-    setSelectedArticleId(articleId);
-    setActiveTab('berita-pengumuman');
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -105,7 +89,7 @@ export default function Home() {
 
     switch (activeTab) {
       case 'home':
-        return <HomeSection setActiveTab={handleSetTab} onSelectArticle={handleSelectArticle} />;
+        return <HomeSection setActiveTab={handleSetTab} onSelectArticle={() => handleSetTab('berita-pengumuman')} />;
       case 'profil-sejarah':
         return <ProfileSection schoolData={schoolData} isSchoolDataLoading={isSchoolDataLoading}/>;
       case 'fasilitas':
@@ -121,7 +105,7 @@ export default function Home() {
       case 'perpustakaan':
         return <LibrarySection />;
       case 'berita-pengumuman':
-         return <NewsSection onSelectArticle={handleSelectArticle} />;
+         return <NewsSection onSelectArticle={() => {}} />;
       case 'agenda-akademik':
         return <AgendaSection />;
       case 'galeri-foto-video':
@@ -144,8 +128,6 @@ export default function Home() {
         return <ContactSection schoolData={schoolData} isSchoolDataLoading={isSchoolDataLoading} />;
       case 'pojok-literasi':
         return <LiteracySection onSelectArticle={() => {}} />;
-      case 'osis-corner':
-        return <OsisCornerSection onSelectPost={() => {}} />;
       case 'database-alumni':
         return <AlumniSection />;
       case 'jadwal-pelajaran':
