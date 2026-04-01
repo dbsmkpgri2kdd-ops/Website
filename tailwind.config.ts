@@ -1,4 +1,3 @@
-
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -13,9 +12,6 @@ export default {
       fontFamily: {
         sans: ['var(--font-inter)', 'var(--font-jakarta)', 'sans-serif'],
         headline: ['var(--font-jakarta)', 'sans-serif'],
-        formal: ['var(--font-inter)', 'sans-serif'],
-        serif: ['var(--font-alegreya)', 'serif'],
-        code: ['monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -70,9 +66,6 @@ export default {
           from: { opacity: '0', transform: 'translateY(20px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
-        'shimmer': {
-          '100%': { transform: 'translateX(100%)' },
-        },
         'reveal': {
           from: { opacity: '0', transform: 'translateY(20px)', filter: 'blur(10px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
@@ -83,8 +76,6 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards',
         'reveal': 'reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-        'shimmer': 'shimmer 2s infinite',
-        'spin-slow': 'spin 8s linear infinite',
       },
     },
   },

@@ -52,7 +52,7 @@
 @layer base {
   * {
     @apply border-border selection:bg-primary/10 selection:text-primary;
-    font-style: normal !important; /* Lockdown Zero Italics */
+    font-style: normal !important; /* Lockdown Zero Italics Absolutely */
   }
   body {
     @apply bg-background text-foreground antialiased font-sans;
