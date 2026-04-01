@@ -1,13 +1,13 @@
-
 # 🏫 SMKS PGRI 2 KEDONDONG - Digital Hub Enterprise v7.5
 
-Selamat datang di ekosistem digital terpadu SMKS PGRI 2 Kedondong. Website ini telah ditransformasi menjadi portal **Modern Premium & Profesional** dengan arsitektur **Static Export** untuk kecepatan maksimal.
+Selamat datang di ekosistem digital terpadu SMKS PGRI 2 Kedondong. Website ini telah ditransformasi menjadi portal **Modern Ultra-Minimalis** dengan arsitektur **Static Export** untuk kecepatan maksimal.
 
 ## 🚀 Fitur Unggulan
-- **Premium Design**: Menggunakan tema *Deep Obsidian & Emerald Green* dengan efek *Glassmorphism*.
-- **Static Speed**: Dioptimalkan untuk memuat halaman di bawah 1 detik menggunakan Next.js Static Export.
-- **Integrated Services**: PPDB Online, Tracer Study, dan E-Rapor yang terhubung langsung ke Firebase Client SDK.
-- **Responsive Interface**: Pengalaman pengguna yang mulus di perangkat seluler maupun desktop.
+- **Premium Clean Design**: Menggunakan tema *Royal Blue & Vibrant Yellow* yang profesional.
+- **Absolute Zero Italics**: Desain tanpa teks miring untuk estetika yang disiplin dan bersih.
+- **Static Speed**: Dioptimalkan untuk memuat halaman secara instan menggunakan Next.js Static Export.
+- **Integrated Services**: PPDB Online, Tracer Study, E-Rapor, dan ExamBro Secure Exam Session.
+- **PWA Experience**: Dapat diinstal di perangkat seluler dengan notifikasi promosi otomatis.
 
 ## 🛠️ Panduan Pengembangan & Publikasi
 
@@ -30,4 +30,4 @@ firebase deploy
 - `docs/backend.json`: Cetak biru struktur data sekolah.
 
 ---
-**© 2024 SMKS PGRI 2 KEDONDONG - Membangun Masa Depan Vokasi.**
+**© 2025 SMKS PGRI 2 KEDONDONG - Membangun Masa Depan Ahli & Kompeten.**
