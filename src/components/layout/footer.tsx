@@ -37,16 +37,16 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
             { id: 'profil-sejarah', label: 'Sejarah' },
             { id: 'fasilitas', label: 'Fasilitas' },
             { id: 'staf-guru', label: 'Guru & Staf' },
-            { id: 'kontak', label: 'Kontak' },
+            { id: 'kontak', label: 'Kontak Kami' },
         ]
     },
     {
         title: "Akademik",
         links: [
-            { id: 'jurusan-kompetensi', label: 'Jurusan' },
-            { id: 'jadwal-pelajaran', label: 'Jadwal' },
-            { id: 'perpustakaan', label: 'Perpustakaan' },
-            { id: 'ekstrakurikuler', label: 'Ekskul' },
+            { id: 'jurusan-kompetensi', label: 'Program Jurusan' },
+            { id: 'jadwal-pelajaran', label: 'Jadwal Pelajaran' },
+            { id: 'perpustakaan', label: 'Perpustakaan Digital' },
+            { id: 'ekstrakurikuler', label: 'Kegiatan Eskul' },
         ]
     },
     {
@@ -54,23 +54,22 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
         links: [
             { id: 'ppdb-online', label: 'PPDB Online' },
             { id: 'bkk', label: 'Bursa Kerja' },
-            { id: 'prakerin-pkl', label: 'Prakerin' },
-            { id: 'cek-status-kelulusan', label: 'Kelulusan' },
+            { id: 'prakerin-pkl', label: 'Program Prakerin' },
+            { id: 'cek-status-kelulusan', label: 'Status Kelulusan' },
         ]
     }
   ];
 
-  const schoolName = schoolData?.name || "SMKS PGRI 2 Kedondong";
   const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
 
   return (
-    <footer className="bg-background border-t border-border pt-12 pb-24 md:pb-12 overflow-hidden relative tech-mesh">
+    <footer className="bg-white border-t border-slate-100 pt-20 pb-32 md:pb-16 tech-mesh relative">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-20">
         
-          <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center gap-3">
-               <div className="w-12 h-12 bg-primary/5 p-1.5 rounded-lg relative overflow-hidden shadow-inner border border-primary/10">
+          <div className="lg:col-span-2 space-y-8">
+            <div className="flex items-center gap-4">
+               <div className="w-14 h-14 bg-primary/5 p-2 rounded-2xl relative overflow-hidden shadow-inner border border-primary/5">
                   {isSchoolDataLoading ? (
                       <Skeleton className="w-full h-full" />
                   ) : (
@@ -78,42 +77,42 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                       src={convertGoogleDriveLink(schoolData?.logoUrl || defaultLogo)}
                       alt="Logo"
                       fill
-                      className='object-contain p-1'
+                      className='object-contain p-1.5'
                       unoptimized
                       />
                   )}
                </div>
-              <div className="font-bold text-lg tracking-tight text-foreground">
-                {isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
+              <div className="font-extrabold text-xl tracking-tight text-slate-900 leading-none">
+                {isSchoolDataLoading ? <Skeleton className="h-6 w-40" /> : (schoolData?.name || "SMKS PGRI 2 Kedondong")}
               </div>
             </div>
             
-            <div className="space-y-3 text-muted-foreground">
-                <div className="flex items-start gap-3">
-                    <MapPin size={16} className="text-primary mt-1 shrink-0" />
-                    <div className="text-[13px] leading-relaxed flex-1 font-medium">
+            <div className="space-y-5 text-slate-500">
+                <div className="flex items-start gap-4">
+                    <div className='p-2 bg-primary/5 text-primary rounded-xl shrink-0 mt-0.5'><MapPin size={18} /></div>
+                    <div className="text-[14px] leading-relaxed flex-1 font-medium">
                       {isSchoolDataLoading ? (
-                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-4 w-full" />
                       ) : (
-                        <div className="whitespace-pre-wrap text-foreground">{schoolData?.address}</div>
+                        <div className="whitespace-pre-wrap text-slate-600">{schoolData?.address}</div>
                       )}
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Phone size={14} className="text-primary shrink-0" />
-                    <div className="text-[13px] text-foreground font-medium">
-                      {isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
+                <div className="flex items-center gap-4">
+                    <div className='p-2 bg-primary/5 text-primary rounded-xl shrink-0'><Phone size={16} /></div>
+                    <div className="text-[14px] text-slate-600 font-bold">
+                      {isSchoolDataLoading ? <Skeleton className="h-4 w-32" /> : schoolData?.phone}
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Mail size={14} className="text-primary shrink-0" />
-                    <div className="text-[13px] text-foreground font-medium">
-                      {isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
+                <div className="flex items-center gap-4">
+                    <div className='p-2 bg-primary/5 text-primary rounded-xl shrink-0'><Mail size={16} /></div>
+                    <div className="text-[14px] text-slate-600 font-bold">
+                      {isSchoolDataLoading ? <Skeleton className="h-4 w-48" /> : schoolData?.email}
                     </div>
                 </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-3 pt-4">
               {[
                 { icon: Facebook, url: schoolData?.facebookUrl },
                 { icon: Instagram, url: schoolData?.instagramUrl },
@@ -121,9 +120,9 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 { icon: Youtube, url: schoolData?.youtubeUrl }
               ].map((social, i) => (
                 social.url && (
-                  <Button key={i} asChild variant="outline" size="icon" className="h-8 w-8 rounded-lg hover:bg-primary/10 hover:text-primary">
-                    <a href={social.url} target='_blank' rel='noopener noreferrer' aria-label={`Social link ${i}`}>
-                      {social.isSvg ? <social.icon className="w-3.5 h-3.5 fill-current" /> : <social.icon size={14}/>}
+                  <Button key={i} asChild variant="outline" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">
+                    <a href={social.url} target='_blank' rel='noopener noreferrer' aria-label={`Media Sosial ${i}`}>
+                      {social.isSvg ? <social.icon className="w-4 h-4 fill-current" /> : <social.icon size={18}/>}
                     </a>
                   </Button>
                 )
@@ -131,16 +130,16 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
             </div>
           </div>
           
-          <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-8">
+          <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-12">
             {columns.map((col, idx) => (
-              <div key={idx} className="space-y-4">
-                  <h5 className="font-bold text-sm text-foreground">{col.title}</h5>
-                  <ul className="space-y-2.5">
+              <div key={idx} className="space-y-6">
+                  <h5 className="font-extrabold text-[15px] text-slate-900 tracking-tight">{col.title}</h5>
+                  <ul className="space-y-4">
                       {col.links.map(link => (
                           <li key={link.label}>
                               <button 
                                   onClick={() => setActiveTab(link.id as NavLink)} 
-                                  className="text-muted-foreground hover:text-primary text-[13px] transition-colors duration-300 flex items-center font-medium"
+                                  className="text-slate-500 hover:text-primary text-[14px] transition-colors duration-300 flex items-center font-medium"
                               >
                                   {link.label}
                               </button>
@@ -152,11 +151,11 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           </div>
         </div>
 
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[11px] font-medium">
-          <div className="text-center md:text-left">
-            <span>© {mounted ? currentYear : '2025'} {schoolName}.</span>
+        <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 text-[12px] font-bold uppercase tracking-widest">
+          <div className="text-center md:text-left opacity-60">
+            <span>&copy; {mounted ? currentYear : '2025'} {schoolData?.shortName || "SMK PRIDA"}. Official Digital Hub.</span>
           </div>
-          <div className="flex gap-6">
+          <div className="flex gap-10 opacity-60">
             <span className="hover:text-primary cursor-pointer transition-colors">Privacy Policy</span>
             <span className="hover:text-primary cursor-pointer transition-colors">Terms of Service</span>
           </div>
