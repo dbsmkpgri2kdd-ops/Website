@@ -6,11 +6,11 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'SMKS PGRI 2 KEDONDONG',
     short_name: 'SMK PRIDA',
-    description: 'Portal Digital Hub Enterprise SMKS PGRI 2 Kedondong',
+    description: 'Portal Digital Hub Enterprise SMKS PGRI 2 Kedondong. Akses PPDB Online, E-Rapor, dan Layanan Mandiri Siswa.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
-    theme_color: '#3b82f6',
+    theme_color: '#3b82f6', // Royal Blue
     icons: [
       {
         src: logoUrl,

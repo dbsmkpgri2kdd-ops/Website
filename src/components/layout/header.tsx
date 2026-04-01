@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Menu, LogIn, LayoutGrid } from 'lucide-react';
+import { ChevronDown, Menu, LogIn, LayoutGrid, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { NAV_MENU_DEFAULT, type NavItem, type School } from '@/lib/data';
@@ -57,7 +57,7 @@ const Header = ({
     if (isMenuOpen) setIsMenuOpen(false);
   };
 
-  const AuthButton = ({ className }: { className?: string }) => {
+  const AuthButton = ({ className, showText = false }: { className?: string, showText?: boolean }) => {
     if (!mounted || isUserLoading) return <Skeleton className={cn('h-9 rounded-lg', className?.includes('w-full') ? 'w-full h-12' : 'w-9')} />;
 
     const isFullWidth = className?.includes('w-full');
@@ -66,24 +66,24 @@ const Header = ({
       <Button
         onClick={handleAuthClick}
         variant={user ? "default" : "outline"}
-        size={isFullWidth ? "default" : "icon"}
+        size={isFullWidth || showText ? "default" : "icon"}
         aria-label={user ? "Buka Dashboard" : "Masuk ke Sistem"}
         className={cn(
           "h-9 rounded-lg transition-all shrink-0 shadow-sm",
-          !isFullWidth && "w-9",
+          !isFullWidth && !showText && "w-9",
           user ? "bg-primary text-white border-none" : "border-slate-200 text-slate-600 hover:bg-slate-50",
           className
         )}
       >
         {user ? (
           <>
-            <LayoutGrid size={18} className={cn(isFullWidth && "mr-2")} />
-            {isFullWidth && <span className="font-bold">Dashboard</span>}
+            <LayoutGrid size={18} className={cn((isFullWidth || showText) && "mr-2")} />
+            {(isFullWidth || showText) && <span className="font-bold">Dashboard</span>}
           </>
         ) : (
           <>
-            <LogIn size={18} className={cn(isFullWidth && "mr-2")} />
-            {isFullWidth && <span className="font-bold">Masuk</span>}
+            <LogIn size={18} className={cn((isFullWidth || showText) && "mr-2")} />
+            {(isFullWidth || showText) && <span className="font-bold">Masuk</span>}
           </>
         )}
       </Button>
@@ -99,7 +99,7 @@ const Header = ({
         return (
           <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all focus:outline-none tracking-tight">
+              <button className="flex items-center gap-1 px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all focus:outline-none tracking-tight uppercase">
                 {item.label}
                 <ChevronDown className="h-3 w-3 opacity-40" />
               </button>
@@ -109,7 +109,7 @@ const Header = ({
                 <DropdownMenuItem
                   key={cIdx}
                   onClick={() => child.id && setActiveTab(child.id)}
-                  className='font-bold text-[10px] cursor-pointer rounded-lg py-2 px-3 focus:bg-primary/5 focus:text-primary transition-all tracking-tight'
+                  className='font-bold text-[10px] cursor-pointer rounded-lg py-2 px-3 focus:bg-primary/5 focus:text-primary transition-all tracking-tight uppercase'
                 >
                   {child.label}
                 </DropdownMenuItem>
@@ -122,7 +122,7 @@ const Header = ({
           <button
             key={idx}
             onClick={() => item.id && setActiveTab(item.id)}
-            className='px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all tracking-tight'
+            className='px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all tracking-tight uppercase'
           >
             {item.label}
           </button>
@@ -170,7 +170,7 @@ const Header = ({
           </div>
 
           <div className="flex items-center gap-2">
-             <AuthButton className="hidden md:flex" />
+             <AuthButton className="hidden md:flex" showText={true} />
              <div className='h-6 w-px bg-slate-100 mx-1 hidden md:block'></div>
              <ThemeToggle />
              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>

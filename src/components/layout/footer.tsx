@@ -64,7 +64,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
   const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
 
   return (
-    <footer className="bg-background border-t border-border pt-12 pb-8 overflow-hidden relative tech-mesh">
+    <footer className="bg-background border-t border-border pt-12 pb-24 md:pb-12 overflow-hidden relative tech-mesh">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
         
@@ -83,7 +83,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                       />
                   )}
                </div>
-              <div className="font-bold text-lg tracking-tight text-foreground">
+              <div className="font-bold text-lg tracking-tight text-foreground uppercase">
                 {isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
               </div>
             </div>
@@ -91,7 +91,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
             <div className="space-y-3 text-muted-foreground">
                 <div className="flex items-start gap-3">
                     <MapPin size={16} className="text-primary mt-1 shrink-0" />
-                    <div className="text-xs leading-relaxed flex-1">
+                    <div className="text-[11px] leading-relaxed flex-1 font-bold uppercase tracking-wider">
                       {isSchoolDataLoading ? (
                         <Skeleton className="h-3 w-full" />
                       ) : (
@@ -101,13 +101,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 </div>
                 <div className="flex items-center gap-3">
                     <Phone size={14} className="text-primary shrink-0" />
-                    <div className="text-xs text-foreground">
+                    <div className="text-[11px] text-foreground font-bold uppercase tracking-wider">
                       {isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Mail size={14} className="text-primary shrink-0" />
-                    <div className="text-xs text-foreground">
+                    <div className="text-[11px] text-foreground font-bold uppercase tracking-wider lowercase">
                       {isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
                     </div>
                 </div>
@@ -134,13 +134,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-8">
             {columns.map((col, idx) => (
               <div key={idx} className="space-y-4">
-                  <h5 className="font-bold text-xs text-foreground uppercase tracking-wider">{col.title}</h5>
+                  <h5 className="font-bold text-xs text-foreground uppercase tracking-widest">{col.title}</h5>
                   <ul className="space-y-2.5">
                       {col.links.map(link => (
                           <li key={link.label}>
                               <button 
                                   onClick={() => setActiveTab(link.id as NavLink)} 
-                                  className="text-muted-foreground hover:text-primary text-xs transition-colors duration-300 flex items-center font-medium"
+                                  className="text-muted-foreground hover:text-primary text-[10px] transition-colors duration-300 flex items-center font-black uppercase tracking-widest"
                               >
                                   {link.label}
                               </button>
@@ -152,7 +152,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           </div>
         </div>
 
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[10px] font-medium">
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[9px] font-black uppercase tracking-[0.2em]">
           <div className="text-center md:text-left">
             <span>© {mounted ? currentYear : '2025'} {schoolName}.</span>
           </div>
