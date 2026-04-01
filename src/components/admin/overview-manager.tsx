@@ -5,7 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, query, limit, orderBy, where } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication, type AttendanceRecord } from '@/lib/data';
-import { Newspaper, UserPlus, ShieldCheck, Activity, Clock, ArrowUpRight, BrainCircuit, Sparkles, LoaderCircle, Database, HardDrive, BarChart3, UserCheck, LogIn, LogOut } from 'lucide-react';
+import { 
+  Newspaper, UserPlus, ShieldCheck, Activity, Clock, ArrowUpRight, 
+  BrainCircuit, Sparkles, LoaderCircle, Database, HardDrive, 
+  BarChart3, UserCheck, LogIn, LogOut, Info, BookOpen, Settings2, MonitorPlay
+} from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format, startOfDay } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -69,25 +73,25 @@ export function OverviewManager() {
   };
 
   const stats = [
-    { title: 'Publikasi Aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-primary', bg: 'bg-primary/5' },
-    { title: 'Pendaftar Baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-primary', bg: 'bg-primary/5' },
-    { title: 'Status Keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
-    { title: 'Koneksi Jaringan', count: 'Stabil', icon: Activity, color: 'text-accent', bg: 'bg-accent/10' },
+    { title: 'Publikasi aktif', count: recentNews?.length || 0, icon: Newspaper, color: 'text-primary', bg: 'bg-primary/5' },
+    { title: 'Pendaftar baru', count: recentPpdb?.length || 0, icon: UserPlus, color: 'text-primary', bg: 'bg-primary/5' },
+    { title: 'Status keamanan', count: 'Aktif', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
+    { title: 'Koneksi jaringan', count: 'Stabil', icon: Activity, color: 'text-accent', bg: 'bg-accent/10' },
   ];
 
   return (
     <div className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
-            <h2 className='text-3xl font-bold tracking-tight text-slate-900 font-headline uppercase'>Ringkasan Sistem</h2>
-            <p className='text-xs font-bold text-slate-500 mt-1 uppercase tracking-widest opacity-80'>Pusat kendali operasional digital sekolah.</p>
+            <h2 className='text-3xl font-black tracking-tighter text-slate-900 font-headline uppercase'>Ringkasan sistem</h2>
+            <p className='text-[10px] font-bold text-slate-500 mt-1 uppercase tracking-widest opacity-80'>Pusat kendali operasional digital sekolah.</p>
         </div>
-        <div className='flex items-center gap-3 bg-card p-3 rounded-2xl border border-slate-100 shadow-md'>
+        <div className='flex items-center gap-3 bg-white p-3 rounded-2xl border border-slate-100 shadow-md'>
             <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary'>
                 <Clock size={20} />
             </div>
             <div>
-                <p className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Waktu Sistem</p>
+                <p className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Waktu sistem</p>
                 <p className='text-xs font-bold text-slate-900'>{mounted ? (currentTime || '--:--') : '--:--'} WIB</p>
             </div>
         </div>
@@ -102,7 +106,7 @@ export function OverviewManager() {
                             <UserCheck size={20} />
                         </div>
                         <div>
-                            <CardTitle className="text-lg font-bold text-slate-900 uppercase">Absensi Hari Ini</CardTitle>
+                            <CardTitle className="text-lg font-bold text-slate-900 uppercase font-headline">Absensi hari ini</CardTitle>
                             <CardDescription className="text-xs font-bold text-slate-500">Monitoring kehadiran biometrik real-time.</CardDescription>
                         </div>
                     </div>
@@ -113,14 +117,14 @@ export function OverviewManager() {
                         <div className="flex items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                             <div className="p-3 bg-primary/5 text-primary rounded-xl"><LogIn size={20} /></div>
                             <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Siswa Masuk</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Siswa masuk</p>
                                 <p className="text-2xl font-black text-slate-900">{attendanceStats.masuk} <span className="text-[10px] text-slate-400 font-bold">Siswa</span></p>
                             </div>
                         </div>
                         <div className="flex items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                             <div className="p-3 bg-emerald-500/10 text-emerald-600 rounded-xl"><LogOut size={20} /></div>
                             <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Siswa Pulang</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Siswa pulang</p>
                                 <p className="text-2xl font-black text-slate-900">{attendanceStats.pulang} <span className="text-[10px] text-slate-400 font-bold">Siswa</span></p>
                             </div>
                         </div>
@@ -151,8 +155,8 @@ export function OverviewManager() {
         <div className="space-y-6">
             <Card className="border-primary/10 bg-white rounded-[2.5rem] shadow-md overflow-hidden relative group h-full border-2">
                 <CardHeader className='p-8'>
-                    <CardTitle className='text-sm font-black flex items-center gap-2 text-slate-900 uppercase tracking-widest'>
-                        <Sparkles size={16} className='text-accent' /> Smart Analysis AI
+                    <CardTitle className='text-sm font-black flex items-center gap-2 text-slate-900 uppercase tracking-widest font-headline'>
+                        <Sparkles size={16} className='text-accent' /> Smart analysis AI
                     </CardTitle>
                     <CardDescription className='text-xs font-bold text-slate-500'>Sistem intelijen akademik v1.0</CardDescription>
                 </CardHeader>
@@ -190,51 +194,97 @@ export function OverviewManager() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 border-slate-100 bg-white rounded-[2.5rem] shadow-md border-2">
-          <CardHeader className="p-8 border-b border-slate-100">
-            <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-slate-500">
-                <UserPlus size={18} className="text-primary" /> Pendaftaran Terbaru
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="space-y-1">
-              {!mounted || isPpdbLoading ? (
-                Array.from({length: 3}).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-2xl mb-2" />)
-              ) : (
-                recentPpdb && recentPpdb.length > 0 ? recentPpdb.map(app => (
-                  <div key={app.id} className="flex items-center justify-between p-5 rounded-2xl hover:bg-slate-50 transition-all group">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary font-black shadow-inner">
-                        {app.studentName.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="font-black text-sm text-slate-900 uppercase tracking-tighter group-hover:text-primary transition-colors">{app.studentName}</p>
-                        <p className="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest">{app.chosenMajor}</p>
-                      </div>
+        <div className="lg:col-span-2 space-y-8">
+            {/* Quick SOP Guide */}
+            <Card className="border-slate-100 bg-slate-50/50 rounded-[2.5rem] shadow-sm border-2 overflow-hidden">
+                <CardHeader className="p-8 border-b bg-white">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-accent/10 text-accent-foreground rounded-xl"><BookOpen size={20}/></div>
+                        <CardTitle className="text-sm font-black uppercase tracking-widest font-headline">Panduan operasional hPanel</CardTitle>
                     </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-black text-slate-400 uppercase">
-                        {app.submissionDate?.toDate ? format(app.submissionDate.toDate(), 'd MMM', { locale: idLocale }) : 'Baru'}
-                      </p>
-                      <Badge variant="secondary" className="text-[9px] font-black mt-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border-none uppercase tracking-widest">{app.status || 'Pending'}</Badge>
+                </CardHeader>
+                <CardContent className="p-8">
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                            <h4 className="text-[10px] font-black uppercase text-primary tracking-[0.3em] flex items-center gap-2">
+                                <MonitorPlay size={14} /> Pengawasan & Akademik
+                            </h4>
+                            <ul className="space-y-3">
+                                <li className="flex gap-3">
+                                    <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">1</div>
+                                    <p className="text-[11px] font-bold text-slate-600">Monitor ujian di tab <span className='text-primary'>Live Proctoring</span> untuk melihat kamera siswa secara real-time.</p>
+                                </li>
+                                <li className="flex gap-3">
+                                    <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">2</div>
+                                    <p className="text-[11px] font-bold text-slate-600">Input nilai semester di menu <span className='text-primary'>E-Rapor</span> untuk akses mandiri siswa.</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="space-y-4">
+                            <h4 className="text-[10px] font-black uppercase text-primary tracking-[0.3em] flex items-center gap-2">
+                                <Settings2 size={14} /> Sinkronisasi & Sistem
+                            </h4>
+                            <ul className="space-y-3">
+                                <li className="flex gap-3">
+                                    <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">3</div>
+                                    <p className="text-[11px] font-bold text-slate-600">Gunakan <span className='text-primary'>System Settings</span> untuk sinkronisasi database siswa via Google Sheets.</p>
+                                </li>
+                                <li className="flex gap-3">
+                                    <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">4</div>
+                                    <p className="text-[11px] font-bold text-slate-600">Atur urutan modul beranda secara visual di <span className='text-primary'>Builder Beranda</span>.</p>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                  </div>
-                )) : <div className="text-center py-16 opacity-20"><UserPlus size={40} className="mx-auto mb-3" /><p className="text-[10px] font-black uppercase tracking-widest">Belum ada pendaftar baru</p></div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
 
-        <Card className="border-slate-100 bg-white rounded-[2.5rem] shadow-md border-2">
+            <Card className="border-slate-100 bg-white rounded-[2.5rem] shadow-md border-2">
+                <CardHeader className="p-8 border-b border-slate-100">
+                    <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-slate-500 font-headline">
+                        <UserPlus size={18} className="text-primary" /> Pendaftaran terbaru
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4">
+                    <div className="space-y-1">
+                    {!mounted || isPpdbLoading ? (
+                        Array.from({length: 3}).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-2xl mb-2" />)
+                    ) : (
+                        recentPpdb && recentPpdb.length > 0 ? recentPpdb.map(app => (
+                        <div key={app.id} className="flex items-center justify-between p-5 rounded-2xl hover:bg-slate-50 transition-all group">
+                            <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary font-black shadow-inner">
+                                {app.studentName.charAt(0)}
+                            </div>
+                            <div>
+                                <p className="font-black text-sm text-slate-900 uppercase tracking-tighter group-hover:text-primary transition-colors">{app.studentName}</p>
+                                <p className="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest">{app.chosenMajor}</p>
+                            </div>
+                            </div>
+                            <div className="text-right">
+                            <p className="text-[10px] font-black text-slate-400 uppercase">
+                                {app.submissionDate?.toDate ? format(app.submissionDate.toDate(), 'd MMM', { locale: idLocale }) : 'Baru'}
+                            </p>
+                            <Badge variant="secondary" className="text-[9px] font-black mt-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border-none uppercase tracking-widest">{app.status || 'Pending'}</Badge>
+                            </div>
+                        </div>
+                        )) : <div className="text-center py-16 opacity-20"><UserPlus size={40} className="mx-auto mb-3" /><p className="text-[10px] font-black uppercase tracking-widest">Belum ada pendaftar baru</p></div>
+                    )}
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+
+        <Card className="border-slate-100 bg-white rounded-[2.5rem] shadow-md border-2 h-fit">
           <CardHeader className="p-8 border-b border-slate-100">
-            <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-500">Infrastruktur Sistem</CardTitle>
+            <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-500 font-headline">Infrastruktur sistem</CardTitle>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             {[
-                { icon: Database, label: 'Basis Data', status: 'Sinkronisasi', color: 'text-primary', bg: 'bg-primary/5' },
+                { icon: Database, label: 'Basis data', status: 'Sinkronisasi', color: 'text-primary', bg: 'bg-primary/5' },
                 { icon: ShieldCheck, label: 'Keamanan', status: 'Terenkripsi', color: 'text-primary', bg: 'bg-primary/5' },
                 { icon: HardDrive, label: 'Penyimpanan', status: 'Optimal', color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
-                { icon: BarChart3, label: 'Lalu Lintas', status: 'Normal', color: 'text-accent', bg: 'bg-accent/10' },
+                { icon: BarChart3, label: 'Lalu lintas', status: 'Normal', color: 'text-accent', bg: 'bg-accent/10' },
             ].map((infra, idx) => (
                 <div key={idx} className="flex items-center gap-4 group">
                     <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform", infra.bg, infra.color)}>
