@@ -78,7 +78,6 @@ export function BiometricManager() {
 
   const classes = useMemo(() => {
     if (!users) return [];
-    // Strictly filter for strings to satisfy TypeScript
     const classSet = new Set(users.map(s => s.className).filter((c): c is string => !!c));
     return Array.from(classSet).sort();
   }, [users]);
