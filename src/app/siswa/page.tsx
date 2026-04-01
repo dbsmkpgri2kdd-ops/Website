@@ -36,9 +36,9 @@ function SiswaDashboard() {
     try {
       await signOut(auth);
       router.replace('/');
-      toast({ title: 'Sesi Berakhir', description: 'Kembali ke halaman utama.' });
+      toast({ title: 'Sesi berakhir', description: 'Kembali ke halaman utama.' });
     } catch (error) {
-      toast({ variant: 'destructive', title: 'Logout Gagal' });
+      toast({ variant: 'destructive', title: 'Logout gagal' });
     }
   };
 
@@ -62,13 +62,13 @@ function SiswaDashboard() {
                 <Sparkles size={24} />
             </div>
             <div className='flex flex-col'>
-                <h1 className="text-xl sm:text-2xl font-extrabold font-headline text-slate-900 tracking-tight leading-none">Siswa Portal</h1>
-                <span className='text-[9px] font-bold uppercase tracking-[0.2em] text-primary opacity-60 mt-1'>Digital Identity Hub</span>
+                <h1 className="text-xl sm:text-2xl font-extrabold font-headline text-slate-900 tracking-tight leading-none">Siswa portal</h1>
+                <span className='text-[9px] font-bold uppercase tracking-[0.2em] text-primary opacity-60 mt-1'>Digital identity hub</span>
             </div>
         </div>
         <Button onClick={handleLogout} variant="outline" className="rounded-xl h-11 px-6 font-bold text-xs border-slate-200 text-slate-600 hover:bg-slate-50 transition-all">
           <LogOut className="mr-2 h-4 w-4 opacity-40" />
-          <span className="hidden sm:inline">Logout</span>
+          <span className="hidden sm:inline">Keluar</span>
         </Button>
       </header>
       
@@ -80,7 +80,7 @@ function SiswaDashboard() {
                   <RefreshCcw className="h-6 w-6" />
                 </div>
                 <div>
-                  <AlertTitle className="text-sm font-bold text-slate-900">Sinkronisasi Identitas Digital</AlertTitle>
+                  <AlertTitle className="text-sm font-bold text-slate-900">Sinkronisasi identitas digital</AlertTitle>
                   <AlertDescription className="text-[10px] font-medium text-slate-600 leading-relaxed">
                     Sistem sedang memverifikasi data Anda di server pusat. Harap tunggu sebentar.
                   </AlertDescription>
@@ -103,9 +103,9 @@ function SiswaDashboard() {
                             </Avatar>
                             <div className='flex-1 min-w-0'>
                                 <h3 className="text-xl font-extrabold font-headline tracking-tight text-slate-900 leading-none truncate">{profile?.displayName || 'Siswa'}</h3>
-                                <p className="text-primary font-bold text-[10px] uppercase tracking-widest mt-2">{profile?.className || 'Belum Sinkron'}</p>
+                                <p className="text-primary font-bold text-[10px] uppercase tracking-widest mt-2">{profile?.className || 'Belum sinkron'}</p>
                                 <div className='flex flex-wrap gap-2 mt-4 justify-center sm:justify-start'>
-                                    <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-700 border-none px-3 py-1 rounded-lg text-[9px] font-bold uppercase'>Status Aktif</Badge>
+                                    <Badge variant="secondary" className='bg-emerald-500/10 text-emerald-700 border-none px-3 py-1 rounded-lg text-[9px] font-bold uppercase'>Status aktif</Badge>
                                     <Badge variant="outline" className='border-accent/30 text-accent px-3 py-1 rounded-lg text-[9px] font-bold uppercase'>Shift {profile?.session || 'Pagi'}</Badge>
                                 </div>
                             </div>
@@ -113,18 +113,18 @@ function SiswaDashboard() {
                     </CardHeader>
                     <CardContent className="px-8 pb-8 space-y-6">
                         <div className='space-y-3'>
-                            <p className='text-[9px] font-bold uppercase tracking-[0.3em] text-primary opacity-40'>Identitas Utama</p>
-                            <InfoRow icon={Fingerprint} label="Nomor Induk Siswa" value={profile?.nis} />
-                            <InfoRow icon={MapPin} label="Alamat Terdaftar" value={profile?.address} />
-                            <InfoRow icon={Phone} label="Nomor Handphone" value={profile?.phone} />
+                            <p className='text-[9px] font-bold uppercase tracking-[0.3em] text-primary opacity-40'>Identitas utama</p>
+                            <InfoRow icon={Fingerprint} label="Nomor induk siswa" value={profile?.nis} />
+                            <InfoRow icon={MapPin} label="Alamat terdaftar" value={profile?.address} />
+                            <InfoRow icon={Phone} label="Nomor handphone" value={profile?.phone} />
                         </div>
                         
                         <div className="pt-6 border-t border-slate-100">
-                            <p className='text-[9px] font-bold uppercase tracking-[0.3em] text-primary opacity-40 mb-4'>Personalia Akademik</p>
+                            <p className='text-[9px] font-bold uppercase tracking-[0.3em] text-primary opacity-40 mb-4'>Personalia akademik</p>
                             <div className="grid grid-cols-1 gap-3">
-                                <InfoRow icon={UserCog} label="Wali Kelas" value={profile?.homeroomTeacher} />
+                                <InfoRow icon={UserCog} label="Wali kelas" value={profile?.homeroomTeacher} />
                                 <InfoRow icon={HeartPulse} label="Guru BK" value={profile?.bkTeacher} />
-                                <InfoRow icon={UserCheck} label="Guru Wali" value={profile?.guardianTeacher} />
+                                <InfoRow icon={UserCheck} label="Guru wali" value={profile?.guardianTeacher} />
                             </div>
                         </div>
                     </CardContent>
@@ -154,7 +154,7 @@ function SiswaDashboard() {
                     </div>
 
                     <TabsContent value="overview" className="space-y-8 pt-4">
-                        <QuickLinksGrid audience="siswa" title="Akses Cepat" description="Layanan penunjang belajar harian Anda." />
+                        <QuickLinksGrid audience="siswa" title="Akses cepat" description="Layanan penunjang belajar harian Anda." />
                         <div className='grid sm:grid-cols-2 gap-8'>
                             <AbsensiSiswa />
                             <JadwalPelajaran />
@@ -179,7 +179,7 @@ function SiswaDashboard() {
       
       <footer className="max-w-7xl mx-auto mt-16 pt-8 border-t border-slate-100 text-center opacity-40">
           <p className='text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400'>
-              &copy; 2025 SMKS PGRI 2 Kedondong • Official Student Portal
+              &copy; 2025 SMKS PGRI 2 Kedondong • Portal siswa resmi
           </p>
       </footer>
     </div>

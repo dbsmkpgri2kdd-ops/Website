@@ -66,7 +66,7 @@ const Header = ({
       <Button
         onClick={handleAuthClick}
         variant={user ? "default" : "accent"}
-        size={isFullWidth || showText ? "default" : "icon"}
+        size={isFullWidth || (showText && !isFullWidth) ? "default" : "icon"}
         aria-label={user ? "Dashboard" : "Masuk"}
         className={cn(
           "h-10 rounded-xl transition-all shrink-0 font-bold text-xs",

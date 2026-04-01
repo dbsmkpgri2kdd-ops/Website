@@ -37,25 +37,25 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
             { id: 'profil-sejarah', label: 'Sejarah' },
             { id: 'fasilitas', label: 'Fasilitas' },
             { id: 'staf-guru', label: 'Staf & Guru' },
-            { id: 'kontak', label: 'Kontak Kami' },
+            { id: 'kontak', label: 'Kontak kami' },
         ]
     },
     {
         title: "Akademik",
         links: [
-            { id: 'jurusan-kompetensi', label: 'Program Jurusan' },
-            { id: 'jadwal-pelajaran', label: 'Jadwal Pelajaran' },
-            { id: 'perpustakaan', label: 'Perpustakaan Digital' },
-            { id: 'ekstrakurikuler', label: 'Kegiatan Eskul' },
+            { id: 'jurusan-kompetensi', label: 'Program jurusan' },
+            { id: 'jadwal-pelajaran', label: 'Jadwal pelajaran' },
+            { id: 'perpustakaan', label: 'Perpustakaan digital' },
+            { id: 'ekstrakurikuler', label: 'Kegiatan eskul' },
         ]
     },
     {
         title: "Layanan",
         links: [
-            { id: 'ppdb-online', label: 'PPDB Online' },
-            { id: 'bkk', label: 'Bursa Kerja' },
-            { id: 'prakerin-pkl', label: 'Program Prakerin' },
-            { id: 'cek-status-kelulusan', label: 'Status Kelulusan' },
+            { id: 'ppdb-online', label: 'PPDB online' },
+            { id: 'bkk', label: 'Bursa kerja' },
+            { id: 'prakerin-pkl', label: 'Program prakerin' },
+            { id: 'cek-status-kelulusan', label: 'Status kelulusan' },
         ]
     }
   ];
@@ -121,7 +121,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
               ].map((social, i) => (
                 social.url && (
                   <Button key={i} asChild variant="outline" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">
-                    <a href={social.url} target='_blank' rel='noopener noreferrer' aria-label={`Media Sosial ${i}`}>
+                    <a href={social.url} target='_blank' rel='noopener noreferrer' aria-label={`Media sosial ${i}`}>
                       {social.isSvg ? <social.icon className="w-3.5 h-3.5 fill-current" /> : <social.icon size={16}/>}
                     </a>
                   </Button>
@@ -156,8 +156,8 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
             <span>&copy; {mounted ? currentYear : '2025'} {schoolData?.shortName || "SMK PRIDA"}. Official Digital Hub.</span>
           </div>
           <div className="flex gap-8 opacity-60">
-            <span className="hover:text-primary cursor-pointer transition-colors">Kebijakan Privasi</span>
-            <span className="hover:text-primary cursor-pointer transition-colors">Syarat & Ketentuan</span>
+            <span className="hover:text-primary cursor-pointer transition-colors">Kebijakan privasi</span>
+            <span className="hover:text-primary cursor-pointer transition-colors">Syarat & ketentuan</span>
           </div>
         </div>
       </div>
