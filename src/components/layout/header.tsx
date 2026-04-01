@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -99,7 +100,7 @@ const Header = ({
         return (
           <DropdownMenu key={idx}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all focus:outline-none tracking-tight uppercase">
+              <button className="flex items-center gap-1 px-3 py-2 text-[13px] font-bold text-slate-600 hover:text-primary transition-all focus:outline-none tracking-tight">
                 {item.label}
                 <ChevronDown className="h-3 w-3 opacity-40" />
               </button>
@@ -109,7 +110,7 @@ const Header = ({
                 <DropdownMenuItem
                   key={cIdx}
                   onClick={() => child.id && setActiveTab(child.id)}
-                  className='font-bold text-[10px] cursor-pointer rounded-lg py-2 px-3 focus:bg-primary/5 focus:text-primary transition-all tracking-tight uppercase'
+                  className='font-bold text-[12px] cursor-pointer rounded-lg py-2 px-3 focus:bg-primary/5 focus:text-primary transition-all tracking-tight'
                 >
                   {child.label}
                 </DropdownMenuItem>
@@ -122,7 +123,7 @@ const Header = ({
           <button
             key={idx}
             onClick={() => item.id && setActiveTab(item.id)}
-            className='px-3 py-2 text-[10.5px] font-bold text-slate-600 hover:text-primary transition-all tracking-tight uppercase'
+            className='px-3 py-2 text-[13px] font-bold text-slate-600 hover:text-primary transition-all tracking-tight'
           >
             {item.label}
           </button>
@@ -159,7 +160,7 @@ const Header = ({
               )}
             </div>
             <div className="flex flex-col items-start leading-tight text-left">
-                <span className="font-bold text-[13px] text-slate-900 tracking-tighter uppercase">
+                <span className="font-bold text-[15px] text-slate-900 tracking-tighter">
                 {!mounted ? "SMKS PGRI 2" : (schoolData?.shortName || "SMKS PGRI 2")}
                 </span>
             </div>
@@ -181,20 +182,20 @@ const Header = ({
                 </SheetTrigger>
                 <SheetContent side="right" className="p-0 w-full sm:w-[320px] border-none shadow-2xl bg-white">
                     <SheetHeader className="p-8 border-b border-slate-50 text-left bg-slate-50/20">
-                        <SheetTitle className='font-bold text-xl tracking-tighter uppercase text-slate-900'>Navigasi</SheetTitle>
+                        <SheetTitle className='font-bold text-xl tracking-tighter text-slate-900'>Navigasi</SheetTitle>
                     </SheetHeader>
                     
                     <ScrollArea className='h-[calc(100vh-180px)] py-6'>
                         {mounted && currentMenu.map((mainItem, mIdx) => (
                           <div key={mIdx} className="px-8 mb-8">
-                            <h3 className="px-3 text-[9px] font-black tracking-[0.3em] text-primary mb-4 uppercase opacity-40">{mainItem.label}</h3>
+                            <h3 className="px-3 text-[11px] font-black tracking-[0.1em] text-primary mb-4 opacity-40">{mainItem.label}</h3>
                             {mainItem.children ? (
                               <div className="grid grid-cols-1 gap-1">
                                 {mainItem.children.map((child, cIdx) => (
                                   <button
                                     key={cIdx}
                                     onClick={() => { child.id && setActiveTab(child.id); setIsMenuOpen(false); }}
-                                    className="w-full text-left py-3 px-4 rounded-xl text-[10px] font-bold text-slate-700 hover:bg-primary/5 hover:text-primary transition-all uppercase tracking-tight"
+                                    className="w-full text-left py-3 px-4 rounded-xl text-[13px] font-bold text-slate-700 hover:bg-primary/5 hover:text-primary transition-all tracking-tight"
                                   >
                                     {child.label}
                                   </button>
@@ -203,7 +204,7 @@ const Header = ({
                             ) : (
                               <button
                                 onClick={() => { mainItem.id && setActiveTab(mainItem.id); setIsMenuOpen(false); }}
-                                className="w-full text-left py-3 px-4 rounded-xl text-[10px] font-bold text-slate-700 hover:bg-primary/5 hover:text-primary transition-all uppercase tracking-tight"
+                                className="w-full text-left py-3 px-4 rounded-xl text-[13px] font-bold text-slate-700 hover:bg-primary/5 hover:text-primary transition-all tracking-tight"
                               >
                                 {mainItem.label}
                               </button>
@@ -213,7 +214,7 @@ const Header = ({
                     </ScrollArea>
                     
                     <div className="p-8 border-t border-slate-50">
-                        <AuthButton className="w-full h-12 rounded-xl bg-accent text-accent-foreground border-none font-bold text-[10px] uppercase tracking-widest" />
+                        <AuthButton className="w-full h-12 rounded-xl bg-accent text-accent-foreground border-none font-bold text-[13px]" />
                     </div>
                 </SheetContent>
               </Sheet>

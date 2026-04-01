@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -45,14 +46,14 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
         links: [
             { id: 'jurusan-kompetensi', label: 'Jurusan' },
             { id: 'jadwal-pelajaran', label: 'Jadwal' },
-            { id: 'perpustakaan', label: 'Library' },
+            { id: 'perpustakaan', label: 'Perpustakaan' },
             { id: 'ekstrakurikuler', label: 'Ekskul' },
         ]
     },
     {
         title: "Layanan",
         links: [
-            { id: 'ppdb-online', label: 'PPDB' },
+            { id: 'ppdb-online', label: 'PPDB Online' },
             { id: 'bkk', label: 'Bursa Kerja' },
             { id: 'prakerin-pkl', label: 'Prakerin' },
             { id: 'cek-status-kelulusan', label: 'Kelulusan' },
@@ -83,7 +84,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                       />
                   )}
                </div>
-              <div className="font-bold text-lg tracking-tight text-foreground uppercase">
+              <div className="font-bold text-lg tracking-tight text-foreground">
                 {isSchoolDataLoading ? <Skeleton className="h-6 w-32" /> : (schoolData?.shortName || "SMKS PGRI 2")}
               </div>
             </div>
@@ -91,7 +92,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
             <div className="space-y-3 text-muted-foreground">
                 <div className="flex items-start gap-3">
                     <MapPin size={16} className="text-primary mt-1 shrink-0" />
-                    <div className="text-[11px] leading-relaxed flex-1 font-bold uppercase tracking-wider">
+                    <div className="text-[13px] leading-relaxed flex-1 font-medium">
                       {isSchoolDataLoading ? (
                         <Skeleton className="h-3 w-full" />
                       ) : (
@@ -101,13 +102,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
                 </div>
                 <div className="flex items-center gap-3">
                     <Phone size={14} className="text-primary shrink-0" />
-                    <div className="text-[11px] text-foreground font-bold uppercase tracking-wider">
+                    <div className="text-[13px] text-foreground font-medium">
                       {isSchoolDataLoading ? <Skeleton className="h-3 w-24" /> : schoolData?.phone}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Mail size={14} className="text-primary shrink-0" />
-                    <div className="text-[11px] text-foreground font-bold uppercase tracking-wider lowercase">
+                    <div className="text-[13px] text-foreground font-medium">
                       {isSchoolDataLoading ? <Skeleton className="h-3 w-32" /> : schoolData?.email}
                     </div>
                 </div>
@@ -122,7 +123,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
               ].map((social, i) => (
                 social.url && (
                   <Button key={i} asChild variant="outline" size="icon" className="h-8 w-8 rounded-lg hover:bg-primary/10 hover:text-primary">
-                    <a href={social.url} target='_blank' rel='noopener noreferrer'>
+                    <a href={social.url} target='_blank' rel='noopener noreferrer' aria-label={`Social link ${i}`}>
                       {social.isSvg ? <social.icon className="w-3.5 h-3.5 fill-current" /> : <social.icon size={14}/>}
                     </a>
                   </Button>
@@ -134,13 +135,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-8">
             {columns.map((col, idx) => (
               <div key={idx} className="space-y-4">
-                  <h5 className="font-bold text-xs text-foreground uppercase tracking-widest">{col.title}</h5>
+                  <h5 className="font-bold text-sm text-foreground">{col.title}</h5>
                   <ul className="space-y-2.5">
                       {col.links.map(link => (
                           <li key={link.label}>
                               <button 
                                   onClick={() => setActiveTab(link.id as NavLink)} 
-                                  className="text-muted-foreground hover:text-primary text-[10px] transition-colors duration-300 flex items-center font-black uppercase tracking-widest"
+                                  className="text-muted-foreground hover:text-primary text-[13px] transition-colors duration-300 flex items-center font-medium"
                               >
                                   {link.label}
                               </button>
@@ -152,7 +153,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           </div>
         </div>
 
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[9px] font-black uppercase tracking-[0.2em]">
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-[11px] font-medium">
           <div className="text-center md:text-left">
             <span>© {mounted ? currentYear : '2025'} {schoolName}.</span>
           </div>
