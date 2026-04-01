@@ -11,13 +11,13 @@ type BottomNavProps = {
 
 /**
  * Bilah navigasi bawah khusus mobile.
- * Disederhanakan untuk estetika ultra-minimalis.
+ * Menggunakan Standard Case untuk estetika ultra-minimalis.
  */
 export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: BottomNavProps) {
   const navItems = [
     { id: 'home', label: 'Beranda', icon: Home },
     { id: 'berita-pengumuman', label: 'Berita', icon: Newspaper },
-    { id: 'ppdb-online', label: 'PPDB', icon: UserPlus },
+    { id: 'ppdb-online', label: 'Ppdb', icon: UserPlus },
   ];
 
   const handleNavClick = (tab: NavLink) => {
@@ -41,21 +41,20 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
               )}
             >
               <item.icon className={cn("w-5 h-5 mb-1", isActive ? "stroke-[2.5px]" : "stroke-2")} />
-              <span className="text-[9px] font-black uppercase tracking-widest">
+              <span className="text-[10px] font-bold">
                 {item.label}
               </span>
             </button>
           );
         })}
         
-        {/* AKSES MENU (Hamburger) */}
         <button
           type="button"
           onClick={() => setIsMenuOpen(true)}
           className="flex flex-col items-center justify-center flex-1 text-muted-foreground opacity-60 hover:opacity-100 active:scale-95"
         >
           <LayoutGrid className="w-5 h-5 mb-1" />
-          <span className="text-[9px] font-black uppercase tracking-widest">Menu</span>
+          <span className="text-[10px] font-bold">Menu</span>
         </button>
       </div>
     </div>

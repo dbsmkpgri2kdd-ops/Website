@@ -52,7 +52,7 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
     {
         title: "Layanan",
         links: [
-            { id: 'ppdb-online', label: 'PPDB Online' },
+            { id: 'ppdb-online', label: 'Ppdb Online' },
             { id: 'bkk', label: 'Bursa Kerja' },
             { id: 'prakerin-pkl', label: 'Program Prakerin' },
             { id: 'cek-status-kelulusan', label: 'Status Kelulusan' },
@@ -151,13 +151,13 @@ const Footer = ({ setActiveTab, schoolData, isSchoolDataLoading }: FooterProps) 
           </div>
         </div>
 
-        <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 text-[12px] font-bold uppercase tracking-widest">
+        <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 text-[12px] font-bold">
           <div className="text-center md:text-left opacity-60">
             <span>&copy; {mounted ? currentYear : '2025'} {schoolData?.shortName || "SMK PRIDA"}. Official Digital Hub.</span>
           </div>
           <div className="flex gap-10 opacity-60">
-            <span className="hover:text-primary cursor-pointer transition-colors">Privacy Policy</span>
-            <span className="hover:text-primary cursor-pointer transition-colors">Terms of Service</span>
+            <span className="hover:text-primary cursor-pointer transition-colors">Kebijakan Privasi</span>
+            <span className="hover:text-primary cursor-pointer transition-colors">Syarat & Ketentuan</span>
           </div>
         </div>
       </div>
