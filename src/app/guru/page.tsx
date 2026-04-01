@@ -5,9 +5,8 @@ import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { 
   LogOut, ShieldCheck, Sparkles, 
-  GraduationCap, Building2, Bell, LayoutGrid, 
-  UserCheck, ClipboardList, BookMarked, Home,
-  User as UserIcon, MonitorCheck, Settings, Users
+  GraduationCap, Bell, Home,
+  User as UserIcon, MonitorCheck, ClipboardList, BookMarked
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
@@ -104,19 +103,25 @@ function GuruDashboard() {
             </Card>
 
             <div className="grid grid-cols-2 gap-4">
-              <Card className="rounded-[2rem] bg-primary text-white p-6 flex flex-col justify-between h-36 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('absensi')}>
-                <div className='p-3 bg-white/20 rounded-2xl w-fit'><UserCheck size={24} /></div>
-                <h4 className="font-black text-sm uppercase tracking-tight">Presensi</h4>
+              <Card className="rounded-[2rem] bg-primary text-white p-6 flex flex-col justify-between h-40 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('absensi')}>
+                <div className='p-3 bg-white/20 rounded-2xl w-fit'><ClipboardList size={24} /></div>
+                <div>
+                  <h4 className="font-black text-sm uppercase tracking-tight">Presensi</h4>
+                  <p className="text-[10px] opacity-60 font-bold">Monitor Siswa</p>
+                </div>
               </Card>
-              <Card className="rounded-[2rem] bg-accent text-accent-foreground p-6 flex flex-col justify-between h-36 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
+              <Card className="rounded-[2rem] bg-accent text-accent-foreground p-6 flex flex-col justify-between h-40 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
                 <div className='p-3 bg-black/5 rounded-2xl w-fit'><MonitorCheck size={24} /></div>
-                <h4 className="font-black text-sm uppercase tracking-tight">ExamBro</h4>
+                <div>
+                  <h4 className="font-black text-sm uppercase tracking-tight">ExamBro</h4>
+                  <p className="text-[10px] opacity-60 font-bold">Pengawasan Ujian</p>
+                </div>
               </Card>
             </div>
 
             <div className="space-y-6">
               <div className="mb-4">
-                <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Jadwal & Agenda</h4>
+                <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Administrasi & Jadwal</h4>
               </div>
               <JadwalPelajaran />
               <DownloadManager />
@@ -127,8 +132,8 @@ function GuruDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Presensi</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Manajemen Kehadiran Siswa</p>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Manajemen Presensi</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Kehadiran Siswa Real-time</p>
             </div>
             <ManajemenAbsensi />
           </div>
@@ -137,8 +142,8 @@ function GuruDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">ExamBro Portal</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Pengawasan & Jadwal Ujian</p>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">ExamBro Portal</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Kontrol & Proctoring Ujian</p>
             </div>
             <ExamManager />
           </div>
@@ -147,7 +152,7 @@ function GuruDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Akademik & Sistem</h2>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Akademik & Sistem</h2>
               <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Panel Kontrol Pengajar</p>
             </div>
             

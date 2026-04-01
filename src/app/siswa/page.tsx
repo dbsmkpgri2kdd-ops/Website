@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { 
-  LogOut, Sparkles, Fingerprint, MapPin, Phone, 
-  ShieldCheck, GraduationCap, BookOpen, UserCheck, 
-  Smartphone, LayoutGrid, UserCog, HeartPulse, RefreshCcw,
-  Bell, Home, User as UserIcon, Search, Settings
+  LogOut, Sparkles, Fingerprint, MapPin, 
+  ShieldCheck, GraduationCap, UserCheck, 
+  Smartphone, LayoutGrid, UserCog, RefreshCcw,
+  Bell, Home, User as UserIcon, Settings, BookMarked
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useUser, useAuth } from '@/firebase';
@@ -20,11 +20,9 @@ import { ERaporSiswa } from '@/components/siswa/e-rapor-siswa';
 import { AbsensiSiswa } from '@/components/siswa/absensi-siswa';
 import { PortofolioDigital } from '@/components/siswa/portofolio-digital';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import { ExamBroPortal } from '@/components/siswa/exambro-portal';
 import { BiometricAttendance } from '@/components/siswa/biometric-attendance';
 import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 type TabType = 'home' | 'ujian' | 'akademik' | 'profil';
 
@@ -74,7 +72,6 @@ function SiswaDashboard() {
       case 'home':
         return (
           <div className="space-y-6 animate-reveal pb-24">
-            {/* Header Profil Ringkas */}
             <div className="flex items-center justify-between mb-8">
               <div className='flex items-center gap-4'>
                 <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-md">
@@ -83,7 +80,7 @@ function SiswaDashboard() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Selamat Datang,</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Selamat datang,</p>
                   <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-tight">{profile?.displayName || 'Siswa'}</h3>
                 </div>
               </div>
@@ -97,36 +94,48 @@ function SiswaDashboard() {
               <Alert className="bg-primary/5 border-primary/10 rounded-3xl">
                 <RefreshCcw className="h-4 w-4 animate-spin text-primary" />
                 <AlertTitle className="text-xs font-bold">Sinkronisasi data...</AlertTitle>
-                <AlertDescription className="text-[10px] opacity-70">Menghubungkan ke server pusat.</AlertDescription>
+                <AlertDescription className="text-[10px] opacity-70">Menghubungkan ke server pusat sekolah.</AlertDescription>
               </Alert>
             )}
 
-            {/* Quick Actions Grid */}
             <div className="grid grid-cols-2 gap-4">
-              <BiometricAttendance />
-              <Card className="rounded-[2rem] border-none shadow-xl bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between h-full group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
+              <div className='contents'>
+                <BiometricAttendance />
+              </div>
+              <Card className="rounded-[2rem] border-none shadow-xl bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between h-48 group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
                 <div className='p-3 bg-white/20 rounded-2xl w-fit shadow-inner'><Smartphone size={24} /></div>
                 <div>
                   <h4 className="font-black text-sm uppercase tracking-tight">ExamBro</h4>
-                  <p className="text-[10px] opacity-60 font-bold">Ujian Aman</p>
+                  <p className="text-[10px] opacity-60 font-bold">Sesi Ujian Aman</p>
                 </div>
               </Card>
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
+            <div className="space-y-6">
+              <div className="mb-2">
+                <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Aktivitas & Jadwal</h4>
+              </div>
               <AbsensiSiswa />
               <JadwalPelajaran />
             </div>
           </div>
         );
       case 'ujian':
-        return <div className='animate-reveal pb-24'><ExamBroPortal /></div>;
+        return (
+          <div className='space-y-6 animate-reveal pb-24'>
+            <div className="mb-8">
+              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Portal Ujian</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Sistem Pengawasan ExamBro</p>
+            </div>
+            <ExamBroPortal />
+          </div>
+        );
       case 'akademik':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Akademik</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Layanan Hasil Belajar</p>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Layanan Akademik</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Hasil Belajar & Portofolio</p>
             </div>
             <ERaporSiswa />
             <PortofolioDigital />
@@ -136,8 +145,8 @@ function SiswaDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Profil Saya</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Detail Identitas Digital</p>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Profil Saya</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Identitas Digital Siswa</p>
             </div>
             
             <Card className="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden bg-white border-2">
@@ -153,7 +162,7 @@ function SiswaDashboard() {
               <CardContent className="pt-14 pb-8 px-8 space-y-6">
                 <div>
                   <h3 className="text-xl font-black text-slate-900 tracking-tight">{profile?.displayName}</h3>
-                  <p className="text-sm font-bold text-primary">{profile?.className || 'Kelas Belum Set'}</p>
+                  <p className="text-sm font-bold text-primary">{profile?.className || 'Kelas Belum Sinkron'}</p>
                 </div>
 
                 <div className="space-y-4">
@@ -167,8 +176,8 @@ function SiswaDashboard() {
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
                     <MapPin className="text-primary opacity-40" size={20} />
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Alamat</p>
-                      <p className="text-sm font-bold truncate">{profile?.address || '-'}</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Alamat Terdaftar</p>
+                      <p className="text-sm font-bold truncate max-w-[200px]">{profile?.address || '-'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
@@ -200,7 +209,6 @@ function SiswaDashboard() {
         </div>
       </main>
 
-      {/* Navigasi Bawah Gaya Android Native */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-100 px-6 pb-safe z-50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
         <div className="max-w-md mx-auto h-20 flex items-center justify-between">
           <NavItem id="home" icon={Home} label="Beranda" />

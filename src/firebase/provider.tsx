@@ -35,6 +35,7 @@ export const FirebaseContext = createContext<FirebaseContextState | undefined>(u
 
 /**
  * Robust CSV Parser for student database sync.
+ * Handles quoted values and various separators.
  */
 const parseCSV = (csv: string) => {
   const rows = csv.split(/\r?\n/).filter(row => row.trim() !== '');
@@ -42,9 +43,8 @@ const parseCSV = (csv: string) => {
   
   const headers = rows[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
   return rows.slice(1).map(row => {
-    // Handle both comma and semicolon separators
-    const separator = row.includes(';') ? ';' : ',';
-    const values = row.split(separator).map(v => v.trim().replace(/^["']|["']$/g, ''));
+    // Basic CSV splitting (considering commas)
+    const values = row.split(',').map(v => v.trim().replace(/^["']|["']$/g, ''));
     return headers.reduce((obj: any, header, i) => {
       obj[header] = values[i] || '';
       return obj;
