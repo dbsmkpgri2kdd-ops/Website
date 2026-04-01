@@ -25,5 +25,7 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: 'any',
       },
     ],
+    categories: ['education', 'productivity'],
+    orientation: 'portrait'
   }
 }
