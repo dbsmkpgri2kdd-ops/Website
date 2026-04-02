@@ -22,13 +22,14 @@ type ExamBroSessionProps = {
 };
 
 /**
- * ExamBro Session v5.5 - Super Strict Secure Mode
+ * ExamBro Session v5.5 - Super Strict Secure Mode.
  * Melindungi sesi ujian dari multitasking, navigasi ilegal, dan memantau status siswa secara real-time.
  * Mendukung Live Camera Snapshots untuk pengawasan proctoring.
+ * Kebijakan: Zero Italics & Standard Case.
  */
 export function ExamBroSession({ examId, examTitle, url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
-  const firestore = useFirestore();
+  const firestore = firestoreInst;
   const { user } = useUser();
   const [violationCount, setViolationCount] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -48,6 +49,8 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wakeLockRef = useRef<any>(null);
 
+  const firestoreInst = useFirestore();
+
   useEffect(() => {
     setTimeLeft(durationMinutes * 60);
     
@@ -57,7 +60,6 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
     }
   }, [durationMinutes]);
 
-  // Request Wake Lock to keep screen ON
   useEffect(() => {
     const requestWakeLock = async () => {
       try {
@@ -76,24 +78,22 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
     };
   }, [isFullScreen]);
 
-  // Periodic Snapshot & Heartbeat
   useEffect(() => {
-    if (!firestore || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
+    if (!firestoreInst || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
 
-    const sessionRef = doc(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`, user.uid);
+    const sessionRef = doc(firestoreInst, `schools/${SCHOOL_DATA_ID}/activeExamSessions`, user.uid);
     
     const interval = setInterval(() => {
-        // Take snapshot if camera is active
         let currentSnap = lastSnapshot;
         if (hasCameraPermission && videoRef.current && canvasRef.current) {
             const canvas = canvasRef.current;
             const video = videoRef.current;
-            canvas.width = 320; // Low res for bandwidth
+            canvas.width = 320;
             canvas.height = 240;
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                currentSnap = canvas.toDataURL('image/jpeg', 0.3);
+                currentSnap = canvas.toDataURL('image/jpeg', 0.25);
                 setLastSnapshot(currentSnap);
             }
         }
@@ -111,16 +111,14 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
             isLocked,
             status: 'ACTIVE'
         }, { merge: true });
-    }, 15000); // Every 15 seconds
+    }, 15000);
 
     return () => {
         clearInterval(interval);
-        // Mark session as inactive when exiting
         setDocumentNonBlocking(sessionRef, { status: 'COMPLETED', exitAt: serverTimestamp() }, { merge: true });
     };
-  }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone, isLocked, examId, examTitle, lastSnapshot]);
+  }, [firestoreInst, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone, isLocked, examId, examTitle, lastSnapshot]);
 
-  // Timer logic
   useEffect(() => {
     if (timeLeft === null) return;
     if (timeLeft <= 0) {
@@ -138,7 +136,6 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Camera initialization
   useEffect(() => {
     const getCameraPermission = async () => {
       try {
@@ -162,7 +159,6 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
     }
   }, [isCameraRequired, toast]);
 
-  // Security Guards
   useEffect(() => {
     const handleVisibilityChange = () => { 
       if (document.hidden && !isTimeUp && isFullScreen && !isLocked) {
@@ -212,13 +208,12 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
         document.body.style.userSelect = 'auto';
       }
     };
-  }, [isTimeUp, isFullScreen, isLocked]);
+  }, [isTimeUp, isFullScreen, isLocked, violationCount]);
 
   const handleViolation = (msg: string) => {
     const newCount = violationCount + 1;
     setViolationCount(newCount);
     
-    // Lockdown logic: 3 violations = Lock the session
     if (newCount >= 3) {
       setIsLocked(true);
       setShowAlarm(false);
@@ -270,7 +265,7 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
   }
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden select-none touch-none font-sans">
+    <div ref={containerRef} className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden select-none touch-none font-sans animate-reveal">
       <header className="h-16 bg-card border-b border-border px-6 flex items-center justify-between shrink-0 z-30">
         <div className="flex items-center gap-4">
           <div className={cn("p-2 rounded-xl", isStandalone ? "bg-emerald-500/10 text-emerald-600" : "bg-primary/10 text-primary")}>

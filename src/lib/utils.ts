@@ -46,9 +46,9 @@ export const getDashboardByRole = (role?: string) => {
     case 'siswa':
       return '/siswa';
     case 'alumni':
-      return '/'; // Alumni stay on the homepage
+      return '/';
     default:
-      return '/'; // Default to homepage for unknown or no role
+      return '/';
   }
 };
 
@@ -57,15 +57,26 @@ export const formatDate = (date: any): string => {
     return 'Tanggal tidak tersedia';
   }
 
-  // Firestore Timestamps have toDate() method
-  const dateObject = date.toDate ? date.toDate() : new Date(date);
+  let dateObject: Date;
+
+  if (typeof date.toDate === 'function') {
+    dateObject = date.toDate();
+  } else if (date instanceof Date) {
+    dateObject = date;
+  } else if (typeof date === 'object' && date.seconds) {
+    dateObject = new Date(date.seconds * 1000);
+  } else {
+    dateObject = new Date(date);
+  }
 
   if (isNaN(dateObject.getTime())) {
-    return 'Tanggal tidak valid';
+    return 'Format tanggal salah';
   }
 
   return new Intl.DateTimeFormat('id-ID', {
-    dateStyle: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   }).format(dateObject);
 };
 
@@ -84,5 +95,5 @@ export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2
             Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  return R * c; // Hasil dalam meter
+  return R * c; 
 }

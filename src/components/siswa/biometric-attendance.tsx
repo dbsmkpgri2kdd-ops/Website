@@ -17,6 +17,7 @@ type AttendanceStatus = 'IDLE' | 'CHECKING_LOCATION' | 'VERIFYING_BIOMETRIC' | '
 /**
  * Modul Absensi Biometrik Digital v3.8.
  * Menentukan arah Masuk/Pulang secara cerdas berdasarkan jendela waktu shift operasional.
+ * Menggunakan Standard Case dan Zero Italics.
  */
 export function BiometricAttendance() {
   const { user, profile } = useUser();
@@ -36,12 +37,15 @@ export function BiometricAttendance() {
   const { data: schoolData } = useDoc<School>(schoolDocRef);
 
   useEffect(() => {
-    return () => {
-      if (videoRef.current?.srcObject) {
-        (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
-      }
-    };
+    return () => stopCamera();
   }, []);
+
+  const stopCamera = () => {
+    if (videoRef.current?.srcObject) {
+      (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+    }
+  };
 
   const handleStartAttendance = async () => {
     if (!navigator.geolocation) {
@@ -61,14 +65,12 @@ export function BiometricAttendance() {
         const dist = calculateDistance(latitude, longitude, schoolLat, schoolLng);
         setDistance(dist);
 
-        // Radius validation: 30 meters
         if (dist > 30) {
           setStatus('ERROR');
           setErrorMsg(`Jarak terdeteksi ${Math.round(dist)}m. Anda harus berada dalam radius 30m dari koordinat sekolah.`);
           return;
         }
 
-        // Smart Shift Detection
         const now = new Date();
         const currentHour = now.getHours();
         let type: 'Masuk' | 'Pulang' = 'Masuk';
@@ -115,11 +117,6 @@ export function BiometricAttendance() {
       setHasCameraPermission(false);
       setStatus('ERROR');
       setErrorMsg('Kamera wajib diaktifkan untuk verifikasi wajah (Biometrik).');
-      toast({
-        variant: 'destructive',
-        title: 'Akses Kamera Ditolak',
-        description: 'Harap aktifkan izin kamera di pengaturan browser Anda.',
-      });
     }
   };
 
@@ -128,8 +125,8 @@ export function BiometricAttendance() {
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    canvas.width = 320;
+    canvas.height = 240;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -153,7 +150,8 @@ export function BiometricAttendance() {
           distance: distance,
           type: 'BIOMETRIC_MOBILE_V3',
           session: profile.session || 'Pagi',
-          direction: direction
+          direction: direction,
+          snapshot: dataUrl
         }
       };
       
@@ -163,15 +161,11 @@ export function BiometricAttendance() {
         fetch(schoolData.attendanceWebhookUrl, {
           method: 'POST',
           mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...attendanceData, timestamp: new Date().toISOString() })
         }).catch(() => {});
       }
 
-      if (videoRef.current?.srcObject) {
-        (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
-      }
-
+      stopCamera();
       setStatus('SUCCESS');
       toast({ title: 'Absensi Berhasil', description: `Data kehadiran ${direction} Anda telah tersimpan.` });
     } catch (e) {
@@ -181,8 +175,8 @@ export function BiometricAttendance() {
   };
 
   return (
-    <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden border">
-      <CardHeader className="p-8 border-b border-slate-100">
+    <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden border font-sans">
+      <CardHeader className="p-8 border-b border-slate-50">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-primary/10 text-primary rounded-xl">
@@ -208,7 +202,7 @@ export function BiometricAttendance() {
         <canvas ref={canvasRef} className="hidden" />
         
         {status === 'IDLE' && (
-            <div className="text-center space-y-8 py-6">
+            <div className="text-center space-y-8 py-6 animate-reveal">
                 <div className="w-24 h-24 bg-primary/5 rounded-[2rem] flex items-center justify-center mx-auto group relative">
                     <div className="absolute inset-0 bg-primary/10 rounded-[2rem] animate-ping opacity-20"></div>
                     <Navigation size={40} className="text-primary group-hover:scale-110 transition-transform" />
@@ -302,7 +296,7 @@ export function BiometricAttendance() {
                         {errorMsg}
                     </p>
                 </div>
-                <Button onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-bold text-[11px] uppercase bg-red-500 text-white hover:bg-red-600">
+                <Button onClick={() => setStatus('IDLE')} className="w-full h-14 rounded-2xl font-bold text-[11px] uppercase bg-red-500 text-white hover:bg-red-600 shadow-lg">
                     Coba Lagi
                 </Button>
             </div>

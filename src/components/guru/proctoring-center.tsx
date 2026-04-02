@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, Camera, ShieldCheck, ShieldAlert, Wifi, Zap, 
   User, Clock, AlertTriangle, MonitorPlay, MonitorCheck,
-  Smartphone, Globe, Lock, ImageIcon
+  Smartphone, Globe, Lock, ImageIcon, LoaderCircle
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
@@ -40,6 +40,7 @@ type ProctoringCenterProps = {
 /**
  * Antarmuka Pengawasan Ujian (Proctoring Center) v6.0.
  * Mendukung tampilan Live Camera Snapshot untuk audit integritas visual.
+ * Kebijakan: Zero Italics & Standard Case.
  */
 export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenterProps) {
   const firestore = useFirestore();
@@ -87,7 +88,7 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                 </Button>
             )}
             <div>
-                <h2 className="text-3xl font-black italic uppercase tracking-tighter font-headline leading-none">Proctoring <span className="text-primary">Center.</span></h2>
+                <h2 className="text-3xl font-black uppercase tracking-tighter font-headline leading-none">Proctoring <span className="text-primary">Center</span></h2>
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mt-1.5 opacity-60">
                     {examId ? `Monitoring Integritas: ${examTitle}` : 'Monitoring Seluruh Aktivitas Ujian'}
                 </p>
@@ -100,26 +101,22 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
-        <Card className="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-xl">
-            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-2 opacity-40">Siswa Aktif</p>
-            <div className="text-3xl font-black italic font-headline">{stats.total} <span className="text-primary text-xs not-italic opacity-20 uppercase tracking-widest">Siswa</span></div>
-        </Card>
-        <Card className="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-xl">
-            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-2 opacity-40">Mode Aplikasi</p>
-            <div className="text-3xl font-black italic font-headline text-emerald-600">{stats.appMode} <span className="text-emerald-600/40 text-xs not-italic uppercase tracking-widest">APK</span></div>
-        </Card>
-        <Card className="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-xl">
-            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-2 opacity-40">Total Pelanggaran</p>
-            <div className="text-3xl font-black italic font-headline text-red-600">{stats.violations} <AlertTriangle size={20} className='inline ml-1 animate-pulse' /></div>
-        </Card>
-        <Card className="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-xl">
-            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-2 opacity-40">Sesi Terkunci</p>
-            <div className="text-3xl font-black italic font-headline text-red-600">{stats.locked} <Lock size={20} className='inline ml-1' /></div>
-        </Card>
-        <Card className="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-xl">
-            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-2 opacity-40">Video Feed</p>
-            <div className="text-3xl font-black italic font-headline text-accent">{stats.cam} <Camera size={20} className='inline ml-1' /></div>
-        </Card>
+        {[
+            { label: 'Siswa Aktif', value: stats.total, unit: 'Siswa', icon: User, color: 'text-slate-900' },
+            { label: 'Mode Aplikasi', value: stats.appMode, unit: 'APK', icon: Smartphone, color: 'text-emerald-600' },
+            { label: 'Pelanggaran', value: stats.violations, unit: 'Kali', icon: AlertTriangle, color: 'text-red-600', animate: true },
+            { label: 'Sesi Terkunci', value: stats.locked, unit: 'Sesi', icon: Lock, color: 'text-red-600' },
+            { label: 'Video Feed', value: stats.cam, unit: 'Aktif', icon: Camera, color: 'text-primary' },
+        ].map((stat, i) => (
+            <Card key={i} className="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-xl">
+                <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em] mb-2 opacity-40">{stat.label}</p>
+                <div className={cn("text-3xl font-black font-headline", stat.color)}>
+                    {stat.value} 
+                    <span className="text-muted-foreground text-[10px] ml-1.5 uppercase font-bold opacity-30">{stat.unit}</span>
+                    {stat.animate && <stat.icon size={18} className='inline ml-2 animate-pulse' />}
+                </div>
+            </Card>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -143,14 +140,14 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                             />
                             <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/60 px-3 py-1 rounded-full border border-white/10">
                                 <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
-                                <span className="text-[8px] font-black text-white uppercase tracking-widest">LIVE BIOMETRIC</span>
+                                <span className="text-[8px] font-black text-white uppercase tracking-widest">Live Snapshot</span>
                             </div>
                         </div>
                     ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center text-red-500/40 bg-red-500/5">
-                            {session.isCameraActive ? <LoaderCircle className='animate-spin mb-2' /> : <ShieldAlert size={40} className="mb-2" />}
+                            {session.isCameraActive ? <LoaderCircle className='animate-spin mb-2' /> : <CameraOff size={40} className="mb-2" />}
                             <span className="text-[8px] font-black uppercase tracking-widest">
-                                {session.isCameraActive ? 'WAITING FEED...' : 'NO VIDEO FEED'}
+                                {session.isCameraActive ? 'Menghubungkan...' : 'Kamera Nonaktif'}
                             </span>
                         </div>
                     )}
@@ -178,7 +175,7 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                             {session.studentName?.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-black uppercase tracking-tight truncate italic font-headline text-slate-900">{session.studentName}</p>
+                            <p className="text-sm font-black uppercase tracking-tight truncate font-headline text-slate-900">{session.studentName}</p>
                             <p className="text-[8px] font-bold text-primary uppercase tracking-widest truncate">{session.examTitle || 'Ujian Aktif'}</p>
                             <div className="flex items-center gap-3 mt-1">
                                 <div className="flex items-center gap-1">
@@ -187,7 +184,7 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <Clock size={10} className="text-muted-foreground"/>
-                                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">{session.minutesRemaining || 0}m Left</span>
+                                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">{session.minutesRemaining || 0}m Sisa</span>
                                 </div>
                             </div>
                         </div>
@@ -200,11 +197,11 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                         <div className="space-y-0.5">
                             <p className="text-[8px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40">Status Keamanan</p>
                             <p className={cn(
-                                "text-xs font-black uppercase italic tracking-tighter", 
+                                "text-xs font-black uppercase tracking-tighter", 
                                 session.isLocked ? "text-red-600" : 
                                 session.violationCount > 0 ? "text-amber-600" : "text-emerald-600"
                             )}>
-                                {session.isLocked ? "LOCKDOWN ACTIVE" : `${session.violationCount || 0} PELANGGARAN`}
+                                {session.isLocked ? "Terkunci Otomatis" : `${session.violationCount || 0} Pelanggaran`}
                             </p>
                         </div>
                         {session.violationCount > 0 && <AlertTriangle size={18} className={cn("animate-pulse", session.isLocked ? "text-red-600" : "text-amber-500")} />}
@@ -219,8 +216,8 @@ export function ProctoringCenter({ examId, examTitle, onBack }: ProctoringCenter
                     <MonitorCheck size={40} className="text-muted-foreground" />
                 </div>
                 <div>
-                    <h3 className="text-2xl font-black uppercase italic tracking-tighter font-headline">Zero Active Sessions</h3>
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] mt-2 max-w-xs">Gateway akan menampilkan data otomatis saat siswa melakukan login ke sesi ujian.</p>
+                    <h3 className="text-2xl font-black uppercase tracking-tighter font-headline">Belum Ada Sesi Aktif</h3>
+                    <p className="text-[9px] font-black uppercase tracking-[0.4em] mt-2 max-w-xs mx-auto">Data akan muncul secara otomatis saat siswa memulai ujian melalui ExamBro.</p>
                 </div>
             </div>
         )}
