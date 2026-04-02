@@ -1,5 +1,14 @@
 
 {
+  "project_metadata": {
+    "name": "SmartSchool Enterprise",
+    "version": "7.5",
+    "ui_standard": {
+      "typography": "Poppins (Headlines), Open Sans (Body)",
+      "constraints": ["Zero Italics", "Standard Case"],
+      "ux_model": "Android Native PWA"
+    }
+  },
   "entities": {
     "Exam": {
       "title": "Exam",
