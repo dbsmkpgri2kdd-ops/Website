@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ArrowLeft, Camera, ShieldCheck, ShieldAlert, Wifi, Zap, 
+  ArrowLeft, Camera, CameraOff, ShieldCheck, ShieldAlert, Wifi, Zap, 
   User, Clock, AlertTriangle, MonitorPlay, MonitorCheck,
   Smartphone, Globe, Lock, ImageIcon, LoaderCircle
 } from 'lucide-react';

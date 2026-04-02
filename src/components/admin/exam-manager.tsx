@@ -22,7 +22,7 @@ import { Calendar as CalendarPicker } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { ProctoringCenter } from './proctoring-center';
+import { ProctoringCenter } from '@/components/guru/proctoring-center';
 
 const formSchema = z.object({
   title: z.string().min(5, 'Judul ujian minimal 5 karakter.'),
@@ -244,12 +244,14 @@ export function ExamManager() {
                                 <FormField control={form.control} name="isActive" render={({ field }) => (
                                     <FormItem className="flex flex-row items-center justify-between rounded-xl">
                                         <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Sesi Aktif</FormLabel>
-                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormItem>
+                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                    </FormItem>
                                 )}/>
                                 <FormField control={form.control} name="isCameraRequired" render={({ field }) => (
                                     <FormItem className="flex flex-row items-center justify-between rounded-xl">
                                         <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-600 flex items-center gap-2"><Camera size={12} className='text-amber-500'/> Wajib Kamera</FormLabel>
-                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormItem>
+                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                    </FormItem>
                                 )}/>
                             </div>
                         </div>

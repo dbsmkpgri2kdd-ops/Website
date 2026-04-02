@@ -29,7 +29,7 @@ type ExamBroSessionProps = {
  */
 export function ExamBroSession({ examId, examTitle, url, isCameraRequired = false, durationMinutes = 60, unlockToken, onExit }: ExamBroSessionProps) {
   const { toast } = useToast();
-  const firestore = firestoreInst;
+  const firestore = useFirestore();
   const { user } = useUser();
   const [violationCount, setViolationCount] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -48,8 +48,6 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wakeLockRef = useRef<any>(null);
-
-  const firestoreInst = useFirestore();
 
   useEffect(() => {
     setTimeLeft(durationMinutes * 60);
@@ -79,9 +77,9 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
   }, [isFullScreen]);
 
   useEffect(() => {
-    if (!firestoreInst || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
+    if (!firestore || !user || !isFullScreen || isTimeUp || timeLeft === null) return;
 
-    const sessionRef = doc(firestoreInst, `schools/${SCHOOL_DATA_ID}/activeExamSessions`, user.uid);
+    const sessionRef = doc(firestore, `schools/${SCHOOL_DATA_ID}/activeExamSessions`, user.uid);
     
     const interval = setInterval(() => {
         let currentSnap = lastSnapshot;
@@ -117,7 +115,7 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
         clearInterval(interval);
         setDocumentNonBlocking(sessionRef, { status: 'COMPLETED', exitAt: serverTimestamp() }, { merge: true });
     };
-  }, [firestoreInst, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone, isLocked, examId, examTitle, lastSnapshot]);
+  }, [firestore, user, violationCount, hasCameraPermission, timeLeft, isFullScreen, isTimeUp, isStandalone, isLocked, examId, examTitle, lastSnapshot]);
 
   useEffect(() => {
     if (timeLeft === null) return;
@@ -321,7 +319,7 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
             <div className="w-full h-full bg-background flex flex-col items-center justify-center text-center p-10">
                 <CameraOff size={100} className="text-red-500 mb-8 opacity-20" />
                 <h3 className="text-3xl font-black text-foreground uppercase mb-4 tracking-tighter font-headline leading-none">Sensor Wajib Aktif</h3>
-                <p className='text-xs font-bold text-muted-foreground uppercase tracking-widest max-w-sm mx-auto leading-relaxed'>Anda harus mengizinkan akses kamera untuk pengawasan biometrik selama sesi ujian berlangsung.</p>
+                <p className='text-xs font-bold text-muted-foreground uppercase tracking-widest max-sm mx-auto leading-relaxed'>Anda harus mengizinkan akses kamera untuk pengawasan biometrik selama sesi ujian berlangsung.</p>
                 <Button onClick={() => window.location.reload()} size="lg" className="mt-10 h-16 px-12 rounded-[2rem] font-bold text-xs tracking-widest shadow-xl">Izinkan & Mulai Ulang</Button>
             </div>
         )}
