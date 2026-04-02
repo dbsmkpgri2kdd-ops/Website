@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   LoaderCircle, CheckCircle2, ShieldCheck, 
   ScanFace, UserPlus, Users, Search, Volume2, MonitorCheck,
-  LogIn, LogOut, Info, Clock
+  LogIn, LogOut, Info, Clock, Camera
 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase, updateDocumentNonBlocking, addDocumentNonBlocking, useDoc } from '@/firebase';
 import { collection, query, where, orderBy, doc, serverTimestamp } from 'firebase/firestore';
@@ -17,7 +17,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { Badge } from '../ui/badge';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type BiometricStatus = 'IDLE' | 'SCANNING' | 'SUCCESS' | 'NOT_RECOGNIZED' | 'ERROR';
 
@@ -49,6 +50,7 @@ export function BiometricManager() {
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
   const [recognizedStudent, setRecognizedStudent] = useState<UserProfile | null>(null);
   const [attendanceType, setAttendanceType] = useState<'Masuk' | 'Pulang' | null>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -104,12 +106,14 @@ export function BiometricManager() {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      setHasCameraPermission(true);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
       return true;
     } catch (err) {
+      setHasCameraPermission(false);
       toast({ variant: 'destructive', title: 'Akses Kamera Gagal', description: 'Pastikan izin kamera diberikan.' });
       return false;
     }
@@ -121,10 +125,11 @@ export function BiometricManager() {
       return;
     }
 
-    setStatus('SCANNING');
-    setScanProgress(0);
     const cameraActive = await startCamera();
     if (!cameraActive) return;
+
+    setStatus('SCANNING');
+    setScanProgress(0);
 
     let progress = 0;
     const interval = setInterval(() => {

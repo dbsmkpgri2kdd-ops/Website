@@ -3,13 +3,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Navigation, LoaderCircle, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, LogIn, LogOut } from 'lucide-react';
+import { Navigation, LoaderCircle, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, LogIn, LogOut, Camera } from 'lucide-react';
 import { useUser, useFirestore, addDocumentNonBlocking, useDoc, useMemoFirebase } from '@/firebase';
 import { collection, serverTimestamp, doc } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type School } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { calculateDistance } from '@/lib/utils';
-import { Badge } from '../ui/badge';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type AttendanceStatus = 'IDLE' | 'CHECKING_LOCATION' | 'VERIFYING_BIOMETRIC' | 'SCANNING' | 'SUCCESS' | 'ERROR';
 
@@ -27,6 +28,7 @@ export function BiometricAttendance() {
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [scanProgress, setScanProgress] = useState(0);
   const [direction, setDirection] = useState<'Masuk' | 'Pulang' | null>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -92,6 +94,7 @@ export function BiometricAttendance() {
     setStatus('VERIFYING_BIOMETRIC');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      setHasCameraPermission(true);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         
@@ -109,8 +112,14 @@ export function BiometricAttendance() {
         }, 1000);
       }
     } catch (err) {
+      setHasCameraPermission(false);
       setStatus('ERROR');
       setErrorMsg('Kamera wajib diaktifkan untuk verifikasi wajah (Biometrik).');
+      toast({
+        variant: 'destructive',
+        title: 'Akses Kamera Ditolak',
+        description: 'Harap aktifkan izin kamera di pengaturan browser Anda.',
+      });
     }
   };
 
@@ -150,7 +159,6 @@ export function BiometricAttendance() {
       
       addDocumentNonBlocking(attendanceRef, attendanceData);
 
-      // Webhook integration for real-time reporting
       if (schoolData?.attendanceWebhookUrl) {
         fetch(schoolData.attendanceWebhookUrl, {
           method: 'POST',
@@ -235,6 +243,12 @@ export function BiometricAttendance() {
                         <div className="w-full h-1 bg-primary/50 absolute top-0 animate-[scan_2s_infinite] shadow-[0_0_15px_primary]"></div>
                         <div className="absolute inset-0 border-[20px] border-black/20"></div>
                     </div>
+                    { hasCameraPermission === false && (
+                        <Alert variant="destructive" className="absolute inset-x-4 top-1/2 -translate-y-1/2 bg-background/90 backdrop-blur-md">
+                            <AlertTitle>Akses Kamera Wajib</AlertTitle>
+                            <AlertDescription>Harap izinkan akses kamera untuk verifikasi.</AlertDescription>
+                        </Alert>
+                    )}
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
                         <span className="text-[8px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                             <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>

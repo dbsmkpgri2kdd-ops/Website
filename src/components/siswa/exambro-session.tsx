@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { useFirestore, useUser, setDocumentNonBlocking } from '@/firebase';
 import { doc, serverTimestamp } from 'firebase/firestore';
 import { SCHOOL_DATA_ID } from '@/lib/data';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type ExamBroSessionProps = {
   examId: string;
@@ -34,7 +35,7 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
   const [showAlarm, setShowAlarm] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [tokenInput, setTokenInput] = useState('');
-  const [hasCameraPermission, setHasCameraPermission] = useState(false);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [isCameraLoading, setIsCameraLoading] = useState(isCameraRequired);
   const [isStandalone, setIsStandalone] = useState(false);
   const [lastSnapshot, setLastSnapshot] = useState<string | null>(null);
@@ -103,7 +104,7 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
             studentName: user.profile?.displayName || user.email,
             lastHeartbeat: serverTimestamp(),
             violationCount,
-            isCameraActive: hasCameraPermission,
+            isCameraActive: !!hasCameraPermission,
             lastSnapshot: currentSnap,
             minutesRemaining: Math.floor(timeLeft / 60),
             isAppMode: isStandalone,
@@ -178,7 +179,7 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
     const handleFullScreenChange = () => {
       const isCurrentlyFull = !!document.fullscreenElement;
       setIsFullScreen(isCurrentlyFull);
-      if (!isCurrentlyFull && !isTimeUp && hasCameraPermission && !isLocked) {
+      if (!isCurrentlyFull && !isTimeUp && !isLocked) {
         handleViolation("Mode layar penuh (Secure Mode) dinonaktifkan secara paksa!");
       }
     };
@@ -211,7 +212,7 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
         document.body.style.userSelect = 'auto';
       }
     };
-  }, [isTimeUp, isFullScreen, hasCameraPermission, isLocked]);
+  }, [isTimeUp, isFullScreen, isLocked]);
 
   const handleViolation = (msg: string) => {
     const newCount = violationCount + 1;
