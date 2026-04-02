@@ -12,20 +12,24 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     
-    // Registrasi Service Worker PWA dengan Logika Auto-Update
+    // Registrasi Service Worker PWA dengan Logika Auto-Update Proaktif
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then((registration) => {
-          // Cek pembaruan setiap kali aplikasi dibuka
+          // Cek pembaruan berkala (setiap 30 menit)
+          setInterval(() => {
+            registration.update();
+          }, 1000 * 60 * 30);
+
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
             if (newWorker) {
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // Ada versi baru! Beri tahu pengguna dan refresh
+                  // Versi baru ditemukan dan terpasang
                   toast({
-                    title: "Pembaruan sistem",
-                    description: "Versi terbaru sedang diterapkan untuk performa lebih baik.",
+                    title: "Pembaruan Sistem",
+                    description: "Versi terbaru sedang diterapkan. Aplikasi akan dimuat ulang.",
                   });
                   setTimeout(() => {
                     window.location.reload();
@@ -37,7 +41,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         }).catch(err => console.log('PWA: Registration failed', err));
       });
 
-      // Menangani perubahan controller (update selesai)
+      // Menangani pergantian controller (setelah skipWaiting)
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!refreshing) {

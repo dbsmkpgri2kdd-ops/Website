@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ShieldAlert, X, Maximize, AlertTriangle, MonitorOff, Camera, CameraOff, LoaderCircle, Clock, Timer, ShieldCheck, Zap, Wifi, Lock, Smartphone, RefreshCcw } from 'lucide-react';
+import { X, Maximize, AlertTriangle, Camera, CameraOff, LoaderCircle, Clock, Timer, ShieldCheck, Smartphone, Wifi, Lock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from '@/hooks/use-toast';
@@ -201,7 +201,7 @@ export function ExamBroSession({ examId, examTitle, url, isCameraRequired = fals
       window.removeEventListener('blur', handleBlur);
       document.removeEventListener('fullscreenchange', handleFullScreenChange);
       document.removeEventListener('contextmenu', preventContextMenu);
-      document.removeEventListener('keydown', preventKeys);
+      window.removeEventListener('keydown', preventKeys);
       if (typeof document !== 'undefined') {
         document.body.style.userSelect = 'auto';
       }
