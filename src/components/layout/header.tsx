@@ -181,13 +181,13 @@ const Header = ({
                 </SheetTrigger>
                 <SheetContent side="right" className="p-0 w-full sm:w-[350px] border-none shadow-2xl bg-white">
                     <SheetHeader className="p-10 border-b border-slate-50 text-left bg-slate-50/20">
-                        <SheetTitle className='font-extrabold text-2xl tracking-tight text-slate-900'>Menu Navigasi</SheetTitle>
+                        <SheetTitle className='font-extrabold text-2xl tracking-tight text-slate-900'>Menu navigasi</SheetTitle>
                     </SheetHeader>
                     
                     <ScrollArea className='h-[calc(100vh-200px)] py-8'>
                         {mounted && currentMenu.map((mainItem, mIdx) => (
                           <div key={mIdx} className="px-10 mb-10">
-                            <h3 className="px-4 text-[10px] font-black tracking-widest text-primary mb-5 opacity-40">{mainItem.label}</h3>
+                            <h3 className="px-4 text-[10px] font-black tracking-widest text-primary mb-5 opacity-40 uppercase">{mainItem.label}</h3>
                             {mainItem.children ? (
                               <div className="grid grid-cols-1 gap-1.5">
                                 {mainItem.children.map((child, cIdx) => (

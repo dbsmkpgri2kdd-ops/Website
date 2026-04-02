@@ -7,7 +7,7 @@ import {
   LogOut, ShieldCheck, Sparkles, 
   GraduationCap, Bell, Home,
   User as UserIcon, MonitorCheck, ClipboardList, BookMarked,
-  ChevronRight, Users, Settings2
+  ChevronRight, Users, Settings2, ShieldAlert
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
@@ -62,10 +62,10 @@ function GuruDashboard() {
       )}
     >
       <div className={cn(
-        "p-1.5 rounded-xl transition-all",
+        "p-2 rounded-2xl transition-all",
         activeTab === id ? "bg-primary/10" : "bg-transparent"
       )}>
-        <Icon size={22} strokeWidth={activeTab === id ? 2.5 : 2} />
+        <Icon size={24} strokeWidth={activeTab === id ? 2.5 : 2} />
       </div>
       <span className={cn("text-[10px] font-bold mt-1", activeTab === id ? "opacity-100" : "opacity-60")}>{label}</span>
     </button>
@@ -76,7 +76,7 @@ function GuruDashboard() {
       case 'home':
         return (
           <div className="space-y-6 animate-reveal pb-24">
-            <div className="flex items-center justify-between mb-8">
+            <header className="flex items-center justify-between mb-8 px-2">
               <div className='flex items-center gap-4'>
                 <div className='p-3 bg-primary text-white rounded-2xl shadow-xl glow-primary'>
                   <Sparkles size={24} />
@@ -86,29 +86,27 @@ function GuruDashboard() {
                   <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-tight font-headline">Halo, Bapak/Ibu</h3>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="rounded-full bg-slate-50">
+              <Button variant="ghost" size="icon" className="rounded-full bg-white border border-slate-100 h-11 w-11">
                 <Bell size={20} className="text-slate-600" />
               </Button>
-            </div>
+            </header>
 
-            <Card className="rounded-[2.5rem] bg-white border-2 border-slate-100 shadow-xl overflow-hidden">
-              <CardContent className="p-8 flex items-center gap-6">
-                <Avatar className="h-16 w-16 border-2 border-primary/10">
-                  <AvatarFallback className="bg-primary/5 text-primary text-xl font-extrabold font-headline">{profile?.displayName?.charAt(0) || 'G'}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h4 className="text-lg font-extrabold text-slate-900 leading-tight font-headline">{profile?.displayName}</h4>
-                  <div className='flex items-center gap-2 mt-1 text-primary'>
-                    <ShieldCheck size={14} />
-                    <span className='text-[10px] font-bold tracking-wide uppercase'>Status: Pengajar aktif</span>
-                  </div>
+            <Card className="android-card p-8 flex items-center gap-6">
+              <Avatar className="h-16 w-16 border-2 border-primary/10">
+                <AvatarFallback className="bg-primary/5 text-primary text-xl font-extrabold font-headline">{profile?.displayName?.charAt(0) || 'G'}</AvatarFallback>
+              </Avatar>
+              <div>
+                <h4 className="text-lg font-extrabold text-slate-900 leading-tight font-headline">{profile?.displayName}</h4>
+                <div className='flex items-center gap-2 mt-1 text-primary'>
+                  <ShieldCheck size={14} />
+                  <span className='text-[10px] font-bold tracking-wide uppercase'>Status: Pengajar aktif</span>
                 </div>
-              </CardContent>
+              </div>
             </Card>
 
             <div className="grid grid-cols-2 gap-4">
               <Card 
-                className="rounded-[2rem] bg-primary text-white p-6 flex flex-col justify-between h-40 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" 
+                className="android-card bg-primary text-white p-6 flex flex-col justify-between h-40 border-none group" 
                 onClick={() => setActiveTab('absensi')}
               >
                 <div className='p-3 bg-white/20 rounded-2xl w-fit'><ClipboardList size={24} /></div>
@@ -118,7 +116,7 @@ function GuruDashboard() {
                 </div>
               </Card>
               <Card 
-                className="rounded-[2rem] bg-accent text-accent-foreground p-6 flex flex-col justify-between h-40 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" 
+                className="android-card bg-accent text-accent-foreground p-6 flex flex-col justify-between h-40 border-none group" 
                 onClick={() => setActiveTab('ujian')}
               >
                 <div className='p-3 bg-black/5 rounded-2xl w-fit'><MonitorCheck size={24} /></div>
@@ -130,7 +128,7 @@ function GuruDashboard() {
             </div>
 
             <div className="space-y-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between px-2 mb-4">
                 <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 font-headline">Administrasi & jadwal</h4>
               </div>
               <JadwalPelajaran />
@@ -141,8 +139,8 @@ function GuruDashboard() {
       case 'absensi':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Manajemen presensi</h2>
+            <div className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline">Manajemen presensi</h2>
               <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Pemantauan kehadiran siswa real-time</p>
             </div>
             <ManajemenAbsensi />
@@ -151,8 +149,8 @@ function GuruDashboard() {
       case 'ujian':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">ExamBro portal</h2>
+            <div className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline">ExamBro portal</h2>
               <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Kontrol keamanan & proctoring ujian</p>
             </div>
             <ExamManager />
@@ -161,12 +159,12 @@ function GuruDashboard() {
       case 'profil':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Sistem & akademik</h2>
+            <div className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline">Sistem & akademik</h2>
               <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Panel kontrol administrasi pengajar</p>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-8">
               {[
                 { icon: BookMarked, label: 'E-Rapor digital', component: ERaporManager },
                 { icon: Users, label: 'Manajemen prakerin', component: ManajemenPrakerin },
@@ -182,7 +180,7 @@ function GuruDashboard() {
                 </div>
               ))}
               
-              <Button onClick={handleLogout} variant="outline" className="w-full h-14 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-bold text-xs uppercase tracking-widest mt-10 shadow-sm">
+              <Button onClick={handleLogout} variant="outline" className="w-full h-16 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-black text-xs uppercase tracking-widest mt-10">
                 <LogOut className="mr-2 h-4 w-4" /> Keluar sesi guru
               </Button>
             </div>

@@ -89,38 +89,39 @@ function AdminDashboard() {
   };
 
   const navItems = [
-    { label: 'Ringkasan', value: 'overview', icon: LayoutDashboard, group: 'Utama' },
-    { label: 'Builder Beranda', value: 'layout-builder', icon: Layout, group: 'Editor Visual' },
-    { label: 'Manajer Menu', value: 'navigation', icon: MousePointer2, group: 'Editor Visual' },
-    { label: 'Tampilan Website', value: 'appearance', icon: Palette, group: 'Editor Visual' },
+    { label: 'Ringkasan sistem', value: 'overview', icon: LayoutDashboard, group: 'Utama' },
+    { label: 'Pusat pengawasan', value: 'live-proctoring', icon: MonitorPlay, group: 'Utama' },
     
-    { label: 'Ujian Online', value: 'exams', icon: ShieldCheck, group: 'Akademik' },
-    { label: 'Live Proctoring', value: 'live-proctoring', icon: MonitorPlay, group: 'Akademik' },
-    { label: 'Biometrik Siswa', value: 'biometric-admin', icon: ScanFace, group: 'Akademik' },
-    { label: 'Pesan Masuk', value: 'contact-messages', icon: Mail, group: 'Konten' },
-    { label: 'Berita Sekolah', value: 'news', icon: Newspaper, group: 'Konten' },
-    { label: 'Agenda & Acara', value: 'agenda', icon: Calendar, group: 'Konten' },
-    { label: 'Osis Corner', value: 'osis', icon: Bell, group: 'Konten' },
-    { label: 'Pojok Literasi', value: 'literacy', icon: PenSquare, group: 'Konten' },
-    { label: 'Galeri Media', value: 'gallery', icon: FileBox, group: 'Konten' },
-    { label: 'Testimoni Alumni', value: 'testimonials', icon: Quote, group: 'Konten' },
-    { label: 'Buku Tamu', value: 'guestbook', icon: MessageSquare, group: 'Konten' },
-
-    { label: 'Staf & Guru', value: 'teachers', icon: Users2, group: 'Akademik' },
-    { label: 'Daftar Jurusan', value: 'majors', icon: GraduationCap, group: 'Akademik' },
-    { label: 'Prestasi Siswa', value: 'achievements', icon: Award, group: 'Akademik' },
-    { label: 'Perpustakaan', value: 'library', icon: Library, group: 'Akademik' },
+    { label: 'Desain beranda', value: 'layout-builder', icon: Layout, group: 'Editor visual' },
+    { label: 'Manajer menu', value: 'navigation', icon: MousePointer2, group: 'Editor visual' },
+    { label: 'Identitas visual', value: 'appearance', icon: Palette, group: 'Editor visual' },
     
-    { label: 'PPDB Online', value: 'ppdb', icon: UserPlus, group: 'Administrasi' },
-    { label: 'Kerja Sama Mitra', value: 'partners', icon: BriefcaseIcon, group: 'Administrasi' },
-    { label: 'Bursa Kerja', value: 'jobs', icon: Briefcase, group: 'Administrasi' },
-    { label: 'Teaching Factory', value: 'tefa', icon: Factory, group: 'Administrasi' },
-    { label: 'Tracer Study', value: 'tracer', icon: SearchCode, group: 'Administrasi' },
+    { label: 'Manajemen ujian', value: 'exams', icon: ShieldCheck, group: 'Akademik' },
+    { label: 'Absensi biometrik', value: 'biometric-admin', icon: ScanFace, group: 'Akademik' },
+    { label: 'Staf & guru', value: 'teachers', icon: Users2, group: 'Akademik' },
+    { label: 'Daftar jurusan', value: 'majors', icon: GraduationCap, group: 'Akademik' },
+    { label: 'Prestasi siswa', value: 'achievements', icon: Award, group: 'Akademik' },
+    { label: 'Perpustakaan digital', value: 'library', icon: Library, group: 'Akademik' },
 
-    { label: 'Manajemen Pengguna', value: 'users', icon: ShieldAlert, group: 'Sistem' },
-    { label: 'Identitas Sekolah', value: 'school-profile', icon: Building2, group: 'Sistem' },
-    { label: 'Tautan Cepat', value: 'quick-links', icon: LinkIcon, group: 'Sistem' },
-    { label: 'Konfigurasi Sistem', value: 'settings', icon: Settings, group: 'Sistem' },
+    { label: 'Berita sekolah', value: 'news', icon: Newspaper, group: 'Konten & media' },
+    { label: 'Agenda & acara', value: 'agenda', icon: Calendar, group: 'Konten & media' },
+    { label: 'Osis corner', value: 'osis', icon: Bell, group: 'Konten & media' },
+    { label: 'Pojok literasi', value: 'literacy', icon: PenSquare, group: 'Konten & media' },
+    { label: 'Galeri media', value: 'gallery', icon: FileBox, group: 'Konten & media' },
+    { label: 'Testimoni alumni', value: 'testimonials', icon: Quote, group: 'Konten & media' },
+    { label: 'Buku tamu', value: 'guestbook', icon: MessageSquare, group: 'Konten & media' },
+
+    { label: 'PPDB online', value: 'ppdb', icon: UserPlus, group: 'Administrasi' },
+    { label: 'Mitra industri', value: 'partners', icon: BriefcaseIcon, group: 'Administrasi' },
+    { label: 'Bursa kerja (BKK)', value: 'jobs', icon: Briefcase, group: 'Administrasi' },
+    { label: 'Teaching factory', value: 'tefa', icon: Factory, group: 'Administrasi' },
+    { label: 'Tracer study', value: 'tracer', icon: SearchCode, group: 'Administrasi' },
+    { label: 'Pesan pengunjung', value: 'contact-messages', icon: Mail, group: 'Administrasi' },
+
+    { label: 'Manajemen akses', value: 'users', icon: ShieldAlert, group: 'Konfigurasi' },
+    { label: 'Profil sekolah', value: 'school-profile', icon: Building2, group: 'Konfigurasi' },
+    { label: 'Integrasi sistem', value: 'settings', icon: Settings, group: 'Konfigurasi' },
+    { label: 'Tautan aplikasi', value: 'quick-links', icon: LinkIcon, group: 'Konfigurasi' },
   ];
 
   if (isUserLoading) {
@@ -185,7 +186,7 @@ function AdminDashboard() {
     <button
       onClick={() => { setActiveTab(item.value as AdminTab); setIsSidebarOpen(false); }}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[12px] font-bold uppercase tracking-wider transition-all duration-200 group",
+        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[12px] font-bold transition-all duration-200 group",
         activeTab === item.value 
           ? "bg-primary text-white shadow-xl glow-primary" 
           : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
@@ -197,7 +198,7 @@ function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-white flex overflow-hidden tech-mesh">
+    <div className="min-h-screen bg-slate-50 flex overflow-hidden tech-mesh font-sans">
       {isSidebarOpen && (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsSidebarOpen(false)} />
       )}
@@ -237,15 +238,15 @@ function AdminDashboard() {
               <AvatarFallback className="bg-primary/5 text-primary text-[10px] font-black uppercase">{user?.profile?.displayName?.charAt(0) || 'A'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="text-[11px] font-black text-slate-900 truncate uppercase tracking-tight">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
+              <p className="text-[11px] font-black text-slate-900 truncate tracking-tight">{user?.profile?.displayName || user?.email?.split('@')[0]}</p>
               <div className='flex items-center gap-1.5'>
                 <div className='w-1 h-1 rounded-full bg-emerald-500'></div>
-                <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Active Admin</p>
+                <p className="text-[8px] font-bold text-emerald-600 uppercase tracking-widest">Administrator</p>
               </div>
             </div>
           </div>
-          <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 h-11 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-black text-[10px] uppercase tracking-widest transition-all border border-transparent hover:border-destructive/10">
-            <LogOut size={14} className="opacity-60" /> Keluar Sistem
+          <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 h-11 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 font-bold text-[10px] uppercase tracking-widest transition-all border border-transparent hover:border-destructive/10">
+            <LogOut size={14} className="opacity-60" /> Keluar sistem
           </button>
         </div>
       </aside>
@@ -258,8 +259,8 @@ function AdminDashboard() {
             </Button>
             <div className='flex items-center gap-3'>
                 <div className='h-8 w-1 bg-primary rounded-full hidden sm:block'></div>
-                <h1 className="font-black text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden sm:block">
-                  Sistem Hub / <span className='text-primary'>{navItems.find(i => i.value === activeTab)?.label || 'Ringkasan'}</span>
+                <h1 className="font-bold text-[11px] uppercase tracking-[0.3em] text-muted-foreground hidden sm:block">
+                  Sistem Hub / <span className='text-primary font-black'>{navItems.find(i => i.value === activeTab)?.label || 'Ringkasan'}</span>
                 </h1>
             </div>
           </div>

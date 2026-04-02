@@ -7,7 +7,7 @@ import {
   LogOut, Sparkles, Fingerprint, MapPin, 
   ShieldCheck, GraduationCap, 
   Smartphone, Bell, Home, User as UserIcon, BookMarked,
-  LayoutGrid, ChevronRight, UserCog, History, Key
+  LayoutGrid, ChevronRight, UserCog, History, Key, Settings2
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
@@ -74,7 +74,7 @@ function SiswaDashboard() {
       case 'home':
         return (
           <div className="space-y-6 animate-reveal pb-24">
-            <header className="flex items-center justify-between mb-8">
+            <header className="flex items-center justify-between mb-8 px-2">
               <div className='flex items-center gap-4'>
                 <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-md">
                   <AvatarFallback className="bg-primary/5 text-primary text-xl font-extrabold font-headline">
@@ -86,16 +86,16 @@ function SiswaDashboard() {
                   <h3 className="text-xl font-black text-slate-900 tracking-tight leading-tight font-headline">{profile?.displayName || 'Siswa'}</h3>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="rounded-full bg-white border border-slate-100 relative shadow-sm">
+              <Button variant="ghost" size="icon" className="rounded-full bg-white border border-slate-100 relative shadow-sm h-11 w-11">
                 <Bell size={20} className="text-slate-600" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full border-2 border-white animate-pulse" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-accent rounded-full border-2 border-white animate-pulse" />
               </Button>
             </header>
 
             <div className="grid grid-cols-2 gap-4">
               <BiometricAttendance />
               <Card 
-                className="rounded-[2.5rem] border-none shadow-2xl bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between h-full min-h-[180px] group hover:scale-[1.02] transition-all cursor-pointer" 
+                className="android-card bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between min-h-[180px] border-none" 
                 onClick={() => setActiveTab('ujian')}
               >
                 <div className='p-3 bg-white/20 rounded-2xl w-fit shadow-inner'><Smartphone size={24} /></div>
@@ -109,7 +109,7 @@ function SiswaDashboard() {
             <div className="space-y-6">
               <div className="flex items-center justify-between px-2">
                 <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-400 font-headline">Aktivitas & jadwal</h4>
-                <Button variant="ghost" size="sm" className='text-[10px] font-bold text-primary h-auto p-0'>Lihat semua</Button>
+                <Button variant="ghost" size="sm" className='text-[10px] font-bold text-primary h-auto p-0 hover:bg-transparent'>Lihat semua</Button>
               </div>
               <AbsensiSiswa />
               <JadwalPelajaran />
@@ -145,7 +145,7 @@ function SiswaDashboard() {
               <p className="text-xs font-bold text-slate-400 mt-1">Identitas digital terdaftar</p>
             </header>
             
-            <Card className="rounded-[2.5rem] border-slate-100 shadow-2xl overflow-hidden bg-white border-2">
+            <Card className="rounded-[3rem] border-slate-100 shadow-2xl overflow-hidden bg-white border-2">
               <div className="h-28 bg-primary relative">
                 <div className="absolute -bottom-12 left-8">
                   <Avatar className="h-24 w-24 border-4 border-white shadow-xl">
@@ -171,7 +171,7 @@ function SiswaDashboard() {
                     { icon: UserCog, label: 'Wali kelas', value: profile?.homeroomTeacher || '-' },
                     { icon: History, label: 'Sinkronisasi terakhir', value: profile?.lastSyncedAt ? 'Aktif' : 'Belum sinkron' }
                   ].map((info, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-5 rounded-2xl bg-slate-50 border border-slate-100 group hover:border-primary/20 transition-all">
+                    <div key={idx} className="flex items-center justify-between p-5 rounded-2xl bg-slate-50 border border-slate-100 group hover:border-primary/20 transition-all active:scale-[0.98]">
                       <div className="flex items-center gap-4">
                         <div className='p-2 bg-white rounded-xl border border-slate-100 text-primary opacity-40 group-hover:opacity-100 transition-opacity'>
                             <info.icon size={18} />

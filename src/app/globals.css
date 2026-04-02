@@ -53,15 +53,17 @@
   * {
     @apply border-border selection:bg-primary/10 selection:text-primary;
     font-style: normal !important; /* Absolute Zero Italics */
+    text-transform: none !important; /* Force Standard Case globally */
   }
   body {
     @apply bg-background text-foreground antialiased font-sans overflow-x-hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tight font-extrabold text-slate-900;
+    text-transform: none !important;
   }
-  /* Force all standard elements to be non-italic and standard case */
-  em, i, cite, dfn, span, p, a, button {
+  /* Specific override for elements that often carry italics */
+  em, i, cite, dfn, span, p, a, button, label, input, textarea, select {
     font-style: normal !important;
     text-transform: none !important;
   }
@@ -104,5 +106,10 @@
   
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Custom styling for Android-like feel */
+  .android-card {
+    @apply rounded-[2.5rem] bg-white border-2 border-slate-50 shadow-xl transition-all active:scale-[0.98];
   }
 }
