@@ -158,7 +158,7 @@ export default function Home() {
         schoolData={schoolData}
         isSchoolDataLoading={isSchoolDataLoading}
       />
-      <main className="flex-grow pb-16 md:pb-0" role="main">
+      <main className="flex-grow pb-24 md:pb-0" role="main">
         {renderSection()}
       </main>
       <Footer setActiveTab={handleSetTab} schoolData={schoolData} isSchoolDataLoading={isSchoolDataLoading} />

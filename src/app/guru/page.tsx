@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -6,7 +6,8 @@ import { signOut } from 'firebase/auth';
 import { 
   LogOut, ShieldCheck, Sparkles, 
   GraduationCap, Bell, Home,
-  User as UserIcon, MonitorCheck, ClipboardList, BookMarked
+  User as UserIcon, MonitorCheck, ClipboardList, BookMarked,
+  ChevronRight, Users, Settings2
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
@@ -51,7 +52,10 @@ function GuruDashboard() {
 
   const NavItem = ({ id, icon: Icon, label }: { id: TabType, icon: any, label: string }) => (
     <button
-      onClick={() => setActiveTab(id)}
+      onClick={() => {
+        setActiveTab(id);
+        if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+      }}
       className={cn(
         "flex flex-col items-center justify-center flex-1 py-2 transition-all duration-300",
         activeTab === id ? "text-primary scale-110" : "text-slate-400"
@@ -78,7 +82,7 @@ function GuruDashboard() {
                   <Sparkles size={24} />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Portal pengajar,</p>
+                  <p className="text-[10px] font-bold text-slate-400 tracking-wide">Portal pengajar,</p>
                   <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-tight font-headline">Halo, Bapak/Ibu</h3>
                 </div>
               </div>
@@ -96,32 +100,38 @@ function GuruDashboard() {
                   <h4 className="text-lg font-extrabold text-slate-900 leading-tight font-headline">{profile?.displayName}</h4>
                   <div className='flex items-center gap-2 mt-1 text-primary'>
                     <ShieldCheck size={14} />
-                    <span className='text-[10px] font-bold uppercase tracking-widest'>Status: pengajar aktif</span>
+                    <span className='text-[10px] font-bold tracking-wide uppercase'>Status: Pengajar aktif</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <div className="grid grid-cols-2 gap-4">
-              <Card className="rounded-[2rem] bg-primary text-white p-6 flex flex-col justify-between h-40 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('absensi')}>
+              <Card 
+                className="rounded-[2rem] bg-primary text-white p-6 flex flex-col justify-between h-40 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" 
+                onClick={() => setActiveTab('absensi')}
+              >
                 <div className='p-3 bg-white/20 rounded-2xl w-fit'><ClipboardList size={24} /></div>
                 <div>
-                  <h4 className="font-extrabold text-sm uppercase tracking-tight font-headline">Presensi</h4>
-                  <p className="text-[10px] opacity-60 font-bold">Monitor siswa</p>
+                  <h4 className="font-extrabold text-sm tracking-tight font-headline">Presensi</h4>
+                  <p className="text-[10px] opacity-60 font-bold">Monitor kehadiran</p>
                 </div>
               </Card>
-              <Card className="rounded-[2rem] bg-accent text-accent-foreground p-6 flex flex-col justify-between h-40 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" onClick={() => setActiveTab('ujian')}>
+              <Card 
+                className="rounded-[2rem] bg-accent text-accent-foreground p-6 flex flex-col justify-between h-40 shadow-xl group hover:scale-[1.02] transition-all cursor-pointer" 
+                onClick={() => setActiveTab('ujian')}
+              >
                 <div className='p-3 bg-black/5 rounded-2xl w-fit'><MonitorCheck size={24} /></div>
                 <div>
-                  <h4 className="font-extrabold text-sm uppercase tracking-tight font-headline">ExamBro</h4>
+                  <h4 className="font-extrabold text-sm tracking-tight font-headline">ExamBro</h4>
                   <p className="text-[10px] opacity-60 font-bold">Pengawasan ujian</p>
                 </div>
               </Card>
             </div>
 
             <div className="space-y-6">
-              <div className="mb-4">
-                <h4 className="text-[11px] font-extrabold uppercase tracking-[0.3em] text-slate-400 font-headline">Administrasi & jadwal</h4>
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 font-headline">Administrasi & jadwal</h4>
               </div>
               <JadwalPelajaran />
               <DownloadManager />
@@ -133,7 +143,7 @@ function GuruDashboard() {
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
               <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Manajemen presensi</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Kehadiran siswa real-time</p>
+              <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Pemantauan kehadiran siswa real-time</p>
             </div>
             <ManajemenAbsensi />
           </div>
@@ -143,7 +153,7 @@ function GuruDashboard() {
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
               <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">ExamBro portal</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Kontrol & proctoring ujian</p>
+              <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Kontrol keamanan & proctoring ujian</p>
             </div>
             <ExamManager />
           </div>
@@ -152,15 +162,25 @@ function GuruDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Akademik & sistem</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Panel kontrol pengajar</p>
+              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Sistem & akademik</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Panel kontrol administrasi pengajar</p>
             </div>
             
-            <div className="space-y-6">
-              <ERaporManager />
-              <ManajemenPrakerin />
-              <AchievementsManager />
-              <PembinaanEskul />
+            <div className="space-y-4">
+              {[
+                { icon: BookMarked, label: 'E-Rapor digital', component: ERaporManager },
+                { icon: Users, label: 'Manajemen prakerin', component: ManajemenPrakerin },
+                { icon: Sparkles, label: 'Prestasi siswa', component: AchievementsManager },
+                { icon: Settings2, label: 'Pembinaan ekskul', component: PembinaanEskul }
+              ].map((mod, idx) => (
+                <div key={idx} className="space-y-4">
+                  <div className='flex items-center gap-3 px-2 mb-2'>
+                    <mod.icon size={16} className='text-primary opacity-40' />
+                    <h4 className='text-[11px] font-black uppercase tracking-widest text-slate-400'>{mod.label}</h4>
+                  </div>
+                  <mod.component />
+                </div>
+              ))}
               
               <Button onClick={handleLogout} variant="outline" className="w-full h-14 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-bold text-xs uppercase tracking-widest mt-10 shadow-sm">
                 <LogOut className="mr-2 h-4 w-4" /> Keluar sesi guru
@@ -181,7 +201,7 @@ function GuruDashboard() {
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-100 px-6 pb-safe z-50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 px-6 pb-safe z-50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
         <div className="max-w-md mx-auto h-20 flex items-center justify-between">
           <NavItem id="home" icon={Home} label="Beranda" />
           <NavItem id="absensi" icon={ClipboardList} label="Presensi" />

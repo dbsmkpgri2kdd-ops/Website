@@ -26,8 +26,8 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
   };
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 z-50 w-full bg-background/95 backdrop-blur-2xl border-t border-slate-100 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
-      <div className="h-16 flex items-center justify-around px-2">
+    <div className="md:hidden fixed bottom-0 left-0 z-50 w-full bg-white/95 backdrop-blur-2xl border-t border-slate-100 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+      <div className="h-16 flex items-center justify-around px-2 safe-bottom">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           return (
@@ -37,7 +37,7 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
               onClick={() => handleNavClick(item.id as NavLink)}
               className={cn(
                 "flex flex-col items-center justify-center flex-1 transition-all duration-300",
-                isActive ? "text-primary scale-105" : "text-muted-foreground opacity-60"
+                isActive ? "text-primary scale-105" : "text-slate-400 opacity-60"
               )}
             >
               <item.icon className={cn("w-5 h-5 mb-1", isActive ? "stroke-[2.5px]" : "stroke-2")} />
@@ -51,7 +51,7 @@ export default function BottomNav({ activeTab, setActiveTab, setIsMenuOpen }: Bo
         <button
           type="button"
           onClick={() => setIsMenuOpen(true)}
-          className="flex flex-col items-center justify-center flex-1 text-muted-foreground opacity-60 hover:opacity-100 active:scale-95"
+          className="flex flex-col items-center justify-center flex-1 text-slate-400 opacity-60 hover:opacity-100 active:scale-95"
         >
           <LayoutGrid className="w-5 h-5 mb-1" />
           <span className="text-[10px] font-bold">Menu</span>
