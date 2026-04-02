@@ -13,7 +13,13 @@ const nextConfig = {
       { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
     ],
   },
-  // Konfigurasi standar untuk stabilitas build statis
+  experimental: {
+    // Mengizinkan origin development dari Cloud Workstations untuk stabilitas server dev
+    allowedDevOrigins: [
+      "6000-firebase-webprida2-1774545310835.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev",
+      "*.cloudworkstations.dev"
+    ],
+  },
 };
 
 export default nextConfig;

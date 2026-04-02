@@ -173,7 +173,7 @@ export function ExamManager() {
                             <TableCell className="text-right px-8">
                                 <div className="flex justify-end gap-2">
                                     <Button variant="outline" size="sm" className="h-10 rounded-xl font-bold uppercase text-[9px] tracking-widest border-primary/20 text-primary hover:bg-primary/5" onClick={() => setMonitoringExamId(exam.id)}>
-                                        <MonitorCheck size={16} className="mr-2" /> Live Proctoring
+                                        <MonitorCheck size={16} className="mr-2" /> Monitoring
                                     </Button>
                                     <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary/5 text-slate-400 hover:text-primary transition-all" onClick={() => handleEdit(exam)}><Edit size={18}/></Button>
                                     <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all" onClick={() => handleDelete(exam.id)}><Trash2 size={18}/></Button>

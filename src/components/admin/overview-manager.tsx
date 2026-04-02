@@ -8,7 +8,7 @@ import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication, type Attenda
 import { 
   Newspaper, UserPlus, ShieldCheck, Activity, Clock, ArrowUpRight, 
   BrainCircuit, Sparkles, LoaderCircle, Database, HardDrive, 
-  BarChart3, UserCheck, LogIn, LogOut, Info, BookOpen, Settings2, MonitorPlay
+  BarChart3, UserCheck, LogIn, LogOut, BookOpen, Settings2, MonitorPlay
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format, startOfDay } from 'date-fns';
@@ -18,6 +18,10 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { generateAdminAnalysis, type AdminAnalysisOutput } from '@/ai/flows/admin-analysis-flow';
 
+/**
+ * OverviewManager v7.5 - hPanel Control Center.
+ * Dilengkapi dengan panduan operasional terintegrasi.
+ */
 export function OverviewManager() {
   const firestore = useFirestore();
   const { user } = useUser();
@@ -195,7 +199,6 @@ export function OverviewManager() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-            {/* Quick SOP Guide */}
             <Card className="border-slate-100 bg-slate-50/50 rounded-[2.5rem] shadow-sm border-2 overflow-hidden">
                 <CardHeader className="p-8 border-b bg-white">
                     <div className="flex items-center gap-3">
@@ -212,7 +215,7 @@ export function OverviewManager() {
                             <ul className="space-y-3">
                                 <li className="flex gap-3">
                                     <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">1</div>
-                                    <p className="text-[11px] font-bold text-slate-600">Monitor ujian di tab <span className='text-primary'>Live Proctoring</span> untuk melihat kamera siswa secara real-time.</p>
+                                    <p className="text-[11px] font-bold text-slate-600">Monitor ujian di tab <span className='text-primary'>Pusat Pengawasan</span> untuk melihat kamera siswa secara real-time.</p>
                                 </li>
                                 <li className="flex gap-3">
                                     <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">2</div>
@@ -227,11 +230,11 @@ export function OverviewManager() {
                             <ul className="space-y-3">
                                 <li className="flex gap-3">
                                     <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">3</div>
-                                    <p className="text-[11px] font-bold text-slate-600">Gunakan <span className='text-primary'>System Settings</span> untuk sinkronisasi database siswa via Google Sheets.</p>
+                                    <p className="text-[11px] font-bold text-slate-600">Gunakan <span className='text-primary'>Integrasi Sistem</span> untuk sinkronisasi database siswa via Google Sheets.</p>
                                 </li>
                                 <li className="flex gap-3">
                                     <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">4</div>
-                                    <p className="text-[11px] font-bold text-slate-600">Atur urutan modul beranda secara visual di <span className='text-primary'>Builder Beranda</span>.</p>
+                                    <p className="text-[11px] font-bold text-slate-600">Atur urutan modul beranda secara visual di <span className='text-primary'>Desain Beranda</span>.</p>
                                 </li>
                             </ul>
                         </div>
