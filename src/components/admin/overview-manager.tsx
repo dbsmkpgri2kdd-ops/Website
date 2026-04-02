@@ -6,13 +6,12 @@ import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebas
 import { collection, query, limit, orderBy, where } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type NewsArticle, type StudentApplication, type AttendanceRecord } from '@/lib/data';
 import { 
-  Newspaper, UserPlus, ShieldCheck, Activity, Clock, ArrowUpRight, 
-  BrainCircuit, Sparkles, LoaderCircle, Database, HardDrive, 
-  BarChart3, UserCheck, LogIn, LogOut, BookOpen, Settings2, MonitorPlay, Layout
+  Newspaper, UserPlus, ShieldCheck, Activity, Clock, 
+  BrainCircuit, Sparkles, LoaderCircle, Database, 
+  UserCheck, LogIn, LogOut, BookOpen, Settings2, MonitorPlay, Layout
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { format, startOfDay } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { startOfDay } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -48,9 +47,9 @@ export function OverviewManager() {
     );
   }, [firestore, mounted]);
 
-  const { data: recentNews, isLoading: isNewsLoading } = useCollection<NewsArticle>(newsQuery);
-  const { data: recentPpdb, isLoading: isPpdbLoading } = useCollection<StudentApplication>(ppdbQuery);
-  const { data: todayAttendance, isLoading: isAttendanceLoading } = useCollection<AttendanceRecord>(todayAttendanceQuery);
+  const { data: recentNews } = useCollection<NewsArticle>(newsQuery);
+  const { data: recentPpdb } = useCollection<StudentApplication>(ppdbQuery);
+  const { data: todayAttendance } = useCollection<AttendanceRecord>(todayAttendanceQuery);
 
   const attendanceStats = useMemo(() => {
     if (!todayAttendance) return { masuk: 0, pulang: 0 };
@@ -83,7 +82,7 @@ export function OverviewManager() {
     <div className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
-            <h2 className='text-3xl font-black tracking-tighter text-slate-900 font-headline uppercase'>Ringkasan sistem</h2>
+            <h2 className='text-3xl font-black tracking-tighter text-slate-900 font-headline uppercase'>Ringkasan Sistem</h2>
             <p className='text-[10px] font-bold text-slate-500 mt-1 uppercase tracking-widest opacity-80'>Pusat kendali operasional digital sekolah.</p>
         </div>
         <div className='flex items-center gap-3 bg-white p-3 rounded-2xl border border-slate-100 shadow-md'>
@@ -91,38 +90,30 @@ export function OverviewManager() {
                 <Clock size={20} />
             </div>
             <div>
-                <p className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Waktu sistem</p>
+                <p className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Waktu Sistem</p>
                 <p className='text-xs font-bold text-slate-900'>{mounted ? (currentTime || '--:--') : '--:--'} WIB</p>
             </div>
         </div>
       </div>
 
-      {/* Admin Quick Control Grid - Small Items */}
       <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-4 px-2">
-        <button className="flex flex-col items-center gap-2 group">
-          <div className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-            <UserPlus size={20} />
-          </div>
-          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tight">Add User</span>
-        </button>
-        <button className="flex flex-col items-center gap-2 group">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-            <MonitorPlay size={20} />
-          </div>
-          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tight">Exam</span>
-        </button>
-        <button className="flex flex-col items-center gap-2 group">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-            <Database size={20} />
-          </div>
-          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tight">Sync</span>
-        </button>
-        <button className="flex flex-col items-center gap-2 group">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-            <Layout size={20} />
-          </div>
-          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tight">Layout</span>
-        </button>
+        {[
+          { label: 'User', icon: UserPlus, bg: 'bg-primary' },
+          { label: 'Exam', icon: MonitorPlay, bg: 'bg-emerald-500' },
+          { label: 'Sync', icon: Database, bg: 'bg-amber-500' },
+          { label: 'Layout', icon: Layout, bg: 'bg-indigo-600' },
+          { label: 'News', icon: Newspaper, bg: 'bg-slate-800' },
+          { label: 'Settings', icon: Settings2, bg: 'bg-slate-500' },
+          { label: 'Reports', icon: BookOpen, bg: 'bg-rose-500' },
+          { label: 'AI Scan', icon: BrainCircuit, bg: 'bg-primary' },
+        ].map((item, idx) => (
+          <button key={idx} className="flex flex-col items-center gap-2 group">
+            <div className={cn("quick-action-icon !w-12 !h-12", item.bg)}>
+              <item.icon size={20} />
+            </div>
+            <span className="text-[9px] font-black text-slate-500 uppercase tracking-tight">{item.label}</span>
+          </button>
+        ))}
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
@@ -134,7 +125,7 @@ export function OverviewManager() {
                             <UserCheck size={20} />
                         </div>
                         <div>
-                            <CardTitle className="text-lg font-bold text-slate-900 uppercase font-headline">Absensi hari ini</CardTitle>
+                            <CardTitle className="text-lg font-bold text-slate-900 uppercase font-headline">Absensi Hari Ini</CardTitle>
                             <CardDescription className="text-xs font-bold text-slate-500">Monitoring kehadiran biometrik real-time.</CardDescription>
                         </div>
                     </div>
@@ -218,43 +209,6 @@ export function OverviewManager() {
                 </CardContent>
             </Card>
         </div>
-      </div>
-
-      <div className="grid lg:grid-cols-1 gap-8">
-        <Card className="border-slate-100 bg-white rounded-[2.5rem] shadow-md border-2 overflow-hidden">
-            <CardHeader className="p-8 border-b border-slate-100">
-                <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-accent/10 text-accent-foreground rounded-xl"><BookOpen size={20}/></div>
-                    <CardTitle className="text-sm font-black uppercase tracking-widest font-headline">Panduan operasional hPanel</CardTitle>
-                </div>
-            </CardHeader>
-            <CardContent className="p-8">
-                <div className="grid md:grid-cols-2 gap-8">
-                    <div className="space-y-4">
-                        <h4 className="text-[10px] font-black uppercase text-primary tracking-[0.3em] flex items-center gap-2">
-                            <MonitorPlay size={14} /> Pengawasan & Akademik
-                        </h4>
-                        <ul className="space-y-3">
-                            <li className="flex gap-3">
-                                <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">1</div>
-                                <p className="text-[11px] font-bold text-slate-600">Monitor ujian di tab <span className='text-primary'>Pusat Pengawasan</span> untuk melihat kamera siswa.</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="space-y-4">
-                        <h4 className="text-[10px] font-black uppercase text-primary tracking-[0.3em] flex items-center gap-2">
-                            <Settings2 size={14} /> Sinkronisasi & Sistem
-                        </h4>
-                        <ul className="space-y-3">
-                            <li className="flex gap-3">
-                                <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">2</div>
-                                <p className="text-[11px] font-bold text-slate-600">Gunakan <span className='text-primary'>Integrasi Sistem</span> untuk sinkronisasi database siswa.</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
       </div>
     </div>
   );

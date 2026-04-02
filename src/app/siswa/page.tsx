@@ -5,10 +5,8 @@ import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { 
   LogOut, Sparkles, Fingerprint, MapPin, 
-  ShieldCheck, GraduationCap, 
-  Smartphone, Bell, Home, User as UserIcon, BookMarked,
-  LayoutGrid, ChevronRight, UserCog, History, Key, Settings2,
-  FolderKanban
+  ShieldCheck, Smartphone, Bell, Home, User as UserIcon, BookMarked,
+  ChevronRight, UserCog, History, FolderKanban, GraduationCap
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
@@ -78,7 +76,7 @@ function SiswaDashboard() {
       case 'home':
         return (
           <div className="space-y-8 animate-reveal pb-24">
-            <header className="flex items-center justify-between mb-2 px-2">
+            <header className="flex items-center justify-between px-2">
               <div className='flex items-center gap-4'>
                 <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-md">
                   <AvatarFallback className="bg-primary/5 text-primary text-xl font-extrabold font-headline">
@@ -86,7 +84,7 @@ function SiswaDashboard() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-[11px] font-bold text-slate-400">Selamat datang,</p>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Halo, Selamat Datang</p>
                   <div className='flex items-center gap-2'>
                     <h3 className="text-xl font-black text-slate-900 tracking-tight leading-tight font-headline">{profile?.displayName || 'Siswa'}</h3>
                     <Badge variant="outline" className='text-[8px] font-black uppercase tracking-widest px-1.5 h-4 border-primary/20 text-primary'>Sesi {profile?.session || 'Pagi'}</Badge>
@@ -99,35 +97,20 @@ function SiswaDashboard() {
               </Button>
             </header>
 
-            {/* Quick Action Grid - Small Items for PWA */}
             <div className="grid grid-cols-4 gap-4 px-2">
-              <button onClick={() => setIsAbsenOpen(true)} className="flex flex-col items-center gap-2 group">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-                  <Fingerprint size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Absen</span>
-              </button>
-              
-              <button onClick={() => setActiveTab('ujian')} className="flex flex-col items-center gap-2 group">
-                <div className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-                  <Smartphone size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Ujian</span>
-              </button>
-
-              <button onClick={() => setActiveTab('akademik')} className="flex flex-col items-center gap-2 group">
-                <div className="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-                  <BookMarked size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Rapor</span>
-              </button>
-
-              <button onClick={() => setActiveTab('akademik')} className="flex flex-col items-center gap-2 group">
-                <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-                  <FolderKanban size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Karya</span>
-              </button>
+              {[
+                { label: 'Absen', icon: Fingerprint, bg: 'bg-emerald-500', action: () => setIsAbsenOpen(true) },
+                { label: 'Ujian', icon: Smartphone, bg: 'bg-primary', action: () => setActiveTab('ujian') },
+                { label: 'Rapor', icon: BookMarked, bg: 'bg-amber-500', action: () => setActiveTab('akademik') },
+                { label: 'Karya', icon: FolderKanban, bg: 'bg-indigo-600', action: () => setActiveTab('akademik') },
+              ].map((item, idx) => (
+                <button key={idx} onClick={item.action} className="flex flex-col items-center gap-2 group">
+                  <div className={cn("quick-action-icon", item.bg)}>
+                    <item.icon size={24} />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{item.label}</span>
+                </button>
+              ))}
             </div>
 
             <Dialog open={isAbsenOpen} onOpenChange={setIsAbsenOpen}>
@@ -138,8 +121,8 @@ function SiswaDashboard() {
 
             <div className="space-y-6">
               <div className="flex items-center justify-between px-2">
-                <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 font-headline">Aktivitas & jadwal</h4>
-                <Button variant="ghost" size="sm" className='text-[10px] font-bold text-primary h-auto p-0 hover:bg-transparent uppercase tracking-widest'>Lihat semua</Button>
+                <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 font-headline">Aktivitas & Jadwal</h4>
+                <Button variant="ghost" size="sm" className='text-[10px] font-bold text-primary h-auto p-0 hover:bg-transparent uppercase tracking-widest'>Lihat Semua</Button>
               </div>
               <AbsensiSiswa />
               <JadwalPelajaran />
@@ -150,7 +133,7 @@ function SiswaDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <header className="mb-8 px-2">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase italic">Portal <span className='text-primary not-italic'>ujian.</span></h2>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase">Portal <span className='text-primary'>Ujian.</span></h2>
               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Sistem pengawasan exambro v5.5</p>
             </header>
             <ExamBroPortal />
@@ -160,7 +143,7 @@ function SiswaDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <header className="mb-8 px-2">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase italic">Layanan <span className='text-primary not-italic'>akademik.</span></h2>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase">Layanan <span className='text-primary'>Akademik.</span></h2>
               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Hasil belajar & portofolio digital</p>
             </header>
             <ERaporSiswa />
@@ -171,7 +154,7 @@ function SiswaDashboard() {
         return (
           <div className='space-y-6 animate-reveal pb-24'>
             <header className="mb-8 px-2">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase italic">Profil <span className='text-primary not-italic'>saya.</span></h2>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase">Profil <span className='text-primary'>Saya.</span></h2>
               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Identitas digital terdaftar</p>
             </header>
             
@@ -190,16 +173,16 @@ function SiswaDashboard() {
                   <h3 className="text-2xl font-black text-slate-900 tracking-tighter font-headline uppercase">{profile?.displayName}</h3>
                   <div className='flex items-center gap-2 mt-1.5'>
                     <div className='w-2 h-2 rounded-full bg-emerald-500'></div>
-                    <p className="text-[13px] font-bold text-slate-500 uppercase tracking-tight">{profile?.className || 'Kelas belum sinkron'}</p>
+                    <p className="text-[13px] font-bold text-slate-500 uppercase tracking-tight">{profile?.className || 'Kelas Belum Sinkron'}</p>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   {[
-                    { icon: Fingerprint, label: 'Nomor induk siswa', value: profile?.nis || '-' },
-                    { icon: MapPin, label: 'Alamat terdaftar', value: profile?.address || '-' },
-                    { icon: UserCog, label: 'Wali kelas', value: profile?.homeroomTeacher || '-' },
-                    { icon: History, label: 'Sinkronisasi terakhir', value: profile?.lastSyncedAt ? 'Aktif' : 'Belum sinkron' }
+                    { icon: Fingerprint, label: 'Nomor Induk Siswa', value: profile?.nis || '-' },
+                    { icon: MapPin, label: 'Alamat Terdaftar', value: profile?.address || '-' },
+                    { icon: UserCog, label: 'Wali Kelas', value: profile?.homeroomTeacher || '-' },
+                    { icon: History, label: 'Sinkronisasi Terakhir', value: profile?.lastSyncedAt ? 'Aktif' : 'Belum Sinkron' }
                   ].map((info, idx) => (
                     <div key={idx} className="flex items-center justify-between p-5 rounded-2xl bg-slate-50 border border-slate-100 group hover:border-primary/20 transition-all active:scale-[0.98]">
                       <div className="flex items-center gap-4">
@@ -217,7 +200,7 @@ function SiswaDashboard() {
                 </div>
 
                 <Button onClick={handleLogout} variant="outline" className="w-full h-16 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-black text-xs uppercase tracking-widest mt-4">
-                  <LogOut className="mr-2 h-4 w-4" /> Keluar sesi mandiri
+                  <LogOut className="mr-2 h-4 w-4" /> Keluar Sesi Mandiri
                 </Button>
               </CardContent>
             </Card>

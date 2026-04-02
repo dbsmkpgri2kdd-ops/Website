@@ -5,13 +5,12 @@ import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { 
   LogOut, ShieldCheck, Sparkles, 
-  GraduationCap, Bell, Home,
-  User as UserIcon, MonitorCheck, ClipboardList, BookMarked,
-  ChevronRight, Users, Settings2, ShieldAlert, MonitorPlay, UserCheck, Briefcase
+  Bell, Home, BookMarked, ClipboardList, MonitorCheck,
+  UserCheck, MonitorPlay, Users, Settings2, Briefcase
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useUser, useAuth } from '@/firebase';
@@ -28,7 +27,7 @@ import { cn } from '@/lib/utils';
 type TabType = 'home' | 'absensi' | 'ujian' | 'profil';
 
 function GuruDashboard() {
-  const { user, profile } = useUser();
+  const { profile } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -76,13 +75,13 @@ function GuruDashboard() {
       case 'home':
         return (
           <div className="space-y-8 animate-reveal pb-24">
-            <header className="flex items-center justify-between mb-2 px-2">
+            <header className="flex items-center justify-between px-2">
               <div className='flex items-center gap-4'>
                 <div className='p-3 bg-primary text-white rounded-2xl shadow-xl glow-primary'>
                   <Sparkles size={24} />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 tracking-wide uppercase">Portal pengajar,</p>
+                  <p className="text-[10px] font-bold text-slate-400 tracking-wide uppercase">Portal Pengajar,</p>
                   <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-tight font-headline">Halo, Bapak/Ibu</h3>
                 </div>
               </div>
@@ -99,45 +98,30 @@ function GuruDashboard() {
                 <h4 className="text-md font-extrabold text-slate-900 leading-tight font-headline truncate">{profile?.displayName}</h4>
                 <div className='flex items-center gap-2 mt-1 text-primary'>
                   <ShieldCheck size={12} />
-                  <span className='text-[9px] font-black tracking-widest uppercase'>Status: Pengajar aktif</span>
+                  <span className='text-[9px] font-black tracking-widest uppercase'>Status: Pengajar Aktif</span>
                 </div>
               </div>
             </Card>
 
-            {/* Guru Quick Actions Grid */}
             <div className="grid grid-cols-4 gap-4 px-2">
-              <button onClick={() => setActiveTab('absensi')} className="flex flex-col items-center gap-2 group">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-                  <UserCheck size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Absen</span>
-              </button>
-              
-              <button onClick={() => setActiveTab('ujian')} className="flex flex-col items-center gap-2 group">
-                <div className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-                  <MonitorPlay size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Monitor</span>
-              </button>
-
-              <button onClick={() => setActiveTab('profil')} className="flex flex-col items-center gap-2 group">
-                <div className="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-                  <BookMarked size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Rapor</span>
-              </button>
-
-              <button onClick={() => setActiveTab('profil')} className="flex flex-col items-center gap-2 group">
-                <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:brightness-110">
-                  <Briefcase size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Prakerin</span>
-              </button>
+              {[
+                { label: 'Absen', icon: UserCheck, bg: 'bg-emerald-500', action: () => setActiveTab('absensi') },
+                { label: 'Monitor', icon: MonitorPlay, bg: 'bg-primary', action: () => setActiveTab('ujian') },
+                { label: 'Rapor', icon: BookMarked, bg: 'bg-amber-500', action: () => setActiveTab('profil') },
+                { label: 'Prakerin', icon: Briefcase, bg: 'bg-blue-600', action: () => setActiveTab('profil') },
+              ].map((item, idx) => (
+                <button key={idx} onClick={item.action} className="flex flex-col items-center gap-2 group">
+                  <div className={cn("quick-action-icon", item.bg)}>
+                    <item.icon size={24} />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{item.label}</span>
+                </button>
+              ))}
             </div>
 
             <div className="space-y-6">
               <div className="flex items-center justify-between px-2">
-                <h4 className="text-[11px] font-extrabold uppercase tracking-[0.3em] text-slate-400 font-headline">Administrasi & jadwal</h4>
+                <h4 className="text-[11px] font-extrabold uppercase tracking-[0.3em] text-slate-400 font-headline">Administrasi & Jadwal</h4>
               </div>
               <JadwalPelajaran />
               <DownloadManager />
@@ -147,37 +131,37 @@ function GuruDashboard() {
       case 'absensi':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8 px-2">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase italic">Input <span className='text-primary not-italic'>absensi.</span></h2>
+            <header className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase">Input <span className='text-primary'>Absensi.</span></h2>
               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Pemantauan kehadiran siswa real-time</p>
-            </div>
+            </header>
             <ManajemenAbsensi />
           </div>
         );
       case 'ujian':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8 px-2">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase italic">ExamBro <span className='text-primary not-italic'>portal.</span></h2>
+            <header className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase">ExamBro <span className='text-primary'>Portal.</span></h2>
               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Kontrol keamanan & proctoring ujian</p>
-            </div>
+            </header>
             <ExamManager />
           </div>
         );
       case 'profil':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8 px-2">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase italic">Akademik <span className='text-primary not-italic'>center.</span></h2>
+            <header className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline uppercase">Akademik <span className='text-primary'>Center.</span></h2>
               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Panel kontrol administrasi pengajar</p>
-            </div>
+            </header>
             
             <div className="space-y-8">
               {[
-                { icon: BookMarked, label: 'E-Rapor digital', component: ERaporManager },
-                { icon: Users, label: 'Manajemen prakerin', component: ManajemenPrakerin },
-                { icon: Sparkles, label: 'Prestasi siswa', component: AchievementsManager },
-                { icon: Settings2, label: 'Pembinaan ekskul', component: PembinaanEskul }
+                { icon: BookMarked, label: 'E-Rapor Digital', component: ERaporManager },
+                { icon: Users, label: 'Manajemen Prakerin', component: ManajemenPrakerin },
+                { icon: Sparkles, label: 'Prestasi Siswa', component: AchievementsManager },
+                { icon: Settings2, label: 'Pembinaan Ekskul', component: PembinaanEskul }
               ].map((mod, idx) => (
                 <div key={idx} className="space-y-4">
                   <div className='flex items-center gap-3 px-2 mb-2'>
@@ -189,7 +173,7 @@ function GuruDashboard() {
               ))}
               
               <Button onClick={handleLogout} variant="outline" className="w-full h-16 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-black text-xs uppercase tracking-widest mt-10">
-                <LogOut className="mr-2 h-4 w-4" /> Keluar sesi guru
+                <LogOut className="mr-2 h-4 w-4" /> Keluar Sesi Guru
               </Button>
             </div>
           </div>
