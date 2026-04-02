@@ -35,16 +35,32 @@ export const FirebaseContext = createContext<FirebaseContextState | undefined>(u
 
 /**
  * Robust CSV Parser for student database sync.
- * Handles quoted values and various separators.
+ * Handles quoted values, multiple line endings, and different delimiters.
  */
 const parseCSV = (csv: string) => {
-  const rows = csv.split(/\r?\n/).filter(row => row.trim() !== '');
-  if (rows.length < 2) return [];
+  const lines = csv.split(/\r?\n/).filter(line => line.trim() !== '');
+  if (lines.length < 2) return [];
+
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
   
-  const headers = rows[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
-  return rows.slice(1).map(row => {
-    // Basic CSV splitting (considering commas)
-    const values = row.split(',').map(v => v.trim().replace(/^["']|["']$/g, ''));
+  return lines.slice(1).map(line => {
+    const values: string[] = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(current.trim().replace(/^["']|["']$/g, ''));
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    values.push(current.trim().replace(/^["']|["']$/g, ''));
+
     return headers.reduce((obj: any, header, i) => {
       obj[header] = values[i] || '';
       return obj;

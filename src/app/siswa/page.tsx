@@ -7,7 +7,7 @@ import {
   LogOut, Sparkles, Fingerprint, MapPin, 
   ShieldCheck, GraduationCap, 
   Smartphone, Bell, Home, User as UserIcon, BookMarked,
-  LayoutGrid, ChevronRight, UserCog, History
+  LayoutGrid, ChevronRight, UserCog, History, Key
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
@@ -60,10 +60,10 @@ function SiswaDashboard() {
       )}
     >
       <div className={cn(
-        "p-1.5 rounded-xl transition-all",
+        "p-2 rounded-2xl transition-all",
         activeTab === id ? "bg-primary/10" : "bg-transparent"
       )}>
-        <Icon size={22} strokeWidth={activeTab === id ? 2.5 : 2} />
+        <Icon size={24} strokeWidth={activeTab === id ? 2.5 : 2} />
       </div>
       <span className={cn("text-[10px] font-bold mt-1", activeTab === id ? "opacity-100" : "opacity-60")}>{label}</span>
     </button>
@@ -74,41 +74,41 @@ function SiswaDashboard() {
       case 'home':
         return (
           <div className="space-y-6 animate-reveal pb-24">
-            <div className="flex items-center justify-between mb-8">
+            <header className="flex items-center justify-between mb-8">
               <div className='flex items-center gap-4'>
                 <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-md">
-                  <AvatarFallback className="bg-primary/5 text-primary text-xl font-bold font-headline">
+                  <AvatarFallback className="bg-primary/5 text-primary text-xl font-extrabold font-headline">
                     {profile?.displayName?.charAt(0) || 'S'}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 tracking-wide">Selamat datang,</p>
-                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-tight font-headline">{profile?.displayName || 'Siswa'}</h3>
+                  <p className="text-[11px] font-bold text-slate-400">Selamat datang,</p>
+                  <h3 className="text-xl font-black text-slate-900 tracking-tight leading-tight font-headline">{profile?.displayName || 'Siswa'}</h3>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="rounded-full bg-slate-50 relative">
+              <Button variant="ghost" size="icon" className="rounded-full bg-white border border-slate-100 relative shadow-sm">
                 <Bell size={20} className="text-slate-600" />
                 <span className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full border-2 border-white animate-pulse" />
               </Button>
-            </div>
+            </header>
 
             <div className="grid grid-cols-2 gap-4">
               <BiometricAttendance />
               <Card 
-                className="rounded-[2.5rem] border-none shadow-xl bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between h-48 group hover:scale-[1.02] transition-all cursor-pointer" 
+                className="rounded-[2.5rem] border-none shadow-2xl bg-gradient-to-br from-primary to-blue-700 text-white p-6 flex flex-col justify-between h-full min-h-[180px] group hover:scale-[1.02] transition-all cursor-pointer" 
                 onClick={() => setActiveTab('ujian')}
               >
                 <div className='p-3 bg-white/20 rounded-2xl w-fit shadow-inner'><Smartphone size={24} /></div>
                 <div>
-                  <h4 className="font-extrabold text-sm tracking-tight font-headline">ExamBro</h4>
+                  <h4 className="font-black text-sm tracking-tight font-headline">ExamBro</h4>
                   <p className="text-[10px] opacity-60 font-bold">Sesi ujian aman</p>
                 </div>
               </Card>
             </div>
 
             <div className="space-y-6">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 font-headline">Aktivitas & jadwal</h4>
+              <div className="flex items-center justify-between px-2">
+                <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-400 font-headline">Aktivitas & jadwal</h4>
                 <Button variant="ghost" size="sm" className='text-[10px] font-bold text-primary h-auto p-0'>Lihat semua</Button>
               </div>
               <AbsensiSiswa />
@@ -119,20 +119,20 @@ function SiswaDashboard() {
       case 'ujian':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Portal ujian</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Sistem pengawasan exambro v5.5</p>
-            </div>
+            <header className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline">Portal ujian.</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1">Sistem pengawasan exambro v5.5</p>
+            </header>
             <ExamBroPortal />
           </div>
         );
       case 'akademik':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Layanan akademik</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Hasil belajar & portofolio digital</p>
-            </div>
+            <header className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline">Layanan akademik.</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1">Hasil belajar & portofolio digital</p>
+            </header>
             <ERaporSiswa />
             <PortofolioDigital />
           </div>
@@ -140,27 +140,27 @@ function SiswaDashboard() {
       case 'profil':
         return (
           <div className='space-y-6 animate-reveal pb-24'>
-            <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-headline">Profil saya</h2>
-              <p className="text-xs font-bold text-slate-400 mt-1 tracking-wide">Identitas digital terdaftar</p>
-            </div>
+            <header className="mb-8 px-2">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tighter font-headline">Profil saya.</h2>
+              <p className="text-xs font-bold text-slate-400 mt-1">Identitas digital terdaftar</p>
+            </header>
             
-            <Card className="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden bg-white border-2">
-              <div className="h-24 bg-primary relative">
-                <div className="absolute -bottom-10 left-8">
-                  <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
-                    <AvatarFallback className="bg-slate-50 text-primary text-2xl font-extrabold font-headline">
+            <Card className="rounded-[2.5rem] border-slate-100 shadow-2xl overflow-hidden bg-white border-2">
+              <div className="h-28 bg-primary relative">
+                <div className="absolute -bottom-12 left-8">
+                  <Avatar className="h-24 w-24 border-4 border-white shadow-xl">
+                    <AvatarFallback className="bg-slate-50 text-primary text-3xl font-black font-headline">
                       {profile?.displayName?.charAt(0) || 'S'}
                     </AvatarFallback>
                   </Avatar>
                 </div>
               </div>
-              <CardContent className="pt-14 pb-8 px-8 space-y-6">
+              <CardContent className="pt-16 pb-10 px-8 space-y-8">
                 <div>
-                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight font-headline">{profile?.displayName}</h3>
-                  <div className='flex items-center gap-2 mt-1'>
+                  <h3 className="text-2xl font-black text-slate-900 tracking-tighter font-headline">{profile?.displayName}</h3>
+                  <div className='flex items-center gap-2 mt-1.5'>
                     <div className='w-2 h-2 rounded-full bg-emerald-500'></div>
-                    <p className="text-xs font-bold text-slate-500">{profile?.className || 'Kelas belum sinkron'}</p>
+                    <p className="text-[13px] font-bold text-slate-500">{profile?.className || 'Kelas belum sinkron'}</p>
                   </div>
                 </div>
 
@@ -171,12 +171,14 @@ function SiswaDashboard() {
                     { icon: UserCog, label: 'Wali kelas', value: profile?.homeroomTeacher || '-' },
                     { icon: History, label: 'Sinkronisasi terakhir', value: profile?.lastSyncedAt ? 'Aktif' : 'Belum sinkron' }
                   ].map((info, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                    <div key={idx} className="flex items-center justify-between p-5 rounded-2xl bg-slate-50 border border-slate-100 group hover:border-primary/20 transition-all">
                       <div className="flex items-center gap-4">
-                        <info.icon className="text-primary opacity-40" size={18} />
+                        <div className='p-2 bg-white rounded-xl border border-slate-100 text-primary opacity-40 group-hover:opacity-100 transition-opacity'>
+                            <info.icon size={18} />
+                        </div>
                         <div>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">{info.label}</p>
-                          <p className="text-sm font-bold text-slate-700 truncate max-w-[180px]">{info.value}</p>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1.5">{info.label}</p>
+                          <p className="text-[13px] font-bold text-slate-700 truncate max-w-[180px]">{info.value}</p>
                         </div>
                       </div>
                       <ChevronRight size={14} className='text-slate-300' />
@@ -184,7 +186,7 @@ function SiswaDashboard() {
                   ))}
                 </div>
 
-                <Button onClick={handleLogout} variant="outline" className="w-full h-14 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-bold text-xs uppercase tracking-widest mt-4">
+                <Button onClick={handleLogout} variant="outline" className="w-full h-16 rounded-2xl border-red-100 text-red-500 hover:bg-red-50 font-black text-xs uppercase tracking-widest mt-4">
                   <LogOut className="mr-2 h-4 w-4" /> Keluar sesi mandiri
                 </Button>
               </CardContent>

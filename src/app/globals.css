@@ -60,9 +60,10 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tight font-extrabold text-slate-900;
   }
-  /* Force all standard elements to be non-italic */
+  /* Force all standard elements to be non-italic and standard case */
   em, i, cite, dfn, span, p, a, button {
     font-style: normal !important;
+    text-transform: none !important;
   }
 }
 
