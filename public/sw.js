@@ -1,20 +1,31 @@
-const CACHE_NAME = 'prida-cache-v1';
-const ASSETS_TO_CACHE = [
+/**
+ * Service Worker SMKS PGRI 2 KEDONDONG v7.5
+ * Optimal untuk Update Otomatis & Caching Statis.
+ */
+
+const CACHE_NAME = 'smk-prida-cache-v7.5';
+
+// Daftar aset untuk caching awal (optional untuk static export)
+const urlsToCache = [
   '/',
   '/manifest.webmanifest',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css'
 ];
 
 self.addEventListener('install', (event) => {
+  // Langsung aktifkan SW baru tanpa menunggu tab ditutup
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(urlsToCache);
     })
   );
 });
 
 self.addEventListener('activate', (event) => {
+  // Ambil alih kendali semua klien segera
+  event.waitUntil(clients.claim());
+  
+  // Bersihkan cache lama jika ada perubahan versi
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -26,22 +37,13 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/');
-      })
-    );
-    return;
-  }
-
+  // Strategi: Network First, falling back to cache
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
     })
   );
 });

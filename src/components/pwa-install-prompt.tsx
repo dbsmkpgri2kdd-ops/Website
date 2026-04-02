@@ -4,9 +4,14 @@ import { useState, useEffect } from 'react';
 import { usePWAInstall } from '@/hooks/use-pwa-install';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Download, X, SmartphoneIcon, Sparkles } from 'lucide-react';
+import { Download, X, SmartphoneIcon, Sparkles, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+/**
+ * PWA Install Prompt v7.5.
+ * Menampilkan instruksi instalasi dengan estetika Android Native.
+ * Kepatuhan: Standard Case & Zero Italics.
+ */
 export function PWAInstallPrompt() {
   const { isInstallable, handleInstall } = usePWAInstall();
   const [isVisible, setIsVisible] = useState(false);
@@ -34,41 +39,42 @@ export function PWAInstallPrompt() {
 
   return (
     <div className="fixed bottom-24 left-4 right-4 z-[70] md:left-auto md:right-8 md:w-[400px] animate-reveal">
-      <Card className="glass-premium border-accent/30 overflow-hidden rounded-[2.5rem] shadow-[0_20px_50px_rgba(59,130,246,0.2)] bg-card/90 backdrop-blur-2xl border-2">
-        <div className="absolute top-0 left-0 w-full h-1.5 bg-accent shadow-[0_0_10px_var(--accent)]"></div>
-        <CardContent className="p-7">
-          <div className="flex gap-5">
+      <Card className="glass-premium border-primary/20 overflow-hidden rounded-[2.5rem] shadow-[0_25px_60px_-15px_rgba(56,102,65,0.3)] bg-white/90 backdrop-blur-3xl border-2">
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-primary shadow-[0_0_15px_hsl(var(--primary))]"></div>
+        <CardContent className="p-8">
+          <div className="flex gap-6">
             <div className="w-16 h-16 bg-primary text-white rounded-2xl flex items-center justify-center shrink-0 shadow-xl relative overflow-hidden group">
               <div className='absolute inset-0 bg-white/10 animate-pulse'></div>
-              <SmartphoneIcon size={32} className="relative z-10 group-hover:scale-110 transition-transform" />
+              <SmartphoneIcon size={32} className="relative z-10 group-hover:scale-110 transition-transform duration-500" />
             </div>
-            <div className="flex-1 space-y-1.5">
+            <div className="flex-1 space-y-2">
               <div className="flex items-center justify-between">
                 <div className='flex items-center gap-2'>
-                    <Sparkles size={14} className='text-accent animate-pulse' />
-                    <h4 className="font-black uppercase text-[11px] tracking-tighter">App Experience</h4>
+                    <ShieldCheck size={14} className='text-primary animate-pulse' />
+                    <h4 className="font-black uppercase text-[10px] tracking-[0.2em] text-slate-900">App Experience</h4>
                 </div>
-                <button onClick={onDismiss} className="text-muted-foreground hover:text-primary transition-colors p-1" aria-label="Tutup">
+                <button onClick={onDismiss} className="text-slate-400 hover:text-primary transition-colors p-1" aria-label="Tutup">
                   <X size={18} />
                 </button>
               </div>
-              <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-relaxed">
-                Instal portal resmi <span className='text-primary'>SMKS PGRI 2 KEDONDONG</span> untuk akses layanan akademik yang lebih cepat.
+              <p className="text-[11px] text-slate-600 font-bold uppercase tracking-widest leading-relaxed">
+                Instal portal resmi <span className='text-primary font-black'>SMK PRIDA</span> untuk akses layanan akademik yang lebih cepat dan stabil.
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4 mt-8">
+          
+          <div className="grid grid-cols-2 gap-4 mt-10">
             <button 
               onClick={onDismiss}
-              className="rounded-xl h-12 font-black text-[9px] uppercase tracking-[0.2em] text-muted-foreground hover:bg-slate-50 transition-colors"
+              className="rounded-xl h-14 font-black text-[10px] uppercase tracking-[0.3em] text-slate-400 hover:bg-slate-50 transition-all active:scale-95"
             >
-              Nanti Saja
+              Nanti saja
             </button>
             <Button 
               onClick={onInstallClick}
-              className="rounded-xl h-12 font-black text-[9px] uppercase tracking-[0.2em] shadow-xl glow-primary bg-primary text-white hover:bg-primary/90"
+              className="rounded-xl h-14 font-black text-[10px] uppercase tracking-[0.3em] shadow-xl glow-primary bg-primary text-white hover:bg-primary/90 transition-all active:scale-95"
             >
-              <Download size={16} className="mr-2" /> INSTAL SEKARANG
+              <Download size={16} className="mr-2" /> Instal sekarang
             </Button>
           </div>
         </CardContent>
