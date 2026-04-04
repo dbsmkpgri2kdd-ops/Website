@@ -102,7 +102,9 @@ export function ManajemenAbsensi() {
 
     const selectedStudent = students.find(s => s.id === values.studentId);
     const studentName = selectedStudent?.displayName || selectedStudent?.email || 'Siswa';
-    const dataToSave = { ...values, studentName };
+    const studentNis = selectedStudent?.nis;
+    const studentClass = selectedStudent?.className;
+    const dataToSave = { ...values, studentName, studentNis, studentClass };
 
     if (editingItem) {
       const docRef = doc(firestore, `schools/${SCHOOL_DATA_ID}/attendance`, editingItem.id);

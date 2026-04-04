@@ -6,7 +6,7 @@ import { useUser } from '@/firebase';
 import { LoaderCircle } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getDashboardByRole } from '@/lib/utils';
 
 type ProtectedRouteProps = {
@@ -16,24 +16,32 @@ type ProtectedRouteProps = {
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   const { user, isUserLoading, userError } = useUser();
+  const [isAllowed, setIsAllowed] = useState<boolean | null>(null);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (isUserLoading) return; 
+    if (isUserLoading) {
+      setIsAllowed(null);
+      return;
+    }
 
     if (userError || !user) {
+      setIsAllowed(false);
       router.replace('/login');
       return;
     }
 
-    if (!user.profile || !user.profile.role) {
+    const role = user.profile?.role;
+    if (!role) {
+      setIsAllowed(false);
+      router.replace('/login');
       return;
     }
 
-    const userRole = user.profile.role;
-    if (!allowedRoles.includes(userRole)) {
-      const userDashboard = getDashboardByRole(userRole);
+    if (!allowedRoles.includes(role)) {
+      setIsAllowed(false);
+      const userDashboard = getDashboardByRole(role);
       toast({
         variant: 'destructive',
         title: 'Akses Dibatasi',
@@ -43,10 +51,12 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
       return;
     }
 
+    setIsAllowed(true);
+
   }, [user, isUserLoading, userError, router, toast, allowedRoles]);
 
 
-  if (isUserLoading) {
+  if (isUserLoading || isAllowed === null) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <LoaderCircle className="animate-spin h-10 w-10 text-primary" />
@@ -55,7 +65,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     );
   }
   
-  if (!user || !user.profile || !allowedRoles.includes(user.profile.role)) {
+  if (!isAllowed) {
     return (
        <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <LoaderCircle className="animate-spin h-10 w-10 text-primary" />

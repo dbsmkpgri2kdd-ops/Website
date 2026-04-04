@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,12 +11,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type Exam } from '@/lib/data';
-import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Smartphone, MonitorCheck, Zap, Wifi } from 'lucide-react';
+import { Lock, QrCode, Link, Calendar, LoaderCircle, ShieldCheck, AlertCircle, Camera, Monitor, Smartphone, MonitorCheck, Zap, Wifi, CheckCircle2, X } from 'lucide-react';
 import { ExamBroSession } from './exambro-session';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 
 /**
  * Portal Utama ExamBro v5.5.
@@ -24,6 +25,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
  */
 export function ExamBroPortal() {
   const firestore = useFirestore();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>('scheduled');
   const [isExamActive, setIsExamActive] = useState(false);
   const [selectedExamUrl, setSelectedExamUrl] = useState<string>('');
@@ -38,6 +40,12 @@ export function ExamBroPortal() {
   const [inputUrl, setInputUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
+  // QR Code Scanner State
+  const [isScannerActive, setIsScannerActive] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [isBarcodeDetectorAvailable, setIsBarcodeDetectorAvailable] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const examsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(
@@ -48,6 +56,132 @@ export function ExamBroPortal() {
   }, [firestore]);
 
   const { data: exams, isLoading } = useCollection<Exam>(examsQuery);
+
+  // QR Code Scanner Functions
+  const startScanner = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setIsScannerActive(true);
+        setIsScanning(true);
+        scanQRCode();
+      }
+    } catch (err) {
+      toast({ variant: 'destructive', title: 'Akses Kamera Gagal', description: 'Berikan izin akses kamera pada browser Anda.' });
+    }
+  };
+
+  const stopScanner = () => {
+    if (videoRef.current?.srcObject) {
+      (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    setIsScannerActive(false);
+    setIsScanning(false);
+  };
+
+  const decodeQRCode = (data: string): { examId?: string; token?: string } => {
+    try {
+      // Format: exam-id:token atau hanya exam-id
+      const parts = data.split(':');
+      return {
+        examId: parts[0].trim(),
+        token: parts[1]?.trim()
+      };
+    } catch {
+      return {};
+    }
+  };
+
+  const scanQRCode = async () => {
+    if (!canvasRef.current || !videoRef.current) return;
+
+    let detectionAttempts = 0;
+    const maxAttempts = 100; // Scan selama ~20 detik (200ms interval)
+
+    const scannerInterval = setInterval(async () => {
+      detectionAttempts++;
+
+      if (!isScannerActive || !videoRef.current?.srcObject) {
+        clearInterval(scannerInterval);
+        setIsScanning(false);
+        return;
+      }
+
+      try {
+        const canvas = canvasRef.current!;
+        const video = videoRef.current!;
+
+        if (video.readyState !== video.HAVE_ENOUGH_DATA) {
+          if (detectionAttempts > maxAttempts) {
+            clearInterval(scannerInterval);
+            setIsScanning(false);
+            toast({ title: 'QR Code Tidak Ditemukan', description: 'Tidak ada kode QR terdeteksi. Coba lagi.' });
+          }
+          return;
+        }
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        ctx.drawImage(video, 0, 0);
+
+        // Bila API BarcodeDetector tersedia, gunakan untuk mendeteksi QR yang valid.
+        if ('BarcodeDetector' in window) {
+          const detector = new (window as any).BarcodeDetector({ formats: ['qr_code'] });
+          const barcodes = await detector.detect(canvas);
+
+          if (barcodes.length > 0) {
+            const rawValue = barcodes[0].rawValue;
+            if (rawValue) {
+              const decoded = decodeQRCode(rawValue);
+              const exam = exams?.find(e => e.id === decoded.examId);
+
+              if (exam) {
+                handleStartExam(
+                  exam.id,
+                  exam.subject,
+                  exam.url,
+                  decoded.token || '',
+                  exam.token,
+                  exam.isCameraRequired,
+                  exam.durationMinutes || 60
+                );
+                stopScanner();
+                clearInterval(scannerInterval);
+                return;
+              }
+            }
+          }
+        }
+
+        if (detectionAttempts > maxAttempts) {
+          clearInterval(scannerInterval);
+          setIsScanning(false);
+          toast({ title: 'Scan Timeout', description: 'Waktu scan habis. Coba lagi dari awal.' });
+        }
+      } catch (err) {
+        console.error('QR scan error:', err);
+      }
+    }, 200);
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'BarcodeDetector' in window) {
+      setIsBarcodeDetectorAvailable(true);
+    }
+
+    return () => {
+      if (isScannerActive) {
+        stopScanner();
+      }
+    };
+  }, [isScannerActive]);
 
   const handleStartExam = (id: string, title: string, url: string, token: string, requiredToken?: string, camRequired: boolean = false, duration: number = 60) => {
     setError(null);
@@ -245,15 +379,70 @@ export function ExamBroPortal() {
             </TabsContent>
 
             <TabsContent value="scan" className="py-12 text-center space-y-10 animate-fade-in">
-              <div className="w-64 h-64 mx-auto border-4 border-dashed border-primary/10 rounded-[4rem] flex items-center justify-center bg-primary/5 shadow-inner relative overflow-hidden group">
-                <div className='absolute inset-0 bg-primary/5 animate-pulse'></div>
-                <QrCode size={100} className="text-primary opacity-20 relative z-10 group-hover:scale-110 transition-transform" />
-              </div>
-              <div className="space-y-3">
-                <p className="font-black text-sm uppercase tracking-tight text-slate-900">Scanner QR Access v3.0</p>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest max-w-xs mx-auto leading-relaxed">Arahkan kamera ke kode akses yang diberikan oleh pengawas ruangan untuk login otomatis.</p>
-              </div>
-              <Button variant="outline" className="rounded-2xl border-slate-200 h-16 px-12 font-black text-[10px] uppercase tracking-[0.3em] hover:bg-slate-50 transition-all">Aktifkan Kamera Scanner</Button>
+              {!isScannerActive ? (
+                <>
+                  <div className="w-64 h-64 mx-auto border-4 border-dashed border-primary/10 rounded-[4rem] flex items-center justify-center bg-primary/5 shadow-inner relative overflow-hidden group">
+                    <div className='absolute inset-0 bg-primary/5 animate-pulse'></div>
+                    <QrCode size={100} className="text-primary opacity-20 relative z-10 group-hover:scale-110 transition-transform" />
+                  </div>
+                  <div className="space-y-3">
+                    <p className="font-black text-sm uppercase tracking-tight text-slate-900">Scanner QR Access v3.0</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest max-w-xs mx-auto leading-relaxed">Arahkan kamera ke kode akses yang diberikan oleh pengawas ruangan untuk login otomatis.</p>
+                    { !isBarcodeDetectorAvailable && (
+                      <p className="text-[9px] text-amber-600 font-bold uppercase tracking-widest">Browser Anda belum mendukung API BarcodeDetector. Gunakan input manual apabila scan tidak berhasil.</p>
+                    ) }
+                  </div>
+                  <Button 
+                    onClick={startScanner}
+                    className="rounded-2xl h-16 px-12 font-black text-[10px] uppercase tracking-[0.3em] shadow-xl glow-primary"
+                  >
+                    <Camera className="mr-2 h-4 w-4" /> Aktifkan Kamera Scanner
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="relative w-full max-w-md mx-auto rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-primary/20">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      className="w-full aspect-square object-cover"
+                    />
+                    <canvas ref={canvasRef} className="hidden" />
+                    {isScanning && (
+                      <div className="absolute inset-0 bg-primary/10 animate-pulse flex items-center justify-center">
+                        <div className="space-y-4">
+                          <LoaderCircle className="mx-auto animate-spin text-primary" size={48} />
+                          <p className="text-white font-black text-xs uppercase tracking-widest">Memproses Scan</p>
+                        </div>
+                      </div>
+                    )}
+                    {!isScanning && (
+                      <>
+                        <div className="absolute inset-0 border-4 border-primary rounded-[2.5rem] pointer-events-none" />
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-1 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse" />
+                      </>
+                    )}
+                  </div>
+                  <div className="space-y-4">
+                    <p className="font-black text-sm uppercase tracking-tight text-slate-900">
+                      {isScanning ? 'Sedang Memindai...' : 'Arahkan Kamera ke QR Code'}
+                    </p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest max-w-xs mx-auto">
+                      {isScanning 
+                        ? 'Tunggu deteksi selesai (data input manual via dialog)' 
+                        : 'Pastikan pencahayaan cukup dan QR code terlihat jelas'}
+                    </p>
+                  </div>
+                  <Button 
+                    onClick={stopScanner}
+                    variant="outline"
+                    className="rounded-2xl border-red-500/20 h-14 px-12 font-black text-[10px] uppercase tracking-[0.3em] text-red-500 hover:bg-red-50"
+                  >
+                    <X className="mr-2 h-4 w-4" /> Tutup Scanner
+                  </Button>
+                </>
+              )}
             </TabsContent>
 
             <TabsContent value="manual" className="space-y-10 animate-fade-in text-left">

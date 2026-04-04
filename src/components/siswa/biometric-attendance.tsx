@@ -61,13 +61,14 @@ export function BiometricAttendance() {
         const { latitude, longitude } = position.coords;
         const schoolLat = schoolData?.latitude || -5.4656994;
         const schoolLng = schoolData?.longitude || 104.9996424;
+        const maxRadius = schoolData?.attendanceRadius || 30;
         
         const dist = calculateDistance(latitude, longitude, schoolLat, schoolLng);
         setDistance(dist);
 
-        if (dist > 30) {
+        if (dist > maxRadius) {
           setStatus('ERROR');
-          setErrorMsg(`Jarak terdeteksi ${Math.round(dist)}m. Anda harus berada dalam radius 30m dari koordinat sekolah.`);
+          setErrorMsg(`Jarak terdeteksi ${Math.round(dist)}m. Anda harus berada dalam radius ${maxRadius}m dari koordinat sekolah.`);
           return;
         }
 

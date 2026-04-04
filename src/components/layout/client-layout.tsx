@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { AIAssistant } from '@/components/ai/ai-assistant';
 import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
+import { PWAUpdateNotification } from '@/components/pwa-update-notification';
 import { useToast } from '@/hooks/use-toast';
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -16,29 +17,50 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then((registration) => {
-          // Cek pembaruan berkala (setiap 30 menit)
+          console.log('[PWA] Service Worker registered');
+
+          // Cek pembaruan setiap 15 menit (lebih sering untuk update yang lebih cepat)
           setInterval(() => {
             registration.update();
-          }, 1000 * 60 * 30);
+          }, 1000 * 60 * 15);
 
+          // Listen untuk update yang ditemukan
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
             if (newWorker) {
+              console.log('[PWA] New version found, installing...');
+              
               newWorker.addEventListener('statechange', () => {
+                console.log('[PWA] Worker state:', newWorker.state);
+                
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                   // Versi baru ditemukan dan terpasang
-                  toast({
-                    title: "Pembaruan Sistem",
-                    description: "Versi terbaru sedang diterapkan. Aplikasi akan dimuat ulang.",
-                  });
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 2000);
+                  console.log('[PWA] New version installed, dispatching update event');
+                  
+                  // Dispatch custom event untuk menampilkan notifikasi update
+                  window.dispatchEvent(new CustomEvent('pwa-update-available'));
+                } else if (newWorker.state === 'installed' && !navigator.serviceWorker.controller) {
+                  // PWA baru pertama kali diinstall
+                  console.log('[PWA] PWA installed for first time');
                 }
               });
             }
           });
-        }).catch(err => console.log('PWA: Registration failed', err));
+
+          // Cek update saat aplikasi dimuat
+          registration.update();
+          
+          // Listen untuk update yang diterima user
+          const handleUpdateAccepted = () => {
+            console.log('[PWA] Update accepted by user, skipping waiting...');
+            registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+          };
+
+          window.addEventListener('pwa-update-accepted', handleUpdateAccepted);
+          
+        }).catch(err => {
+          console.error('[PWA] Registration failed:', err);
+        });
       });
 
       // Menangani pergantian controller (setelah skipWaiting)
@@ -46,6 +68,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!refreshing) {
           refreshing = true;
+          console.log('[PWA] Controller changed, reloading...');
           window.location.reload();
         }
       });
@@ -59,6 +82,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         <>
           <AIAssistant />
           <PWAInstallPrompt />
+          <PWAUpdateNotification />
         </>
       )}
     </>

@@ -97,18 +97,18 @@ function SiswaDashboard() {
               </Button>
             </header>
 
-            <div className="grid grid-cols-4 gap-4 px-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-2">
               {[
                 { label: 'Absen', icon: Fingerprint, bg: 'bg-emerald-500', action: () => setIsAbsenOpen(true) },
                 { label: 'Ujian', icon: Smartphone, bg: 'bg-primary', action: () => setActiveTab('ujian') },
                 { label: 'Rapor', icon: BookMarked, bg: 'bg-amber-500', action: () => setActiveTab('akademik') },
                 { label: 'Karya', icon: FolderKanban, bg: 'bg-indigo-600', action: () => setActiveTab('akademik') },
               ].map((item, idx) => (
-                <button key={idx} onClick={item.action} className="flex flex-col items-center gap-2 group">
+                <button key={idx} onClick={item.action} className="flex flex-col items-center gap-2 group py-3 md:py-4 rounded-2xl bg-white border border-slate-100 hover:shadow-lg transition-shadow">
                   <div className={cn("quick-action-icon", item.bg)}>
-                    <item.icon size={24} />
+                    <item.icon size={20} />
                   </div>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{item.label}</span>
+                  <span className="text-[9px] font-black text-slate-600 uppercase tracking-tight">{item.label}</span>
                 </button>
               ))}
             </div>
@@ -182,6 +182,12 @@ function SiswaDashboard() {
                     { icon: Fingerprint, label: 'Nomor Induk Siswa', value: profile?.nis || '-' },
                     { icon: MapPin, label: 'Alamat Terdaftar', value: profile?.address || '-' },
                     { icon: UserCog, label: 'Wali Kelas', value: profile?.homeroomTeacher || '-' },
+                    { icon: History, label: 'Guru BK', value: profile?.bkTeacher || '-' },
+                    { icon: ShieldCheck, label: 'Guru Penjaga', value: profile?.guardianTeacher || '-' },
+                    { icon: Smartphone, label: 'Telepon Siswa', value: profile?.phone || '-' },
+                    { icon: Home, label: 'Nama Orang Tua', value: profile?.parentName || '-' },
+                    { icon: MapPin, label: 'Telepon Orang Tua', value: profile?.parentPhone || '-' },
+                    { icon: BookMarked, label: 'Bagian Kesiswaan', value: profile?.studentAffairs || '-' },
                     { icon: History, label: 'Sinkronisasi Terakhir', value: profile?.lastSyncedAt ? 'Aktif' : 'Belum Sinkron' }
                   ].map((info, idx) => (
                     <div key={idx} className="flex items-center justify-between p-5 rounded-2xl bg-slate-50 border border-slate-100 group hover:border-primary/20 transition-all active:scale-[0.98]">

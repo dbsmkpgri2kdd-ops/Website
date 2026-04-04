@@ -23,6 +23,7 @@ const formSchema = z.object({
   attendanceWebhookUrl: z.string().url('URL Webhook tidak valid.').optional().or(z.literal('')),
   latitude: z.coerce.number().optional(),
   longitude: z.coerce.number().optional(),
+  attendanceRadius: z.coerce.number().min(1, 'Radius minimal 1 meter').max(1000, 'Radius maksimal 1000 meter').default(30),
   primaryColor: z.string().optional(),
   accentColor: z.string().optional(),
   csvMappings: z.object({
@@ -38,6 +39,7 @@ const formSchema = z.object({
     homeroomTeacher: z.string().optional(),
     guardianTeacher: z.string().optional(),
     studentAffairs: z.string().optional(),
+    status: z.string().optional(),
   }),
   layoutSettings: z.object({
     showHero: z.boolean().default(true),
@@ -69,6 +71,7 @@ export function SystemSettingsManager() {
       attendanceWebhookUrl: '',
       latitude: -5.4656994,
       longitude: 104.9996424,
+      attendanceRadius: 30,
       csvMappings: {
         nis: 'NIS',
         name: 'Nama',
@@ -103,6 +106,7 @@ export function SystemSettingsManager() {
         attendanceWebhookUrl: schoolData.attendanceWebhookUrl || '',
         latitude: schoolData.latitude || -5.4656994,
         longitude: schoolData.longitude || 104.9996424,
+        attendanceRadius: schoolData.attendanceRadius || 30,
         primaryColor: schoolData.primaryColor || '221 100% 50%',
         accentColor: schoolData.accentColor || '45 100% 50%',
         csvMappings: {
@@ -292,10 +296,10 @@ export function SystemSettingsManager() {
                     <div className='p-2.5 bg-emerald-500 text-white rounded-2xl shadow-xl shadow-emerald-500/20'><MapPin size={20} /></div>
                     <CardTitle className='text-xl font-headline font-black uppercase italic tracking-tighter text-slate-900'>Geofencing Absensi</CardTitle>
                   </div>
-                  <CardDescription className='text-[10px] font-bold uppercase tracking-widest mt-1'>Titik pusat radius kehadiran (30m).</CardDescription>
+                  <CardDescription className='text-[10px] font-bold uppercase tracking-widest mt-1'>Titik pusat radius kehadiran.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-8 space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="latitude"
@@ -320,10 +324,23 @@ export function SystemSettingsManager() {
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="attendanceRadius"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">Radius (Meter)</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="number" min="1" max="1000" className='h-12 rounded-xl bg-slate-50 border-slate-100 font-mono'/>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   <div className='bg-amber-500/5 p-4 rounded-xl border border-amber-500/10 flex gap-3'>
                     <ShieldAlert size={16} className='text-amber-600 shrink-0 mt-0.5' />
-                    <p className='text-[9px] text-amber-700 font-bold uppercase tracking-widest leading-relaxed'>Absensi biometrik hanya dapat dilakukan jika siswa berada dalam radius maksimal 30 meter dari koordinat ini.</p>
+                    <p className='text-[9px] text-amber-700 font-bold uppercase tracking-widest leading-relaxed'>Absensi biometrik hanya dapat dilakukan jika siswa berada dalam radius maksimal {form.watch('attendanceRadius') || 30} meter dari koordinat ini.</p>
                   </div>
                 </CardContent>
               </Card>

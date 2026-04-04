@@ -103,18 +103,18 @@ function GuruDashboard() {
               </div>
             </Card>
 
-            <div className="grid grid-cols-4 gap-4 px-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-2">
               {[
                 { label: 'Absen', icon: UserCheck, bg: 'bg-emerald-500', action: () => setActiveTab('absensi') },
                 { label: 'Monitor', icon: MonitorPlay, bg: 'bg-primary', action: () => setActiveTab('ujian') },
                 { label: 'Rapor', icon: BookMarked, bg: 'bg-amber-500', action: () => setActiveTab('profil') },
                 { label: 'Prakerin', icon: Briefcase, bg: 'bg-blue-600', action: () => setActiveTab('profil') },
               ].map((item, idx) => (
-                <button key={idx} onClick={item.action} className="flex flex-col items-center gap-2 group">
+                <button key={idx} onClick={item.action} className="flex flex-col items-center gap-2 group py-3 md:py-4 rounded-2xl bg-white border border-slate-100 hover:shadow-lg transition-shadow">
                   <div className={cn("quick-action-icon", item.bg)}>
-                    <item.icon size={24} />
+                    <item.icon size={20} />
                   </div>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{item.label}</span>
+                  <span className="text-[9px] font-black text-slate-600 uppercase tracking-tight">{item.label}</span>
                 </button>
               ))}
             </div>

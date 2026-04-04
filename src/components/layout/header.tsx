@@ -93,6 +93,13 @@ const Header = ({
   const currentMenu = schoolData?.customMenu || NAV_MENU_DEFAULT;
   const defaultLogo = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
 
+  const handleNavigate = (tab?: NavLink) => {
+    if (!tab) return;
+    setActiveTab(tab);
+    if (isMenuOpen) setIsMenuOpen(false);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const renderNavItems = (items: NavItem[]) => {
     return items.map((item, idx) => {
       if (item.children && item.children.length > 0) {
@@ -108,7 +115,7 @@ const Header = ({
               {item.children.map((child, cIdx) => (
                 <DropdownMenuItem
                   key={cIdx}
-                  onClick={() => child.id && setActiveTab(child.id)}
+                  onClick={() => handleNavigate(child.id)}
                   className='font-bold text-[12px] cursor-pointer rounded-xl py-2.5 px-4 focus:bg-primary/5 focus:text-primary transition-all'
                 >
                   {child.label}
@@ -121,7 +128,7 @@ const Header = ({
         return (
           <button
             key={idx}
-            onClick={() => item.id && setActiveTab(item.id)}
+            onClick={() => handleNavigate(item.id)}
             className='px-4 py-2 text-[13px] font-bold text-slate-600 hover:text-primary transition-all'
           >
             {item.label}
@@ -193,7 +200,7 @@ const Header = ({
                                 {mainItem.children.map((child, cIdx) => (
                                   <button
                                     key={cIdx}
-                                    onClick={() => { child.id && setActiveTab(child.id); setIsMenuOpen(false); }}
+                                    onClick={() => { handleNavigate(child.id); }}
                                     className="w-full text-left py-3.5 px-5 rounded-2xl text-[14px] font-bold text-slate-700 hover:bg-primary/5 hover:text-primary transition-all"
                                   >
                                     {child.label}
@@ -202,7 +209,7 @@ const Header = ({
                               </div>
                             ) : (
                               <button
-                                onClick={() => { mainItem.id && setActiveTab(mainItem.id); setIsMenuOpen(false); }}
+                                onClick={() => { handleNavigate(mainItem.id); }}
                                 className="w-full text-left py-3.5 px-5 rounded-2xl text-[14px] font-bold text-slate-700 hover:bg-primary/5 hover:text-primary transition-all"
                               >
                                 {mainItem.label}

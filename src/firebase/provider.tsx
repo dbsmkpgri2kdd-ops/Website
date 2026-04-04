@@ -5,7 +5,7 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
-import { SCHOOL_DATA_ID, type UserProfile, type School } from '@/lib/data';
+import { SCHOOL_DATA_ID, type UserProfile, type School, type TeacherCsvMappings } from '@/lib/data';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -34,8 +34,8 @@ export interface FirebaseContextState extends UserAuthState {
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
 
 /**
- * Robust CSV Parser for student database sync.
- * Handles quoted values, multiple line endings, and different delimiters.
+ * Robust CSV Parser for student & teacher database sync.
+ * Handles quoted values, escaped quotes, special chars (,.'/) and multiple line endings.
  */
 const parseCSV = (csv: string) => {
   const lines = csv.split(/\r?\n/).filter(line => line.trim() !== '');
@@ -51,15 +51,25 @@ const parseCSV = (csv: string) => {
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
       if (char === '"') {
-        inQuotes = !inQuotes;
+        if (inQuotes && line[i + 1] === '"') {
+          // Handle escaped quotes ("") - replace with single quote
+          current += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
       } else if (char === ',' && !inQuotes) {
-        values.push(current.trim().replace(/^["']|["']$/g, ''));
+        // End of field - clean and add value
+        let value = current.trim().replace(/^["']|["']$/g, '').replace(/""/g, '"');
+        values.push(value);
         current = '';
       } else {
         current += char;
       }
     }
-    values.push(current.trim().replace(/^["']|["']$/g, ''));
+    // Add last value
+    let value = current.trim().replace(/^["']|["']$/g, '').replace(/""/g, '"');
+    values.push(value);
 
     return headers.reduce((obj: any, header, i) => {
       obj[header] = values[i] || '';
@@ -146,7 +156,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
                     });
                   }
                 } catch (err) {
-                  console.error("CSV Database Sync Error:", err);
+                  console.error("CSV Database Sync Error (Student):", err);
                 }
               }
             }

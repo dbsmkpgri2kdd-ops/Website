@@ -20,7 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, LoaderCircle, Users, ShieldCheck, UserCog, GraduationCap, Briefcase, Trash2, Key, Sparkles, Fingerprint, Clock, UserPlus, Mail, User as UserIcon } from 'lucide-react';
+import { Edit, LoaderCircle, Users, ShieldCheck, UserCog, GraduationCap, Briefcase, Trash2, Key, Sparkles, Fingerprint, Clock, UserPlus, Mail, User as UserIcon, ShieldAlert } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
@@ -136,15 +136,25 @@ export function UsersManager() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
 
+    // Validasi: hanya admin yang boleh membuat akun guru
+    if (!editingUser && values.role === 'guru' && !isAdmin) {
+      toast({ variant: 'destructive', title: 'Akses Ditolak', description: 'Hanya administrator yang bisa membuat akun guru.' });
+      return;
+    }
+
     try {
         if (editingUser) {
             const docRef = doc(firestore, 'users', editingUser.id);
             updateDocumentNonBlocking(docRef, values);
             toast({ title: 'Profil diperbarui', description: `Data ${values.displayName} telah disimpan.` });
         } else {
-            // Generate temporary ID based on email for the document
-            const tempId = values.email.replace(/[^a-zA-Z0-9]/g, '_');
-            const docRef = doc(firestore, 'users', tempId);
+            // Generate unique document ID using a more robust method
+            // Using timestamp + random string to ensure uniqueness
+            const timestamp = Date.now();
+            const randomSuffix = Math.random().toString(36).substring(2, 8);
+            const uniqueId = `user_${timestamp}_${randomSuffix}`;
+            
+            const docRef = doc(firestore, 'users', uniqueId);
             setDocumentNonBlocking(docRef, {
                 ...values,
                 createdAt: serverTimestamp(),
@@ -308,6 +318,16 @@ export function UsersManager() {
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="p-10 space-y-6">
+                        {!editingUser && !isAdmin && (
+                          <Alert className="bg-amber-500/5 border-amber-500/20">
+                            <ShieldAlert className="h-4 w-4 text-amber-600" />
+                            <AlertTitle className='font-bold text-xs uppercase tracking-widest text-amber-700'>Pembatasan Role Guru</AlertTitle>
+                            <AlertDescription className='text-[10px] font-bold text-amber-700 uppercase tracking-widest leading-relaxed mt-1'>
+                              Hanya administrator yang dapat membuat akun guru. Anda hanya bisa membuat akun siswa atau alumni.
+                            </AlertDescription>
+                          </Alert>
+                        )}
+                        
                         <div className='space-y-4'>
                             <FormField control={form.control} name="email" render={({ field }) => (
                                 <FormItem>
@@ -343,7 +363,13 @@ export function UsersManager() {
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl><SelectTrigger className="h-14 rounded-2xl bg-slate-50 border-slate-100 font-bold text-xs"><SelectValue /></SelectTrigger></FormControl>
                                         <SelectContent className="rounded-2xl border-slate-100 bg-white">
-                                            {USER_ROLES.map(role => (
+                                            {USER_ROLES.filter(role => {
+                                              // Tampilkan guru hanya jika admin atau sedang edit user yang statusnya guru
+                                              if (role.value === 'guru' && !isAdmin && editingUser?.role !== 'guru') {
+                                                return false;
+                                              }
+                                              return true;
+                                            }).map(role => (
                                               <SelectItem key={role.value} value={role.value} className="py-4 font-bold text-[10px] uppercase tracking-widest border-b border-slate-50 last:border-0">
                                                 <div className="flex items-center gap-3"><role.icon size={14} className="text-primary" /><span>{role.label}</span></div>
                                               </SelectItem>

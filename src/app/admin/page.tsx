@@ -9,7 +9,7 @@ import {
   PenSquare, ShieldAlert, 
   LoaderCircle, Mail, Award, Library, MessageSquare, Quote, 
   DatabaseZap, Palette, Layout, MousePointer2, BriefcaseIcon, Factory, SearchCode,
-  UserPlus, ShieldCheck, ScanFace, Sparkles, MonitorPlay
+  UserPlus, ShieldCheck, ScanFace, Sparkles, MonitorPlay, QrCode
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -59,13 +59,14 @@ import { LayoutBuilderManager } from '@/components/admin/layout-builder-manager'
 import { ExamManager } from '@/components/guru/exam-manager';
 import { BiometricManager } from '@/components/admin/biometric-manager';
 import { ProctoringCenter } from '@/components/guru/proctoring-center';
+import { QRCodeGenerator } from '@/components/shared/qr-code-generator';
 
 type AdminTab = 
   | 'overview' | 'school-profile' | 'majors' | 'teachers' | 'facilities' | 'gallery'
   | 'news' | 'agenda' | 'osis' | 'literacy' | 'schedule' | 'rapor' | 'attendance'
   | 'partners' | 'jobs' | 'prakerin' | 'ppdb' | 'users' | 'settings' | 'quick-links' | 'contact-messages'
   | 'achievements' | 'extracurriculars' | 'library' | 'tefa' | 'lsp' | 'graduation' | 'testimonials' | 'alumni' | 'guestbook' | 'downloads' | 'tracer' | 'appearance'
-  | 'navigation' | 'layout-builder' | 'exams' | 'biometric-admin' | 'live-proctoring';
+  | 'navigation' | 'layout-builder' | 'exams' | 'biometric-admin' | 'live-proctoring' | 'qr-generator';
 
 function AdminDashboard() {
   const { user, isUserLoading } = useUser();
@@ -97,6 +98,7 @@ function AdminDashboard() {
     { label: 'Identitas visual', value: 'appearance', icon: Palette, group: 'Editor visual' },
     
     { label: 'Manajemen ujian', value: 'exams', icon: ShieldCheck, group: 'Akademik' },
+    { label: 'Generator QR Akses', value: 'qr-generator', icon: QrCode, group: 'Akademik' },
     { label: 'Absensi biometrik', value: 'biometric-admin', icon: ScanFace, group: 'Akademik' },
     { label: 'Staf & guru', value: 'teachers', icon: Users2, group: 'Akademik' },
     { label: 'Daftar jurusan', value: 'majors', icon: GraduationCap, group: 'Akademik' },
@@ -148,6 +150,7 @@ function AdminDashboard() {
       case 'navigation': return <NavigationManager />;
       case 'appearance': return <DesignTemplateManager />;
       case 'exams': return <ExamManager />;
+      case 'qr-generator': return <QRCodeGenerator />;
       case 'live-proctoring': return <ProctoringCenter />;
       case 'biometric-admin': return <BiometricManager />;
       case 'contact-messages': return <ContactMessagesManager />;

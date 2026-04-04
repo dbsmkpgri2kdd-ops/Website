@@ -104,6 +104,17 @@ export interface CsvMappings {
   homeroomTeacher: string;
   guardianTeacher: string;
   studentAffairs: string;
+  status?: string; // Kolom untuk membedakan siswa/guru
+}
+
+export interface TeacherCsvMappings {
+  nis: string; // NIP/ID Guru
+  name: string;
+  subject?: string; // Mata Pelajaran
+  phone?: string;
+  email?: string;
+  address?: string;
+  status?: string; // Harus berisi 'guru' atau 'guru/staf'
 }
 
 export interface School {
@@ -136,10 +147,13 @@ export interface School {
     welcomeTitle?: string;
     ctaTitle?: string;
     studentDatabaseUrl?: string;
+    teacherDatabaseUrl?: string;
     attendanceWebhookUrl?: string; 
     csvMappings?: CsvMappings;
+    teacherCsvMappings?: TeacherCsvMappings;
     latitude?: number;
     longitude?: number;
+    attendanceRadius?: number; // Radius absensi dalam meter (default: 30)
     layoutSettings?: {
       showHero?: boolean;
       showPartners?: boolean;
