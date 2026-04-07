@@ -121,6 +121,55 @@ export function SystemSettingsManager() {
     }
   }, [schoolData, form]);
 
+  const parseCsvText = (csvText: string) => {
+    const text = csvText.replace(/^\uFEFF/, '');
+    const rows: string[][] = [];
+    let current = '';
+    let record: string[] = [];
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const next = text[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && next === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+        continue;
+      }
+
+      if (char === ',' && !inQuotes) {
+        record.push(current.trim());
+        current = '';
+        continue;
+      }
+
+      if ((char === '\n' || char === '\r') && !inQuotes) {
+        if (char === '\r' && next === '\n') {
+          i++;
+        }
+        record.push(current.trim());
+        rows.push(record);
+        record = [];
+        current = '';
+        continue;
+      }
+
+      current += char;
+    }
+
+    if (current.length > 0 || record.length > 0) {
+      record.push(current.trim());
+      rows.push(record);
+    }
+
+    return rows;
+  };
+
   const testCsvConnection = async () => {
     const url = form.getValues('studentDatabaseUrl');
     if (!url) return;
@@ -130,18 +179,18 @@ export function SystemSettingsManager() {
     try {
       const response = await fetch(url);
       const text = await response.text();
-      const rows = text.split(/\r?\n/).filter(l => l.trim() !== '');
+      const rows = parseCsvText(text).filter(row => row.some(value => value !== ''));
       if (rows.length < 2) throw new Error("File CSV kosong atau tidak valid.");
       
-      const headers = rows[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+      const headers = rows[0].map(h => h.trim().replace(/^['"]|['"]$/g, ''));
       setCsvHeaders(headers);
       
       const data = rows.slice(1, 6).map(row => {
-        const values = row.split(',').map(v => v.trim().replace(/^["']|["']$/g, ''));
-        return headers.reduce((obj: any, header, i) => {
-          obj[header] = values[i] || '';
-          return obj;
-        }, {});
+        const item: any = {};
+        headers.forEach((header, index) => {
+          item[header] = row[index] || '';
+        });
+        return item;
       });
 
       setCsvPreview(data);

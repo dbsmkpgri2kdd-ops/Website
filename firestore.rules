@@ -21,7 +21,7 @@ service cloud.firestore {
     // 1. Profil Pengguna & Portofolio
     match /users/{userId} {
       allow get: if isSignedIn();
-      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow list: if isAdmin();
       

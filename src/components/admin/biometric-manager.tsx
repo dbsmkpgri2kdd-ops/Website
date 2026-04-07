@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   LoaderCircle, CheckCircle2, ShieldCheck, 
-  ScanFace, UserPlus, Users, Search, Volume2, MonitorCheck,
-  LogIn, LogOut, Info, Clock, Camera
+  ScanFace, UserPlus, Users, Volume2, MonitorCheck,
+  LogIn, LogOut, Info, Clock, Camera, Maximize2, Minimize2
 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase, updateDocumentNonBlocking, addDocumentNonBlocking, useDoc } from '@/firebase';
 import { collection, query, where, orderBy, doc, serverTimestamp } from 'firebase/firestore';
@@ -46,17 +46,36 @@ export function BiometricManager() {
   const [status, setStatus] = useState<BiometricStatus>('IDLE');
   const [scanProgress, setScanProgress] = useState(0);
   const [selectedClass, setSelectedClass] = useState<string>('ALL');
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
   const [recognizedStudent, setRecognizedStudent] = useState<UserProfile | null>(null);
   const [attendanceType, setAttendanceType] = useState<'Masuk' | 'Pulang' | null>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string>('');
-  const [autoAttendanceMode, setAutoAttendanceMode] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   
+  const rootRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    if (!rootRef.current) return;
+    try {
+      if (!document.fullscreenElement) {
+        await rootRef.current.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.warn('Fullscreen toggle failed', err);
+    }
+  };
 
   const playSuccessSound = () => {
     if (typeof window !== 'undefined') {
@@ -74,7 +93,8 @@ export function BiometricManager() {
 
   const usersQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'users'), where('role', 'in', ['siswa', 'guru']), orderBy('email'));
+    // Simplified query to check if any users exist
+    return query(collection(firestore, 'users'), orderBy('email'));
   }, [firestore]);
   const { data: users, isLoading: isUsersLoading } = useCollection<UserProfile>(usersQuery);
 
@@ -89,12 +109,21 @@ export function BiometricManager() {
 
   const filteredUsers = useMemo(() => {
     if (!users) return [];
-    return users.filter(s => {
-      const matchesClass = selectedClass === 'ALL' || s.className === selectedClass;
-      const matchesSearch = (s.displayName || s.email || '').toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesClass && matchesSearch;
+    // Filter to only show siswa and guru roles
+    const roleFiltered = users.filter(u => u.role === 'siswa' || u.role === 'guru');
+    return roleFiltered.filter(s => selectedClass === 'ALL' || s.className === selectedClass);
+  }, [users, selectedClass]);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Biometric Manager Debug:', {
+      usersCount: users?.length || 0,
+      classesCount: classes.length,
+      filteredUsersCount: filteredUsers.length,
+      selectedClass,
+      selectedStudentId
     });
-  }, [users, selectedClass, searchQuery]);
+  }, [users, classes, filteredUsers, selectedClass, selectedStudentId]);
 
   useEffect(() => {
     return () => stopCamera();
@@ -301,15 +330,21 @@ export function BiometricManager() {
   };
 
   return (
-    <div className="space-y-8 animate-reveal pb-20">
+    <div ref={rootRef} className="space-y-8 animate-reveal pb-20">
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
         <div>
             <h2 className='text-3xl font-black tracking-tighter text-slate-900 font-headline uppercase'>Pusat Biometrik v3.8</h2>
             <p className='text-[10px] font-bold text-slate-500 mt-1 uppercase tracking-widest'>Terminal pengenalan wajah cerdas dengan dukungan shift otomatis.</p>
         </div>
-        <div className='flex items-center gap-3 bg-emerald-500/10 text-emerald-600 p-3 rounded-2xl border border-emerald-500/20'>
-            <div className='w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_emerald]'></div>
-            <p className='text-[9px] font-black uppercase tracking-widest'>Multi-Shift Sensor Aktif</p>
+        <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-3'>
+          <div className='flex items-center gap-3 bg-emerald-500/10 text-emerald-600 p-3 rounded-2xl border border-emerald-500/20'>
+              <div className='w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_emerald]'></div>
+              <p className='text-[9px] font-black uppercase tracking-widest'>Multi-Shift Sensor Aktif</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={toggleFullscreen} className='h-11 rounded-2xl uppercase text-[10px] tracking-widest'>
+            {isFullscreen ? <Minimize2 className='mr-2 h-4 w-4' /> : <Maximize2 className='mr-2 h-4 w-4' />}
+            {isFullscreen ? 'Keluar Fullscreen' : 'Fullscreen'}
+          </Button>
         </div>
       </div>
 
@@ -351,17 +386,6 @@ export function BiometricManager() {
                     </div>
                   )}
 
-                  {/* Search Input */}
-                  <div className="relative">
-                    <Input 
-                      placeholder="Cari nama/NIS..." 
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="h-11 rounded-xl bg-white border-slate-100 pl-10 text-xs"
-                    />
-                    <Search className="absolute left-3.5 top-3.5 text-slate-400 opacity-40" size={16} />
-                  </div>
-
                   {/* Class Filter */}
                   <Select onValueChange={setSelectedClass} value={selectedClass}>
                     <SelectTrigger className="h-11 rounded-xl bg-white border-slate-100 font-bold text-[10px] uppercase">
@@ -369,7 +393,18 @@ export function BiometricManager() {
                     </SelectTrigger>
                     <SelectContent className='rounded-xl border-slate-100'>
                       <SelectItem value="ALL" className="font-bold text-[10px] uppercase py-3">Semua Kelas</SelectItem>
-                      {classes.map(c => <SelectItem key={c} value={c} className="font-bold text-[10px] uppercase py-3">{c}</SelectItem>)}
+                      {classes.length === 0 ? (
+                        <div className="p-4 text-center">
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            Tidak ada kelas tersedia
+                          </p>
+                          <p className="text-[9px] text-slate-300 mt-1">
+                            Pastikan siswa sudah memiliki data kelas
+                          </p>
+                        </div>
+                      ) : (
+                        classes.map(c => <SelectItem key={c} value={c} className="font-bold text-[10px] uppercase py-3">{c}</SelectItem>)
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -378,6 +413,24 @@ export function BiometricManager() {
                   <div className="p-4 space-y-1">
                     {isUsersLoading ? (
                       Array.from({length: 5}).map((_, i) => <div key={i} className="h-14 w-full bg-slate-50 animate-pulse rounded-xl" />)
+                    ) : filteredUsers.length === 0 ? (
+                      <div className="text-center py-12">
+                        <Users size={48} className="text-slate-300 mx-auto mb-4" />
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                          {selectedClass === 'ALL' ? 'Tidak ada data siswa/guru' : `Tidak ada siswa/guru di kelas ${selectedClass}`}
+                        </p>
+                        <p className="text-[10px] text-slate-300 mt-2">
+                          Pastikan data siswa/guru sudah terdaftar di sistem melalui menu "Pengguna"
+                        </p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-4 text-[10px] font-bold uppercase tracking-widest"
+                          onClick={() => window.open('/admin?tab=users', '_blank')}
+                        >
+                          Kelola Pengguna
+                        </Button>
+                      </div>
                     ) : (
                       filteredUsers.map(u => (
                         <button
