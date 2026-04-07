@@ -8,7 +8,7 @@ const STATIC_CACHE = 'smk-prida-static-v7.6';
 // File yang akan di-cache untuk offline access
 const STATIC_FILES = [
   '/',
-  '/manifest.json',
+  '/manifest.webmanifest',
   '/favicon.ico',
   '/robots.txt'
 ];

@@ -6,7 +6,7 @@ import { signOut } from 'firebase/auth';
 import { 
   LogOut, Sparkles, Fingerprint, MapPin, 
   ShieldCheck, Smartphone, Bell, Home, User as UserIcon, BookMarked,
-  ChevronRight, UserCog, History, FolderKanban, GraduationCap
+  ChevronRight, UserCog, History, FolderKanban, GraduationCap, LoaderCircle, Download
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useUser, useAuth } from '@/firebase';
+import { usePWAInstall } from '@/hooks/use-pwa-install';
 import { JadwalPelajaran } from '@/components/shared/jadwal-pelajaran';
 import { ERaporSiswa } from '@/components/siswa/e-rapor-siswa';
 import { AbsensiSiswa } from '@/components/siswa/absensi-siswa';
@@ -31,9 +32,11 @@ function SiswaDashboard() {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const { isInstallable, isInstalled, handleInstall } = usePWAInstall();
   const [activeTab, setActiveTab] = useState<TabType>('home');
   const [mounted, setMounted] = useState(false);
   const [isAbsenOpen, setIsAbsenOpen] = useState(false);
+  const [isInstalling, setIsInstalling] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -47,6 +50,19 @@ function SiswaDashboard() {
       toast({ title: 'Sesi berakhir', description: 'Kembali ke halaman utama.' });
     } catch (error) {
       toast({ variant: 'destructive', title: 'Logout gagal' });
+    }
+  };
+
+  const onInstallClick = async () => {
+    setIsInstalling(true);
+    try {
+      await handleInstall();
+      toast({ title: "Instalasi berhasil", description: "Aplikasi telah diinstal ke perangkat Anda." });
+    } catch (error) {
+      console.error('[PWA] Install error:', error);
+      toast({ title: "Instalasi gagal", description: "Tidak dapat menginstal aplikasi.", variant: "destructive" });
+    } finally {
+      setIsInstalling(false);
     }
   };
 
@@ -96,6 +112,43 @@ function SiswaDashboard() {
                 <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-accent rounded-full border-2 border-white animate-pulse" />
               </Button>
             </header>
+
+            {/* PWA Install Card - Permanent di Dashboard Siswa */}
+            {isInstallable && !isInstalled && (
+              <Card className="border-primary/20 shadow-xl rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-primary/5 to-accent/5 border-2 mx-2">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+                      <ShieldCheck size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-black text-xs uppercase tracking-widest text-slate-900">
+                        Instal Aplikasi SMK PRIDA
+                      </h4>
+                      <p className="text-[10px] text-slate-600 font-medium mt-1">
+                        Akses offline dan notifikasi real-time untuk aktivitas sekolah Anda.
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={onInstallClick}
+                      disabled={isInstalling}
+                      size="sm"
+                      className="rounded-lg font-bold text-[10px] uppercase tracking-widest shadow-lg bg-primary text-white hover:bg-primary/90 h-8 px-3"
+                    >
+                      {isInstalling ? (
+                        <>
+                          <LoaderCircle size={12} className="mr-1 animate-spin" /> Memasang...
+                        </>
+                      ) : (
+                        <>
+                          <Download size={12} className="mr-1" /> Instal
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-2">
               {[

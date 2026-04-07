@@ -9,17 +9,19 @@ import {
   PenSquare, ShieldAlert, 
   LoaderCircle, Mail, Award, Library, MessageSquare, Quote, 
   DatabaseZap, Palette, Layout, MousePointer2, BriefcaseIcon, Factory, SearchCode,
-  UserPlus, ShieldCheck, ScanFace, Sparkles, MonitorPlay, QrCode
+  UserPlus, ShieldCheck, ScanFace, Sparkles, MonitorPlay, QrCode, Download
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import ProtectedRoute from '@/components/auth/protected-route';
 import { useUser, useAuth } from '@/firebase';
+import { usePWAInstall } from '@/hooks/use-pwa-install';
 import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 
@@ -73,10 +75,12 @@ function AdminDashboard() {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const { isInstallable, isInstalled, handleInstall } = usePWAInstall();
   
   const isAdmin = user?.profile?.role === 'admin';
   const [activeTab, setActiveTab] = useState<AdminTab>(isAdmin ? 'overview' : 'users');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isInstalling, setIsInstalling] = useState(false);
 
   const handleLogout = async () => {
     if (!auth) return;
@@ -86,6 +90,19 @@ function AdminDashboard() {
       toast({ title: 'Sesi berakhir', description: 'Kembali ke halaman utama.' });
     } catch (error) {
       toast({ variant: 'destructive', title: 'Logout gagal' });
+    }
+  };
+
+  const onInstallClick = async () => {
+    setIsInstalling(true);
+    try {
+      await handleInstall();
+      toast({ title: "Instalasi berhasil", description: "Aplikasi telah diinstal ke perangkat Anda." });
+    } catch (error) {
+      console.error('[PWA] Install error:', error);
+      toast({ title: "Instalasi gagal", description: "Tidak dapat menginstal aplikasi.", variant: "destructive" });
+    } finally {
+      setIsInstalling(false);
     }
   };
 
@@ -279,6 +296,43 @@ function AdminDashboard() {
 
         <main className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar">
           <div className="max-w-6xl mx-auto">
+            {/* PWA Install Card - Permanent di Dashboard Admin */}
+            {isInstallable && !isInstalled && (
+              <Card className="border-primary/20 shadow-xl rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-primary/5 to-accent/5 border-2 mb-6">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+                      <ShieldCheck size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-black text-xs uppercase tracking-widest text-slate-900">
+                        Instal Aplikasi SMK PRIDA
+                      </h4>
+                      <p className="text-[10px] text-slate-600 font-medium mt-1">
+                        Kelola sistem sekolah dengan akses offline dan notifikasi real-time.
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={onInstallClick}
+                      disabled={isInstalling}
+                      size="sm"
+                      className="rounded-lg font-bold text-[10px] uppercase tracking-widest shadow-lg bg-primary text-white hover:bg-primary/90 h-8 px-3"
+                    >
+                      {isInstalling ? (
+                        <>
+                          <LoaderCircle size={12} className="mr-1 animate-spin" /> Memasang...
+                        </>
+                      ) : (
+                        <>
+                          <Download size={12} className="mr-1" /> Instal
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <div className='animate-reveal'>
                 {renderContent()}
             </div>

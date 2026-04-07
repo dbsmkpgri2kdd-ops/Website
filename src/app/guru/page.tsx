@@ -6,14 +6,16 @@ import { signOut } from 'firebase/auth';
 import { 
   LogOut, ShieldCheck, Sparkles, 
   Bell, Home, BookMarked, ClipboardList, MonitorCheck,
-  UserCheck, MonitorPlay, Users, Settings2, Briefcase
+  UserCheck, MonitorPlay, Users, Settings2, Briefcase, LoaderCircle, Download
 } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/protected-route';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useUser, useAuth } from '@/firebase';
+import { usePWAInstall } from '@/hooks/use-pwa-install';
 import { PembinaanEskul } from '@/components/guru/pembinaan-ekskul';
 import { JadwalPelajaran } from '@/components/shared/jadwal-pelajaran';
 import { DownloadManager } from '@/components/shared/download-manager';
@@ -31,8 +33,10 @@ function GuruDashboard() {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const { isInstallable, isInstalled, handleInstall } = usePWAInstall();
   const [activeTab, setActiveTab] = useState<TabType>('home');
   const [mounted, setMounted] = useState(false);
+  const [isInstalling, setIsInstalling] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -46,6 +50,19 @@ function GuruDashboard() {
       toast({ title: 'Logout berhasil', description: 'Sesi pengajar telah diakhiri.' });
     } catch (error) {
       toast({ variant: 'destructive', title: 'Logout gagal' });
+    }
+  };
+
+  const onInstallClick = async () => {
+    setIsInstalling(true);
+    try {
+      await handleInstall();
+      toast({ title: "Instalasi berhasil", description: "Aplikasi telah diinstal ke perangkat Anda." });
+    } catch (error) {
+      console.error('[PWA] Install error:', error);
+      toast({ title: "Instalasi gagal", description: "Tidak dapat menginstal aplikasi.", variant: "destructive" });
+    } finally {
+      setIsInstalling(false);
     }
   };
 
@@ -89,6 +106,43 @@ function GuruDashboard() {
                 <Bell size={20} className="text-slate-600" />
               </Button>
             </header>
+
+            {/* PWA Install Card - Permanent di Dashboard Guru */}
+            {isInstallable && !isInstalled && (
+              <Card className="border-primary/20 shadow-xl rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-primary/5 to-accent/5 border-2 mx-2">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+                      <ShieldCheck size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-black text-xs uppercase tracking-widest text-slate-900">
+                        Instal Aplikasi SMK PRIDA
+                      </h4>
+                      <p className="text-[10px] text-slate-600 font-medium mt-1">
+                        Kelola kelas dan siswa dengan akses offline yang stabil.
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={onInstallClick}
+                      disabled={isInstalling}
+                      size="sm"
+                      className="rounded-lg font-bold text-[10px] uppercase tracking-widest shadow-lg bg-primary text-white hover:bg-primary/90 h-8 px-3"
+                    >
+                      {isInstalling ? (
+                        <>
+                          <LoaderCircle size={12} className="mr-1 animate-spin" /> Memasang...
+                        </>
+                      ) : (
+                        <>
+                          <Download size={12} className="mr-1" /> Instal
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             <Card className="android-card p-6 flex items-center gap-5">
               <Avatar className="h-14 w-14 border-2 border-primary/10">

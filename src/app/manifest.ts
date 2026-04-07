@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next'
 
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
   const logoUrl = 'https://firebasestorage.googleapis.com/v0/b/firebasestudio-images/o/user-uploaded-image.png?alt=media';
   

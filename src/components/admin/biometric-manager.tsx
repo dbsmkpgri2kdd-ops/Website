@@ -51,6 +51,9 @@ export function BiometricManager() {
   const [recognizedStudent, setRecognizedStudent] = useState<UserProfile | null>(null);
   const [attendanceType, setAttendanceType] = useState<'Masuk' | 'Pulang' | null>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedCameraId, setSelectedCameraId] = useState<string>('');
+  const [autoAttendanceMode, setAutoAttendanceMode] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -97,6 +100,23 @@ export function BiometricManager() {
     return () => stopCamera();
   }, []);
 
+  useEffect(() => {
+    enumerateCameras();
+  }, []);
+
+  const enumerateCameras = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      setCameraDevices(videoDevices);
+      if (videoDevices.length > 0 && !selectedCameraId) {
+        setSelectedCameraId(videoDevices[0].deviceId);
+      }
+    } catch (err) {
+      console.error('Failed to enumerate cameras:', err);
+    }
+  };
+
   const stopCamera = () => {
     if (videoRef.current?.srcObject) {
       (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
@@ -106,15 +126,35 @@ export function BiometricManager() {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      const constraints: MediaStreamConstraints = {
+        video: {
+          deviceId: selectedCameraId ? { exact: selectedCameraId } : undefined,
+          facingMode: { ideal: 'user' },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      };
+      
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setHasCameraPermission(true);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        try {
+          await videoRef.current.play();
+        } catch (err) {
+          console.error('Video play error:', err);
+        }
       }
       return true;
-    } catch (err) {
+    } catch (err: any) {
       setHasCameraPermission(false);
-      toast({ variant: 'destructive', title: 'Akses Kamera Gagal', description: 'Pastikan izin kamera diberikan.' });
+      let errorMsg = 'Pastikan izin kamera diberikan.';
+      if (err.name === 'NotAllowedError') {
+        errorMsg = 'Izin kamera ditolak. Harap ubah pengaturan browser.';
+      } else if (err.name === 'NotFoundError') {
+        errorMsg = 'Kamera tidak ditemukan di perangkat ini.';
+      }
+      toast({ variant: 'destructive', title: 'Akses Kamera Gagal', description: errorMsg });
       return false;
     }
   };
@@ -215,6 +255,8 @@ export function BiometricManager() {
         setAttendanceType(type);
 
         const attendanceRef = collection(firestore, `schools/${SCHOOL_DATA_ID}/attendance`);
+        const selectedCameraLabel = cameraDevices.find(d => d.deviceId === selectedCameraId)?.label || 'Default';
+        
         const attendanceData = {
           studentId: matchedUser.id,
           studentName: matchedUser.displayName || matchedUser.email,
@@ -227,7 +269,8 @@ export function BiometricManager() {
           metadata: { 
             type: 'TERMINAL_AI_AUTO',
             direction: type,
-            session: matchedUser.session || 'Pagi'
+            session: matchedUser.session || 'Pagi',
+            camera: selectedCameraLabel
           }
         };
         
@@ -290,15 +333,36 @@ export function BiometricManager() {
               </CardHeader>
               <CardContent className="p-0">
                 <div className="p-6 space-y-4 bg-slate-50 border-b">
+                  {/* Camera Selection */}
+                  {cameraDevices.length > 1 && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-600">Pilih Kamera:</label>
+                      <select 
+                        value={selectedCameraId}
+                        onChange={(e) => setSelectedCameraId(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-white border-slate-100 text-xs font-bold focus:outline-none focus:border-primary"
+                      >
+                        {cameraDevices.map(device => (
+                          <option key={device.deviceId} value={device.deviceId}>
+                            {device.label || `Kamera ${device.deviceId.substring(0, 5)}`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Search Input */}
                   <div className="relative">
                     <Input 
-                      placeholder="Cari nama..." 
+                      placeholder="Cari nama/NIS..." 
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="h-11 rounded-xl bg-white border-slate-100 pl-10 text-xs"
                     />
                     <Search className="absolute left-3.5 top-3.5 text-slate-400 opacity-40" size={16} />
                   </div>
+
+                  {/* Class Filter */}
                   <Select onValueChange={setSelectedClass} value={selectedClass}>
                     <SelectTrigger className="h-11 rounded-xl bg-white border-slate-100 font-bold text-[10px] uppercase">
                       <SelectValue placeholder="Semua Kelas" />

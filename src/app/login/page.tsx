@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, KeyRound, Mail, LogIn, UserPlus, ShieldAlert, LoaderCircle, ArrowLeft, ShieldCheck, Fingerprint, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, KeyRound, Mail, LogIn, UserPlus, ShieldAlert, LoaderCircle, ArrowLeft, ShieldCheck, Fingerprint, Sparkles, Download } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { getDashboardByRole } from '@/lib/utils';
+import { usePWAInstall } from '@/hooks/use-pwa-install';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -21,12 +22,14 @@ export default function LoginPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [isRegisterMode, setIsRegisterMode] = useState(false);
+    const [isInstalling, setIsInstalling] = useState(false);
     
     const router = useRouter();
     const { toast } = useToast();
     const auth = useAuth();
     const firestore = useFirestore();
     const { user, profile } = useUser();
+    const { isInstallable, isInstalled, handleInstall } = usePWAInstall();
 
     useEffect(() => {
         if (user && profile) {
@@ -74,6 +77,19 @@ export default function LoginPage() {
             
             toast({ title: "Akses ditolak", description: message, variant: "destructive" });
             setIsSubmitting(false);
+        }
+    };
+
+    const onInstallClick = async () => {
+        setIsInstalling(true);
+        try {
+            await handleInstall();
+            toast({ title: "Instalasi berhasil", description: "Aplikasi telah diinstal ke perangkat Anda." });
+        } catch (error) {
+            console.error('[PWA] Install error:', error);
+            toast({ title: "Instalasi gagal", description: "Tidak dapat menginstal aplikasi.", variant: "destructive" });
+        } finally {
+            setIsInstalling(false);
         }
     };
 
@@ -195,6 +211,43 @@ export default function LoginPage() {
                         </form>
                     </CardContent>
                 </Card>
+                
+                {/* PWA Install Card - Permanent di Halaman Login */}
+                {isInstallable && !isInstalled && (
+                    <Card className="border-primary/20 shadow-xl rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-primary/5 to-accent/5 border-2">
+                        <CardContent className="p-6">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
+                                    <ShieldCheck size={24} />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="font-black text-sm uppercase tracking-widest text-slate-900">
+                                        Instal Aplikasi SMK PRIDA
+                                    </h4>
+                                    <p className="text-xs text-slate-600 font-medium mt-1">
+                                        Dapatkan akses offline dan pengalaman yang lebih cepat dengan menginstal aplikasi ke perangkat Anda.
+                                    </p>
+                                </div>
+                                <Button 
+                                    onClick={onInstallClick}
+                                    disabled={isInstalling}
+                                    size="sm"
+                                    className="rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg bg-primary text-white hover:bg-primary/90"
+                                >
+                                    {isInstalling ? (
+                                        <>
+                                            <LoaderCircle size={14} className="mr-2 animate-spin" /> Memasang...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download size={14} className="mr-2" /> Instal
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
                 
                 <p className='text-center text-[10px] font-bold text-slate-300 uppercase tracking-widest'>
                     &copy; 2025 SMKS PGRI 2 KEDONDONG

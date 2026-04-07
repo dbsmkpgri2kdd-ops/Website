@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Navigation, LoaderCircle, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, LogIn, LogOut, Camera } from 'lucide-react';
+import { Navigation, LoaderCircle, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, LogIn, LogOut, Camera, Maximize2 } from 'lucide-react';
 import { useUser, useFirestore, addDocumentNonBlocking, useDoc, useMemoFirebase } from '@/firebase';
 import { collection, serverTimestamp, doc } from 'firebase/firestore';
 import { SCHOOL_DATA_ID, type School } from '@/lib/data';
@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { calculateDistance } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { BiometricFullscreen } from '@/components/siswa/biometric-fullscreen';
 
 type AttendanceStatus = 'IDLE' | 'CHECKING_LOCATION' | 'VERIFYING_BIOMETRIC' | 'SCANNING' | 'SUCCESS' | 'ERROR';
 
@@ -30,6 +31,7 @@ export function BiometricAttendance() {
   const [scanProgress, setScanProgress] = useState(0);
   const [direction, setDirection] = useState<'Masuk' | 'Pulang' | null>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -176,31 +178,32 @@ export function BiometricAttendance() {
   };
 
   return (
-    <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden border font-sans">
-      <CardHeader className="p-8 border-b border-slate-50">
-        <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-primary/10 text-primary rounded-xl">
-                    <ShieldCheck size={20} />
-                </div>
-                <div>
-                    <CardTitle className="text-xl font-bold font-headline">Absensi Biometrik</CardTitle>
-                    <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">
-                        Sesi {profile?.session || 'Pagi'} v3.8
-                    </CardDescription>
-                </div>
-            </div>
-            {status === 'IDLE' && (
-                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                    <span className="text-[9px] font-black uppercase tracking-widest">Sistem Aktif</span>
-                </div>
-            )}
-        </div>
-      </CardHeader>
+    <>
+      <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden border font-sans">
+        <CardHeader className="p-8 border-b border-slate-50">
+          <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-primary/10 text-primary rounded-xl">
+                      <ShieldCheck size={20} />
+                  </div>
+                  <div>
+                      <CardTitle className="text-xl font-bold font-headline">Absensi Biometrik</CardTitle>
+                      <CardDescription className="text-[10px] font-bold uppercase tracking-widest opacity-60">
+                          Sesi {profile?.session || 'Pagi'} v4.0
+                      </CardDescription>
+                  </div>
+              </div>
+              {status === 'IDLE' && (
+                  <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                      <span className="text-[9px] font-black uppercase tracking-widest">Sistem Aktif</span>
+                  </div>
+              )}
+          </div>
+        </CardHeader>
 
-      <CardContent className="p-8">
-        <canvas ref={canvasRef} className="hidden" />
+        <CardContent className="p-8">
+          <canvas ref={canvasRef} className="hidden" />
         
         {status === 'IDLE' && (
             <div className="text-center space-y-8 py-6 animate-reveal">
@@ -214,9 +217,21 @@ export function BiometricAttendance() {
                         Anda terdaftar pada <span className='text-primary'>Sesi {profile?.session || 'Pagi'}</span>. Pastikan Anda berada di area sekolah untuk melakukan absensi.
                     </p>
                 </div>
-                <Button onClick={handleStartAttendance} className="w-full h-16 rounded-[1.5rem] font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all">
-                    Mulai Absensi {profile?.session || 'Pagi'}
-                </Button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Button 
+                    onClick={handleStartAttendance} 
+                    className="h-16 rounded-[1.5rem] font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all"
+                  >
+                    Mulai Modal
+                  </Button>
+                  <Button 
+                    onClick={() => setIsFullscreenOpen(true)}
+                    variant="outline"
+                    className="h-16 rounded-[1.5rem] font-bold text-sm border-2 border-primary/30 hover:bg-primary/5"
+                  >
+                    <Maximize2 className="mr-2" size={16} /> Fullscreen
+                  </Button>
+                </div>
             </div>
         )}
 
@@ -313,5 +328,9 @@ export function BiometricAttendance() {
         }
       `}</style>
     </Card>
+
+    {/* Fullscreen Modal */}
+    <BiometricFullscreen isOpen={isFullscreenOpen} onClose={() => setIsFullscreenOpen(false)} />
+    </>
   );
 }
